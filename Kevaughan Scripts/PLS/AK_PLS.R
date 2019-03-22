@@ -7,14 +7,21 @@ alaskaSpecLib<-read.csv("/Alaska_Spectral_Library/processed spec/alaskaSpecLib.c
 
 ## Remove unwanted metadata
 alaskaSpecLib[c("ScanID","PFT_2","area")] = NULL
+alaskaSpecLib$PFT<-as.factor(alaskaSpecLib$PFT)
+alaskaSpecLib$PFT<-as.numeric(alaskaSpecLib$PFT)
 
-###extracts the data for species
-vacvit<-alaskaSpecLib%>%subset(PFT%in%"vacvit")
-bryoria<-alaskaSpecLib%>%subset(PFT%in%"bryoria")
+###Make test and validation data set
+training_dat<-alaskaSpecLib[1:600,   ]
+test_dat = alaskaSpecLib[601:871, -1]
 
 ###Fit
-fit_vacvit = plsr(PFT ~ ., data = vacvit, validation = "CV", ncomp = 7)
-plot(fit_vacvit)
+fit_alaskaSpecLib = plsr(PFT~ ., data = training_dat, ncomp = 30)
+plot(fit_alaskaSpecLib)
+summary(fit_alaskaSpecLib)
 
-fit_bryoria = plsr(PFT ~ ., data = bryoria, validation = "CV", ncomp = 8, jacknife=TRUE)
-plot(bryoria)
+## Predict chlorophyll from spectra!
+prediction = predict(object = fit_alaskaSpecLib, newdata = test_dat, ncomp = 30)
+plot(prediction)
+
+
+plot(val,prediction, cex = 1, pch = 16)
