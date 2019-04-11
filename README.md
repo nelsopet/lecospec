@@ -1,1 +1,0 @@
-# Alaska_Spectral_Library
