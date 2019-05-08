@@ -3,11 +3,11 @@ library(randomForest)
 setwd("/Alaska_Spectral_Library")
 
 ###reads in alaskasspeclib
-alaskaSpecLib_lichen<-read.csv("/Alaska_Spectral_Library/processed spec/AlaskaSpecLib/alaskaSpecLib_lichen.csv")
-alaskaSpecLib_5nm_lichen<-read.csv("/Alaska_Spectral_Library/processed spec/AlaskaSpecLib/alaskaSpecLib_5nm_lichen.csv")
-alaskaSpecLib_10nm_lichen<-read.csv("/Alaska_Spectral_Library/processed spec/AlaskaSpecLib/alaskaSpecLib_10nm_lichen.csv")
-alaskaSpecLib_50nm_lichen<-read.csv("/Alaska_Spectral_Library/processed spec/AlaskaSpecLib/alaskaSpecLib_50nm_lichen.csv")
-alaskaSpecLib_100nm_lichen<-read.csv("/Alaska_Spectral_Library/processed spec/AlaskaSpecLib/alaskaSpecLib_100nm_lichen.csv")
+alaskaSpecLib_lichen<-read.csv("processed spec/AlaskaSpecLib/alaskaSpecLib_lichen.csv")
+alaskaSpecLib_5nm_lichen<-read.csv("processed spec/AlaskaSpecLib/alaskaSpecLib_5nm_lichen.csv")
+alaskaSpecLib_10nm_lichen<-read.csv("processed spec/AlaskaSpecLib/alaskaSpecLib_10nm_lichen.csv")
+alaskaSpecLib_50nm_lichen<-read.csv("processed spec/AlaskaSpecLib/alaskaSpecLib_50nm_lichen.csv")
+alaskaSpecLib_100nm_lichen<-read.csv("processed spec/AlaskaSpecLib/alaskaSpecLib_100nm_lichen.csv")
 
 ## Remove unwanted metadata
 alaskaSpecLib_lichen[c("ScanID","PFT","PFT_3","area")] = NULL
@@ -105,4 +105,4 @@ error_rate_lichen<-cbind(error_rf_lichen,
 error_rate_lichen$category<-"Lichen"
 
 ##write to folder
-write.csv(error_rate_lichen,"/Alaska_Spectral_Library/Models/Error Rates/Regular/error_rate_lichen.csv",row.names = F)
+write.csv(error_rate_lichen,"Model Scripts/Error Rates/Regular/error_rate_lichen.csv",row.names = F)

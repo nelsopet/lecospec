@@ -1,8 +1,9 @@
 library(spectrolab)
 library(tidyverse)
+setwd("/Alaska_Spectral_Library")
 
 ####Read in data as spectra
-AK2018_spectra<-read_spectra("/Alaska_Spectral_Library/data/20180729/AK2018",
+AK2018_spectra<-read_spectra("original_data/20180729/AK2018",
                              format="sed")
 
 ##Fix Names by removing file extensions
@@ -56,8 +57,8 @@ AK2018_spectra_100nm = resample(AK2018_spectra, seq(350, 2500, 100))
 
 
 ##save spectra
-saveRDS(AK2018_spectra,"/Alaska_Spectral_Library/processed spec/AK2018/AK2018_spectra.rds")
-saveRDS(AK2018_spectra_5nm,"/Alaska_Spectral_Library/processed spec/AK2018/AK2018_spectra_5nm.rds")
-saveRDS(AK2018_spectra_10nm,"/Alaska_Spectral_Library/processed spec/AK2018/AK2018_spectra_10nm.rds")
-saveRDS(AK2018_spectra_50nm,"/Alaska_Spectral_Library/processed spec/AK2018/AK2018_spectra_50nm.rds")
-saveRDS(AK2018_spectra_100nm,"/Alaska_Spectral_Library/processed spec/AK2018/AK2018_spectra_100nm.rds")
+saveRDS(AK2018_spectra,"processed spec/AK2018/AK2018_spectra.rds")
+saveRDS(AK2018_spectra_5nm,"processed spec/AK2018/AK2018_spectra_5nm.rds")
+saveRDS(AK2018_spectra_10nm,"processed spec/AK2018/AK2018_spectra_10nm.rds")
+saveRDS(AK2018_spectra_50nm,"processed spec/AK2018/AK2018_spectra_50nm.rds")
+saveRDS(AK2018_spectra_100nm,"processed spec/AK2018/AK2018_spectra_100nm.rds")

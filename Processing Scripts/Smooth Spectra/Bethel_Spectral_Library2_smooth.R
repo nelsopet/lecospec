@@ -1,8 +1,9 @@
 library(spectrolab)
 library(tidyverse)
+setwd("/Alaska_Spectral_Library")
 
 ####Read in data as spectra
-bethelLib_spectra<-read_spectra("/Alaska_Spectral_Library/data/BethelLib",
+bethelLib_spectra<-read_spectra("original_data/BethelLib",
                              format="sed")
 ##Remove salex scans
 bethelLib_spectra<-bethelLib_spectra[grep("salex",invert=TRUE,names(bethelLib_spectra))]
@@ -47,8 +48,8 @@ bethelLib_spectra_smooth_50nm = resample(bethelLib_spectra_smooth, seq(350, 2500
 bethelLib_spectra_smooth_100nm = resample(bethelLib_spectra_smooth, seq(350, 2500, 100))
 
 ##save spectra
-saveRDS(bethelLib_spectra,"/Alaska_Spectral_Library/processed spec/bethelLib/bethelLib_spectra.rds")
-saveRDS(bethelLib_spectra_smooth,"/Alaska_Spectral_Library/processed spec/bethelLib/bethelLib_spectra_smooth.rds")
-saveRDS(bethelLib_spectra_smooth_5nm,"/Alaska_Spectral_Library/processed spec/bethelLib/bethelLib_spectra_smooth_5nm.rds")
-saveRDS(bethelLib_spectra_smooth_10nm,"/Alaska_Spectral_Library/processed spec/bethelLib/bethelLib_spectra_smooth_10nm.rds")
-saveRDS(bethelLib_spectra_smooth_100nm,"/Alaska_Spectral_Library/processed spec/bethelLib/bethelLib_spectra_smooth_100nm.rds")
+saveRDS(bethelLib_spectra,"processed spec/bethelLib/bethelLib_spectra.rds")
+saveRDS(bethelLib_spectra_smooth,"processed spec/bethelLib/bethelLib_spectra_smooth.rds")
+saveRDS(bethelLib_spectra_smooth_5nm,"processed spec/bethelLib/bethelLib_spectra_smooth_5nm.rds")
+saveRDS(bethelLib_spectra_smooth_10nm,"processed spec/bethelLib/bethelLib_spectra_smooth_10nm.rds")
+saveRDS(bethelLib_spectra_smooth_100nm,"processed spec/bethelLib/bethelLib_spectra_smooth_100nm.rds")

@@ -3,11 +3,11 @@ library(randomForest)
 setwd("/Alaska_Spectral_Library")
 
 ###reads in alaskasspeclib
-alaskaSpecLib_smooth_plants<-read.csv("/Alaska_Spectral_Library/processed spec/AlaskaSpecLib/alaskaSpecLib_smooth_plants.csv")
-alaskaSpecLib_smooth_5nm_plants<-read.csv("/Alaska_Spectral_Library/processed spec/AlaskaSpecLib/alaskaSpecLib_smooth_5nm_plants.csv")
-alaskaSpecLib_smooth_10nm_plants<-read.csv("/Alaska_Spectral_Library/processed spec/AlaskaSpecLib/alaskaSpecLib_smooth_10nm_plants.csv")
-alaskaSpecLib_smooth_50nm_plants<-read.csv("/Alaska_Spectral_Library/processed spec/AlaskaSpecLib/alaskaSpecLib_smooth_50nm_plants.csv")
-alaskaSpecLib_smooth_100nm_plants<-read.csv("/Alaska_Spectral_Library/processed spec/AlaskaSpecLib/alaskaSpecLib_smooth_100nm_plants.csv")
+alaskaSpecLib_smooth_plants<-read.csv("processed spec/AlaskaSpecLib/alaskaSpecLib_smooth_plants.csv")
+alaskaSpecLib_smooth_5nm_plants<-read.csv("processed spec/AlaskaSpecLib/alaskaSpecLib_smooth_5nm_plants.csv")
+alaskaSpecLib_smooth_10nm_plants<-read.csv("processed spec/AlaskaSpecLib/alaskaSpecLib_smooth_10nm_plants.csv")
+alaskaSpecLib_smooth_50nm_plants<-read.csv("processed spec/AlaskaSpecLib/alaskaSpecLib_smooth_50nm_plants.csv")
+alaskaSpecLib_smooth_100nm_plants<-read.csv("processed spec/AlaskaSpecLib/alaskaSpecLib_smooth_100nm_plants.csv")
 
 ## Remove unwanted metadata
 alaskaSpecLib_smooth_plants[c("ScanID","PFT","PFT_3","area")] = NULL
@@ -142,4 +142,4 @@ error_rate_PCA_smooth_plants<-cbind(error_rf_PCA_smooth_plants,
 error_rate_PCA_smooth_plants$category<-"All_plants"
 
 ##write to folder
-write.csv(error_rate_PCA_smooth_plants,"/Alaska_Spectral_Library/Models/Error Rates/PCA/error_rate_PCA_smooth_plants.csv",row.names = F)
+write.csv(error_rate_PCA_smooth_plants,"Model Scripts/Error Rates/PCA/error_rate_PCA_smooth_plants.csv",row.names = F)

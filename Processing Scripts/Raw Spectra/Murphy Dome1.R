@@ -1,8 +1,9 @@
 library(spectrolab)
 library(tidyverse)
+setwd("/Alaska_Spectral_Library")
 
 ####Read in data as spectra
-Murph_lib_spectra<-read_spectra("/Alaska_Spectral_Library/data/20180729/M_Dome",
+Murph_lib_spectra<-read_spectra("original_data/20180729/M_Dome",
                                 format="sed")
 
 ##Remove eightmileflight1 scans
@@ -54,9 +55,9 @@ Murph_lib_spectra_50nm = resample(Murph_lib_spectra, seq(350, 2500, 50))
 Murph_lib_spectra_100nm = resample(Murph_lib_spectra, seq(350, 2500, 100))
 
 ###save spectra
-saveRDS(Murph_lib_spectra,"/Alaska_Spectral_Library/processed spec//Murph_Lib/Murph_lib_spectra.rds")
-saveRDS(Murph_lib_spectra_5nm,"/Alaska_Spectral_Library/processed spec/Murph_Lib/Murph_lib_spectra_5nm.rds")
-saveRDS(Murph_lib_spectra_10nm,"/Alaska_Spectral_Library/processed spec/Murph_Lib/Murph_lib_spectra_10nm.rds")
-saveRDS(Murph_lib_spectra_50nm,"/Alaska_Spectral_Library/processed spec/Murph_Lib/Murph_lib_spectra_50nm.rds")
-saveRDS(Murph_lib_spectra_100nm,"/Alaska_Spectral_Library/processed spec/Murph_Lib/Murph_lib_spectra_100nm.rds")
+saveRDS(Murph_lib_spectra,"processed spec//Murph_Lib/Murph_lib_spectra.rds")
+saveRDS(Murph_lib_spectra_5nm,"processed spec/Murph_Lib/Murph_lib_spectra_5nm.rds")
+saveRDS(Murph_lib_spectra_10nm,"processed spec/Murph_Lib/Murph_lib_spectra_10nm.rds")
+saveRDS(Murph_lib_spectra_50nm,"processed spec/Murph_Lib/Murph_lib_spectra_50nm.rds")
+saveRDS(Murph_lib_spectra_100nm,"processed spec/Murph_Lib/Murph_lib_spectra_100nm.rds")
 

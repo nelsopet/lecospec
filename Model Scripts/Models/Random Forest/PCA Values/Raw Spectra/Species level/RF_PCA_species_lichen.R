@@ -2,12 +2,12 @@ library(pls)
 library(randomForest)
 setwd("/Alaska_Spectral_Library")
 
-###reads in alaskasspeclib
-alaskaSpecLib_lichen<-read.csv("/Alaska_Spectral_Library/processed spec/AlaskaSpecLib/alaskaSpecLib_lichen.csv")
-alaskaSpecLib_5nm_lichen<-read.csv("/Alaska_Spectral_Library/processed spec/AlaskaSpecLib/alaskaSpecLib_5nm_lichen.csv")
-alaskaSpecLib_10nm_lichen<-read.csv("/Alaska_Spectral_Library/processed spec/AlaskaSpecLib/alaskaSpecLib_10nm_lichen.csv")
-alaskaSpecLib_50nm_lichen<-read.csv("/Alaska_Spectral_Library/processed spec/AlaskaSpecLib/alaskaSpecLib_50nm_lichen.csv")
-alaskaSpecLib_100nm_lichen<-read.csv("/Alaska_Spectral_Library/processed spec/AlaskaSpecLib/alaskaSpecLib_100nm_lichen.csv")
+###reads in alaskaspeclib
+alaskaSpecLib_lichen<-read.csv("processed spec/AlaskaSpecLib/alaskaSpecLib_lichen.csv")
+alaskaSpecLib_5nm_lichen<-read.csv("processed spec/AlaskaSpecLib/alaskaSpecLib_5nm_lichen.csv")
+alaskaSpecLib_10nm_lichen<-read.csv("processed spec/AlaskaSpecLib/alaskaSpecLib_10nm_lichen.csv")
+alaskaSpecLib_50nm_lichen<-read.csv("processed spec/AlaskaSpecLib/alaskaSpecLib_50nm_lichen.csv")
+alaskaSpecLib_100nm_lichen<-read.csv("processed spec/AlaskaSpecLib/alaskaSpecLib_100nm_lichen.csv")
 
 ## Remove unwanted metadata
 alaskaSpecLib_lichen[c("ScanID","PFT","PFT_3","area")] = NULL
@@ -34,8 +34,8 @@ testing_lichen<-pca_lichen[-index,]
 
 ###random forest model for (plant and abiotic scans)
 rf_lichen<-randomForest(PFT_2~.,data=training_lichen,mtry=5,ntree=2001,importance=TRUE)
-print(rf_lichen)
 result_lichen<-data.frame(testing_lichen$PFT_2,predict(rf_lichen,testing_lichen,type = "response"))
+confusion_martrix_lichen<-as.data.frame(rf_lichen$confusion)
 
 ################################Model 5nm bands########################################
 ##PCA (5nm bands)
@@ -55,8 +55,8 @@ testing_5nm_lichen<-pca_5nm_lichen[-index,]
 
 ###random forest model for (5nm bands)
 rf_5nm_lichen<-randomForest(PFT_2~.,data=training_5nm_lichen,mtry=5,ntree=2001,importance=TRUE)
-print(rf_5nm_lichen)
 result_5nm_lichen<-data.frame(testing_5nm_lichen$PFT_2,predict(rf_5nm_lichen,testing_5nm_lichen,type = "response"))
+confusion_martrix_5nm_lichen<-as.data.frame(rf_5nm_lichen$confusion)
 
 ################################Model 10nm bands########################################
 ##PCA (10nm bands)
@@ -76,8 +76,8 @@ testing_10nm_lichen<-pca_10nm_lichen[-index,]
 
 ###random forest model for (10nm bands)
 rf_10nm_lichen<-randomForest(PFT_2~.,data=training_10nm_lichen,mtry=5,ntree=2001,importance=TRUE)
-print(rf_10nm_lichen)
 result_10nm_lichen<-data.frame(testing_10nm_lichen$PFT_2,predict(rf_10nm_lichen,testing_10nm_lichen,type = "response"))
+confusion_martrix_10nm_lichen<-as.data.frame(rf_10nm_lichen$confusion)
 
 ################################Model 50nm bands########################################
 ##PCA (50nm bands)
@@ -97,8 +97,8 @@ testing_50nm_lichen<-pca_50nm_lichen[-index,]
 
 ###random forest model for (50nm bands)
 rf_50nm_lichen<-randomForest(PFT_2~.,data=training_50nm_lichen,mtry=5,ntree=2001,importance=TRUE)
-print(rf_50nm_lichen)
 result_50nm_lichen<-data.frame(testing_50nm_lichen$PFT_2,predict(rf_50nm_lichen,testing_50nm_lichen,type = "response"))
+confusion_martrix_50nm_lichen<-as.data.frame(rf_50nm_lichen$confusion)
 
 ################################Model 100nm bands########################################
 ##PCA (100nm bands)
@@ -118,8 +118,8 @@ testing_100nm_lichen<-pca_100nm_lichen[-index,]
 
 ###random forest model for (100nm bands)
 rf_100nm_lichen<-randomForest(PFT_2~.,data=training_100nm_lichen,mtry=5,ntree=2001,importance=TRUE)
-print(rf_100nm_lichen)
 result_100nm_lichen<-data.frame(testing_100nm_lichen$PFT_2,predict(rf_100nm_lichen,testing_100nm_lichen,type = "response"))
+confusion_martrix_100nm_lichen<-as.data.frame(rf_100nm_lichen$confusion)
 
 ###extract error rate
 error_rf_PCA_lichen<-as.data.frame(rf_lichen$err.rate[2001,1])
@@ -142,5 +142,10 @@ error_rate_PCA_lichen<-cbind(error_rf_PCA_lichen,
 error_rate_PCA_lichen$category<-"Lichen"
 
 ##write to folder
-write.csv(error_rate_PCA_lichen,"/Alaska_Spectral_Library/Models/Error Rates/PCA/error_rate_PCA_lichen.csv",row.names = F)
+write.csv(error_rate_PCA_lichen,"Model Scripts/Error Rates/PCA/Error/error_rate_PCA_lichen.csv",row.names = F)
+write.csv(confusion_martrix_lichen,"Model Scripts/Error Rates/PCA/Confusion Matrix/Raw/confusion_martrix_raw_lichen.csv",row.names = F)
+write.csv(confusion_martrix_5nm_lichen,"Model Scripts/Error Rates/PCA/Confusion Matrix/Raw/confusion_martrix_5nm_lichen.csv",row.names = F)
+write.csv(confusion_martrix_10nm_lichen,"Model Scripts/Error Rates/PCA/Confusion Matrix/Raw/confusion_martrix_10nm_lichen.csv",row.names = F)
+write.csv(confusion_martrix_50nm_lichen,"Model Scripts/Error Rates/PCA/Confusion Matrix/Raw/confusion_martrix_50nm_lichen.csv",row.names = F)
+write.csv(confusion_martrix_100nm_lichen,"Model Scripts/Error Rates/PCA/Confusion Matrix/Raw/confusion_martrix_100nm_lichen.csv",row.names = F)
 

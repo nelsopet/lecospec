@@ -2,12 +2,12 @@ library(pls)
 library(randomForest)
 setwd("/Alaska_Spectral_Library")
 
-###reads in alaskasspeclib
-alaskaSpecLib_bryo<-read.csv("/Alaska_Spectral_Library/processed spec/AlaskaSpecLib/alaskaSpecLib_bryo.csv")
-alaskaSpecLib_5nm_bryo<-read.csv("/Alaska_Spectral_Library/processed spec/AlaskaSpecLib/alaskaSpecLib_5nm_bryo.csv")
-alaskaSpecLib_10nm_bryo<-read.csv("/Alaska_Spectral_Library/processed spec/AlaskaSpecLib/alaskaSpecLib_10nm_bryo.csv")
-alaskaSpecLib_50nm_bryo<-read.csv("/Alaska_Spectral_Library/processed spec/AlaskaSpecLib/alaskaSpecLib_50nm_bryo.csv")
-alaskaSpecLib_100nm_bryo<-read.csv("/Alaska_Spectral_Library/processed spec/AlaskaSpecLib/alaskaSpecLib_100nm_bryo.csv")
+###reads in alaskaspeclib
+alaskaSpecLib_bryo<-read.csv("processed spec/AlaskaSpecLib/alaskaSpecLib_bryo.csv")
+alaskaSpecLib_5nm_bryo<-read.csv("processed spec/AlaskaSpecLib/alaskaSpecLib_5nm_bryo.csv")
+alaskaSpecLib_10nm_bryo<-read.csv("processed spec/AlaskaSpecLib/alaskaSpecLib_10nm_bryo.csv")
+alaskaSpecLib_50nm_bryo<-read.csv("processed spec/AlaskaSpecLib/alaskaSpecLib_50nm_bryo.csv")
+alaskaSpecLib_100nm_bryo<-read.csv("processed spec/AlaskaSpecLib/alaskaSpecLib_100nm_bryo.csv")
 
 ## Remove unwanted metadata
 alaskaSpecLib_bryo[c("ScanID","PFT","PFT_3","area")] = NULL
@@ -34,8 +34,8 @@ testing_bryo<-pca_bryo[-index,]
 
 ###random forest model for (plant and abiotic scans)
 rf_bryo<-randomForest(PFT_2~.,data=training_bryo,mtry=5,ntree=2001,importance=TRUE)
-print(rf_bryo)
 result_bryo<-data.frame(testing_bryo$PFT_2,predict(rf_bryo,testing_bryo,type = "response"))
+confusion_martrix_bryo<-as.data.frame(rf_bryo$confusion)
 
 ################################Model 5nm bands########################################
 ##PCA (5nm bands)
@@ -55,8 +55,8 @@ testing_5nm_bryo<-pca_5nm_bryo[-index,]
 
 ###random forest model for (5nm bands)
 rf_5nm_bryo<-randomForest(PFT_2~.,data=training_5nm_bryo,mtry=5,ntree=2001,importance=TRUE)
-print(rf_5nm_bryo)
 result_5nm_bryo<-data.frame(testing_5nm_bryo$PFT_2,predict(rf_5nm_bryo,testing_5nm_bryo,type = "response"))
+confusion_martrix_5nm_bryo<-as.data.frame(rf_5nm_bryo$confusion)
 
 ################################Model 10nm bands########################################
 ##PCA (10nm bands)
@@ -76,8 +76,8 @@ testing_10nm_bryo<-pca_10nm_bryo[-index,]
 
 ###random forest model for (10nm bands)
 rf_10nm_bryo<-randomForest(PFT_2~.,data=training_10nm_bryo,mtry=5,ntree=2001,importance=TRUE)
-print(rf_10nm_bryo)
 result_10nm_bryo<-data.frame(testing_10nm_bryo$PFT_2,predict(rf_10nm_bryo,testing_10nm_bryo,type = "response"))
+confusion_martrix_10nm_bryo<-as.data.frame(rf_10nm_bryo$confusion)
 
 ################################Model 50nm bands########################################
 ##PCA (50nm bands)
@@ -97,8 +97,8 @@ testing_50nm_bryo<-pca_50nm_bryo[-index,]
 
 ###random forest model for (50nm bands)
 rf_50nm_bryo<-randomForest(PFT_2~.,data=training_50nm_bryo,mtry=5,ntree=2001,importance=TRUE)
-print(rf_50nm_bryo)
 result_50nm_bryo<-data.frame(testing_50nm_bryo$PFT_2,predict(rf_50nm_bryo,testing_50nm_bryo,type = "response"))
+confusion_martrix_50nm_bryo<-as.data.frame(rf_50nm_bryo$confusion)
 
 ################################Model 100nm bands########################################
 ##PCA (100nm bands)
@@ -118,8 +118,8 @@ testing_100nm_bryo<-pca_100nm_bryo[-index,]
 
 ###random forest model for (100nm bands)
 rf_100nm_bryo<-randomForest(PFT_2~.,data=training_100nm_bryo,mtry=5,ntree=2001,importance=TRUE)
-print(rf_100nm_bryo)
 result_100nm_bryo<-data.frame(testing_100nm_bryo$PFT_2,predict(rf_100nm_bryo,testing_100nm_bryo,type = "response"))
+confusion_martrix_100nm_bryo<-as.data.frame(rf_100nm_bryo$confusion)
 
 ###extract error rate
 error_rf_PCA_bryo<-as.data.frame(rf_bryo$err.rate[2001,1])
@@ -142,4 +142,9 @@ error_rate_PCA_bryo<-cbind(error_rf_PCA_bryo,
 error_rate_PCA_bryo$category<-"Bryophytes"
 
 ##write to folder
-write.csv(error_rate_PCA_bryo,"/Alaska_Spectral_Library/Models/Error Rates/PCA/error_rate_PCA_bryo.csv",row.names = F)
+write.csv(error_rate_PCA_bryo,"Model Scripts/Error Rates/PCA/Error/error_rate_PCA_bryo.csv",row.names = F)
+write.csv(confusion_martrix_bryo,"Model Scripts/Error Rates/PCA/Confusion Matrix/Raw/confusion_martrix_raw_bryo.csv",row.names = F)
+write.csv(confusion_martrix_5nm_bryo,"Model Scripts/Error Rates/PCA/Confusion Matrix/Raw/confusion_martrix_5nm_bryo.csv",row.names = F)
+write.csv(confusion_martrix_10nm_bryo,"Model Scripts/Error Rates/PCA/Confusion Matrix/Raw/confusion_martrix_10nm_bryo.csv",row.names = F)
+write.csv(confusion_martrix_50nm_bryo,"Model Scripts/Error Rates/PCA/Confusion Matrix/Raw/confusion_martrix_50nm_bryo.csv",row.names = F)
+write.csv(confusion_martrix_100nm_bryo,"Model Scripts/Error Rates/PCA/Confusion Matrix/Raw/confusion_martrix_100nm_bryo.csv",row.names = F)

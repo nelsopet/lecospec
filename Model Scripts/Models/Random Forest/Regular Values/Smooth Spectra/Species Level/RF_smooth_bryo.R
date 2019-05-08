@@ -3,11 +3,11 @@ library(randomForest)
 setwd("/Alaska_Spectral_Library")
 
 ###reads in alaskasspeclib
-alaskaSpecLib_smooth_bryo<-read.csv("/Alaska_Spectral_Library/processed spec/AlaskaSpecLib/alaskaSpecLib_smooth_bryo.csv")
-alaskaSpecLib_smooth_5nm_bryo<-read.csv("/Alaska_Spectral_Library/processed spec/AlaskaSpecLib/alaskaSpecLib_smooth_5nm_bryo.csv")
-alaskaSpecLib_smooth_10nm_bryo<-read.csv("/Alaska_Spectral_Library/processed spec/AlaskaSpecLib/alaskaSpecLib_smooth_10nm_bryo.csv")
-alaskaSpecLib_smooth_50nm_bryo<-read.csv("/Alaska_Spectral_Library/processed spec/AlaskaSpecLib/alaskaSpecLib_smooth_50nm_bryo.csv")
-alaskaSpecLib_smooth_100nm_bryo<-read.csv("/Alaska_Spectral_Library/processed spec/AlaskaSpecLib/alaskaSpecLib_smooth_100nm_bryo.csv")
+alaskaSpecLib_smooth_bryo<-read.csv("processed spec/AlaskaSpecLib/alaskaSpecLib_smooth_bryo.csv")
+alaskaSpecLib_smooth_5nm_bryo<-read.csv("processed spec/AlaskaSpecLib/alaskaSpecLib_smooth_5nm_bryo.csv")
+alaskaSpecLib_smooth_10nm_bryo<-read.csv("processed spec/AlaskaSpecLib/alaskaSpecLib_smooth_10nm_bryo.csv")
+alaskaSpecLib_smooth_50nm_bryo<-read.csv("processed spec/AlaskaSpecLib/alaskaSpecLib_smooth_50nm_bryo.csv")
+alaskaSpecLib_smooth_100nm_bryo<-read.csv("processed spec/AlaskaSpecLib/alaskaSpecLib_smooth_100nm_bryo.csv")
 
 ## Remove unwanted metadata
 alaskaSpecLib_smooth_bryo[c("ScanID","PFT","PFT_3","area")] = NULL
@@ -104,4 +104,4 @@ error_rate_smooth_bryo<-cbind(error_rf_smooth_bryo,
 error_rate_smooth_bryo$category<-"Bryophytes"
 
 ##write to folder
-write.csv(error_rate_smooth_bryo,"/Alaska_Spectral_Library/Models/Error Rates/Regular/error_rate_smooth_bryo.csv",row.names= F)
+write.csv(error_rate_smooth_bryo,"Model Scripts/Error Rates/Regular/error_rate_smooth_bryo.csv",row.names= F)

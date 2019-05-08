@@ -1,14 +1,13 @@
-library(plsgenomics)
 library(randomForest)
 library(tidyverse)
 setwd("/Alaska_Spectral_Library")
 
 ###reads in alaskasspeclib
-alaskaSpecLib_plants<-read.csv("/Nelson Lab/Alaska_Spectral_Library/processed spec/AlaskaSpecLib/alaskaSpecLib_plants.csv")
-alaskaSpecLib_5nm_plants<-read.csv("/Nelson Lab/Alaska_Spectral_Library/processed spec/AlaskaSpecLib/alaskaSpecLib_5nm_plants.csv")
-alaskaSpecLib_10nm_plants<-read.csv("/Nelson Lab/Alaska_Spectral_Library/processed spec/AlaskaSpecLib/alaskaSpecLib_10nm_plants.csv")
-alaskaSpecLib_50nm_plants<-read.csv("/Nelson Lab/Alaska_Spectral_Library/processed spec/AlaskaSpecLib/alaskaSpecLib_50nm_plants.csv")
-alaskaSpecLib_100nm_plants<-read.csv("/Nelson Lab/Alaska_Spectral_Library/processed spec/AlaskaSpecLib/alaskaSpecLib_100nm_plants.csv")
+alaskaSpecLib_plants<-read.csv("processed spec/AlaskaSpecLib/alaskaSpecLib_plants.csv")
+alaskaSpecLib_5nm_plants<-read.csv("processed spec/AlaskaSpecLib/alaskaSpecLib_5nm_plants.csv")
+alaskaSpecLib_10nm_plants<-read.csv("processed spec/AlaskaSpecLib/alaskaSpecLib_10nm_plants.csv")
+alaskaSpecLib_50nm_plants<-read.csv("processed spec/AlaskaSpecLib/alaskaSpecLib_50nm_plants.csv")
+alaskaSpecLib_100nm_plants<-read.csv("processed spec/AlaskaSpecLib/alaskaSpecLib_100nm_plants.csv")
 
 ## Remove unwanted metadata
 alaskaSpecLib_plants[c("ScanID","PFT","PFT_2","area")] = NULL
@@ -110,4 +109,4 @@ error_rate_gen_life_form<-cbind(error_rf_plants,
 error_rate_gen_life_form$category<-"Courser_levels"
 
 ##write to folder
-write.csv(error_rate_gen_life_form,"/Alaska_Spectral_Library/Models/Error Rates/Regular/error_rate_gen_life_form.csv",row.names = F)
+write.csv(error_rate_gen_life_form,"Model Scripts/Error Rates/Regular/error_rate_gen_life_form.csv",row.names = F)

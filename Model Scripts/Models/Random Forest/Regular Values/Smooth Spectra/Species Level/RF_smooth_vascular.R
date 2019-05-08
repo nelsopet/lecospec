@@ -3,11 +3,11 @@ library(randomForest)
 setwd("/Alaska_Spectral_Library")
 
 ###reads in alaskasspeclib
-alaskaSpecLib_smooth_vascular<-read.csv("/Alaska_Spectral_Library/processed spec/AlaskaSpecLib/alaskaSpecLib_smooth_vascular.csv")
-alaskaSpecLib_smooth_5nm_vascular<-read.csv("/Alaska_Spectral_Library/processed spec/AlaskaSpecLib/alaskaSpecLib_smooth_5nm_vascular.csv")
-alaskaSpecLib_smooth_10nm_vascular<-read.csv("/Alaska_Spectral_Library/processed spec/AlaskaSpecLib/alaskaSpecLib_smooth_10nm_vascular.csv")
-alaskaSpecLib_smooth_50nm_vascular<-read.csv("/Alaska_Spectral_Library/processed spec/AlaskaSpecLib/alaskaSpecLib_smooth_50nm_vascular.csv")
-alaskaSpecLib_smooth_100nm_vascular<-read.csv("/Alaska_Spectral_Library/processed spec/AlaskaSpecLib/alaskaSpecLib_smooth_100nm_vascular.csv")
+alaskaSpecLib_smooth_vascular<-read.csv("processed spec/AlaskaSpecLib/alaskaSpecLib_smooth_vascular.csv")
+alaskaSpecLib_smooth_5nm_vascular<-read.csv("processed spec/AlaskaSpecLib/alaskaSpecLib_smooth_5nm_vascular.csv")
+alaskaSpecLib_smooth_10nm_vascular<-read.csv("processed spec/AlaskaSpecLib/alaskaSpecLib_smooth_10nm_vascular.csv")
+alaskaSpecLib_smooth_50nm_vascular<-read.csv("processed spec/AlaskaSpecLib/alaskaSpecLib_smooth_50nm_vascular.csv")
+alaskaSpecLib_smooth_100nm_vascular<-read.csv("processed spec/AlaskaSpecLib/alaskaSpecLib_smooth_100nm_vascular.csv")
 
 ## Remove unwanted metadata
 alaskaSpecLib_smooth_vascular[c("ScanID","PFT","PFT_3","area")] = NULL
@@ -104,4 +104,4 @@ error_rate_smooth_vascular<-cbind(error_rf_smooth_vascular,
 error_rate_smooth_vascular$category<-"Vascular"
 
 ##write to folder
-write.csv(error_rate_smooth_vascular,"/Alaska_Spectral_Library/Models/Error Rates/Regular/error_rate_smooth_vascular.csv",row.names= F)
+write.csv(error_rate_smooth_vascular,"Model Scripts/Error Rates/Regular/error_rate_smooth_vascular.csv",row.names= F)

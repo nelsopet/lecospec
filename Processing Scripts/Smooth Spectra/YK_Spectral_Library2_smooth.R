@@ -1,8 +1,9 @@
 library(spectrolab)
 library(tidyverse)
+setwd("/Alaska_Spectral_Library")
 
 ####Read in data as spectra
-yKDeltLib_spectra<-read_spectra("/Alaska_Spectral_Library/data/YKDeltLib",
+yKDeltLib_spectra<-read_spectra("original_data/YKDeltLib",
                                 format="sed")
 
 ##Remove eightmileflight1 scans
@@ -49,10 +50,10 @@ yKDeltLib_spectra_smooth_50nm = resample(yKDeltLib_spectra_smooth, seq(350, 2500
 yKDeltLib_spectra_smooth_100nm = resample(yKDeltLib_spectra_smooth, seq(350, 2500, 100))
 
 ###save spectra
-saveRDS(yKDeltLib_spectra,"/Alaska_Spectral_Library/processed spec/yKDeltLib/yKDeltLib_spectra.rds")
-saveRDS(yKDeltLib_spectra_smooth,"/Alaska_Spectral_Library/processed spec/yKDeltLib/yKDeltLib_spectra_smooth.rds")
-saveRDS(yKDeltLib_spectra_smooth_5nm,"/Alaska_Spectral_Library/processed spec/yKDeltLib/yKDeltLib_spectra_smooth_5nm.rds")
-saveRDS(yKDeltLib_spectra_smooth_10nm,"/Alaska_Spectral_Library/processed spec/yKDeltLib/yKDeltLib_spectra_smooth_10nm.rds")
-saveRDS(yKDeltLib_spectra_smooth_50nm,"/Alaska_Spectral_Library/processed spec/yKDeltLib/yKDeltLib_spectra_smooth_50nm.rds")
-saveRDS(yKDeltLib_spectra_smooth_100nm,"/Alaska_Spectral_Library/processed spec/yKDeltLib/yKDeltLib_spectra_smooth_100nm.rds")
+saveRDS(yKDeltLib_spectra,"processed spec/yKDeltLib/yKDeltLib_spectra.rds")
+saveRDS(yKDeltLib_spectra_smooth,"processed spec/yKDeltLib/yKDeltLib_spectra_smooth.rds")
+saveRDS(yKDeltLib_spectra_smooth_5nm,"processed spec/yKDeltLib/yKDeltLib_spectra_smooth_5nm.rds")
+saveRDS(yKDeltLib_spectra_smooth_10nm,"processed spec/yKDeltLib/yKDeltLib_spectra_smooth_10nm.rds")
+saveRDS(yKDeltLib_spectra_smooth_50nm,"processed spec/yKDeltLib/yKDeltLib_spectra_smooth_50nm.rds")
+saveRDS(yKDeltLib_spectra_smooth_100nm,"processed spec/yKDeltLib/yKDeltLib_spectra_smooth_100nm.rds")
 

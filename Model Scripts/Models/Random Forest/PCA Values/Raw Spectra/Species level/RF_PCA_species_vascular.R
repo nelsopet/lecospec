@@ -2,12 +2,12 @@ library(pls)
 library(randomForest)
 setwd("/Alaska_Spectral_Library")
 
-###reads in alaskasspeclib
-alaskaSpecLib_vascular<-read.csv("/Alaska_Spectral_Library/processed spec/AlaskaSpecLib/alaskaSpecLib_vascular.csv")
-alaskaSpecLib_5nm_vascular<-read.csv("/Alaska_Spectral_Library/processed spec/AlaskaSpecLib/alaskaSpecLib_5nm_vascular.csv")
-alaskaSpecLib_10nm_vascular<-read.csv("/Alaska_Spectral_Library/processed spec/AlaskaSpecLib/alaskaSpecLib_10nm_vascular.csv")
-alaskaSpecLib_50nm_vascular<-read.csv("/Alaska_Spectral_Library/processed spec/AlaskaSpecLib/alaskaSpecLib_50nm_vascular.csv")
-alaskaSpecLib_100nm_vascular<-read.csv("/Alaska_Spectral_Library/processed spec/AlaskaSpecLib/alaskaSpecLib_100nm_vascular.csv")
+###reads in alaskaspeclib
+alaskaSpecLib_vascular<-read.csv("processed spec/AlaskaSpecLib/alaskaSpecLib_vascular.csv")
+alaskaSpecLib_5nm_vascular<-read.csv("processed spec/AlaskaSpecLib/alaskaSpecLib_5nm_vascular.csv")
+alaskaSpecLib_10nm_vascular<-read.csv("processed spec/AlaskaSpecLib/alaskaSpecLib_10nm_vascular.csv")
+alaskaSpecLib_50nm_vascular<-read.csv("processed spec/AlaskaSpecLib/alaskaSpecLib_50nm_vascular.csv")
+alaskaSpecLib_100nm_vascular<-read.csv("processed spec/AlaskaSpecLib/alaskaSpecLib_100nm_vascular.csv")
 
 ## Remove unwanted metadata
 alaskaSpecLib_vascular[c("ScanID","PFT","PFT_3","area")] = NULL
@@ -34,8 +34,8 @@ testing_vascular<-pca_vascular[-index,]
 
 ###random forest model for (plant and abiotic scans)
 rf_vascular<-randomForest(PFT_2~.,data=training_vascular,mtry=5,ntree=2001,importance=TRUE)
-print(rf_vascular)
 result_vascular<-data.frame(testing_vascular$PFT_2,predict(rf_vascular,testing_vascular,type = "response"))
+confusion_martrix_vascular<-as.data.frame(rf_vascular$confusion)
 
 ################################Model 5nm bands########################################
 ##PCA (5nm bands)
@@ -55,8 +55,8 @@ testing_5nm_vascular<-pca_5nm_vascular[-index,]
 
 ###random forest model for (5nm bands)
 rf_5nm_vascular<-randomForest(PFT_2~.,data=training_5nm_vascular,mtry=5,ntree=2001,importance=TRUE)
-print(rf_5nm_vascular)
 result_5nm_vascular<-data.frame(testing_5nm_vascular$PFT_2,predict(rf_5nm_vascular,testing_5nm_vascular,type = "response"))
+confusion_martrix_5nm_vascular<-as.data.frame(rf_5nm_vascular$confusion)
 
 ################################Model 10nm bands########################################
 ##PCA (10nm bands)
@@ -76,8 +76,8 @@ testing_10nm_vascular<-pca_10nm_vascular[-index,]
 
 ###random forest model for (10nm bands)
 rf_10nm_vascular<-randomForest(PFT_2~.,data=training_10nm_vascular,mtry=5,ntree=2001,importance=TRUE)
-print(rf_10nm_vascular)
 result_10nm_vascular<-data.frame(testing_10nm_vascular$PFT_2,predict(rf_10nm_vascular,testing_10nm_vascular,type = "response"))
+confusion_martrix_10nm_vascular<-as.data.frame(rf_10nm_vascular$confusion)
 
 ################################Model 50nm bands########################################
 ##PCA (50nm bands)
@@ -97,8 +97,8 @@ testing_50nm_vascular<-pca_50nm_vascular[-index,]
 
 ###random forest model for (50nm bands)
 rf_50nm_vascular<-randomForest(PFT_2~.,data=training_50nm_vascular,mtry=5,ntree=2001,importance=TRUE)
-print(rf_50nm_vascular)
 result_50nm_vascular<-data.frame(testing_50nm_vascular$PFT_2,predict(rf_50nm_vascular,testing_50nm_vascular,type = "response"))
+confusion_martrix_50nm_vascular<-as.data.frame(rf_50nm_vascular$confusion)
 
 ################################Model 100nm bands########################################
 ##PCA (100nm bands)
@@ -118,8 +118,8 @@ testing_100nm_vascular<-pca_100nm_vascular[-index,]
 
 ###random forest model for (100nm bands)
 rf_100nm_vascular<-randomForest(PFT_2~.,data=training_100nm_vascular,mtry=5,ntree=2001,importance=TRUE)
-print(rf_100nm_vascular)
 result_100nm_vascular<-data.frame(testing_100nm_vascular$PFT_2,predict(rf_100nm_vascular,testing_100nm_vascular,type = "response"))
+confusion_martrix_100nm_vascular<-as.data.frame(rf_100nm_vascular$confusion)
 
 ###extract error rate
 error_rf_PCA_vascular<-as.data.frame(rf_vascular$err.rate[2001,1])
@@ -142,5 +142,10 @@ error_rate_PCA_vascular<-cbind(error_rf_PCA_vascular,
 error_rate_PCA_vascular$category<-"Vascular"
 
 ##write to folder
-write.csv(error_rate_PCA_vascular,"/Alaska_Spectral_Library/Models/Error Rates/PCA/error_rate_PCA_vascular.csv",row.names = F)
+write.csv(error_rate_PCA_vascular,"Model Scripts/Error Rates/PCA/Error/error_rate_PCA_vascular.csv",row.names = F)
+write.csv(confusion_martrix_vascular,"Model Scripts/Error Rates/PCA/Confusion Matrix/Raw/confusion_martrix_raw_vascular.csv",row.names = F)
+write.csv(confusion_martrix_5nm_vascular,"Model Scripts/Error Rates/PCA/Confusion Matrix/Raw/confusion_martrix_5nm_vascular.csv",row.names = F)
+write.csv(confusion_martrix_10nm_vascular,"Model Scripts/Error Rates/PCA/Confusion Matrix/Raw/confusion_martrix_10nm_vascular.csv",row.names = F)
+write.csv(confusion_martrix_50nm_vascular,"Model Scripts/Error Rates/PCA/Confusion Matrix/Raw/confusion_martrix_50nm_vascular.csv",row.names = F)
+write.csv(confusion_martrix_100nm_vascular,"Model Scripts/Error Rates/PCA/Confusion Matrix/Raw/confusion_martrix_100nm_vascular.csv",row.names = F)
 

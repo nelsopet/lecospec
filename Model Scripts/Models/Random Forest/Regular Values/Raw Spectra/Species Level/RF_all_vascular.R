@@ -3,11 +3,11 @@ library(randomForest)
 setwd("/Alaska_Spectral_Library")
 
 ###reads in alaskasspeclib
-alaskaSpecLib_vascular<-read.csv("/Alaska_Spectral_Library/processed spec/AlaskaSpecLib/alaskaSpecLib_vascular.csv")
-alaskaSpecLib_5nm_vascular<-read.csv("/Alaska_Spectral_Library/processed spec/AlaskaSpecLib/alaskaSpecLib_5nm_vascular.csv")
-alaskaSpecLib_10nm_vascular<-read.csv("/Alaska_Spectral_Library/processed spec/AlaskaSpecLib/alaskaSpecLib_10nm_vascular.csv")
-alaskaSpecLib_50nm_vascular<-read.csv("/Alaska_Spectral_Library/processed spec/AlaskaSpecLib/alaskaSpecLib_50nm_vascular.csv")
-alaskaSpecLib_100nm_vascular<-read.csv("/Alaska_Spectral_Library/processed spec/AlaskaSpecLib/alaskaSpecLib_100nm_vascular.csv")
+alaskaSpecLib_vascular<-read.csv("processed spec/AlaskaSpecLib/alaskaSpecLib_vascular.csv")
+alaskaSpecLib_5nm_vascular<-read.csv("processed spec/AlaskaSpecLib/alaskaSpecLib_5nm_vascular.csv")
+alaskaSpecLib_10nm_vascular<-read.csv("processed spec/AlaskaSpecLib/alaskaSpecLib_10nm_vascular.csv")
+alaskaSpecLib_50nm_vascular<-read.csv("processed spec/AlaskaSpecLib/alaskaSpecLib_50nm_vascular.csv")
+alaskaSpecLib_100nm_vascular<-read.csv("processed spec/AlaskaSpecLib/alaskaSpecLib_100nm_vascular.csv")
 
 ## Remove unwanted metadata
 alaskaSpecLib_vascular[c("ScanID","PFT","PFT_3","area")] = NULL
@@ -97,7 +97,7 @@ error_rf_100nm_vascular<-as.data.frame(rf_100nm_vascular$err.rate[2001,1])
 names(error_rf_100nm_vascular)[1]<-"100nm"
 
 ###Make data frame from error rate
-error_rate_vascular<-merge(error_rf_vascular,
+error_rate_vascular<-cbind(error_rf_vascular,
                            error_rf_5nm_vascular,
                            error_rf_10nm_vascular,
                            error_rf_50nm_vascular,
@@ -105,4 +105,4 @@ error_rate_vascular<-merge(error_rf_vascular,
 error_rate_vascular$category<-"Vascular"
 
 ##write to folder
-write.csv(error_rate_vascular,"/Alaska_Spectral_Library/Models/Error Rates/Regular/error_rate_vascular.csv",row.names = F)
+write.csv(error_rate_vascular,"Model Scripts/Error Rates/Regular/error_rate_vascular.csv",row.names = F)

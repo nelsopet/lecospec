@@ -1,8 +1,9 @@
 library(spectrolab)
 library(tidyverse)
+setwd("/Alaska_Spectral_Library")
 
 ####Read in data as spectra
-brooksLib_spectra<-read_spectra("/Alaska_Spectral_Library/data/BrooksLib",
+brooksLib_spectra<-read_spectra("original_data/BrooksLib",
                                 format="sed")
 
 ##Remove eightmileflight1 scans
@@ -40,9 +41,9 @@ brooksLib_spectra_50nm = resample(brooksLib_spectra, seq(350, 2500, 50))
 brooksLib_spectra_100nm = resample(brooksLib_spectra, seq(350, 2500, 100))
 
 ##save spectra
-saveRDS(brooksLib_spectra,"/Alaska_Spectral_Library/processed spec/BrooksLib/brooksLib_spectra.rds")
-saveRDS(brooksLib_spectra_5nm,"/Alaska_Spectral_Library/processed spec/BrooksLib/brooksLib_spectra_5nm.rds")
-saveRDS(brooksLib_spectra_10nm,"/Alaska_Spectral_Library/processed spec/BrooksLib/brooksLib_spectra_10nm.rds")
-saveRDS(brooksLib_spectra_50nm,"/Alaska_Spectral_Library/processed spec/BrooksLib/brooksLib_spectra_50nm.rds")
-saveRDS(brooksLib_spectra_100nm,"/Alaska_Spectral_Library/processed spec/BrooksLib/brooksLib_spectra_100nm.rds")
+saveRDS(brooksLib_spectra,"processed spec/BrooksLib/brooksLib_spectra.rds")
+saveRDS(brooksLib_spectra_5nm,"processed spec/BrooksLib/brooksLib_spectra_5nm.rds")
+saveRDS(brooksLib_spectra_10nm,"processed spec/BrooksLib/brooksLib_spectra_10nm.rds")
+saveRDS(brooksLib_spectra_50nm,"processed spec/BrooksLib/brooksLib_spectra_50nm.rds")
+saveRDS(brooksLib_spectra_100nm,"processed spec/BrooksLib/brooksLib_spectra_100nm.rds")
 

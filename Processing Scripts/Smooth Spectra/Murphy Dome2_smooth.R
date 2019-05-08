@@ -1,8 +1,9 @@
 library(spectrolab)
 library(tidyverse)
+setwd("/Alaska_Spectral_Library")
 
 ####Read in data as spectra
-Murph2_spectra<-read_spectra("/Alaska_Spectral_Library/data/20180729/murphydomeday2",
+Murph2_spectra<-read_spectra("original_data/20180729/murphydomeday2",
                      format="sed")
 
 ##Remove polstricum scans
@@ -40,9 +41,9 @@ Murph2_spectra_smooth_50nm = resample(Murph2_spectra_smooth, seq(350, 2500, 50))
 Murph2_spectra_smooth_100nm = resample(Murph2_spectra_smooth, seq(350, 2500, 100))
 
 ###save spectra
-saveRDS(Murph2_spectra,"/Alaska_Spectral_Library/processed spec/Murph2_Lib/Murph2_spectra.rds")
-saveRDS(Murph2_spectra_smooth,"/Alaska_Spectral_Library/processed spec/Murph2_Lib/Murph2_spectra_smooth.rds")
-saveRDS(Murph2_spectra_smooth_5nm,"/Alaska_Spectral_Library/processed spec/Murph2_Lib/Murph2_spectra_smooth_5nm.rds")
-saveRDS(Murph2_spectra_smooth_10nm,"/Alaska_Spectral_Library/processed spec/Murph2_Lib/Murph2_spectra_smooth_10nm.rds")
-saveRDS(Murph2_spectra_smooth_50nm,"/Alaska_Spectral_Library/processed spec/Murph2_Lib/Murph2_spectra_smooth_50nm.rds")
-saveRDS(Murph2_spectra_smooth_100nm,"/Alaska_Spectral_Library/processed spec/Murph2_Lib/Murph2_spectra_smooth_100nm.rds")
+saveRDS(Murph2_spectra,"processed spec/Murph2_Lib/Murph2_spectra.rds")
+saveRDS(Murph2_spectra_smooth,"processed spec/Murph2_Lib/Murph2_spectra_smooth.rds")
+saveRDS(Murph2_spectra_smooth_5nm,"processed spec/Murph2_Lib/Murph2_spectra_smooth_5nm.rds")
+saveRDS(Murph2_spectra_smooth_10nm,"processed spec/Murph2_Lib/Murph2_spectra_smooth_10nm.rds")
+saveRDS(Murph2_spectra_smooth_50nm,"processed spec/Murph2_Lib/Murph2_spectra_smooth_50nm.rds")
+saveRDS(Murph2_spectra_smooth_100nm,"processed spec/Murph2_Lib/Murph2_spectra_smooth_100nm.rds")

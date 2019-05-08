@@ -1,13 +1,14 @@
 library(spectrolab)
 library(tidyverse)
+setwd("/Alaska_Spectral_Library")
 
 #Read in spectra for each area(smooth)
-AK2018_spectra <- readRDS("/Alaska_Spectral_Library/processed spec/AK2018/AK2018_spectra_smooth_10nm.rds")
-bethelLib_spectra <- readRDS("/Alaska_Spectral_Library/processed spec/bethelLib/bethelLib_spectra_smooth_10nm.rds")
-brooksLib_spectra <- readRDS("/Alaska_Spectral_Library/processed spec/brooksLib/brooksLib_spectra_smooth_10nm.rds")
-Murph2_spectra <- readRDS("/Alaska_Spectral_Library/processed spec/Murph2_Lib/Murph2_spectra_smooth_10nm.rds")
-Murph_lib_spectra <- readRDS("/Alaska_Spectral_Library/processed spec/Murph_lib/Murph_lib_spectra_smooth_10nm.rds")
-yKDeltLib_spectra <- readRDS("/Alaska_Spectral_Library/processed spec/yKDeltLib/yKDeltLib_spectra_smooth_10nm.rds")
+AK2018_spectra <- readRDS("processed spec/AK2018/AK2018_spectra_smooth_10nm.rds")
+bethelLib_spectra <- readRDS("processed spec/bethelLib/bethelLib_spectra_smooth_10nm.rds")
+brooksLib_spectra <- readRDS("processed spec/brooksLib/brooksLib_spectra_smooth_10nm.rds")
+Murph2_spectra <- readRDS("processed spec/Murph2_Lib/Murph2_spectra_smooth_10nm.rds")
+Murph_lib_spectra <- readRDS("processed spec/Murph_lib/Murph_lib_spectra_smooth_10nm.rds")
+yKDeltLib_spectra <- readRDS("processed spec/yKDeltLib/yKDeltLib_spectra_smooth_10nm.rds")
 
 ###Convert spectra to dataframe
 AK2018_spectra<-as.data.frame(AK2018_spectra)
@@ -252,10 +253,10 @@ alaskaSpecLib_lichen_bryo<-subset(alaskaSpecLib_plants,PFT_3=="Lichen"|PFT_3=="M
 alaskaSpecLib_vascular<-subset(alaskaSpecLib_plants,PFT_3!="Lichen"&PFT_3!="Moss")
 
 ###save table
-write.csv(alaskaSpecLib,"/Alaska_Spectral_Library/processed spec/AlaskaSpecLib/alaskaSpecLib_smooth_10nm.csv",row.names = FALSE)
-write.csv(alaskaSpecLib_plants,"/Alaska_Spectral_Library/processed spec/AlaskaSpecLib/alaskaSpecLib_smooth_10nm_plants.csv",row.names = FALSE)
-write.csv(alaskaSpecLib_lichen,"/Alaska_Spectral_Library/processed spec/AlaskaSpecLib/alaskaSpecLib_smooth_10nm_lichen.csv",row.names = FALSE)
-write.csv(alaskaSpecLib_bryo,"/Alaska_Spectral_Library/processed spec/AlaskaSpecLib/alaskaSpecLib_smooth_10nm_bryo.csv",row.names = FALSE)
-write.csv(alaskaSpecLib_lichen_bryo,"/Alaska_Spectral_Library/processed spec/AlaskaSpecLib/alaskaSpecLib_smooth_10nm_lichen_bryo.csv",row.names = FALSE)
-write.csv(alaskaSpecLib_vascular,"/Alaska_Spectral_Library/processed spec/AlaskaSpecLib/alaskaSpecLib_smooth_10nm_vascular.csv",row.names = FALSE)
+write.csv(alaskaSpecLib,"processed spec/AlaskaSpecLib/alaskaSpecLib_smooth_10nm.csv",row.names = FALSE)
+write.csv(alaskaSpecLib_plants,"processed spec/AlaskaSpecLib/alaskaSpecLib_smooth_10nm_plants.csv",row.names = FALSE)
+write.csv(alaskaSpecLib_lichen,"processed spec/AlaskaSpecLib/alaskaSpecLib_smooth_10nm_lichen.csv",row.names = FALSE)
+write.csv(alaskaSpecLib_bryo,"processed spec/AlaskaSpecLib/alaskaSpecLib_smooth_10nm_bryo.csv",row.names = FALSE)
+write.csv(alaskaSpecLib_lichen_bryo,"processed spec/AlaskaSpecLib/alaskaSpecLib_smooth_10nm_lichen_bryo.csv",row.names = FALSE)
+write.csv(alaskaSpecLib_vascular,"processed spec/AlaskaSpecLib/alaskaSpecLib_smooth_10nm_vascular.csv",row.names = FALSE)
 
