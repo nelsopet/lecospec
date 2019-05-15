@@ -4,19 +4,33 @@ setwd("/Alaska_Spectral_Library")
 
 #Read in spectra for each area
 AK2018_spectra <- readRDS("processed spec/AK2018/AK2018_spectra.rds")
+AK2018_spectra_AV<-resample(AK2018_spectra,AVIRIS_ng_wv)
 bethelLib_spectra <- readRDS("processed spec/bethelLib/bethelLib_spectra.rds")
+bethelLib_spectra_AV<-resample(bethelLib_spectra,AVIRIS_ng_wv)
 brooksLib_spectra <- readRDS("processed spec/brooksLib/brooksLib_spectra.rds")
+brooksLib_spectra_AV<-resample(brooksLib_spectra,AVIRIS_ng_wv)
 Murph2_spectra <- readRDS("processed spec/Murph2_Lib/Murph2_spectra.rds")
+Murph2_spectra_AV<-resample(Murph2_spectra,AVIRIS_ng_wv)
 Murph_lib_spectra <- readRDS("processed spec/Murph_lib/Murph_lib_spectra.rds")
+Murph_lib_spectra_AV<-resample(Murph_lib_spectra,AVIRIS_ng_wv)
 yKDeltLib_spectra <- readRDS("processed spec/yKDeltLib/yKDeltLib_spectra.rds")
+yKDeltLib_spectra_AV<-resample(yKDeltLib_spectra,AVIRIS_ng_wv)
 
 ###Convert spectra to dataframe
-AK2018_spectra<-as.data.frame(AK2018_spectra)
+AK2018_spectra   <-as.data.frame(AK2018_spectra)
 bethelLib_spectra<-as.data.frame(bethelLib_spectra)
 brooksLib_spectra<-as.data.frame(brooksLib_spectra)
-Murph2_spectra<-as.data.frame(Murph2_spectra)
+Murph2_spectra   <-as.data.frame(Murph2_spectra)
 Murph_lib_spectra<-as.data.frame(Murph_lib_spectra)
 yKDeltLib_spectra<-as.data.frame(yKDeltLib_spectra)
+
+AK2018_spectra_AV   <-as.data.frame(AK2018_spectra_AV)
+bethelLib_spectra_AV<-as.data.frame(bethelLib_spectra_AV)
+brooksLib_spectra_AV<-as.data.frame(brooksLib_spectra_AV)
+Murph2_spectra_AV   <-as.data.frame(Murph2_spectra_AV)
+Murph_lib_spectra_AV<-as.data.frame(Murph_lib_spectra_AV)
+yKDeltLib_spectra_AV<-as.data.frame(yKDeltLib_spectra_AV)
+
 
 ###Combine all dataframes from previous step
 alaskaSpecLib<-rbind(AK2018_spectra,
@@ -26,6 +40,15 @@ alaskaSpecLib<-rbind(AK2018_spectra,
                      Murph_lib_spectra,
                      yKDeltLib_spectra)
 alaskaSpecLib$sample_name<-NULL
+
+alaskaSpecLib_AV<-rbind(AK2018_spectra_AV,
+                     bethelLib_spectra_AV,
+                     brooksLib_spectra_AV,
+                     Murph2_spectra_AV,
+                     Murph_lib_spectra_AV,
+                     yKDeltLib_spectra_AV)
+alaskaSpecLib_AV$sample_name<-NULL
+
 
 ##Add column PFT_2 (SPECIES)
 alaskaSpecLib$PFT_2[alaskaSpecLib$PFT=="aleoch"]<-"Alectoria ochroleuca"
@@ -243,8 +266,118 @@ alaskaSpecLib$PFT_3[alaskaSpecLib$PFT=="vacvit"]<-"Shrub"
 alaskaSpecLib$PFT_3[alaskaSpecLib$PFT=="vulpin"]<-"Lichen"
 alaskaSpecLib$PFT_3[alaskaSpecLib$PFT=="wooly_salix"]<-"Shrub"
 
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="aleoch"]<-"Lichen"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="alnfru"]<-"Shrub"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="arccen"]<-"Lichen"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="arcnig"]<-"Dwarf Shrub"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="arcrub"]<-"Dwarf Shrub"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="arcsta"]<-"Dwarf Shrub"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="arctop"]<-"Unknown"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="asachr"]<-"Lichen"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="aulpal"]<-"Moss"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="aultur"]<-"Moss"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="bare rock"]<-"Abiotic"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="bare_soil"]<-"Abiotic"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="betnan"]<-"Shrub"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="betneo"]<-"Tree"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="bryoria"]<-"Lichen"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="calcan"]<-"Graminoid"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="carlin"]<-"Graminoid"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="carlyn"]<-"Graminoid"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="carram"]<-"Graminoid"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="cerpur"]<-"Moss"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="cetisl"]<-"Lichen"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="cetlae"]<-"Lichen"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="claama"]<-"Lichen"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="clacor"]<-"Lichen"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="clacuc"]<-"Lichen"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="clagra"]<-"Lichen"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="clamit"]<-"Lichen"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="claran"]<-"Lichen"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="claste"]<-"Lichen"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="clasty"]<-"Lichen"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="clasul"]<-"Lichen"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="claunc"]<-"Lichen"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="dead salix"]<-"Abiotic"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="dicranum"]<-"Moss"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="empnig"]<-"Dwarf Shrub"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="equarv"]<-"Forb"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="equsyl"]<-"Forb"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="erivag"]<-"Graminoid"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="evemes"]<-"Lichen"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="flacuc"]<-"Lichen"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="flaniv"]<-"Lichen"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="gravel"]<-"Abiotic"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="grey_rhizocarpon"]<-"Lichen"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="herlan"]<-"Forb"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="hylspl"]<-"Moss"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="hypaus"]<-"Lichen"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="hypspl"]<-"Moss"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="icmeri"]<-"Lichen"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="irisit"]<-"Forb"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="leddec"]<-"Shrub"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="loipro"]<-"Dwarf Shrub"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="luparc"]<-"Forb"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="masric"]<-"Lichen"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="melanelia"]<-"Lichen"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="melhep"]<-"Lichen"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="neparc"]<-"Lichen"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="naparc"]<-"Lichen"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="orange_Porpidia"]<-"Lichen"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="paramb"]<-"Lichen"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="paromp"]<-"Lichen"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="parsul"]<-"Lichen"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="pedrac"]<-"Forb"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="pedsud"]<-"Forb"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="pelapt"]<-"Lichen"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="pelleu"]<-"Lichen"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="pelmal"]<-"Lichen"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="pelsca"]<-"Lichen"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="petfri"]<-"Forb"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="picmar"]<-"Tree"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="plagiomnium"]<-"Moss"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="plesch"]<-"Moss"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="poljen"]<-"Moss"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="poljun"]<-"Moss"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="polstr"]<-"Moss"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="polytrichum"]<-"Moss"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="popbal"]<-"Tree"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="quartz"]<-"Abiotic"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="raclan"]<-"Moss"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="rhigeo"]<-"Lichen"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="rhyrug"]<-"Moss"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="rosasc"]<-"Forb"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="rubcam"]<-"Dwarf Shrub"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="rubcha"]<-"Dwarf Shrub"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="salala"]<-"Shrub"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="salarb"]<-"Shrub"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="salgla"]<-"Shrub"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="sallan"]<-"Shrub"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="salova"]<-"Shrub"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="Salova"]<-"Shrub"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="salpul"]<-"Shrub"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="salric"]<-"Shrub"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="sphagn"]<-"Moss"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="sphfus"]<-"Moss"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="spruce bark"]<-"Abiotic"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="stepas"]<-"Lichen"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="stetas"]<-"Lichen"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="toefeldia"]<-"Forb"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="tomnit"]<-"Moss"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="tragra"]<-"Lichen"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="umbarc"]<-"Lichen"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="umbhyp"]<-"Lichen"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="usnlap"]<-"Lichen"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="usnsca"]<-"Lichen"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="vacvit"]<-"Shrub"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="vulpin"]<-"Lichen"
+alaskaSpecLib_AV$PFT_3[alaskaSpecLib$PFT=="wooly_salix"]<-"Shrub"
+
+
+
 #Plants only
 alaskaSpecLib_plants<-subset(alaskaSpecLib,PFT_3!="Abiotic")
+alaskaSpecLib_plants_AV<-subset(alaskaSpecLib,PFT_3!="Abiotic")
 
 ##Extracts scans for each life form (lichen, bryophyte, vascular plant)
 alaskaSpecLib_lichen<-subset(alaskaSpecLib_plants,PFT_3=="Lichen")
