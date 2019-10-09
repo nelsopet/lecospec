@@ -1,6 +1,6 @@
 library(spectrolab)
 library(tidyverse)
-setwd("/Alaska_Spectral_Library")
+#setwd("/Alaska_Spectral_Library")
 
 ##Reads in spectra for each area sampled in Alaksa 
 AK2018_spectra          <-readRDS("Processed_spec/Alaska_Summer_2018/AK2018/AK2018_spectra.rds")
@@ -306,11 +306,11 @@ alaskaSpecLib_plants_equal20<-alaskaSpecLib_plants_more20 %>% group_by(PFT_2) %>
 #write.csv(alaskaSpecLib_lichen_bryo,"Processed_spec/AlaskaSpecLib/Spectral_Library/Raw/2019/alaskaSpecLib_2019_lichen_bryo.csv",row.names = FALSE)
 #write.csv(alaskaSpecLib_vascular   ,"Processed_spec/AlaskaSpecLib/Spectral_Library/Raw/2019/alaskaSpecLib_2019_vascular.csv",row.names = FALSE)
 
-write.csv(alaskaSpecLib_plants_more05 ,"Processed_spec/AlaskaSpecLib/Spectral_Library/Raw/2019/alaskaSpecLib_plants_more05.csv")
-write.csv(alaskaSpecLib_plants_more10 ,"Processed_spec/AlaskaSpecLib/Spectral_Library/Raw/2019/alaskaSpecLib_plants_more10.csv")
-write.csv(alaskaSpecLib_plants_more15 ,"Processed_spec/AlaskaSpecLib/Spectral_Library/Raw/2019/alaskaSpecLib_plants_more15.csv")
-write.csv(alaskaSpecLib_plants_more20 ,"Processed_spec/AlaskaSpecLib/Spectral_Library/Raw/2019/alaskaSpecLib_plants_more20.csv")
-write.csv(alaskaSpecLib_plants_equal05,"Processed_spec/AlaskaSpecLib/Spectral_Library/Raw/2019/alaskaSpecLib_plants_equal05.csv")
-write.csv(alaskaSpecLib_plants_equal10,"Processed_spec/AlaskaSpecLib/Spectral_Library/Raw/2019/alaskaSpecLib_plants_equal10.csv")
-write.csv(alaskaSpecLib_plants_equal15,"Processed_spec/AlaskaSpecLib/Spectral_Library/Raw/2019/alaskaSpecLib_plants_equal15.csv")
-write.csv(alaskaSpecLib_plants_equal20,"Processed_spec/AlaskaSpecLib/Spectral_Library/Raw/2019/alaskaSpecLib_plants_equal20.csv")
+write.csv(alaskaSpecLib_plants_more05 ,"Processed_spec/AlaskaSpecLib/Spectral_Library/Raw/2019/alaskaSpecLib_plants_more05.csv" , row.names = F)
+write.csv(alaskaSpecLib_plants_more10 ,"Processed_spec/AlaskaSpecLib/Spectral_Library/Raw/2019/alaskaSpecLib_plants_more10.csv" , row.names = F)
+write.csv(alaskaSpecLib_plants_more15 ,"Processed_spec/AlaskaSpecLib/Spectral_Library/Raw/2019/alaskaSpecLib_plants_more15.csv" , row.names = F)
+write.csv(alaskaSpecLib_plants_more20 ,"Processed_spec/AlaskaSpecLib/Spectral_Library/Raw/2019/alaskaSpecLib_plants_more20.csv" , row.names = F)
+write.csv(alaskaSpecLib_plants_equal05,"Processed_spec/AlaskaSpecLib/Spectral_Library/Raw/2019/alaskaSpecLib_plants_equal05.csv", row.names = F)
+write.csv(alaskaSpecLib_plants_equal10,"Processed_spec/AlaskaSpecLib/Spectral_Library/Raw/2019/alaskaSpecLib_plants_equal10.csv", row.names = F)
+write.csv(alaskaSpecLib_plants_equal15,"Processed_spec/AlaskaSpecLib/Spectral_Library/Raw/2019/alaskaSpecLib_plants_equal15.csv", row.names = F)
+write.csv(alaskaSpecLib_plants_equal20,"Processed_spec/AlaskaSpecLib/Spectral_Library/Raw/2019/alaskaSpecLib_plants_equal20.csv", row.names = F)
