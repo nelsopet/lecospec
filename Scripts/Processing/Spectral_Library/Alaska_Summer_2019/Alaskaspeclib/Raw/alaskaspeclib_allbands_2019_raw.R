@@ -31,6 +31,7 @@ alaskaSpecLib<-Reduce(spectrolab::combine,list(AK2018_spectra
                                               ,Murphy_domeB_spectra    
                                               ,Wickersham_domeA_spectra
                                               ,Wickersham_domeB_spectra))
+saveRDS(alaskaSpecLib,"Processed_spec/All_locations/alaskaSpeclib.rds")
 
 ##convert spectral library to dataframe
 alaskaSpecLib<-as.data.frame(alaskaSpecLib)

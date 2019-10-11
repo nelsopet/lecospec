@@ -32,7 +32,7 @@ alaskaSpecLib_plants_equal10[c("ScanID","PFT","PFT_3","area","Freq")] = NULL
 alaskaSpecLib_plants_equal15[c("ScanID","PFT","PFT_3","area","Freq")] = NULL
 alaskaSpecLib_plants_equal20[c("ScanID","PFT","PFT_3","area","Freq")] = NULL
 
-##Converts species column to a factor
+#Converts species column to a factor
 alaskaSpecLib_plants_more05 $PFT_2<-as.factor(alaskaSpecLib_plants_more05 $PFT_2)
 alaskaSpecLib_plants_more10 $PFT_2<-as.factor(alaskaSpecLib_plants_more10 $PFT_2)
 alaskaSpecLib_plants_more15 $PFT_2<-as.factor(alaskaSpecLib_plants_more15 $PFT_2)
@@ -41,6 +41,7 @@ alaskaSpecLib_plants_equal05$PFT_2<-as.factor(alaskaSpecLib_plants_equal05$PFT_2
 alaskaSpecLib_plants_equal10$PFT_2<-as.factor(alaskaSpecLib_plants_equal10$PFT_2)
 alaskaSpecLib_plants_equal15$PFT_2<-as.factor(alaskaSpecLib_plants_equal15$PFT_2)
 alaskaSpecLib_plants_equal20$PFT_2<-as.factor(alaskaSpecLib_plants_equal20$PFT_2)
+
 pca_plants_more05           $PFT_2<-as.factor(pca_plants_more05 $PFT_2)
 pca_plants_more10           $PFT_2<-as.factor(pca_plants_more10 $PFT_2)
 pca_plants_more15           $PFT_2<-as.factor(pca_plants_more15 $PFT_2)
@@ -83,40 +84,27 @@ PCA_species_error_more10<- cbind(Species = rownames(PCA_species_error_more10), P
 PCA_species_error_more15<- cbind(Species = rownames(PCA_species_error_more15), PCA_species_error_more15)%>%`rownames<-`(seq_len(nrow(PCA_species_error_more15)))
 PCA_species_error_more20<- cbind(Species = rownames(PCA_species_error_more20), PCA_species_error_more20)%>%`rownames<-`(seq_len(nrow(PCA_species_error_more20)))
 
-
-
 ##Changes column name class.error 
-names(species_error_more05)[2]<-"raw_allbands_more05"
-names(species_error_more10)[2]<-"raw_allbands_more10"
-names(species_error_more15)[2]<-"raw_allbands_more15"
-names(species_error_more20)[2]<-"raw_allbands_more20"
+names(species_error_more05)[2]<-"Raw_allbands"
+names(species_error_more10)[2]<-"Raw_allbands"
+names(species_error_more15)[2]<-"Raw_allbands"
+names(species_error_more20)[2]<-"Raw_allbands"
 
-names(PCA_species_error_more05)[2]<-"raw_PCA_more05"
-names(PCA_species_error_more10)[2]<-"raw_PCA_more10"
-names(PCA_species_error_more15)[2]<-"raw_PCA_more15"
-names(PCA_species_error_more20)[2]<-"raw_PCA_more20"
+names(PCA_species_error_more05)[2]<-"Raw_PCA_allbands"
+names(PCA_species_error_more10)[2]<-"Raw_PCA_allbands"
+names(PCA_species_error_more15)[2]<-"Raw_PCA_allbands"
+names(PCA_species_error_more20)[2]<-"Raw_PCA_allbands"
 
 #Creates dataframe showing the OOB estimate of error rate of the model
-Overall_error_more05<-rf_more05$err.rate[2001,1]%>%as.data.frame()%>%setNames(.,c("raw_allbands_more05"))%>%mutate(Category="allbands")
-Overall_error_more10<-rf_more10$err.rate[2001,1]%>%as.data.frame()%>%setNames(.,c("raw_allbands_more10"))%>%mutate(Category="allbands")
-Overall_error_more15<-rf_more15$err.rate[2001,1]%>%as.data.frame()%>%setNames(.,c("raw_allbands_more15"))%>%mutate(Category="allbands")
-Overall_error_more20<-rf_more20$err.rate[2001,1]%>%as.data.frame()%>%setNames(.,c("raw_allbands_more20"))%>%mutate(Category="allbands")
+Overall_error_more05<-rf_more05$err.rate[2001,1]%>%as.data.frame()%>%setNames(.,c("Raw"))%>%mutate(Category="allbands_more05")
+Overall_error_more10<-rf_more10$err.rate[2001,1]%>%as.data.frame()%>%setNames(.,c("Raw"))%>%mutate(Category="allbands_more10")
+Overall_error_more15<-rf_more15$err.rate[2001,1]%>%as.data.frame()%>%setNames(.,c("Raw"))%>%mutate(Category="allbands_more15")
+Overall_error_more20<-rf_more20$err.rate[2001,1]%>%as.data.frame()%>%setNames(.,c("Raw"))%>%mutate(Category="allbands_more20")
 
-PCA_Overall_error_more05<-PCA_rf_more05$err.rate[2001,1]%>%as.data.frame()%>%setNames(.,c("raw_PCA_more05"))%>%mutate(Category="allbands")
-PCA_Overall_error_more10<-PCA_rf_more10$err.rate[2001,1]%>%as.data.frame()%>%setNames(.,c("raw_PCA_more10"))%>%mutate(Category="allbands")
-PCA_Overall_error_more15<-PCA_rf_more15$err.rate[2001,1]%>%as.data.frame()%>%setNames(.,c("raw_PCA_more15"))%>%mutate(Category="allbands")
-PCA_Overall_error_more20<-PCA_rf_more20$err.rate[2001,1]%>%as.data.frame()%>%setNames(.,c("raw_PCA_more20"))%>%mutate(Category="allbands")
-  
-##Subset all the species that had an error rate lower than 30%
-species_error_more05_below30<-subset(species_error_more05,raw_allbands_more05<0.3)
-species_error_more10_below30<-subset(species_error_more10,raw_allbands_more10<0.3)
-species_error_more15_below30<-subset(species_error_more15,raw_allbands_more15<0.3)
-species_error_more20_below30<-subset(species_error_more20,raw_allbands_more20<0.3)
-
-PCA_species_error_more05_below30<-subset(PCA_species_error_more05,raw_PCA_more05<0.3)
-PCA_species_error_more10_below30<-subset(PCA_species_error_more10,raw_PCA_more10<0.3)
-PCA_species_error_more15_below30<-subset(PCA_species_error_more15,raw_PCA_more15<0.3)
-PCA_species_error_more20_below30<-subset(PCA_species_error_more20,raw_PCA_more20<0.3)
+PCA_Overall_error_more05<-PCA_rf_more05$err.rate[2001,1]%>%as.data.frame()%>%setNames(.,c("PCA"))%>%mutate(Category="allbands_more05")
+PCA_Overall_error_more10<-PCA_rf_more10$err.rate[2001,1]%>%as.data.frame()%>%setNames(.,c("PCA"))%>%mutate(Category="allbands_more10")
+PCA_Overall_error_more15<-PCA_rf_more15$err.rate[2001,1]%>%as.data.frame()%>%setNames(.,c("PCA"))%>%mutate(Category="allbands_more15")
+PCA_Overall_error_more20<-PCA_rf_more20$err.rate[2001,1]%>%as.data.frame()%>%setNames(.,c("PCA"))%>%mutate(Category="allbands_more20")
 
 ################################Model equal05, equal10,equal15,equal20#######################################
 ##Creates random forest model for (plant and abiotic scans)
@@ -153,56 +141,53 @@ PCA_species_error_equal15<- cbind(Species = rownames(PCA_species_error_equal15),
 PCA_species_error_equal20<- cbind(Species = rownames(PCA_species_error_equal20), PCA_species_error_equal20)%>%`rownames<-`(seq_len(nrow(PCA_species_error_equal20)))
 
 ##Changes column name class.error 
-names(species_error_equal05)[2]<-"raw_allbands_equal05"
-names(species_error_equal10)[2]<-"raw_allbands_equal10"
-names(species_error_equal15)[2]<-"raw_allbands_equal15"
-names(species_error_equal20)[2]<-"raw_allbands_equal20"
+names(species_error_equal05)[2]<-"Raw_allbands"
+names(species_error_equal10)[2]<-"Raw_allbands"
+names(species_error_equal15)[2]<-"Raw_allbands"
+names(species_error_equal20)[2]<-"Raw_allbands"
 
-names(PCA_species_error_equal05)[2]<-"raw_PCA_equal05"
-names(PCA_species_error_equal10)[2]<-"raw_PCA_equal10"
-names(PCA_species_error_equal15)[2]<-"raw_PCA_equal15"
-names(PCA_species_error_equal20)[2]<-"raw_PCA_equal20"
+names(PCA_species_error_equal05)[2]<-"Raw_PCA_allbands"
+names(PCA_species_error_equal10)[2]<-"Raw_PCA_allbands"
+names(PCA_species_error_equal15)[2]<-"Raw_PCA_allbands"
+names(PCA_species_error_equal20)[2]<-"Raw_PCA_allbands"
 
 
 #Creates dataframe showing the OOB estimate of error rate of the model
-Overall_error_equal05<-rf_equal05$err.rate[2001,1]%>%as.data.frame()%>%setNames(.,c("raw_allbands_equal05"))%>%mutate(Category="allbands")
-Overall_error_equal10<-rf_equal10$err.rate[2001,1]%>%as.data.frame()%>%setNames(.,c("raw_allbands_equal10"))%>%mutate(Category="allbands")
-Overall_error_equal15<-rf_equal15$err.rate[2001,1]%>%as.data.frame()%>%setNames(.,c("raw_allbands_equal15"))%>%mutate(Category="allbands")
-Overall_error_equal20<-rf_equal20$err.rate[2001,1]%>%as.data.frame()%>%setNames(.,c("raw_allbands_equal20"))%>%mutate(Category="allbands")
+Overall_error_equal05<-rf_equal05$err.rate[2001,1]%>%as.data.frame()%>%setNames(.,c("Raw"))%>%mutate(Category="allbands_equal05")
+Overall_error_equal10<-rf_equal10$err.rate[2001,1]%>%as.data.frame()%>%setNames(.,c("Raw"))%>%mutate(Category="allbands_equal10")
+Overall_error_equal15<-rf_equal15$err.rate[2001,1]%>%as.data.frame()%>%setNames(.,c("Raw"))%>%mutate(Category="allbands_equal15")
+Overall_error_equal20<-rf_equal20$err.rate[2001,1]%>%as.data.frame()%>%setNames(.,c("Raw"))%>%mutate(Category="allbands_equal20")
 
-PCA_Overall_error_equal05<-PCA_rf_equal05$err.rate[2001,1]%>%as.data.frame()%>%setNames(.,c("raw_PCA_equal05"))%>%mutate(Category="allbands")
-PCA_Overall_error_equal10<-PCA_rf_equal10$err.rate[2001,1]%>%as.data.frame()%>%setNames(.,c("raw_PCA_equal10"))%>%mutate(Category="allbands")
-PCA_Overall_error_equal15<-PCA_rf_equal15$err.rate[2001,1]%>%as.data.frame()%>%setNames(.,c("raw_PCA_equal15"))%>%mutate(Category="allbands")
-PCA_Overall_error_equal20<-PCA_rf_equal20$err.rate[2001,1]%>%as.data.frame()%>%setNames(.,c("raw_PCA_equal20"))%>%mutate(Category="allbands")
-  
-##Subset all the species that had an error rate lower than 30%
-species_error_equal05_below30<-subset(species_error_equal05,raw_allbands_equal05<0.3)
-species_error_equal10_below30<-subset(species_error_equal10,raw_allbands_equal10<0.3)
-species_error_equal15_below30<-subset(species_error_equal15,raw_allbands_equal15<0.3)
-species_error_equal20_below30<-subset(species_error_equal20,raw_allbands_equal20<0.3)
-
-PCA_species_error_equal05_below30<-subset(PCA_species_error_equal05,raw_PCA_equal05<0.3)
-PCA_species_error_equal10_below30<-subset(PCA_species_error_equal10,raw_PCA_equal10<0.3)
-PCA_species_error_equal15_below30<-subset(PCA_species_error_equal15,raw_PCA_equal15<0.3)
-PCA_species_error_equal20_below30<-subset(PCA_species_error_equal20,raw_PCA_equal20<0.3)
+PCA_Overall_error_equal05<-PCA_rf_equal05$err.rate[2001,1]%>%as.data.frame()%>%setNames(.,c("PCA"))%>%mutate(Category="allbands_equal05")
+PCA_Overall_error_equal10<-PCA_rf_equal10$err.rate[2001,1]%>%as.data.frame()%>%setNames(.,c("PCA"))%>%mutate(Category="allbands_equal10")
+PCA_Overall_error_equal15<-PCA_rf_equal15$err.rate[2001,1]%>%as.data.frame()%>%setNames(.,c("PCA"))%>%mutate(Category="allbands_equal15")
+PCA_Overall_error_equal20<-PCA_rf_equal20$err.rate[2001,1]%>%as.data.frame()%>%setNames(.,c("PCA"))%>%mutate(Category="allbands_equal20")
 
 ################################Ceating datafreames showing errors for models#######################################
 ##Combines all those dataframes that were created showing the OOB estimate of error rate of the model
-ModelOOB_allbands_raw<-Reduce(function(x,y) merge(x,y,by="Category",all=TRUE) ,list(Overall_error_more05
-                                                                                    ,Overall_error_more10
-                                                                                    ,Overall_error_more15
-                                                                                    ,Overall_error_more20
-                                                                                    ,Overall_error_equal05
-                                                                                    ,Overall_error_equal10
-                                                                                    ,Overall_error_equal15
-                                                                                    ,Overall_error_equal20
-                                                                                    ,PCA_Overall_error_equal05
-                                                                                    ,PCA_Overall_error_equal10
-                                                                                    ,PCA_Overall_error_equal15
-                                                                                    ,PCA_Overall_error_equal20))
+ModelOOB_raw_spec<-rbind(Overall_error_more05
+                              ,Overall_error_more10
+                              ,Overall_error_more15
+                              ,Overall_error_more20
+                              ,Overall_error_equal05
+                              ,Overall_error_equal10
+                              ,Overall_error_equal15
+                              ,Overall_error_equal20)
+
+ModeModelOOB_PCA_spec<-rbind(PCA_Overall_error_equal05
+                                  ,PCA_Overall_error_equal10
+                                  ,PCA_Overall_error_equal15
+                                  ,PCA_Overall_error_equal20
+                                  ,PCA_Overall_error_more05
+                                  ,PCA_Overall_error_more10
+                                  ,PCA_Overall_error_more15
+                                  ,PCA_Overall_error_more20)
+
+ModelOOB_raw<-merge(ModelOOB_raw_spec,ModeModelOOB_PCA_spec,by="Category")
+
 #######################################export dataframes################################################################
 ###export relvant dataframes 
-write.csv(ModelOOB_allbands_raw  ,"Processed_spec/Error_rates/Raw/ModelOOB_allbands_raw.csv", row.names = F)
+write.csv(ModelOOB_raw  ,"Processed_spec/Error_rates/Raw/ModelOOB_raw.csv", row.names = F)
 
 write.csv(species_error_more05   ,"Processed_spec/Error_rates/Raw/species_error_more05_raw.csv", row.names = F)
 write.csv(species_error_more10   ,"Processed_spec/Error_rates/Raw/species_error_more10_raw.csv", row.names = F)
@@ -223,24 +208,4 @@ write.csv(PCA_species_error_equal05  ,"Processed_spec/Error_rates/Raw/PCA_specie
 write.csv(PCA_species_error_equal10  ,"Processed_spec/Error_rates/Raw/PCA_species_error_equal10_raw.csv", row.names = F)
 write.csv(PCA_species_error_equal15  ,"Processed_spec/Error_rates/Raw/PCA_species_error_equal15_raw.csv", row.names = F)
 write.csv(PCA_species_error_equal20  ,"Processed_spec/Error_rates/Raw/PCA_species_error_equal20_raw.csv", row.names = F)
-
-write.csv(species_error_more05_below30  ,"Processed_spec/Error_rates/Raw/species_error_more05_below30_raw.csv", row.names = F)
-write.csv(species_error_more10_below30  ,"Processed_spec/Error_rates/Raw/species_error_more10_below30_raw.csv", row.names = F)
-write.csv(species_error_more15_below30  ,"Processed_spec/Error_rates/Raw/species_error_more15_below30_raw.csv", row.names = F)
-write.csv(species_error_more20_below30  ,"Processed_spec/Error_rates/Raw/species_error_more20_below30_raw.csv", row.names = F)
-
-write.csv(PCA_species_error_more05_below30  ,"Processed_spec/Error_rates/Raw/PCA_species_error_more05_below30_raw.csv", row.names = F)
-write.csv(PCA_species_error_more10_below30  ,"Processed_spec/Error_rates/Raw/PCA_species_error_more10_below30_raw.csv", row.names = F)
-write.csv(PCA_species_error_more15_below30  ,"Processed_spec/Error_rates/Raw/PCA_species_error_more15_below30_raw.csv", row.names = F)
-write.csv(PCA_species_error_more20_below30  ,"Processed_spec/Error_rates/Raw/PCA_species_error_more20_below30_raw.csv", row.names = F)
-
-write.csv(species_error_equal05_below30  ,"Processed_spec/Error_rates/Raw/species_error_equal05_below30_raw.csv", row.names = F)
-write.csv(species_error_equal10_below30  ,"Processed_spec/Error_rates/Raw/species_error_equal10_below30_raw.csv", row.names = F)
-write.csv(species_error_equal15_below30  ,"Processed_spec/Error_rates/Raw/species_error_equal15_below30_raw.csv", row.names = F)
-write.csv(species_error_equal20_below30  ,"Processed_spec/Error_rates/Raw/species_error_equal20_below30_raw.csv", row.names = F)
-
-write.csv(PCA_species_error_equal05_below30  ,"Processed_spec/Error_rates/Raw/PCA_species_error_equal05_below30_raw.csv", row.names = F)
-write.csv(PCA_species_error_equal10_below30  ,"Processed_spec/Error_rates/Raw/PCA_species_error_equal10_below30_raw.csv", row.names = F)
-write.csv(PCA_species_error_equal15_below30  ,"Processed_spec/Error_rates/Raw/PCA_species_error_equal15_below30_raw.csv", row.names = F)
-write.csv(PCA_species_error_equal20_below30  ,"Processed_spec/Error_rates/Raw/PCA_species_error_equal20_below30_raw.csv", row.names = F)
 

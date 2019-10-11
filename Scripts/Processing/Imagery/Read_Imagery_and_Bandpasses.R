@@ -2,10 +2,13 @@ library(rgdal)
 library(RStoolbox)
 library(sf)
 library(spectrolab)
-Clayton_AVIRIS_Tiff<-readGDAL(fname="imagery/imagery/Spectral_Subset_2019_05_15T22_29_34Z_Area0.dat")
-Clayton_Headwall_Tiff<-readGDAL(fname="imagery/imagery/raw_8580_rd_rf_or_Area0.dat")
-Clayton_AVIRIS_Tiff<-as.data.frame(Clayton_AVIRIS_Tiff)
-Clayton_Headwall_Tiff<-as.data.frame(Clayton_AVIRIS_Tiff)
+
+Clayton_AVIRIS_Tiff  <-readGDAL(fname="Imagery/Spectral_Subset_2019_05_15T22_29_34Z_Area0.dat")
+Clayton_Headwall_Tiff<-readGDAL(fname="Imagery/raw_8580_rd_rf_or_Area0.dat")
+
+Clayton_AVIRIS_Tiff  <-as.data.frame(Clayton_AVIRIS_Tiff)
+Clayton_Headwall_Tiff<-as.data.frame(Clayton_Headwall_Tiff)
+
 Headwall_wv<-c(
   397.593
   ,399.444
@@ -333,7 +336,7 @@ Headwall_wv<-c(
   ,995.716
   ,997.568
   ,999.42)
-write(Headwall_wv,"Processed_imagery/Headwall/Headwall_WVLs")
+write(Headwall_wv,"Processed_imagery/Headwall/Bandpasses/Headwall_WVLs")
 
 AVIRIS_wv<-c(381.870000,  386.880000,  391.890000,  396.890000,  401.900000,  406.910000,
              411.920000,  416.930000,  421.940000,  426.950000,  431.960000,  436.960000,
@@ -397,4 +400,5 @@ AVIRIS_wv<-c(381.870000,  386.880000,  391.890000,  396.890000,  401.900000,  40
              2415.390000, 2420.400000, 2425.410000, 2430.410000, 2435.420000, 2440.430000,
              2445.440000, 2450.450000, 2455.460000, 2460.470000, 2465.480000, 2470.480000,
              2475.490000, 2480.500000, 2485.510000, 2490.520000, 2495.530000, 2500)
-write(AVIRIS_wv,"Processed_imagery/AVIRIS/AVIRIS_WVLs")
+
+write(AVIRIS_wv,"Processed_imagery/AVIRIS/Bandpasses/AVIRIS_WVLs")
