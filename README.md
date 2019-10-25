@@ -2,7 +2,7 @@
 # Model Script Folder
 The Folder Model Script contains all the random forest models for the Folowing:
 
-Bryohytes
+Bryophytes
 
 Lichens
 
