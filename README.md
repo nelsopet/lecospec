@@ -1,5 +1,5 @@
 # Alaska_Spectral_Library
-The repository analyses high-resolution hyperspectral scans and images of Arctic and Tundra communities. The aim of the repository is to generate fine-scale, species-level vegetation maps and associated voucher collections for ecological and evolutionary analysis, and to study patterns of community assembly across spatial scales.
+The repository analyzes high-resolution hyperspectral scans and images of Arctic and Tundra communities. The aim of the repository is to generate fine-scale, species-level vegetation maps and associated voucher collections for ecological and evolutionary analysis, and to study patterns of community assembly across spatial scales.
 
 ## Table of Content
 
