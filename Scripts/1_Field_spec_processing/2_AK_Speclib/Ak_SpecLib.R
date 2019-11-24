@@ -352,7 +352,7 @@ badscans<-c("1891"  ,"1892" ,"1893" ,"1894" ,"1895" ,"1896" ,"1897" ,"1898" ,"18
 
 ##Column names are saved, lets create a function that will will remove all those rows that have values greater than 2
 ####Need to come up with a function
-alaskaSpecLib<- alaskaSpecLib[apply(alaskaSpecLib[,badscans]<2, 1, all),]
+alaskaSpecLib<- alaskaSpecLib[apply(alaskaSpecLib[,badscans]<2, 1, all),]### dim 1975 2158
 
 ###lets create a df from our spectral library to be saved
 alaskaSpecLib_df<-alaskaSpecLib
@@ -361,6 +361,21 @@ alaskaSpecLib_df<-alaskaSpecLib
 tst<-lapply(alaskaSpecLib[-1:-7],range)%>%as.data.frame%>%t()%>%as.data.frame
 tst$V1%>%range()##There are no weird values, those are values outside of 0 and 2
 tst$V2%>%range()##There are no weird values, those are values outside of 0 and 2
+
+###Lets convert our new spectral library to a spectral object, then reconvert it to a dataframe
+##Run logical test again to see if this conversion affect reflectance values
+##Add metadata and 
+alaskaSpecLib_test<-alaskaSpecLib[-1:-7]%>%spectrolab::as.spectra()
+meta(alaskaSpecLib_test)<-data.frame(alaskaSpecLib[1:7], stringsAsFactors = FALSE)
+
+###lets convert spectral object and run logical test again
+alaskaSpecLib_test<-alaskaSpecLib_test%>%as.data.frame()%>%dplyr::select(-sample_name)
+
+####Lets run that test again
+tst1<-lapply(alaskaSpecLib_test[-1:-7],range)%>%as.data.frame%>%t()%>%as.data.frame
+tst1$V1%>%range()##There are no weird values, those are values outside of 0 and 2
+tst1$V2%>%range()##There are no weird values, those are values outside of 0 and 2
+                 ##Converting a spectral object should not change reflectance values
 
 #We want to create dataframes that have all the scans of each functional groups
 ##This can be used to make graphs of all the species within each functional group

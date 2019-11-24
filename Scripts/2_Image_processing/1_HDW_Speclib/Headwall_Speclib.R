@@ -6,6 +6,16 @@ library(tidyverse)
 ##this is the spectral library that had all uncalibrated bands removed
 alaskaSpeclib<-readRDS("Outputs/1_Field_Spec/1_Processing/alaskaSpeclib.rds")
 
+###Lets convert our new spectral library spectral object  to a dataframe
+##Run logical test again to see if this conversion affect reflectance values
+alaskaSpecLib_test<-alaskaSpeclib%>%as.data.frame()%>%dplyr::select(-sample_name)
+
+####Lets run that test again
+tst1<-lapply(alaskaSpecLib_test[-1:-7],range)%>%as.data.frame%>%t()%>%as.data.frame
+tst1$V1%>%range()##There are no weird values, those are values outside of 0 and 2
+tst1$V2%>%range()##There are no weird values, those are values outside of 0 and 2
+                 ##Converting a spectral object should not change reflectance values
+
 ##creates and object of bandpasses from imagery
 Headwall_wv<-c(397.593
   ,399.444
@@ -337,6 +347,16 @@ Headwall_wv<-c(397.593
 
 ##Now we want to resample alsakSpeclib based on the band passes
 alaskaSpeclib_HDW<-spectrolab::resample(alaskaSpeclib,Headwall_wv)
+
+###Lets convert our new spectral library spectral object  to a dataframe
+##Run logical test again to see if this conversion affect reflectance values
+alaskaSpecLib_test<-alaskaSpeclib_HDW%>%as.data.frame()%>%dplyr::select(-sample_name)
+
+####Lets run that test again
+tst1<-lapply(alaskaSpecLib_test[-1:-7],range)%>%as.data.frame%>%t()%>%as.data.frame
+tst1$V1%>%range()##There are negative values being created here, this is where the problem lies, how can we solve this???
+tst1$V2%>%range()##There are no weird values, those are values outside of 0 and 2
+                 ##Converting a spectral object should not change reflectance values
 
 ##Lets save our bandpasses
 write(Headwall_wv,"Outputs/2_HDW_Imagery/1_Processing/Headwall_wv")
