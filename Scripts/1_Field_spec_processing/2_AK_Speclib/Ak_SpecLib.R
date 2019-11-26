@@ -1,8 +1,8 @@
-########Creates a A spectral library object of all the scans collected in Alaksa in 2018 and 2019############
+###############################################################Creates a A spectral library object of all the scans collected in Alaksa in 2018 and 2019########################################################
 library(spectrolab)
 library(tidyverse)
 
-##Reads in a spectral object for each area sampled in Alaksa for the years 2018-2019)...all object have bands from 350:2500nm and metadata being ScanaID,PFT and Area
+##Reads in a spectral object for each area sampled in Alaksa for the years 2018-2019...all object have bands from 350:2500nm and metadata being ScanaID,PFT and Area
 AK2018_spectra          <-readRDS("Outputs/1_Field_spec/1_Processing/AK2018_spectra.rds"          )##SPECTRAL OBJECT WITH 99 SAMPLES
 bethelLib_spectra       <-readRDS("Outputs/1_Field_spec/1_Processing/bethelLib_spectra.rds"       )##SPECTRAL OBJECT WITH 60 SAMPLES
 brooksLib_spectra       <-readRDS("Outputs/1_Field_spec/1_Processing/brooksLib_spectra.rds"       )##SPECTRAL OBJECT WITH 132 SAMPLES
@@ -17,7 +17,7 @@ Murphy_domeB_spectra    <-readRDS("Outputs/1_Field_spec/1_Processing/Murphy_dome
 Wickersham_domeA_spectra<-readRDS("Outputs/1_Field_spec/1_Processing/Wickersham_domeA_spectra.rds")##SPECTRAL OBJECT WITH 132 SAMPLES
 Wickersham_domeB_spectra<-readRDS("Outputs/1_Field_spec/1_Processing/Wickersham_domeB_spectra.rds")##SPECTRAL OBJECT WITH 233 SAMPLES
 
-##If we combine these spectral objects we should get a spectral library of 1985 ssamples
+##If we combine these spectral objects we should get a spectral library of 1985 samples
 ##This function combines the list of spectral objects above....spectral object with 1985 samples, bands from 350:2500nm and metadata being ScanaID,PFT and Area
 alaskaSpecLib<-Reduce(spectrolab::combine,list(AK2018_spectra          
                                                    ,bethelLib_spectra       
@@ -340,10 +340,11 @@ alaskaSpecLib<-subset(alaskaSpecLib,PFT_3!="Unknown")
 ##Checck to see if there are any values greater than 2 or less than 0
 tst<-lapply(alaskaSpecLib[-1:-7],range)%>%as.data.frame%>%t()%>%as.data.frame
 tst$V1%>%range()
-tst$V2%>%range()
+tst$V2%>%range()##Values here exceed 2, so we should remove them
 tst<-subset(tst,V2>2)
 
 ##now we have all the columns that have values greater than two, lets save those column names in an object
+##We could probably create a better function here to extract those rows with values >2
 badscans<-rownames(tst)
 badscans<-c("1891"  ,"1892" ,"1893" ,"1894" ,"1895" ,"1896" ,"1897" ,"1898" ,"1899" ,"1900" ,"1901" ,"1902" ,"1908" ,"1909"
             ,"1916" ,"1917" ,"1930" ,"1931" ,"1932" ,"1938" ,"1939" ,"1940" ,"1947" ,"1948" ,"2480" ,"2481" ,"2482" ,"2490"
@@ -351,31 +352,16 @@ badscans<-c("1891"  ,"1892" ,"1893" ,"1894" ,"1895" ,"1896" ,"1897" ,"1898" ,"18
 
 
 ##Column names are saved, lets create a function that will will remove all those rows that have values greater than 2
-####Need to come up with a function
-alaskaSpecLib<- alaskaSpecLib[apply(alaskaSpecLib[,badscans]<2, 1, all),]### dim 1975 2158
+####Need to come up with a better function
+alaskaSpecLib<- alaskaSpecLib[apply(alaskaSpecLib[,badscans]<2, 1, all),]### dim 1975 2158, there were 5 rows with values >2
 
 ###lets create a df from our spectral library to be saved
 alaskaSpecLib_df<-alaskaSpecLib
 
-####Lets run that test again
+####Lets run that test again just to make sure our function worked
 tst<-lapply(alaskaSpecLib[-1:-7],range)%>%as.data.frame%>%t()%>%as.data.frame
 tst$V1%>%range()##There are no weird values, those are values outside of 0 and 2
 tst$V2%>%range()##There are no weird values, those are values outside of 0 and 2
-
-###Lets convert our new spectral library to a spectral object, then reconvert it to a dataframe
-##Run logical test again to see if this conversion affect reflectance values
-##Add metadata and 
-alaskaSpecLib_test<-alaskaSpecLib[-1:-7]%>%spectrolab::as.spectra()
-meta(alaskaSpecLib_test)<-data.frame(alaskaSpecLib[1:7], stringsAsFactors = FALSE)
-
-###lets convert spectral object and run logical test again
-alaskaSpecLib_test<-alaskaSpecLib_test%>%as.data.frame()%>%dplyr::select(-sample_name)
-
-####Lets run that test again
-tst1<-lapply(alaskaSpecLib_test[-1:-7],range)%>%as.data.frame%>%t()%>%as.data.frame
-tst1$V1%>%range()##There are no weird values, those are values outside of 0 and 2
-tst1$V2%>%range()##There are no weird values, those are values outside of 0 and 2
-                 ##Converting a spectral object should not change reflectance values
 
 #We want to create dataframes that have all the scans of each functional groups
 ##This can be used to make graphs of all the species within each functional group
