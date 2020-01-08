@@ -90,10 +90,10 @@ tst2$V2%>%range()##There are no weird values, those are values outside of 0 and 
 #  as.data.frame()%>%
 #  'colnames<-'(AVIRIS_wv) %>% #dim() ] 1975  333
 #  dplyr::select(names(alaskaSpecLib_test[-1:-7])) %>% 
-#  subset(`2480.5`< 0) %>% View() ###there is only one row here that has negative values, we could try this on multiple columns
+#  subset(`2480.5`< 0) %>% View()##there is more than one row here that has negative values, we could try this on multiple columns
                                  ##all those columns that we know have rows that have negative value
                                  ##Need to create a function that will remove all these rows at once
-                                 ##The rowS that needs to be removed are 204:207,217:220,548,603,1105,1163
+                                 ##The rows that needs to be removed are 204:207,217:220,548,603,1105,1163
 
 alaskaSpecLib_AV1<-alaskaSpecLib_test[-c(204:207,217:220,548,603,1105,1163), ] ##dim()  1905  333
 

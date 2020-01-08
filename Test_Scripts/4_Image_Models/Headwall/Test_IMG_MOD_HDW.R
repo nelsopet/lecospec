@@ -31,7 +31,7 @@ Test_IMG_ConfusionMatrix<-rf_HDW_Test_IMG$confusion%>%
   as.data.frame()
 
 ##Lets save this confusion Matrix
-write.csv(Test_IMG_ConfusionMatrix,"Test_Outputs/2_HDW_imagery/2_Models/AK_imagery/Test_IMG_ConfusionMatrix.csv",row.names = F)
+write.csv(Test_IMG_ConfusionMatrix,"Test_Outputs/2_HDW_imagery/2_Models/Test_IMG_ConfusionMatrix.csv",row.names = F)
 
 ##This function uses model from spectral library to predict the observations of each pixel in the imagery
 Results_HDW    <-predict(rf_HDW_Test_IMG,Test_IMG_data_HDW[-1:-2])
