@@ -362,6 +362,9 @@ alaskaSpecLib<- alaskaSpecLib[apply(alaskaSpecLib[,badscans]<2, 1, all),]### dim
 ###lets create a df from our spectral library to be saved
 alaskaSpecLib_df<-alaskaSpecLib
 
+#alaskaSpecLib_df_species<-alaskaSpecLib_df%>%dplyr::select(PFT,PFT_2,PFT_3)
+#write.csv(alaskaSpecLib_df_species                 ,"Test_Outputs/1_Field_spec/1_Processing/alaskaSpecLib_df_species.csv"                  ,row.names = F)
+
 ####Lets run that test again just to make sure our function worked
 tst<-lapply(alaskaSpecLib[-1:-7],range)%>%as.data.frame%>%t()%>%as.data.frame
 tst$V1%>%range()##There are no weird values, those are values outside of 0 and 2
