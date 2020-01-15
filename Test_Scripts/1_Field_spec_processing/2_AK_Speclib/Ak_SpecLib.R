@@ -306,59 +306,6 @@ alaskaSpecLib$PFT_3[alaskaSpecLib$PFT=="vaculi"]<-"Dwarf Shrub"
 alaskaSpecLib$PFT_3[alaskaSpecLib$PFT=="vulpin"]<-"Lichen"
 alaskaSpecLib$PFT_3[alaskaSpecLib$PFT=="wooly_salix"]<-"Shrub"
 
-###Create Group of lichens
-#Cladonia<-c(
-#  "claama"
-#  ,"clacor"
-#  ,"clacuc"
-#  ,"clagra"
-#  ,"clamit"
-#  ,"claran"
-#  ,"claste"
-#  ,"clasty"
-#  ,"clasul"
-#  ,"claunc"
-#)
-#
-#Dark_lichen<-c(
-#  "bryoria"
-#  ,"cetisl"
-#  ,"cetlae"
-#  ,"masric"
-#  ,"melanelia"
-#  ,"melhep"
-#  ,"tragra"
-#  ,"umbarc"
-#  ,"umbhyp"
-#  ,"grey_rhizocarpon"
-#  ,"orange_Porpidia"
-#)
-#
-#Grey_Lichen<-c(
-#  "hypaus"
-#  ,"icmeri"
-#  ,"paromp"
-#  ,"parsul"
-#  ,"stepas"
-#  ,"stetas"
-#  ,"pelapt"
-#  ,"pelleu"
-#  ,"pelmal"
-#  ,"pelsca"
-#)
-#
-#Yellow_Lichen<-c(
-#  "paramb"
-#  ,"usnlap"
-#  ,"usnsca"
-#  ,"neparc"
-#  ,"evemes"
-#  ,"flacuc"
-#  ,"flaniv"
-#  ,"vulpin"
-#  ,"aleoch"
-#  ,"arccen"
-#  ,"asachr")
 
 ##Lets add more details to our spectral library by adding  frequency columns
 ##These frequency values represent the number of scans per species and the number of scans per functional group
