@@ -1,4 +1,8 @@
 #################################VIs modesl for headwall imagery######################################################
+##Please add these files to folder below before running this script 
+##https://drive.google.com/open?id=11eWSad41LVmw2KTkSyHyhZNLRlYv5UBL
+##\Alaska_Spectral_Library\Test_Outputs\2_HDW_Imagery\1_Processing
+
 ###Inputs from this model were made in Scripts/2_Image_processing/2_var/Headwall
 library(spectrolab)
 library(randomForest)
