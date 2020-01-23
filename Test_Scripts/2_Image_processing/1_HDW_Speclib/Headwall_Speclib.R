@@ -4,7 +4,7 @@ library(tidyverse)
 
 ##Reads in spectral library as a spectral object
 ##This is the spectral library that had all uncalibrated scans removed
-alaskaSpeclib<-readRDS("Test_Outputs/1_Field_Spec/1_Processing/alaskaSpeclib.rds")
+alaskaSpeclib<-readRDS("Test_Outputs/1_Field_Spec/1_Processing/alaskaSpecLib_reduced.rds")
 
 ##creates and object of bandpasses from imagery
 ##We'll omit bandpasses 900-1000 since there is alot of random noise in that region of the spectrum
@@ -358,27 +358,21 @@ alaskaSpecLib_test[-1:-7] %>%
                                  ##all those columns that we know have rows that have negative values
 
 ##Lets remove this row and convert our new spectral library back to a dataframe
-alaskaSpecLib_HDW1<-alaskaSpecLib_test%>%subset(`445.739`>0) ##dim()  1916  333
-
-##Now lets convert to a spectral object and add metadata
-alaskaSpecLib_HDW<-alaskaSpecLib_HDW1[-1:-7]%>%as.spectra()
-meta(alaskaSpecLib_HDW)<-data.frame(alaskaSpecLib_HDW1[1:7], stringsAsFactors = FALSE)
+alaskaSpecLib_HDW_df<-alaskaSpecLib_test%>%subset(`445.739`>0) ##dim()  1916  333
 
 ####Lets run that test again
-tst3<-lapply(alaskaSpecLib_HDW1[-1:-7],range)%>%as.data.frame%>%t()%>%as.data.frame
+tst3<-lapply(alaskaSpecLib_HDW_df[-1:-7],range)%>%as.data.frame%>%t()%>%as.data.frame
 tst3$V1%>%range()##There are no weird values, those are values outside of 0 and 2
 tst3$V2%>%range()##There are no weird values, those are values outside of 0 and 2
 ##Converting a spectral object should not change reflectance values
 
-#Now lets create a dataframe with all scans that are equal to 25 scans per functional group
-alaskaSpecLib_HDW_df<-alaskaSpecLib_HDW%>%as.data.frame()%>%dplyr::select(-sample_name)##convert to a dataframe first
-alaskaSpecLib_HDW_df_equal25<-alaskaSpecLib_HDW_df%>% group_by(PFT_3) %>% sample_n(25,replace = TRUE)
-
+##Now lets convert to a spectral object and add metadata
+alaskaSpecLib_HDW<-alaskaSpecLib_HDW_df[-1:-7]%>%as.spectra()
+meta(alaskaSpecLib_HDW)<-data.frame(alaskaSpecLib_HDW_df[1:7], stringsAsFactors = FALSE)
   
 ##Lets save our bandpasses and other outputs
 write(Headwall_wv,"Test_Outputs/2_HDW_Imagery/1_Processing/Headwall_wv")
 write.csv(alaskaSpecLib_HDW_df        ,"Test_Outputs/2_HDW_Imagery/1_Processing/alaskaSpecLib_HDW_df.csv"        ,row.names = FALSE)
-write.csv(alaskaSpecLib_HDW_df_equal25,"Test_Outputs/2_HDW_Imagery/1_Processing/alaskaSpecLib_HDW_df_equal25.csv",row.names = FALSE)
 
 ##Now lets save our New headwall spectral library
 saveRDS(alaskaSpecLib_HDW,"Test_Outputs/2_HDW_Imagery/1_Processing/alaskaSpeclib_HDW.rds")

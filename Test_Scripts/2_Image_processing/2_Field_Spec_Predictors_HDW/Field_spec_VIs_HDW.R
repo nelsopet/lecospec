@@ -3,7 +3,7 @@ library(tidyverse)
 library(hsdar)
 
 ##Reads in spectral library....dim 1974  333
-alaskaSpeclib_HDW<-read.csv("Test_Outputs/2_HDW_Imagery/1_Processing/alaskaSpecLib_HDW_df_equal25.csv")
+alaskaSpeclib_HDW<-read.csv("Test_Outputs/2_HDW_Imagery/1_Processing/alaskaSpecLib_HDW_df.csv")
 
 ####Lets run that test again
 tst<-lapply(alaskaSpeclib_HDW[-1:-7],range)%>%as.data.frame%>%t()%>%as.data.frame
@@ -25,19 +25,20 @@ alaskaSpeclib_HDW_speclib<-speclib(alaskaSpeclib_HDW_matrix,HDW_ng_wv)
 
 ##creates a vectror of names of all the vegitation indices...there are 115 of these
 VIs<-vegindex()
-VIs<-VIs[-58] ##Vegitation indices mREIP won't work so remove it from list
+
+##Vegitation indices mREIP won't work so remove it from list
+##Remember the field spectral library was resampled on the headwall sensor's bandpasses...400nm-100nm
+##This means some Veg indices won't generate values because those bands are not present
+##Lets remove thos VIs that won't work
+VIs<-VIs[-c(3,26,27,31,32,33,35,48,49,58,60,66,67,71,82,99,102,103,104,105)]
 
 ##Creates dataframe with Vegitation indices
 alaskaSpeclib_HDW_VIs<-vegindex(alaskaSpeclib_HDW_speclib,index=VIs)
 
 ##lets do a logical test on alaskaSpeclib_HDW_VIs to see if strange values exist
 test4<-lapply(alaskaSpeclib_HDW_VIs,range)%>%as.data.frame%>%t()%>%as.data.frame
-#test4%>%View()##There are columns where NaNs exist because the spectral range of the sensor is 400nm-100nm
-##Remember the field spectral library was resampled on the headwall sensor's bandpasses
-##This means some Veg indices won't generate values because those bands are not present
-##Lets remove all those columns with values that have NaNs and Infs
-alaskaSpeclib_HDW_VIs<-alaskaSpeclib_HDW_VIs%>%dplyr::select(-CAI,-Datt7,-Datt8,-DWSI1,-DWSI2,-DWSI3,-DWSI5,-LWVI1,-LWVI2,-MSI
-                                                             ,-NDLI,-NDNI,-NDWI,-PWI,-SRWI,-'SWIR FI',-'SWIR LI',-'SWIR SI',-'SWIR VI')
+#test4%>%View()##There are no columns where NaNs exist 
+
 
 ##we need to combine the other columns with our new VI variables
 alaskaSpeclib_HDW_VIs<-cbind(alaskaSpeclib_HDW[1:7],alaskaSpeclib_HDW_VIs)
@@ -59,9 +60,5 @@ Newcolnames<-c("Boochs"        ,"Boochs2"       ,"CARI"          ,"Carter"      
 
 colnames(alaskaSpeclib_HDW_VIs)[-1:-7]<-Newcolnames
 
-##lets do a logical test again
-test5<-lapply(alaskaSpeclib_HDW_VIs[-1:-7], range)%>%as.data.frame%>%t()%>%as.data.frame()
-#test5%>%View()###There are no NaNs or Infs
-
 ##Now that we have our VIs calculated we can go ahead and export these dataframes
-write.csv(alaskaSpeclib_HDW_VIs,"Test_Outputs/2_HDW_Imagery/1_Processing/alaskaSpeclib_HDW_VIs_equal25.csv",row.names = FALSE)
+write.csv(alaskaSpeclib_HDW_VIs,"Test_Outputs/2_HDW_Imagery/1_Processing/alaskaSpeclib_HDW_VIs.csv",row.names = FALSE)
