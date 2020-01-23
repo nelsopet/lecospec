@@ -12,7 +12,7 @@ test<-lapply(EightMileTest_HDW[,-1:-2],range)%>%as.data.frame%>%t()%>%as.data.fr
 test%>%lapply(range) ### All values fall between 0 and 1.2 and there are no NA values
 
 ##Reads in bandpasses for imagery to be used later
-HDW_ng_wv<-scan("Outputs/2_HDW_Imagery/1_Processing/Headwall_wv", numeric())
+HDW_ng_wv<-scan("Test_Outputs/2_HDW_Imagery/1_Processing/Headwall_wv", numeric())
 
 #EightMileTest_HDW[is.na(EightMileTest_HDW$`397.593`),]%>% nrow()
 
@@ -28,7 +28,12 @@ EightMileTest_HDW_speclib   <-speclib  (EightMileTest_HDW_matrix   ,HDW_ng_wv[1:
 
 ##creates a vectror of names of all the vegitation indices...there are 115 of these
 VIs<-vegindex()
-VIs<-VIs[-58] ##Vegitation indices mREIP won't work so remove it from list
+
+##Vegitation indices mREIP won't work so remove it from list
+##Remember the field spectral library was resampled on the headwall sensor's bandpasses...400nm-100nm
+##This means some Veg indices won't generate values because those bands are not present
+##Lets remove thos VIs that won't work
+VIs<-VIs[-c(3,26,27,31,32,33,35,48,49,58,60,66,67,71,82,99,102,103,104,105)]
 
 ##Creates dataframe with Vegitation indices
 EightMileTest_VIs       <-vegindex(EightMileTest_HDW_speclib       ,index=VIs)
@@ -38,12 +43,9 @@ colnames(EightMileTest_VIs  )<-VIs
 
 ##lets do a logical test on EightMileTest_HDW_VIs to see if strange values exist
 test3<-lapply(EightMileTest_VIs,range)%>%as.data.frame%>%t()%>%as.data.frame
-#test3%>%View()##There are columns where NaNs and Inf exist because the spectral range of the sensor is 400nm-100nm
-##This means some Veg indices won't generate values because those bands are not present
-##Lets remove all those columns with values that have NaNs and Infs
-EightMileTest_VIs<-EightMileTest_VIs%>%dplyr::select(-CAI,-Datt7,-Datt8,-DWSI1,-DWSI2,-DWSI3,-DWSI5,-LWVI1,-LWVI2,-MSI
-                                           ,-NDLI,-NDNI,-NDWI,-PWI,-SRWI,-'SWIR FI',-'SWIR LI',-'SWIR SI',-'SWIR VI')
+#test3%>%View()##There are no columns where NaNs and Inf exist
 
+##we need to combine the other columns with our new VI variables
 EightMileTest_VIs_A  <-cbind(EightMileTest_HDW   [1:2],EightMileTest_VIs   )
 
 ##Now we have to ensure that all column names have no spaces nor arithmetic operators
@@ -62,12 +64,7 @@ newcolnames<-c("Boochs"        ,"Boochs2"       ,"CARI"          ,"Carter"      
                ,"SRPI"          ,"Sum_Dr1"       ,"Sum_Dr2"       ,"TCARI"         ,"TCARIOSAVI"    ,"TCARI2"        ,"TCARI2OSAVI2"
                ,"TGI"           ,"TVI"           ,"Vogelmann"     ,"Vogelmann2"    ,"Vogelmann3"    ,"Vogelmann4") 
 
-colnames(EightMileTest_VIs_A )[-1:-2]<-newcolnames
-##DIM725940 274
-
-##lets do a logical test again to the image 
-test6<-lapply(EightMileTest_VIs_A[-1:-2], range)%>%as.data.frame%>%t()%>%as.data.frame()
-#test6%>%view()###There are NaNs and infs, lets remove them, dim() 1974  333
+colnames(EightMileTest_VIs_A )[-1:-2]<-newcolnames...##dim 66024 97
 
 ##need to come up with a function
 EightMileTest_VIs_A<-subset(EightMileTest_VIs_A, is.infinite(Boochs)==F) ##dim()  1973  102 

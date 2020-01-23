@@ -4,7 +4,7 @@ library(tidyverse)
 
 ##Reads in spectral library as a dataframe
 ##this is the spectral library that had all uncalibrated bands removed
-alaskaSpeclib_HDW_df<-read.csv("Test_Outputs/2_HDW_Imagery/1_Processing/alaskaSpecLib_HDW_df_equal25.csv",check.names = F)
+alaskaSpeclib_HDW_df<-read.csv("Test_Outputs/2_HDW_Imagery/1_Processing/alaskaSpecLib_HDW_df.csv",check.names = F)
 
 alaskaSpeclib_HDW<-alaskaSpeclib_HDW_df[-1:-7]%>%as.spectra()
 
@@ -24,15 +24,6 @@ tst2$V1%>%range()##There are no weird values, those are values outside of 0 and 
 tst2$V2%>%range()##There are no weird values, those are values outside of 0 and 2
 #tst2 %>% subset(V1 <0) %>% View()
 
-#alaskaSpeclib_HDW_05nm[-1:-7] %>% #dim() ] 1975  333
-#  dplyr::select(`444.444`) %>% 
-#  subset(`444.444`<0) %>% nrow() ##There is only one row here that has negative values, we could try this on multiple columns
-##all those columns that we know have rows that have negative values
-
-##Lets remove this row
-#alaskaSpeclib_HDW_05nm<-alaskaSpeclib_HDW_05nm%>%subset(`444.444`>0) ##dim()  1974  333
-##you could run logical test above just to check the dataset before moving on
-
 ####Lets run that test on "alaskaSpeclib_HDW_10nm"
 tst3<-lapply(alaskaSpeclib_HDW_050nm[-1:-7],range)%>%as.data.frame%>%t()%>%as.data.frame
 tst3$V1%>%range()##There are no weird values, those are values outside of 0 and 2
@@ -45,12 +36,7 @@ tst4$V1%>%range()##There are no weird values, those are values outside of 0 and 
 tst4$V2%>%range()##There are no weird values, those are values outside of 0 and 2
 #tst4 %>% subset(V1 <0) %>% View() ##There a bunch of negative values across 128 columns, this might be one row, lets test this
 
-#alaskaSpeclib_HDW_10nm[-1:-7] %>% #dim() ] 1975  333
-#  dplyr::select(`529.444`) %>% 
-#  subset(`529.444`<0) %>% nrow() ##There is only one row here that has negative values, we could try this on multiple columns
-##all those columns that we know have rows that have negative values
-
 ###Lets save our new dfs
-write.csv(alaskaSpeclib_HDW_010nm,"Test_Outputs/2_HDW_Imagery/1_Processing/alaskaSpeclib_HDW_010nm_equal25.csv",row.names = FALSE)
-write.csv(alaskaSpeclib_HDW_050nm,"Test_Outputs/2_HDW_Imagery/1_Processing/alaskaSpeclib_HDW_050nm_equal25.csv",row.names = FALSE)
-write.csv(alaskaSpeclib_HDW_100nm,"Test_Outputs/2_HDW_Imagery/1_Processing/alaskaSpeclib_HDW_100nm_equal25.csv",row.names = FALSE)
+write.csv(alaskaSpeclib_HDW_010nm,"Test_Outputs/2_HDW_Imagery/1_Processing/alaskaSpeclib_HDW_010nm.csv",row.names = FALSE)
+write.csv(alaskaSpeclib_HDW_050nm,"Test_Outputs/2_HDW_Imagery/1_Processing/alaskaSpeclib_HDW_050nm.csv",row.names = FALSE)
+write.csv(alaskaSpeclib_HDW_100nm,"Test_Outputs/2_HDW_Imagery/1_Processing/alaskaSpeclib_HDW_100nm.csv",row.names = FALSE)

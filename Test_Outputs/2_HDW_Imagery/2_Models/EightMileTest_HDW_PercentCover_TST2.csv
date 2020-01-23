@@ -1,21 +1,30 @@
-Model Estimate,,,,,,,,
-CLASS_NAME,DwarfShrub_P,Shrub_P,Graminoid_P,Moss_P,Tree_P,Lichen_P,Forb_P,
-Light lichen spot1,0,0,25,0,0,75,0,
-Light lichen spot2,0,0,25,0,0,75,0,
-Light lichen spot3,0,0,0,0,0,100,0,
-Quad 10,1.814882033,36.47912886,38.47549909,17.42286751,0,4.355716878,1.451905626,
-Quad 11,0,23.37164751,55.17241379,21.07279693,0,0.383141762,0,
-,,,,,,,,
-Jane's Estimate,,,,,,,,
-CLASS_NAME_A,DwarfShrub_A,Shrub_A,Graminoid_A,Moss_A,Tree_A,Lichen_A,Forb_A,Litter_A
-Quad1,15,80,0,0,0,0,0,5
-Quad2,0,65,8,25,0,0,0,2
-Quad3,0,65,5,3,0,7,0,20
-Quad4,0,35,5,20,0,20,0,20
-Quad5,0,45,5,15,0,20,0,15
-Quad6,20,40,2,25,0,3,0,10
-Quad7,10,45,5,0,0,25,0,15
-Quad8,0,60,10,0,0,20,0,10
-Quad9,2,50,15,13,0,15,0,5
-Quad10,0,50,20,5,0,0,0,25
-Quad11,0,55,15,5,0,0,0,25
+Model estimates New Groups,,,,,,,,,,,,
+CLASS_NAME,Dwarf_Shrub_Needle_p,Dwarf_Shrub_Broad5_p,Shrub_Salix_p,Shrub_Other_p,Shrub_Alder_p,Graminoid_Sedge_p,Moss_Pleurocarp_p,Tree_Needle_p,Lichen_Yellow_p,Lichen_Dark_p,Lichen_Light_p,Forb_p
+Light lichen spot1,NA,NA,0,0,0,0,0,0,100,0,0,0
+Light lichen spot2,NA,NA,0,0,0,0,0,0,100,0,0,0
+Light lichen spot3,NA,NA,0,0,0,0,0,0,96,4,0,0
+Quad 10,NA,NA,1.08892922,42.28675136,0,48.27586207,0,0,3.811252269,3.811252269,0,0
+Quad 11,NA,NA,0.383141762,12.64367816,0,85.05747126,0,0,0,1.149425287,0,0.383141762
+,,,,,,,,,,,,
+,,,,,,,,,,,,
+Jane's Estimate,,,,,,,,,,,,
+CLASS_NAME_A,DwarfShrub_A,Shrub_A,Graminoid_A,Moss_A,Tree_A,Lichen_A,Forb_A,Litter_A,,,,
+Quad1,15,80,0,0,0,0,0,5,,,,
+Quad2,0,65,8,25,0,0,0,2,,,,
+Quad3,0,65,5,3,0,7,0,20,,,,
+Quad4,0,35,5,20,0,20,0,20,,,,
+Quad5,0,45,5,15,0,20,0,15,,,,
+Quad6,20,40,2,25,0,3,0,10,,,,
+Quad7,10,45,5,0,0,25,0,15,,,,
+Quad8,0,60,10,0,0,20,0,10,,,,
+Quad9,2,50,15,13,0,15,0,5,,,,
+Quad10,0,50,20,5,0,0,0,25,,,,
+Quad11,0,55,15,5,0,0,0,25,,,,
+,,,,,,,,,,,,
+Model Estimates,,,,,,,,,,,,
+CLASS_NAME,DwarfShrub_P,Shrub_P,Graminoid_P,Moss_P,Tree_P,Lichen_P,Forb_P,Litter_P,,,,
+Light lichen spot1,NA,0,0,0,0,100,0,,,,,
+Light lichen spot2,NA,0,0,0,0,100,0,,,,,
+Light lichen spot3,NA,0,0,0,0,100,0,,,,,
+Quad 10,NA,43.37568058,48.27586207,0,0,7.622504537,0,,,,,
+Quad 11,NA,13.02681992,85.05747126,0,0,1.149425287,0.383141762,,,,,
