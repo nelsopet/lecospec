@@ -53,10 +53,16 @@ Lichen_groups2<-inner_join(alaskaSpecLib_test,Lichen_groups2, by = "PFT")%>%dply
 #Llets delete the last 4 columns
 Lichen_groups2[19:22]<-NULL
 
+##lets create a dataframe wirh a count of all the color groups
+Lichen_groups_count<-table(Lichen_groups_LAN_VIs$color)%>%as.data.frame()
+colnames(Lichen_groups_count)[1]<-"colourGroup"
+
+
 ##Lets save our bandpasses and other outputs
 write(Landsat_wv,"Outputs/1_Field_spec/1_Processing/Landsat_data/Landsat_wv")
 write.csv(alaskaSpecLib_test        ,"Outputs/1_Field_spec/1_Processing/Landsat_data/alaskaSpecLib_LAN_df.csv"        ,row.names = FALSE)
 write.csv(Lichen_groups2            ,"Outputs/1_Field_spec/1_Processing/Landsat_data/Lichen_groups_df.csv"            ,row.names = FALSE)
+write.csv(Lichen_groups_count            ,"Outputs/1_Field_spec/1_Processing/Landsat_data/Lichen_groups_count.csv"            ,row.names = FALSE)
 
 
 ##Now lets save our New headwall spectral library
