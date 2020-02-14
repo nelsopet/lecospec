@@ -569,9 +569,8 @@ Tree_Needle       <-subset(alaskaSpecLib_df,PFT_3=="Tree_Needle")
 
 ###Lets create a dataframe with Lichen colour groups to be used for an unrelated model later
 alaskaSpecLib_groups<-alaskaSpecLib_df%>%subset(PFT_3=="Lichen_Dark" | PFT_3=="Lichen_Yellow" | PFT_3=="Lichen_Light")%>%dplyr::select(PFT,PFT_2,PFT_3)
-alaskaSpecLib_groups_names<-unique(alaskaSpecLib_groups)%>%as.data.frame()
-#write.csv(alaskaSpecLib_groups      , "Outputs/1_Field_spec/1_Processing/PSR_data/PSR_ProcessedSpec/Lichen_groups.csv", row.names = FALSE)
-#write.csv(alaskaSpecLib_groups_names, "Outputs/1_Field_spec/1_Processing/PSR_data/PSR_ProcessedSpec/Lichen_groups_names.csv", row.names = FALSE)
+alaskaSpecLib_groups<-unique(alaskaSpecLib_groups)%>%as.data.frame()
+write.csv(alaskaSpecLib_groups      , "Outputs/1_Field_spec/1_Processing/PSR_data/PSR_ProcessedSpec/Lichen_groups.csv", row.names = FALSE)
 
 ##Lets view how many scans there are per species
 Species_table<-alaskaSpecLib_df %>%

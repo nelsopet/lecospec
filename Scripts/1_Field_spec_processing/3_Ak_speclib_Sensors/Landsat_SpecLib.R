@@ -45,12 +45,19 @@ veg_RefDf    <-read.csv("Outputs/1_Field_spec/1_Processing/Landsat_data/Veg_ref.
 Lichen_groups<-read.csv("Outputs/1_Field_spec/1_Processing/PSR_data/PSR_ProcessedSpec/Lichen_groups.csv")
 
 ##Now lets do a inner_join
-Lichen_groups2<-left_join (Lichen_groups ,alaskaSpecLib_test, by = "PFT")
-Lichen_groups2<-inner_join(Lichen_groups2,veg_RefDf         , by = "PFT")
+Lichen_groups2<-inner_join (Lichen_groups ,veg_RefDf, by = "PFT")
+Lichen_groups2<-inner_join(alaskaSpecLib_test,Lichen_groups2, by = "PFT")%>%dplyr::select(ScanID,PFT,PFT_2.x
+                                                                                          ,PFT_3.x,PFT_4,color
+                                                                                          ,veg_lifeform_code
+                                                                                          ,group,everything())
+#Llets delete the last 4 columns
+Lichen_groups2[19:22]<-NULL
 
 ##Lets save our bandpasses and other outputs
 write(Landsat_wv,"Outputs/1_Field_spec/1_Processing/Landsat_data/Landsat_wv")
 write.csv(alaskaSpecLib_test        ,"Outputs/1_Field_spec/1_Processing/Landsat_data/alaskaSpecLib_LAN_df.csv"        ,row.names = FALSE)
+write.csv(Lichen_groups2            ,"Outputs/1_Field_spec/1_Processing/Landsat_data/Lichen_groups_df.csv"            ,row.names = FALSE)
+
 
 ##Now lets save our New headwall spectral library
 saveRDS(alaskaSpecLib_LAN,"Outputs/1_Field_spec/1_Processing/Landsat_data/alaskaSpeclib_LAN.rds")
