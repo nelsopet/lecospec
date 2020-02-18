@@ -4,7 +4,7 @@ library(tidyverse)
 
 ##Reads in spectral library as a spectral object
 ##This is the spectral library that had all uncalibrated scans removed
-alaskaSpeclib<-readRDS("Test_Outputs/1_Field_Spec/1_Processing/alaskaSpeclib.rds")
+alaskaSpeclib<-readRDS("Outputs/1_Field_spec/1_Processing/PSR_data/PSR_ProcessedSpec/alaskaSpecLib_reduced.rds")
 
 ##creates and object of bandpasses from imagery
 AVIRIS_wv<-c(381.870000,  386.880000,  391.890000,  396.890000,  401.900000,  406.910000,
@@ -77,47 +77,33 @@ alaskaSpeclib_AV<-spectrolab::resample(alaskaSpeclib,AVIRIS_wv)
 ###Lets convert our new spectral library spectral object  to a dataframe
 ##Run logical test to see if this conversion affect reflectance values
 ##Are there values outside of the rane 0-2???
-alaskaSpecLib_test<-alaskaSpeclib_AV%>%as.data.frame()%>%dplyr::select(-sample_name)
+alaskaSpecLib_test<-alaskaSpeclib_AV%>%as.data.frame()%>%dplyr::select(-sample_name) ##dim()  801 381
 
 ####Lets run that test again
-tst2<-lapply(alaskaSpecLib_test[-1:-7],range)%>%as.data.frame%>%t()%>%as.data.frame ##dim()  1975  333
+tst2<-lapply(alaskaSpecLib_test[-1:-9],range)%>%as.data.frame%>%t()%>%as.data.frame 
 tst2$V1%>%range()##There are negative values being created here, this is where the problem lies, how can we solve this???
 tst2$V2%>%range()##There are no weird values, those are values outside of 0 and 2
+#tst2 %>% subset(V1 <0) %>% View() ##There a bunch of negative values across 128 columns
 
-#tst2 %>% subset(V1 <0) %>% View() ##There a bunch of negative values across 128 columns, this might be one row, lets test this
-
-#alaskaSpecLib_test[-1:-7] %>% 
-#  as.data.frame()%>%
-#  'colnames<-'(AVIRIS_wv) %>% #dim() ] 1975  333
-#  dplyr::select(names(alaskaSpecLib_test[-1:-7])) %>% 
-#  subset(`2480.5`< 0) %>% View()##there is more than one row here that has negative values, we could try this on multiple columns
-                                 ##all those columns that we know have rows that have negative value
-                                 ##Need to create a function that will remove all these rows at once
-                                 ##The rows that needs to be removed are 204:207,217:220,548,603,1105,1163
-
-alaskaSpecLib_AV1<-alaskaSpecLib_test[-c(204:207,217:220,548,603,1105,1163), ] ##dim()  1905  333
-
-##Now lets convert to a spectral object and add metadata
-alaskaSpecLib_AV<-alaskaSpecLib_AV1[-1:-7]%>%as.spectra()
-meta(alaskaSpecLib_AV)<-data.frame(alaskaSpecLib_AV1[1:7], stringsAsFactors = FALSE)
+##Lets remove all the rows with negative values 
+alaskaSpecLib_new_df<-alaskaSpecLib_test%>%
+  filter_all(all_vars(. >=0))##dim()  796 381
 
 ####Lets run that test again
-tst3<-lapply(alaskaSpecLib_AV1[-1:-7],range)%>%as.data.frame%>%t()%>%as.data.frame
+tst3<-lapply(alaskaSpecLib_new_df[-1:-9],range)%>%as.data.frame%>%t()%>%as.data.frame
 tst3$V1%>%range()##There are no weird values, those are values outside of 0 and 2
 tst3$V2%>%range()##There are no weird values, those are values outside of 0 and 2
 #tst3 %>% subset(V1 <0) %>% View() 
 
-#Now lets create a dataframe with all scans that are equal to 25 scans per functional group
-alaskaSpecLib_AV_df<-alaskaSpecLib_AV%>%as.data.frame()%>%dplyr::select(-sample_name)##convert to a dataframe first
-alaskaSpecLib_AV_df_equal25<-alaskaSpecLib_AV_df%>% group_by(PFT_3) %>% sample_n(25,replace = TRUE)
-
+##Now lets convert to a spectral object and add metadata
+alaskaSpecLib_new_spec<-alaskaSpecLib_new_df[-1:-9]%>%as.spectra()
+meta(alaskaSpecLib_new_spec)<-data.frame(alaskaSpecLib_new_df[1:9], stringsAsFactors = FALSE)
 
 ##Lets save our bandpasses and other outputs
-write(AVIRIS_wv,"Test_Outputs/3_AV_Imagery/1_Processing/AVIRIS_wv")
-write.csv(alaskaSpecLib_AV_df        ,"Test_Outputs/3_AV_Imagery/1_Processing/alaskaSpecLib_AV_df.csv"        ,row.names = FALSE)
-write.csv(alaskaSpecLib_AV_df_equal25,"Test_Outputs/3_AV_Imagery/1_Processing/alaskaSpecLib_AV_df_equal25.csv",row.names = FALSE)
+write(AVIRIS_wv,"Outputs/1_Field_spec/1_Processing/AVIRIS_data/AVIRIS_wv")
+write.csv(alaskaSpecLib_new_df        ,"Outputs/1_Field_spec/1_Processing/AVIRIS_data/alaskaSpecLib_AV_df.csv"        ,row.names = FALSE)
 
 ##Now lets save our New AVIRIS spectral library
-saveRDS(alaskaSpecLib_AV,"Test_Outputs/3_AV_Imagery/1_Processing/alaskaSpeclib_AV.rds")
+saveRDS(alaskaSpecLib_new_spec,"Outputs/1_Field_spec/1_Processing/AVIRIS_data/alaskaSpeclib_AV.rds")
 
 

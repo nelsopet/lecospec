@@ -347,32 +347,25 @@ alaskaSpecLib_test<-alaskaSpeclib_HDW%>%as.data.frame()%>%dplyr::select(-sample_
 tst2<-lapply(alaskaSpecLib_test[-1:-9],range)%>%as.data.frame%>%t()%>%as.data.frame
 tst2$V1%>%range()##There are negative values being created here, this is where the problem lies, how can we solve this???
 tst2$V2%>%range()##There are no weird values, those are values outside of 0 and 2
-
 #tst2 %>% subset(V1 <0) %>% View() ##There a bunch of negative values across 128 columns, this might be one row, lets test this
 
-alaskaSpecLib_test[-1:-9] %>% 
-  as.data.frame()%>%
-  'colnames<-'(Headwall_wv) %>% #dim() ] 1917  333
-  dplyr::select(`445.739`) %>% 
-  subset(`445.739`<0) %>% nrow() ###there is only one row here that has negative values, we could try this on multiple columns
-                                 ##all those columns that we know have rows that have negative values
-
-##Lets remove this row and convert our new spectral library back to a dataframe
-alaskaSpecLib_HDW_df<-alaskaSpecLib_test%>%subset(`445.739`>0) ##dim()  1916  333
+##Lets remove all the rows with negative values 
+alaskaSpecLib_new_df<-alaskaSpecLib_test%>%
+  filter_all(all_vars(. >=0))##dim()  800 281
 
 ####Lets run that test again
-tst3<-lapply(alaskaSpecLib_HDW_df[-1:-9],range)%>%as.data.frame%>%t()%>%as.data.frame
+tst3<-lapply(alaskaSpecLib_new_df[-1:-9],range)%>%as.data.frame%>%t()%>%as.data.frame
 tst3$V1%>%range()##There are no weird values, those are values outside of 0 and 2
 tst3$V2%>%range()##There are no weird values, those are values outside of 0 and 2
-##Converting a spectral object should not change reflectance values
+#tst3 %>% subset(V1 <0) %>% View() 
 
 ##Now lets convert to a spectral object and add metadata
-alaskaSpecLib_HDW<-alaskaSpecLib_HDW_df[-1:-9]%>%as.spectra()
-meta(alaskaSpecLib_HDW)<-data.frame(alaskaSpecLib_HDW_df[1:9], stringsAsFactors = FALSE)
+alaskaSpecLib_HDW<-alaskaSpecLib_new_df[-1:-9]%>%as.spectra()
+meta(alaskaSpecLib_HDW)<-data.frame(alaskaSpecLib_new_df[1:9], stringsAsFactors = FALSE)
   
 ##Lets save our bandpasses and other outputs
 write(Headwall_wv,"Outputs/1_Field_spec/1_Processing/Headwall_data/Headwall_wv")
-write.csv(alaskaSpecLib_HDW_df        ,"Outputs/1_Field_spec/1_Processing/Headwall_data/alaskaSpecLib_HDW_df.csv"        ,row.names = FALSE)
+write.csv(alaskaSpecLib_new_df        ,"Outputs/1_Field_spec/1_Processing/Headwall_data/alaskaSpecLib_HDW_df.csv"        ,row.names = FALSE)
 
 ##Now lets save our New headwall spectral library
 saveRDS(alaskaSpecLib_HDW,"Outputs/1_Field_spec/1_Processing/Headwall_data/alaskaSpeclib_HDW.rds")

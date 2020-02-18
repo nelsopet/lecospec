@@ -13,13 +13,13 @@ alaskaSpecLib_data_HDWALLbands<-read.csv("Outputs/1_Field_spec/1_Processing/Head
 alaskaSpecLib_data_HDW        <-read.csv("Outputs/1_Field_spec/1_Processing/Headwall_data/alaskaSpecLib_data_HDW.csv"        )
 
 ##we'll need to apply a function to all dataframes that omits unwanted metadata
-alaskaSpeclib_HDW_005nm       [c("ScanID","PFT","PFT_2","area","Freq1","Freq2")] = NULL
-alaskaSpeclib_HDW_010nm       [c("ScanID","PFT","PFT_2","area","Freq1","Freq2")] = NULL
-alaskaSpeclib_HDW_050nm       [c("ScanID","PFT","PFT_2","area","Freq1","Freq2")] = NULL
-alaskaSpeclib_HDW_100nm       [c("ScanID","PFT","PFT_2","area","Freq1","Freq2")] = NULL
-alaskaSpeclib_HDW_VIs         [c("ScanID","PFT","PFT_2","area","Freq1","Freq2")] = NULL
-alaskaSpecLib_data_HDWALLbands[c("ScanID","PFT","PFT_2","area","Freq1","Freq2")] = NULL
-alaskaSpecLib_data_HDW        [c("ScanID","PFT","PFT_2","area","Freq1","Freq2")] = NULL
+alaskaSpeclib_HDW_005nm       [c("ScanID","PFT","PFT_2","PFT_4","area","Freq1","Freq2","Freq3")] = NULL
+alaskaSpeclib_HDW_010nm       [c("ScanID","PFT","PFT_2","PFT_4","area","Freq1","Freq2","Freq3")] = NULL
+alaskaSpeclib_HDW_050nm       [c("ScanID","PFT","PFT_2","PFT_4","area","Freq1","Freq2","Freq3")] = NULL
+alaskaSpeclib_HDW_100nm       [c("ScanID","PFT","PFT_2","PFT_4","area","Freq1","Freq2","Freq3")] = NULL
+alaskaSpeclib_HDW_VIs         [c("ScanID","PFT","PFT_2","PFT_4","area","Freq1","Freq2","Freq3")] = NULL
+alaskaSpecLib_data_HDWALLbands[c("ScanID","PFT","PFT_2","PFT_4","area","Freq1","Freq2","Freq3")] = NULL
+alaskaSpecLib_data_HDW        [c("ScanID","PFT","PFT_2","PFT_4","area","Freq1","Freq2","Freq3")] = NULL
 
 set.seed(2017)
 ##Lets run some different models so we can asses whiich ones are the best for prediction later
@@ -89,9 +89,6 @@ save(rf_VIs50, file = "Outputs/1_Field_spec/2_Models/Headwall/rf_VIs50.rda")
 save(rf_HDW10, file = "Outputs/1_Field_spec/2_Models/Headwall/rf_HDW10.rda")
 save(rf_HDW25, file = "Outputs/1_Field_spec/2_Models/Headwall/rf_HDW25.rda")
 save(rf_HDW50, file = "Outputs/1_Field_spec/2_Models/Headwall/rf_HDW50.rda")
-
-
-
 
 ##Lets create a data frame that will combine the class.error of all the categories of each model
 rf_005nm_ConfusionMatrixa   <-rf_005nm   $confusion%>%as.data.frame()%>%dplyr::select(class.error)%>%rename(rf_05nm    =class.error )
