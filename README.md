@@ -23,6 +23,8 @@ The repository analyzes high-resolution hyperspectral scans and images of Arctic
 Install Rstudio on your device 
 https://courses.edx.org/courses/UTAustinX/UT.7.01x/3T2014/56c5437b88fa43cf828bff5371c6a924/
 
+Go to google drive and dowlodad output folder into the repository: https://drive.google.com/open?id=1VHjvfh6IAMGPcdUNZihiauHIH3ngTva9 
+
 ## Folders
 There are three main folders in this repository. The folders contain data that is either raw, processed or output data. 
 
