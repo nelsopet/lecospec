@@ -4,10 +4,10 @@ library(tidyverse)
 library(hsdar)
 
 ##Reads in image as dataframe 
-EightMileTest_IMG_HDW<-brick("Original_data/Test_imagery_HDW/EightMile_TSTIMG")%>%rasterToPoints()%>%as.data.frame()
+EightMileTest_IMG_HDW<-brick("Original_data/Headwall/EightMile_TSTIMG")%>%rasterToPoints()%>%as.data.frame()
 
 ##Reads in bandpasses for imagery to be used later
-HDW_ng_wv<-scan("Test_Outputs/2_HDW_Imagery/1_Processing/Headwall_wv", numeric())
+HDW_ng_wv<-scan("Outputs/1_Field_spec/1_Processing/Headwall_data/Headwall_wv", numeric())
 
 ##lets remove all those bads that had noise
 EightMileTest_IMG_HDW[275:328]<-NULL
@@ -29,6 +29,7 @@ cords<-EightMileTest_IMG_HDW%>%dplyr::select(1,2)
 #alaskaSpeclib_HDW_50nm<-alaskaSpeclib_HDW_50nm%>%subset(`529.444`>0) ##dim()  1974  333
 ##you could run logical test above just to check the dataset before moving on
 ##Do the same steps above for imagery
+EightMileTest_IMG_HDW_005nm<-EightMileTest_IMG_HDW%>%dplyr::select(-x,-y)%>%spectrolab::as.spectra()%>%spectrolab::resample(seq(399.444,899.424,5  ))%>%as.data.frame()%>%cbind(cords)%>%dplyr::select(x,y,everything())%>%dplyr::select(-sample_name)
 EightMileTest_IMG_HDW_010nm<-EightMileTest_IMG_HDW%>%dplyr::select(-x,-y)%>%spectrolab::as.spectra()%>%spectrolab::resample(seq(399.444,899.424,10 ))%>%as.data.frame()%>%cbind(cords)%>%dplyr::select(x,y,everything())%>%dplyr::select(-sample_name)
 EightMileTest_IMG_HDW_050nm<-EightMileTest_IMG_HDW%>%dplyr::select(-x,-y)%>%spectrolab::as.spectra()%>%spectrolab::resample(seq(399.444,899.424,50 ))%>%as.data.frame()%>%cbind(cords)%>%dplyr::select(x,y,everything())%>%dplyr::select(-sample_name)
 EightMileTest_IMG_HDW_100nm<-EightMileTest_IMG_HDW%>%dplyr::select(-x,-y)%>%spectrolab::as.spectra()%>%spectrolab::resample(seq(399.444,899.424,100))%>%as.data.frame()%>%cbind(cords)%>%dplyr::select(x,y,everything())%>%dplyr::select(-sample_name)
@@ -73,10 +74,11 @@ EightMileTest_IMG_HDW_100nm<-EightMileTest_IMG_HDW%>%dplyr::select(-x,-y)%>%spec
 #DF[!rowSums(DF < 0), ]
 
 ###Lets save our new dfs
-write.csv(EightMileTest_IMG_HDW       ,"Test_Outputs/2_HDW_Imagery/1_Processing/EightMileTest_IMG_HDW_df.csv"    ,row.names = FALSE)
-write.csv(EightMileTest_IMG_HDW_010nm ,"Test_Outputs/2_HDW_Imagery/1_Processing/EightMileTest_IMG_HDW_010nm.csv" ,row.names = FALSE)
-write.csv(EightMileTest_IMG_HDW_050nm ,"Test_Outputs/2_HDW_Imagery/1_Processing/EightMileTest_IMG_HDW_050nm.csv" ,row.names = FALSE)
-write.csv(EightMileTest_IMG_HDW_100nm ,"Test_Outputs/2_HDW_Imagery/1_Processing/EightMileTest_IMG_HDW_100nm.csv" ,row.names = FALSE)
+write.csv(EightMileTest_IMG_HDW       ,"Outputs/2_Imagery/Headwall/Processing/EightMileTest_IMG_HDW_df.csv"    ,row.names = FALSE)
+write.csv(EightMileTest_IMG_HDW_005nm ,"Outputs/2_Imagery/Headwall/Processing/EightMileTest_IMG_HDW_005nm.csv" ,row.names = FALSE)
+write.csv(EightMileTest_IMG_HDW_010nm ,"Outputs/2_Imagery/Headwall/Processing/EightMileTest_IMG_HDW_010nm.csv" ,row.names = FALSE)
+write.csv(EightMileTest_IMG_HDW_050nm ,"Outputs/2_Imagery/Headwall/Processing/EightMileTest_IMG_HDW_050nm.csv" ,row.names = FALSE)
+write.csv(EightMileTest_IMG_HDW_100nm ,"Outputs/2_Imagery/Headwall/Processing/EightMileTest_IMG_HDW_100nm.csv" ,row.names = FALSE)
 
 
 

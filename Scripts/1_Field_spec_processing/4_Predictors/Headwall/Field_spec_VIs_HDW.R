@@ -10,7 +10,7 @@ HDW_ng_wv<-scan("Outputs/1_Field_spec/1_Processing/Headwall_data/Headwall_wv", n
 
 ###you'll need to convert your dfs to a matrix before VIS can be applied
 ##lets fo this for df created from the image and our spectral library of scans
-alaskaSpeclib_HDW_matrix<-as.matrix(alaskaSpeclib_HDW[-1:-7])
+alaskaSpeclib_HDW_matrix<-as.matrix(alaskaSpeclib_HDW[-1:-9])
 
 ##lets check the column attributes to see if any weird values were introduced
 alaskaSpeclib_HDW_matrix%>%max()##values are fine you may proceed, i.e no negative values or values grater than 2,you'll ned to check min values using the function min()
@@ -36,7 +36,7 @@ test4<-lapply(alaskaSpeclib_HDW_VIs,range)%>%as.data.frame%>%t()%>%as.data.frame
 
 
 ##we need to combine the other columns with our new VI variables
-alaskaSpeclib_HDW_VIs<-cbind(alaskaSpeclib_HDW[1:7],alaskaSpeclib_HDW_VIs)
+alaskaSpeclib_HDW_VIs<-cbind(alaskaSpeclib_HDW[1:9],alaskaSpeclib_HDW_VIs)
 
 Newcolnames<-c("Boochs"        ,"Boochs2"       ,"CARI"          ,"Carter"        ,"Carter2"      
                ,"Carter3"       ,"Carter4"       ,"Carter5"       ,"Carter6"       ,"CI"            ,"CI2"           ,"ClAInt"       
@@ -53,7 +53,7 @@ Newcolnames<-c("Boochs"        ,"Boochs2"       ,"CARI"          ,"Carter"      
                ,"SRPI"          ,"Sum_Dr1"       ,"Sum_Dr2"       ,"TCARI"         ,"TCARIOSAVI"    ,"TCARI2"        ,"TCARI2OSAVI2"
                ,"TGI"           ,"TVI"           ,"Vogelmann"     ,"Vogelmann2"    ,"Vogelmann3"    ,"Vogelmann4")
 
-colnames(alaskaSpeclib_HDW_VIs)[-1:-7]<-Newcolnames
+colnames(alaskaSpeclib_HDW_VIs)[-1:-9]<-Newcolnames
 
 ##Now that we have our VIs calculated we can go ahead and export these dataframes
 write.csv(alaskaSpeclib_HDW_VIs,"Outputs/1_Field_spec/1_Processing/Headwall_data/alaskaSpeclib_HDW_VIs.csv",row.names = FALSE)
