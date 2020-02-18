@@ -16,7 +16,6 @@ The repository analyzes high-resolution hyperspectral scans and images of Arctic
     + [2_Image_processing](#Scripts)
     + [3_Field_spec_Models](#Scripts)
     + [4_Image_Models](#Scripts)
-    + [5_Old_scripts](#Scripts)
   
 
 ### Getting Started
