@@ -39,31 +39,55 @@ tst2$V2%>%range()##There are no weird values, those are values outside of 0 and 
 alaskaSpecLib_LAN<-alaskaSpecLib_test[-1:-9]%>%as.spectra()
 meta(alaskaSpecLib_LAN)<-data.frame(alaskaSpecLib_test[1:9], stringsAsFactors = FALSE)
 
-##Lets add metadata to the dataset to be used in models later
+##Lets add metadata to the dataset to be used in models later 
+##Metadata contains l8 categories
 ##Firts we want to read in the meatdata that will be used
 veg_RefDf    <-read.csv("Outputs/1_Field_spec/1_Processing/Landsat_data/Veg_ref.csv")
 Lichen_groups<-read.csv("Outputs/1_Field_spec/1_Processing/PSR_data/PSR_ProcessedSpec/Lichen_groups.csv")
 
 ##Now lets do a inner_join
 Lichen_groups2<-inner_join (Lichen_groups ,veg_RefDf, by = "PFT")
-Lichen_groups2<-inner_join(alaskaSpecLib_test,Lichen_groups2, by = "PFT")%>%dplyr::select(ScanID,PFT,PFT_2.x
-                                                                                          ,PFT_3.x,PFT_4,color
-                                                                                          ,veg_lifeform_code
-                                                                                          ,group,everything())
-#Llets delete the last 4 columns
-Lichen_groups2[19:22]<-NULL
+Lichen_groups3<-inner_join(alaskaSpecLib_test,Lichen_groups2[,c("PFT","PFT_2","PFT_3","color")], 
+                           by = c("PFT","PFT_2","PFT_3"))%>%
+  dplyr::select(ScanID,PFT,PFT_2,PFT_3,PFT_4,color,everything())
 
-##lets create a dataframe wirh a count of all the color groups
-Lichen_groups_count<-table(Lichen_groups_LAN_VIs$color)%>%as.data.frame()
-colnames(Lichen_groups_count)[1]<-"colourGroup"
+##ahnge column name color to color_l8
+colnames(Lichen_groups3)[6]<-"color_l8"
 
+##lets create a dataframe wih a count of all the color groups
+Lichen_groups_count<-table(Lichen_groups3$color)%>%as.data.frame()
+colnames(Lichen_groups_count)[1]<-"colourGroup_1"
+
+##Lets add other columns with more course colour groups
+##Lets add color group l4
+Lichen_groups3$color_l4[Lichen_groups3$color_l8=="black"]    <-"dark"
+Lichen_groups3$color_l4[Lichen_groups3$color_l8=="brown"]    <-"dark"
+Lichen_groups3$color_l4[Lichen_groups3$color_l8=="gray"]     <-"dark"
+Lichen_groups3$color_l4[Lichen_groups3$color_l8=="green"]    <-"dark"
+Lichen_groups3$color_l4[Lichen_groups3$color_l8=="greengray"]<-"dark"
+Lichen_groups3$color_l4[Lichen_groups3$color_l8=="orange"]   <-"light"
+Lichen_groups3$color_l4[Lichen_groups3$color_l8=="white"]    <-"light"
+Lichen_groups3$color_l4[Lichen_groups3$color_l8=="yellow"]   <-"yellow"
+
+##Lets add color group l3
+Lichen_groups3$color_l3[Lichen_groups3$color_l8=="black"]    <-"dark"
+Lichen_groups3$color_l3[Lichen_groups3$color_l8=="brown"]    <-"dark"
+Lichen_groups3$color_l3[Lichen_groups3$color_l8=="gray"]     <-"dark"
+Lichen_groups3$color_l3[Lichen_groups3$color_l8=="green"]    <-"dark"
+Lichen_groups3$color_l3[Lichen_groups3$color_l8=="greengray"]<-"dark"
+Lichen_groups3$color_l3[Lichen_groups3$color_l8=="orange"]   <-"light"
+Lichen_groups3$color_l3[Lichen_groups3$color_l8=="white"]    <-"light"
+Lichen_groups3$color_l3[Lichen_groups3$color_l8=="yellow"]   <-"light"
+
+##Lets rearrange columns
+Lichen_groups3<-Lichen_groups3%>%
+  dplyr::select(ScanID,PFT,PFT_2,PFT_3,PFT_4,color_l8,color_l4,color_l3,everything())
 
 ##Lets save our bandpasses and other outputs
 write(Landsat_wv,"Outputs/1_Field_spec/1_Processing/Landsat_data/Landsat_wv")
 write.csv(alaskaSpecLib_test        ,"Outputs/1_Field_spec/1_Processing/Landsat_data/alaskaSpecLib_LAN_df.csv"        ,row.names = FALSE)
-write.csv(Lichen_groups2            ,"Outputs/1_Field_spec/1_Processing/Landsat_data/Lichen_groups_df.csv"            ,row.names = FALSE)
-write.csv(Lichen_groups_count            ,"Outputs/1_Field_spec/1_Processing/Landsat_data/Lichen_groups_count.csv"            ,row.names = FALSE)
-
+write.csv(Lichen_groups3            ,"Outputs/1_Field_spec/1_Processing/Landsat_data/Lichen_groups_df.csv"            ,row.names = FALSE)
+write.csv(Lichen_groups_count       ,"Outputs/1_Field_spec/1_Processing/Landsat_data/Lichen_groups_count.csv"         ,row.names = FALSE)
 
 ##Now lets save our New headwall spectral library
 saveRDS(alaskaSpecLib_LAN,"Outputs/1_Field_spec/1_Processing/Landsat_data/alaskaSpeclib_LAN.rds")
