@@ -14,9 +14,9 @@ names(Big_Trail_Lake_spectra)<-gsub(".sed","",names(Big_Trail_Lake_spectra))
 Big_Trail_Lake_metadata<-as.data.frame(names(Big_Trail_Lake_spectra))
 names(Big_Trail_Lake_metadata)[1]<-"ScanID"
 
-###Create column PFT and column area
+###Create column PFT and column Area
 Big_Trail_Lake_metadata<-Big_Trail_Lake_metadata%>%mutate(PFT=substr(Big_Trail_Lake_metadata$ScanID,start = 1,stop = 6))
-Big_Trail_Lake_metadata$area<- "Big Trail"
+Big_Trail_Lake_metadata$Area<- "Big Trail"
 
 ##Set metadata
 meta(Big_Trail_Lake_spectra) = data.frame(Big_Trail_Lake_metadata, stringsAsFactors = FALSE)

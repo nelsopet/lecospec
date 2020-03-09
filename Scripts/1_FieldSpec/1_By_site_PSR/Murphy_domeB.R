@@ -15,9 +15,9 @@ names(Murphy_domeB_spectra)<-gsub(".sed","",names(Murphy_domeB_spectra))
 Murphy_domeB_metadata<-as.data.frame(names(Murphy_domeB_spectra))
 names(Murphy_domeB_metadata)[1]<-"ScanID"
 
-###Create column PFT and column area
+###Create column PFT and column Area
 Murphy_domeB_metadata<-Murphy_domeB_metadata%>%mutate(PFT=substr(Murphy_domeB_metadata$ScanID,start = 1,stop = 6))
-Murphy_domeB_metadata$area<- "Murphy B"
+Murphy_domeB_metadata$Area<- "Murphy B"
 
 ##Set metadata
 meta(Murphy_domeB_spectra) = data.frame(Murphy_domeB_metadata, stringsAsFactors = FALSE)

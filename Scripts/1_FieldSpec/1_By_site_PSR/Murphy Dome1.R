@@ -27,7 +27,7 @@ names(Murph_lib_spectra)<-gsub("tofeldia","tfldia",names(Murph_lib_spectra))
 Murph_lib_metadata<-as.data.frame(names(Murph_lib_spectra))
 names(Murph_lib_metadata)[1]<-"ScanID"
 
-###Create column PFT and column area
+###Create column PFT and column Area
 Murph_lib_metadata<-Murph_lib_metadata%>%mutate(PFT= substr(Murph_lib_metadata$ScanID,start=1,stop=6))
 Murph_lib_metadata$PFT[Murph_lib_metadata$PFT=="brSoil"] <- "bare_soil"
 Murph_lib_metadata$PFT[Murph_lib_metadata$PFT=="brrock"] <- "bare rock"
@@ -42,7 +42,7 @@ Murph_lib_metadata$PFT[Murph_lib_metadata$PFT=="loisla"] <-"loipro"
 Murph_lib_metadata$PFT[Murph_lib_metadata$PFT=="melhap"] <-"melhep"
 Murph_lib_metadata$PFT[Murph_lib_metadata$PFT=="perdac"] <-"pedrac"
 Murph_lib_metadata$PFT[Murph_lib_metadata$PFT=="petfer"] <-"petfri"
-Murph_lib_metadata$area<- "Murphy"
+Murph_lib_metadata$Area<- "Murphy"
                        
 ###Set metadata
 meta(Murph_lib_spectra) = data.frame(Murph_lib_metadata, stringsAsFactors = FALSE)

@@ -19,13 +19,13 @@ names(brooksLib_spectra)<-gsub("betann","betnan",names(brooksLib_spectra))
 brooksLib_metadata<-as.data.frame(names(brooksLib_spectra))
 names(brooksLib_metadata)[1]<-"ScanID"
 
-###Create column PFT and column area
+###Create column PFT and column Area
 brooksLib_metadata<-brooksLib_metadata%>%mutate(PFT= sub("_.*", "",brooksLib_metadata$ScanID))
-brooksLib_metadata$area<- "Brooks_Range"
+brooksLib_metadata$Area<- "Brooks_Range"
 
 ####ensure all scans are different
 brooksLib_metadata<-brooksLib_metadata %>%
-  group_by(PFT, area) %>%
+  group_by(PFT, Area) %>%
   mutate(
     ScanID = as.character(ScanID),
     ScanID = as.character(paste0(substr(ScanID, 1, nchar(ScanID) - 1), row_number())))

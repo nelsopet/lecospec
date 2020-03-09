@@ -23,13 +23,13 @@ bethelLib_metadata<-bethelLib_metadata%>%separate(col=ScanID, into=c("species","
 bethelLib_metadata$species<-substr(bethelLib_metadata$species,start = 1,stop = 6)
 bethelLib_metadata<-unite_(bethelLib_metadata,"ScanID",c("species","sample"),sep="_")
 
-###Create column PFT and column area
+###Create column PFT and column Area
 bethelLib_metadata<-bethelLib_metadata%>%mutate(PFT=substr(bethelLib_metadata$ScanID,start = 1,stop = 6))
-bethelLib_metadata$area<- "Bethel"
+bethelLib_metadata$Area<- "Bethel"
 
 ####ensure all scans are different
 bethelLib_metadata<-bethelLib_metadata %>%
-  group_by(PFT, area) %>%
+  group_by(PFT, Area) %>%
   mutate(
     ScanID = as.character(ScanID),
     ScanID = as.character(paste0(substr(ScanID, 1, nchar(ScanID) - 1), row_number())))

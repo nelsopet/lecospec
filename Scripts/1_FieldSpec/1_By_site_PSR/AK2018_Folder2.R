@@ -18,7 +18,7 @@ names(AK2018_spectra)<-gsub("sprbarebark","spbark",names(AK2018_spectra))
 ##Remove eightmileflight1 scans
 AK2018_spectra<-AK2018_spectra[grep("eightmileflight1",invert=TRUE,names(AK2018_spectra))]
 
-###Create column PFT and column area
+###Create column PFT and column Area
 AK2018_metadata<-as.data.frame(names(AK2018_spectra))
 names(AK2018_metadata)[1]<-"ScanID"
 AK2018_metadata<-AK2018_metadata%>%
@@ -43,7 +43,7 @@ AK2018_metadata<-AK2018_metadata%>%
                        TRUE     ~"vacvit"))%>%
 unite_("ScanID",c("species","year","sample"),sep="_")
 
-AK2018_metadata$area<-"AK2018"
+AK2018_metadata$Area<-"AK2018"
 
 ##Set Metadata
 meta(AK2018_spectra) = data.frame(AK2018_metadata, stringsAsFactors = FALSE)

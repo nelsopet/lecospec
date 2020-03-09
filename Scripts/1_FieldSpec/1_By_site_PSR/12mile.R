@@ -17,9 +17,9 @@ names(TwelveMile_spectra)<-gsub(".sed","",names(TwelveMile_spectra))
 TwelveMile_metadata<-as.data.frame(names(TwelveMile_spectra))
 names(TwelveMile_metadata)[1]<-"ScanID"
 
-###Create column PFT and column area
+###Create column PFT and column Area
 TwelveMile_metadata<-TwelveMile_metadata%>%mutate(PFT=substr(TwelveMile_metadata$ScanID,start = 1,stop = 6))
-TwelveMile_metadata$area<- "12mile"
+TwelveMile_metadata$Area<- "12mile"
 
 ##Set metadata
 meta(TwelveMile_spectra) = data.frame(TwelveMile_metadata, stringsAsFactors = FALSE)

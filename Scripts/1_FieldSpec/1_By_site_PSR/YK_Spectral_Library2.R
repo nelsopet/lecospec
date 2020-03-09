@@ -24,14 +24,14 @@ names(yKDeltLib_spectra)<-gsub("probe","",names(yKDeltLib_spectra))
 yKDeltLib_metadata<-as.data.frame(names(yKDeltLib_spectra))
 names(yKDeltLib_metadata)[1]<-"ScanID"
 
-###Create column PFT and column area
+###Create column PFT and column Area
 yKDeltLib_metadata<-yKDeltLib_metadata%>%mutate(PFT= substr(yKDeltLib_metadata$ScanID,start=1,stop = 6))
 names(yKDeltLib_metadata)<-gsub("Salova","salova",names(yKDeltLib_metadata))
-yKDeltLib_metadata$area<- "Yukon_Delta"
+yKDeltLib_metadata$Area<- "Yukon_Delta"
 
 ####ensure all scans are different
 yKDeltLib_metadata<-yKDeltLib_metadata %>%
-  group_by(PFT, area) %>%
+  group_by(PFT, Area) %>%
   mutate(
     ScanID = as.character(ScanID),
     ScanID = as.character(paste0(substr(ScanID, 1, nchar(ScanID) - 1), row_number())))

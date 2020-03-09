@@ -20,12 +20,12 @@ names(Murph2_spectra)<-gsub("trapeliopsisgranulosa","tragra",names(Murph2_spectr
 Murph2_spectra_metadata<-as.data.frame(names(Murph2_spectra))
 names(Murph2_spectra_metadata)[1]<-"ScanID"
 
-###Create column PFT and column area
+###Create column PFT and column Area
 Murph2_spectra_metadata<-Murph2_spectra_metadata%>%mutate(PFT= substr(Murph2_spectra_metadata$ScanID,start=1,stop = 6))
 Murph2_spectra_metadata$PFT[Murph2_spectra_metadata$PFT=="bryori"] <- "bryoria"
 Murph2_spectra_metadata$PFT[Murph2_spectra_metadata$PFT=="dicran"] <- "dicranum"
 Murph2_spectra_metadata$PFT[Murph2_spectra_metadata$PFT=="melane"] <- "melanelia"
-Murph2_spectra_metadata$area<- "Murphy"
+Murph2_spectra_metadata$Area<- "Murphy"
 
 ###Set metadata
 meta(Murph2_spectra) = data.frame(Murph2_spectra_metadata, stringsAsFactors = FALSE)

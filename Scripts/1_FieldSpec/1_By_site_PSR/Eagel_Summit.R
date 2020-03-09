@@ -15,9 +15,9 @@ names(Eagle_summit_spectra)<-gsub(".sed","",names(Eagle_summit_spectra))
 Eagle_summit_metadata<-as.data.frame(names(Eagle_summit_spectra))
 names(Eagle_summit_metadata)[1]<-"ScanID"
 
-###Create column PFT and column area
+###Create column PFT and column Area
 Eagle_summit_metadata<-Eagle_summit_metadata%>%mutate(PFT=substr(Eagle_summit_metadata$ScanID,start = 1,stop = 6))
-Eagle_summit_metadata$area<- "Big Trail"
+Eagle_summit_metadata$Area<- "Big Trail"
 
 ##Set metadata
 meta(Eagle_summit_spectra) = data.frame(Eagle_summit_metadata, stringsAsFactors = FALSE)

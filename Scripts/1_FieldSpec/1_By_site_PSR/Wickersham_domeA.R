@@ -12,9 +12,9 @@ names(Wickersham_domeA_spectra)<-gsub(".sed","",names(Wickersham_domeA_spectra))
 Wickersham_domeA_metadata<-as.data.frame(names(Wickersham_domeA_spectra))
 names(Wickersham_domeA_metadata)[1]<-"ScanID"
 
-###Create column PFT and column area
+###Create column PFT and column Area
 Wickersham_domeA_metadata<-Wickersham_domeA_metadata%>%mutate(PFT=substr(Wickersham_domeA_metadata$ScanID,start = 1,stop = 6))
-Wickersham_domeA_metadata$area<- "Wickersham B"
+Wickersham_domeA_metadata$Area<- "Wickersham B"
 
 ##Set metadata
 meta(Wickersham_domeA_spectra) = data.frame(Wickersham_domeA_metadata, stringsAsFactors = FALSE)
