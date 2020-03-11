@@ -5,64 +5,37 @@
 library(spectrolab)
 library(tidyverse)
 library(hsdar)
+library(parallel)
 
-# Lets create names for output and input folders
-# Input folder is the dir path to where yor data is stored
-# output folder is the dir path to where you want your processed data to be stored
+source("Functions/HypIMGPredictor_generator.R")
+
+# Create names for output and input folders
+# Input folders are the dir path to where your data is stored
+# Output folders are the dir path to where you want your processed data to be stored
 # Replace these before running 
-outputs_folder<-"OutputsIMG/Processing"
-input_folder  <-"Original_data/Sensors/"
+input_folder2 <-"Original_data/Sensors/Tiles/"
+outputs_folder<-"OutputsIMG/Processing/Tiles/"
 
-# Import names of bandpasses into character list
-names_bandpasses = list.files(input_folder, pattern="bandpass",full.names = T)[2]
+# Import names of Hyperspectral datcubes into a list
+# For now we'll work with headwall datacubes
+# This could be incorporated in the function by doing something like 
+# list.files (file_location, pattern = ".dat| .tif") and other readable hyperspectral file types
+names_HyperSpecImage = list.files(input_folder2, 
+                                  pattern = ".dat",full.names = T)[1]
 
-# Reads in bandpasses from different sensors
-sensor_Bandpasses<-lapply(names_bandpasses,function(x){
-  scan(x,numeric())
-})%>% 
-  
-  # Removes dir path from the name
-  setNames(gsub("Original_data/Sensors/","",names_bandpasses))
-
-# Import names of Spectral libraries into a list
-# For now we'll work with headwall and AVIRIS
-names_HyperSpecImage = list.files(input_folder, 
-                                  pattern = "envi$",full.names = T)
 
 # Reads in spectral library for each sensor
-HyperSpecImages <-lapply(names_HyperSpecImage,function(x){
-  df<-brick(x)%>%
-    rasterToPoints()%>%
-    as.data.frame()
-  df[275:328]<-NULL
-  colnames(df)[-1:-2]<-sensor_Bandpasses[[1]]
-  
-  # converts NAs to zeros
-  df[,-1:-2][is.na(df[,-1:-2])] <- 0
-  
-  # Converts negative values to 0s
-  df[-1:-2][df[-1:-2] < 0] <- 0
-  return(df)
-})%>% 
-  #Removes dir path from the name
-  setNames(gsub(input_folder,"",names_HyperSpecImage)) 
-
-# Reads in Spectral Predictor function that will create the predictors for the hyperspectral image
-source("HypIMGPredictor_generator.R")
-
-# Creates a list of dataframe objects that have the outputs from band resampling and 
-# Vegitation index calculation
-# test1<-ImagePredictor_generator(HyperSpecImages[[2]])
-Image_preds<-lapply(HyperSpecImages,ImagePredictor_generator)
+# This could also be incorporated into a function
+Image_preds<-lapply(names_HyperSpecImage,ImagePredictor_generator)%>%
+  # Renames objects
+  setNames(gsub(input_folder2,"",names_HyperSpecImage))
 
 # Writes out each dataframe as a .csv file
 lapply(1:length(Image_preds), function (x) 
   write.csv(Image_preds[[x]],
-            file = paste("OutputsIMG/Processing/",
-                         gsub("_envi","_PredsDF",names (Image_preds[x])),
+            file = paste(outputs_folder,
+                         gsub(".dat","_PredsDF",names (Image_preds[x])),
                          '.csv',sep=""), row.names = F))
-
-
 
 
 
