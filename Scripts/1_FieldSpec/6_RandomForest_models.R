@@ -15,7 +15,7 @@ input_folder  <-"OutputsPSR/Processing/Sensors/"
 
 # Import names of Spectral libraries and thier predictors
 # For now we'll work with headwall and AVIRIS
-names_SpecLibPreds = list.files(input_folder, pattern="PredsDF",full.names = T)
+names_SpecLibPreds = list.files(input_folder, pattern="PredsDF",full.names = T)[2]
 
 # Reads in spectral library and their predictors for each sensor
 SpecLibs_Preds<-lapply(names_SpecLibPreds,read.csv)%>% 
@@ -36,10 +36,10 @@ ImportantVars<-function(x){
   # Removes unwanted metadata from dataframe 
   # (the only columns we need are the PFT_3 column and all the predictors)
   x[remove_names] = NULL
-  
+  name<-colnames(x[,1])
   # Creates Random forest Model
   set.seed(2017)
-  rf_mod<-randomForest(PFT_3~.,data = x,
+  rf_mod<-randomForest(name ~.,data = df,
                        mtry = sqrt(ncol(x)),
                        ntree = 1001,
                        localImp = TRUE)
@@ -55,7 +55,7 @@ ImportantVars<-function(x){
 }# Function ends
 
 # Test Function
-# Test_case1<-ImportantVars(SpecLibs_Preds[["Headwall_PredsDF.csv"]])
+# Test_case1<-ImportantVars(SpecLibs_Preds[[1]])
 
 # Function takes the most important variables, rebuilds and save a new model
 Randomforest_mod<-function(x){

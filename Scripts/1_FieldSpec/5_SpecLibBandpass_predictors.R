@@ -21,16 +21,16 @@ input_folder  <-"OutputsPSR/Processing/Sensors/"
 names_SpecLibs = list.files(input_folder, 
                             pattern="SpecLib",full.names = T)[2] 
 
-SpleclibPreds<-lapply(names_SpecLibs,Spectral_Predictors)%>%
+SpeclibPreds<-lapply(names_SpecLibs,Spectral_Predictors)%>%
   
   # Rename objects in list
   setNames(gsub(input_folder,"",names_SpecLibs)) 
 
 # Writes out each dataframe as a .csv file
-lapply(1:length(Func_preds), function (x) 
-  write.csv(Func_preds[[x]],
+lapply(1:length(SpeclibPreds), function (x) 
+  write.csv(SpeclibPreds[[x]],
             file = paste("OutputsPSR/Processing/Sensors/",
-                         gsub("_SpecLib.csv","_PredsDF",names (Func_preds[x])),
+                         gsub("_SpecLib.csv","_PredsDF",names (SpeclibPreds[x])),
                          '.csv',sep=""), row.names = F))
 
 # Cleans up R memeory

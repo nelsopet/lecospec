@@ -1,8 +1,9 @@
 # Function generates predictors for hyperspectral images
 
-ImagePredictor_generator<-function(PREDICT){
+ImagePredictor_generator<-function(OBJECT){
   
-  # Here we have the bandpasses of different sensors
+  # Creates a vector of the bandpasses for the headwall sensor that will be used
+  # Noisey band were omitted (only bands 1:272 below)
   Headwall_bandpasses<-c(397.593
                           ,399.444
                           ,401.296
@@ -276,7 +277,7 @@ ImagePredictor_generator<-function(PREDICT){
                           ,897.572
                           ,899.424)
   
-  #Aviris bandpasses
+  # Creates a vector of the bandpasses for the Aviris sensor that will be used
   AVIRIS_bandpasses  <-c(381.870000,  386.880000,  391.890000,  396.890000,  401.900000,  406.910000,
                          411.920000,  416.930000,  421.940000,  426.950000,  431.960000,  436.960000,
                          441.970000,  446.980000,  451.990000,  457.000000,  462.010000,  467.020000,
@@ -348,14 +349,14 @@ metaRemove<-function(x){
   meta<-c(grep("^[0-9][0-9][0-9]",colnames(x)))
   colremove<-x[,meta]
   return(colremove)
-}# Function ends
+}# metaRemove Function ends
 
 # Returns columns that are not bandpasses
 bandsRemove<-function(x){
   meta<-c(grep("[a-z A-Z]",colnames(x)))
   colremove<-x[,meta]
   return(colremove)
-}# Function ends
+}# bandsRemove Function ends
 
 # Function resamples a spectral library every 5, 10, 50 and 100 nm and combines those results into a dataframe
 # Resampling will change reflectance values which might result in negative values (need to remove these rows)
@@ -414,9 +415,7 @@ Func_Resamp<-function(Resamp){
   
   return(df)
   
-}# Function ends
-
-# test_case<-Func_Resamp(df)
+}# Func_Resamp ends
 
 # Function calculates vegitation indices
 Func_VI<-function(VI){
@@ -466,10 +465,7 @@ Func_VI<-function(VI){
   names(df)[2] <-"y"
   
   return(df)
-}# Function ends 
-
-# Test your data below
-# test_case<-Func_VI(df)
+}# Func_VI ends 
 
 # Function reads in a Hyperspectral image as a bricked datacube
 HyperSpecImages <-function(x){
@@ -513,11 +509,12 @@ HyperSpecImages <-function(x){
   
   # Returns a dataframe with resampled bands and vegitation index calculation for each 
   # Pixel in a hyperspectral image
-  return(preds)}
+  return(preds)} # Function HyperSpecImages ends
 
-HyperSpecImages(PREDICT)
+# Applies HyperSpecImages FUNCTION TO OBJECT
+HyperSpecImages(OBJECT)
 
-} # Function ends
+} # Function ImagePredictor_generator ends
 
 # Test your data below
 # test_case3<-Func_preds(HyperSpecImages[[2]])

@@ -1,7 +1,8 @@
 # Function generates predictors for hyperspectral libraries
-Spectral_Predictors<-function(PREDICT){
+Spectral_Predictors<-function(OBJECT){
   
-  # Here we have the bandpasses of different sensors
+  # Creates a vector of the bandpasses for the headwall sensor that will be used
+  # Noisey band were omitted (only bands 1:272 below)
   Headwall_bandpasses<-c(397.593
                          ,399.444
                          ,401.296
@@ -275,7 +276,7 @@ Spectral_Predictors<-function(PREDICT){
                          ,897.572
                          ,899.424)
   
-  #Aviris bandpasses
+  # Creates a vector of the bandpasses for the Aviris sensor that will be used
   AVIRIS_bandpasses  <-c(381.870000,  386.880000,  391.890000,  396.890000,  401.900000,  406.910000,
                          411.920000,  416.930000,  421.940000,  426.950000,  431.960000,  436.960000,
                          441.970000,  446.980000,  451.990000,  457.000000,  462.010000,  467.020000,
@@ -340,21 +341,21 @@ Spectral_Predictors<-function(PREDICT){
                          2475.490000, 2480.500000, 2485.510000, 2490.520000, 2495.530000,2500)
   
   
-  # Lets create functions that will remove all the metatdata and one that will keep the data for bandspasses
+  # Lets create functions that will remove all the metatdata and one that will keep the reflectance values for bandspasses
   # These function will be used alot
   # Returns columns that are bandpasses
   metaRemove<-function(x){
     meta<-c(grep("^[0-9][0-9][0-9]",colnames(x)))
     colremove<-x[,meta]
     return(colremove)
-  }# Function ends
+  }# metaRemove Function ends
   
   # Returns columns that are not bandpasses
   bandsRemove<-function(x){
     meta<-c(grep("[a-z A-Z]",colnames(x)))
     colremove<-x[,meta]
     return(colremove)
-  }# Function ends
+  }# bandsRemove Function ends
 
 # Function resamples a spectral library every 5, 10, 50 and 100 nm and combines those results into a dataframe
 # Resampling will change reflectance values which might result in negative values (need to remove these rows)
@@ -411,7 +412,7 @@ Func_Resamp<-function(Resamp){
     filter_at(vars(c(colnames(metaRemove(df)))), all_vars(.  <2))%>%
     filter_at(vars(c(colnames(metaRemove(df)))), all_vars(. >=0))
   
-  return(goodValues)}
+  return(goodValues)} # Func_Resamp ends
 
 Func_VI<-function(VI){
   
@@ -454,7 +455,7 @@ Func_VI<-function(VI){
   VI_DF[is.na(VI_DF)]<-0
   
   return(VI_DF)
-}
+} # Func_VI ends
 
 # Creates Predictors for model prediction
 Speclibscans <-function(x){
@@ -498,11 +499,12 @@ Speclibscans <-function(x){
   }
   
   # Returns a dataframe with resampled bands and vegitation index calculation for each 
-  return(preds)}
+  return(preds)} # Function Speclibscans
 
-Speclibscans(PREDICT)
+# Apply Function Speclibscans
+Speclibscans(OBJECT)
 
-}# Function ends
+}# Function Spectral_Predictors ends
 
 # Test function below
 # Test_case<-Spectral_Predictors(PUT NAME OF YOUR DATA HERE)
