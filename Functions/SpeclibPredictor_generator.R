@@ -458,56 +458,39 @@ Func_VI<-function(VI){
 } # Func_VI ends
 
 # Creates Predictors for model prediction
-Speclibscans <-function(x){
+SpeclibDerivs<-function(x){
   
-  # Reads in spectral libray
-  SpeclibDatacube1<-read.csv(x, check.names = F)
-
+  # Reads in spectral libray as .csv
+  SpeclibDf<-read.csv(x, check.names = F)
+  
   # Removes metadata
-  SpeclibDatacube<-metaRemove(SpeclibDatacube1)
+  NoMetaDf<-metaRemove(SpeclibDf)
   
-  # Converts negative values to 0s
-  SpeclibDatacube[SpeclibDatacube < 0] <- 0
-  
-  # Converts NAs to 0s
-  SpeclibDatacube[is.na(SpeclibDatacube)]<-0
- 
-  # Changes the name of the columns to regular names (numbers)
-  # For some reason the function above changes the y to x.1
-  names(SpeclibDatacube) <-Headwall_bandpasses
-  
-  # Lets add back our metadata to the Spectral library
-  SpeclibDatacube2<-cbind(bandsRemove(SpeclibDatacube1),SpeclibDatacube)
-  
-  # Lets rename the y column if present
-  SpeclibDatacube2<-if(ncol(SpeclibDatacube2) == 274){
-    names(SpeclibDatacube2)[2] <-"y"
-  } else {
-    return(SpeclibDatacube2)
-    }
-  # Creates resapled predictors
-  SpeclibDf_resamp<-Func_Resamp(SpeclibDatacube2)
+  # Creates resampled predictors
+  SpeclibDf_resamp<-Func_Resamp(SpeclibDf)
   
   # Creates VI predictors
-  SpeclibDf_VI<-Func_VI(SpeclibDatacube2)
+  SpeclibDf_VI<-Func_VI(SpeclibDf)
   
   # combines results into one dataframe
-  preds<-if (ncol(metaRemove(SpeclibDatacube2)) == 272){
+  preds<-if (ncol(metaRemove(SpeclibDf)) == 272){
     cbind(SpeclibDf_VI,metaRemove(SpeclibDf_resamp))
   }else{
-    Func_VI(SpeclibDatacube1)
+    Func_VI(SpeclibDf)
   }
   
   # Returns a dataframe with resampled bands and vegitation index calculation for each 
   return(preds)} # Function Speclibscans
 
 # Apply Function Speclibscans
-Speclibscans(OBJECT)
+SpeclibDerivs(OBJECT)
 
 }# Function Spectral_Predictors ends
 
 # Test function below
 # Test_case<-Spectral_Predictors(PUT NAME OF YOUR DATA HERE)
+
+
 
 
 
