@@ -362,58 +362,65 @@ bandsRemove<-function(x){
 # Resampling will change reflectance values which might result in negative values (need to remove these rows)
 Func_Resamp<-function(Resamp){
   
-  # Function adds  suffix to columns in dataframes
-  # This is a uniqe way to identify columns when merging these dataframes later 
-  add_suffix<-function(x){
-    colnames(x)<-paste(colnames(x),deparse(substitute(x)),sep = "")
-    return(x)}
-  
   # Removes metadata before function can be applied
-  DF<-metaRemove(Resamp)
-
-  # Function resamples spectral library every 5nm
-  nm_5<-DF%>%
-    as.spectra()%>%
-    spectrolab::resample(seq(397.593,899.424,5))%>%
-    as.data.frame()%>%
-    dplyr::select(-sample_name)
-  nm_5<-add_suffix(nm_5)
+  df<-metaRemove(Resamp)
   
-  # Function resamples spectral library every 10nm
-  nm_10<-DF%>%
-    as.spectra()%>%
-    spectrolab::resample(seq(397.593,899.424,10  ))%>%
-    as.data.frame()%>%
-    dplyr::select(-sample_name)
-  nm_10<-add_suffix(nm_10)
+  # Converts the dataframe to a spectral object
+  SpeclibObj<-as.spectra(df)
   
-  # Function resamples spectral library every 50nm
-  nm_50<-DF%>%
-    as.spectra()%>%
-    spectrolab::resample(seq(397.593,899.424,50  ))%>%
-    as.data.frame()%>%
-    dplyr::select(-sample_name)
-  nm_50<-add_suffix(nm_50)
+  # Creates functions that will do the resampling
+  Fun1<-function(x) spectrolab::resample(x,seq(397.593,899.424,5))
+  Fun2<-function(x) spectrolab::resample(x,seq(397.593,899.424,10))
+  Fun3<-function(x) spectrolab::resample(x,seq(397.593,899.424,50))
+  Fun4<-function(x) spectrolab::resample(x,seq(397.593,899.424,100))
   
-  # Function resamples spectral library every 100nm
-  nm_100<-DF%>%
-    as.spectra()%>%
-    spectrolab::resample(seq(397.593,899.424,100  ))%>%
-    as.data.frame()%>%
-    dplyr::select(-sample_name)
-  nm_100<-add_suffix(nm_100)
-
-  # Combines 5nm, 10nm 50nm and 100nm dataframes and add metadata
-  df<-Reduce(cbind,list(bandsRemove(Resamp)
-                        ,nm_5
-                        ,nm_10
-                        ,nm_50
-                        ,nm_100))
+  # Creates a list of functions above
+  ResampledArgs<-list(
+    wl_005nm=function(x) Fun1(x),
+    wl_010nm=function(x) Fun2(x),
+    wl_050nm=function(x) Fun3(x),
+    wl_100nm=function(x) Fun4(x)
+  )
+  
+  # Make sure the number of cores is equal to the objects in the list created
+  cores = detectCores()
+  if(cores>length(ResampledArgs)){
+    cores<-length(ResampledArgs)
+  }
+  
+  #Creates cluster
+  cl = makeCluster(cores)
+  
+  # Pass objects to each core in use
+  clusterExport(cl, varlist=c("Fun1","Fun2","Fun3","Fun4","SpeclibObj"),envir=environment())
+  
+  # Runs resampling functions in parallel
+  ResampledObjs<- parLapply(cl,ResampledArgs,function(f) 
+    f(SpeclibObj)
+  )
+  
+  #Stops cluster
+  stopCluster(cl)
+  
+  # Converts results to a dataframe
+  final<-lapply(ResampledObjs,function(x){
+    as.data.frame(x)%>%
+      dplyr::select(-sample_name)})
+  
+  #Adds suffix to the end of each column name
+  for (i in 1:length(final)){
+    colnames(final[[i]])<-paste(colnames(final[[i]]),names(final[i]),sep = "_")
+  }
+  
+  # Combines all the dataframes created into one df
+  ResampledDF<-cbind(bandsRemove(Resamp),do.call("cbind",final))
+  colnames(ResampledDF)[-1:-2]<-substring(colnames(ResampledDF)[-1:-2],10)
+  
   # Removes rows with negative values or values >2
-  df[-1:-2][df[-1:-2] < 0] <- 0
-  df[-1:-2][df[-1:-2] > 2] <- 0
+  ResampledDF[-1:-2][ResampledDF[-1:-2] < 0] <- 0
+  ResampledDF[-1:-2][ResampledDF[-1:-2] > 2] <- 0
   
-  return(df)
+  return(ResampledDF)
   
 }# Func_Resamp ends
 
@@ -435,15 +442,32 @@ Func_VI<-function(VI){
   AVIRIS_VI  <-vegindex()[-58]
   Headwall_VI<-vegindex()[-c(3,26,27,31,32,33,35,48,49,58,60,66,67,71,82,99,102,103,104,105)]
   
+  #Get amount of cores to use
+  cores <- detectCores()
+  
+  # prepare for parallel process
+  c1<- makeCluster(cores)
+  registerDoParallel(c1)
+  
 
   # Creates dataframe with Vegitation indices
   VI_CALC<-if(ncol(metaRemove(VI)) == 272){
-    vegindex(spec_library,index = Headwall_VI)
+    foreach(i=1:length(Headwall_VI), .combine=cbind, .packages = 'hsdar') %dopar%{
+      a<-vegindex(spec_library,index=Headwall_VI[[i]])}
+    
   } else {
-    vegindex(spec_library,index = AVIRIS_VI)}
+    foreach(i=1:length(AVIRIS_VI), .combine=cbind, .packages = 'hsdar') %dopar%{
+      a<-vegindex(spec_library,index=AVIRIS_VI[[i]])}
+  }
+  
+  # Stops cluster
+  stopCluster(c1)
+  
+  # Converts Matrix to a datframe 
+  VI_CALC<-as.data.frame(VI_CALC)
   
   # Function Renames columns
-  VI_CALC2<-if(ncol(VI_CALC) == 95){
+  if(ncol(VI_CALC) == 95){
     names(VI_CALC)<-Headwall_VI
   } else {
     names(VI_CALC)<-AVIRIS_VI}
@@ -459,16 +483,15 @@ Func_VI<-function(VI){
   df[is.na(df)]<-0
 
   # Changes the name of the columns to regular names (numbers)
-  # For now lets use -1:-2 since thes are the x and y columns
+  # For now lets use -1:-2 since these are the x and y columns
   # For some reason the function above changes the y to x.1
   names(df)[-1:-2]<-names(VI_CALC)
-  names(df)[2] <-"y"
   
   return(df)
 }# Func_VI ends 
 
 # Function reads in a Hyperspectral image as a bricked datacube
-HyperSpecImages <-function(x){
+HyperSpecDerivs <-function(x){
   
   # Reads in the Hyperspectral datacubes as a bricked raster
   HyperDatacube<-brick(x)%>%
@@ -483,20 +506,11 @@ HyperSpecImages <-function(x){
   # Converts negative values to 0s
   HyperDatacube[-1:-2][HyperDatacube[-1:-2] < 0] <- 0
   
-  # Converts NAs to median value within that column
-  # Note:onverting the dataframe to a matrix allows faster processing, in this case you'll have to use the function vapply
-  HyperDatacube<-mclapply(HyperDatacube,function(x){
-    vapply(as.data.frame(x), function(xy)
-      replace(xy, is.na(xy), median(xy,na.rm=TRUE)), 
-      FUN.VALUE=numeric(nrow(HyperDatacube))
-    )})%>%
-    as.data.frame()
+  # Converts NAs to median 0s
+  HyperDatacube[-1:-2][is.na(HyperDatacube[-1:-2])]<-0
   
   # Changes the name of the columns to regular names (numbers)
-  # For now lets use -1:-2 since thes are the x and y columns
-  # For some reason the function above changes the y to x.1
   names(HyperDatacube)[-1:-2]<-Headwall_bandpasses
-  names(HyperDatacube)[2] <-"y"
   
   HyDf_resamp<-Func_Resamp(HyperDatacube)
   HyDf_VI<-Func_VI(HyperDatacube)
@@ -509,10 +523,50 @@ HyperSpecImages <-function(x){
   
   # Returns a dataframe with resampled bands and vegitation index calculation for each 
   # Pixel in a hyperspectral image
-  return(preds)} # Function HyperSpecImages ends
+  return(preds)
+  
+  } # Function HyperSpecImages ends
+  
+  # Gets information on datacube
+    FuncTiles<-function(x){
+      
+      Datacube<-GDALinfo(x)
+    
+    # Tiles datacube into x cm blocks
+    # Introduce block size for y
+    tile.lst <- getSpatialTiles(Datacube, block.x=.0000680, return.SpatialPolygons=TRUE)
+    tile.tbl <- getSpatialTiles(Datacube, block.x=.0000680, return.SpatialPolygons=FALSE)
+    
+    # Adds a unique ID to each Tile
+    tile.tbl$ID <- as.character(1:nrow(tile.tbl))
+    
+    # Creates Tiling function
+    for (i in 1:2){
+      Tile<-readGDAL(x, offset=unlist(tile.tbl[i,c("offset.y","offset.x")]),
+                     region.dim=unlist(tile.tbl[i,c("region.dim.y","region.dim.x")]),
+                     output.dim=unlist(tile.tbl[i,c("region.dim.y","region.dim.x")]),
+                     silent = TRUE)
+      
+      # Apply the predictor function to each tile
+      Tile2<-HyperSpecDerivs(Tile)
+      
+      # Creates a subfolder based on the name of the datacube
+      subfolder<-file.path(paste(outputs_folder,basename(x)))
+      dir.create(subfolder)
+      
+      # Writes the output to folder
+      write.csv(Tile2,
+                file = paste(subfolder,
+                             "/PredSsDF_Tile_",i,
+                             '.csv',sep=""), row.names = F)
+      
+      # Removes Object from memory
+      rm(Tile2)
+    }
+    }
 
 # Applies HyperSpecImages FUNCTION TO OBJECT
-HyperSpecImages(OBJECT)
+    FuncTiles(OBJECT)
 
 } # Function ImagePredictor_generator ends
 

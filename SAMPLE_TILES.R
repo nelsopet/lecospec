@@ -10,13 +10,11 @@ library(GSIF)
 library(tmap)
 library(parallel)
 
-setwd("Original_data/Sensors/Tiles/")
 # Gets spatial info for datacube
 # The datacube is about 11 by 13 pixels
 Datacube<-GDALinfo("Original_data/Sensors/Tiles/EightMile_TSTIMG2_envi_R1C1.dat")
 
 # Tiles datacube into 90 cm blocks
-
 tile.lst <- getSpatialTiles(Datacube, block.x=.000009, return.SpatialPolygons=TRUE)
 
 tile.tbl <- getSpatialTiles(Datacube, block.x=.000009, return.SpatialPolygons=FALSE)
@@ -25,8 +23,18 @@ tile.tbl <- getSpatialTiles(Datacube, block.x=.000009, return.SpatialPolygons=FA
 tile.tbl$ID <- as.character(1:nrow(tile.tbl))
 # head(tile.tbl)
 
-# Reads in the first tile from the 2 tiles created 
+## check whether the maps match perfectly to the same grid:
+x <- raster::brick("Original_data/Sensors/Tiles/EightMile_TSTIMG2_envi_R1C1.dat")
 
+# Lets Visualize the tiles for nows
+te <- as.vector(extent(x))
+library(tmap)
+data("World")
+tm_shape(World, xlim=te[c(1,2)], ylim=te[c(3,4)], projection="longlat") +
+  tm_polygons() +
+  tm_shape(as(tile.lst, "SpatialLines")) + tm_lines()
+
+# Reads in the first tile from the 2 tiles created 
 m1 <- readGDAL("Original_data/Sensors/Sample_clips/Sub1", offset=unlist(tile.tbl[1,c("offset.y","offset.x")]),
               region.dim=unlist(tile.tbl[1,c("region.dim.y","region.dim.x")]),
               output.dim=unlist(tile.tbl[1,c("region.dim.y","region.dim.x")]),
@@ -68,8 +76,7 @@ t.st2<-lapply(t.lst,brick)
 finalraster<-do.call(merge,t.st2)
 
 
-setwd("OutputsIMG/Processing/Tiles")
-
+# Need to figure this outs
 gdalbuildvrt(gdalfile = "*.tif",
              output.vrt = "testTileCombo.vrt")
 
