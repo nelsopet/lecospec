@@ -30,6 +30,7 @@ SpecLib<-Reduce(spectrolab::combine,list_of_SpecLib)%>% # dim(n_samples=1989, n_
 FACET PLOT SHOWING SPECTRAL FEATURES OF EACH CLASS
 
 ![](/Cladonia.jpg)
+![](/EightMileTest Plot Prediction.jpg)
 
 ### Building classification model
 SAMPLE CODE  
