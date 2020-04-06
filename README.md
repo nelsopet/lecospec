@@ -19,7 +19,10 @@ JANE'S ERDS (IMAGE HERE)
 
 ### Preparing Spectral Libraries
 SAMPLE CODE
-https://github.com/nelsopet/Alaska_Spectral_Library/blob/71f50f227fa00294e064f8b4c83be7101160ff51/Scripts/3_PSR_SpecLib.R#L22-L24
+  ddply( .(PFT_2), mutate, PFT2_Freq = length(PFT_2))%>% # Add column to data frame that shows frequency of species
+  ddply( .(PFT_3), mutate, PFT3_Freq = length(PFT_3))%>% # Add column to data frame that shows frequency of functional group
+  ddply( .(PFT_4), mutate, PFT4_Freq = length(PFT_4))%>% # Add column to data frame that shows frequency of courser functional groups
+  dplyr::select(ScanID,PFT,PFT_2,PFT_3,PFT_4,Area,PFT2_Freq,PFT3_Freq,PFT4_Freq,everything()) # Rearrange columns 
 FACET PLOT SHOWING SPECTRAL FEATURES OF EACH CLASS 
 
 ### Building classification model
