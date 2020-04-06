@@ -23,8 +23,6 @@ This tutorial demonstrates how to use functions created by our team to read, pro
 2. Building classification model 
 3. Classifying Headwall Hyperspectral Raster
 
-JANE'S ERDS (IMAGE HERE)
-
 ### Preparing Spectral Libraries using PSR Data
 SAMPLE CODE SHOULD  (Use function that adds metadata, removes uncalibrated scans from spectral library,equalizes the number of observation per class, normalizes the reflectance values and plots the median spectra for each class)
 ``` 
@@ -93,7 +91,9 @@ plot(PredictedRaster_Layer)
 
 ![](/EightMileTest_Plot_Prediction.jpg)
 
-
+### Function Entity relationship diagram
+JANE'S ERDS (IMAGE HERE)
+![](HypIMGPredictor_generator_v.2.jpeg)
 
 
 
