@@ -31,12 +31,26 @@ SpecLib<-Reduce(spectrolab::combine,list_of_SpecLib)%>% # dim(n_samples=1989, n_
 FACET PLOT SHOWING SPECTRAL FEATURES OF EACH CLASS
 
 ### Building classification model
-SAMPLE CODE
+SAMPLE CODE  
+``` 
+SpecLib<-Reduce(spectrolab::combine,list_of_SpecLib)%>% # dim(n_samples=1989, n_wavelegths=2151)
+  as.data.frame()%>% # Converts Spectral Object to a dataframe
+  dplyr::select(-sample_name)%>% # Removes unwanted column 
+  inner_join(Species_groups,by="PFT")%>% #Joins dataframe with all the species info to our spectral library
+  dplyr::select(ScanID,PFT,PFT_2,PFT_3,PFT_4,Area,everything()) #Reorders columns  
+  ```
 MODEL RESULTS
 CONFUSION MATRIX
 
 ### Classifying Hyperspectral Data
 SAMPLE CODE
+``` 
+SpecLib<-Reduce(spectrolab::combine,list_of_SpecLib)%>% # dim(n_samples=1989, n_wavelegths=2151)
+  as.data.frame()%>% # Converts Spectral Object to a dataframe
+  dplyr::select(-sample_name)%>% # Removes unwanted column 
+  inner_join(Species_groups,by="PFT")%>% #Joins dataframe with all the species info to our spectral library
+  dplyr::select(ScanID,PFT,PFT_2,PFT_3,PFT_4,Area,everything()) #Reorders columns  
+  ```
 
 IMAGE OF DATACUBE
 
