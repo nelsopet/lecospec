@@ -1,5 +1,7 @@
 # Processing Headwall Hyperspectral Rasters using Tiling and Parallelization:  R (tutorial)
-Nelson, P.           Smith, K.            Pettit,J.
+Nelson, P.
+Smith, K.
+Pettit,J.
 
 - [Introduction](#Introduction)
 - [Preparing Spectral Libraries](#Introduction)
