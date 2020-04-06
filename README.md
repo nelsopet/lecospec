@@ -55,7 +55,7 @@ SpecLib<-Reduce(spectrolab::combine,list_of_SpecLib)%>% # dim(n_samples=1989, n_
 
 IMAGE OF DATACUBE  
 
-![](EightMileTest Plot Prediction.jpg)
+![](/EightMileTest Plot Prediction.jpg)
 
 
 
