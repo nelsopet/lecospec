@@ -37,7 +37,7 @@ library(randomcoloR)
 ```
 
 ### Preparing Spectral Libraries using PSR Data
-Spectral libraries can be compiled form portable spectrometers. The one used inhere was a (Spectral Evolution PSR+) which covers the full spectrum (350-2500 nm). Note that the spectrtal range of the field spec exceeds the spectral range of the imaging sensor. Hence resampling these bandpasses to match the snesor bandpasses is essential.   
+Spectral libraries can be compiled form portable spectrometers. The one used here was a (Spectral Evolution PSR+) which covers the full spectrum (350-2500 nm). Note that the spectrtal range of the field spec exceeds the spectral range of the imaging sensor. Hence resampling these bandpasses to match the snesor bandpasses is essential.   
 
 Lets take a look at our spectral library unprocessed (user would have already done some data munging) 
 ```
