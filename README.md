@@ -1,10 +1,10 @@
 # Processing Headwall Hyperspectral Rasters using Tiling and Parallelization:  R (tutorial)
 
 ## Author & Contributor List
-* Dr. Peter Nelson      
-* Kevaughan Smith   
-* Jane Pettit   
-* Catherine Chan  
+*Dr. Peter Nelson      
+*Kevaughan Smith   
+*Jane Pettit   
+*Catherine Chan  
 
 ## Contents
 - [Introduction](#Introduction)
