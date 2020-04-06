@@ -19,12 +19,12 @@ JANE'S ERDS (IMAGE HERE)
 ## Preparing Spectral Libraries
 There are three main folders in this repository. The folders contain data that is either raw, processed or output data. 
 
-### Building classification model
+## Building classification model
 SAMPLE CODE
 MODEL RESULTS
 CONFUSION MATRIX
 
-### Classifying Hyperspectral Data
+## Classifying Hyperspectral Data
 SAMPLE CODE
 
 IMAGE OF DATACUBE
