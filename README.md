@@ -54,7 +54,7 @@ SpecLib<-Reduce(spectrolab::combine,list_of_SpecLib)%>% # dim(n_samples=1989, n_
   dplyr::select(ScanID,PFT,PFT_2,PFT_3,PFT_4,Area,everything()) #Reorders columns  
   ```
 
-IMAGE OF DATACUBE
+IMAGE OF DATACUBE  
 
 ![](/EightMileTest Plot Prediction.jpg)
 
