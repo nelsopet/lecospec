@@ -18,7 +18,8 @@ The electromagnetic spectrum is composed of thousands of bands representing diff
 The Headwall Micro A-series VINIR imaging spectrometer collects data within the 400 nm to 1000 nm portions of the electromagnetic spectrum within bands that are approximately 2 nm in width. This results in a hyperspectral data cube that contains approximately 326 bands. However (say something about noisey bands in the 900-100nm wavelength region)
 
 This tutorial demonstrates how to use functions created by our team to read, process and create large spatial (Headwall raster) data sets. In principle, both examples follow the same systematic approach:
-1. Preparing your spectral library
+1. Preparing your spectral library from field spectroradiometers
+2. Preparing your spectral library from digitized pixels
 2. Building classification model 
 3. Classifying Headwall Hyperspectral Raster
 
