@@ -19,6 +19,7 @@ JANE'S ERDS (IMAGE HERE)
 
 ### Preparing Spectral Libraries
 SAMPLE CODE
+https://github.com/nelsopet/Alaska_Spectral_Library/blob/71f50f227fa00294e064f8b4c83be7101160ff51/Scripts/3_PSR_SpecLib.R#L22-L24
 FACET PLOT SHOWING SPECTRAL FEATURES OF EACH CLASS 
 
 ### Building classification model
