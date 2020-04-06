@@ -91,7 +91,7 @@ plot(PredictedRaster_Layer)
 
 ![](/EightMileTest_Plot_Prediction.jpg)
 
-### Function Entity relationship diagram
+### HypIMGPredictor_generator Entity relationship diagram
 JANE'S ERDS (IMAGE HERE)
 ![](HypIMGPredictor_generator_v.2.jpeg)
 
