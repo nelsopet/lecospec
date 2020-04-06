@@ -41,7 +41,7 @@ Spectral libraries can be compiled form portable spectrometers. The one used her
 
 Lets take a look at our spectral library unprocessed (user would have already done some data munging) 
 ```
-SpectralLibrary<- read.csv ("/data/SpectralLibrary_raw.csv"
+SpectralLibrary<- read.csv ("/data/SpectralLibrary_raw.csv")
 str(SpectralLibrary)
 ```
 Note that there are different classes types (class 1, class 2, class 3, class 4) and wavelengths across the full spectrum (350-2500 nm. However, we're intrested in one class (Class 2 = represents functional groups of plant species).  
