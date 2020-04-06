@@ -17,7 +17,7 @@ This tutorial demonstrates how to use functions developed to read, process and c
 
 JANE'S ERDS (IMAGE HERE)
 
-## Preparing Spectral Libraries
+### Preparing Spectral Libraries
 SAMPLE CODE
 FACET PLOT SHOWING SPECTRAL FEATURES OF EACH CLASS 
 
@@ -26,7 +26,7 @@ SAMPLE CODE
 MODEL RESULTS
 CONFUSION MATRIX
 
-## Classifying Hyperspectral Data
+### Classifying Hyperspectral Data
 SAMPLE CODE
 
 IMAGE OF DATACUBE
