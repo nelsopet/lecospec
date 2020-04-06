@@ -1,5 +1,5 @@
 # Processing Headwall Hyperspectral Rasters using Tiling and Parallelization:  R (tutorial)
-Nelson, P. Smith, K. Pettit,J.
+Nelson, P.   Smith, K.   Pettit,J.
 
 - [Introduction](#Introduction)
 - [Preparing Spectral Libraries](#Introduction)
@@ -17,7 +17,8 @@ This tutorial demonstrates how to use functions developed to read, process and c
 JANE'S ERDS (IMAGE HERE)
 
 ## Preparing Spectral Libraries
-There are three main folders in this repository. The folders contain data that is either raw, processed or output data. 
+SAMPLE CODE
+FACET PLOT SHOWING SPECTRAL FEATURES OF EACH CLASS 
 
 ## Building classification model
 SAMPLE CODE
