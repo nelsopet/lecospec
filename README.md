@@ -48,6 +48,10 @@ Note that there are different classes types (class 1, class 2, class 3, class 4)
 Lets take a look at class 1
 ```
 table(SpectralLibrary$Class1)
+  CLASS             n
+  Class1            1001
+  class2            42
+  class32           21
 ```
 Note that there are a few functional groups with many observations. Lets use our function to:  
 1. Remove reflectance values <2 or <0 
