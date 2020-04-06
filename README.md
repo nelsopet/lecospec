@@ -37,7 +37,10 @@ library(randomcoloR)
 ```
 
 ### Preparing Spectral Libraries using PSR Data
-SAMPLE CODE SHOULD  (Use function that adds metadata, removes uncalibrated scans from spectral library,equalizes the number of observation per class, normalizes the reflectance values and plots the median spectra for each class)
+Spectral libraries can be compiled form portable spectrometers. The one used in this here was a (Spectral Evolution PSR+) which covers the full spectrum (350-2500 nm). Note that the spectrtal range of the field spec exceeds the spectral range of the imaging sensor. 
+
+SAMPLE CODE BELOW SHOULD  (Use function that adds metadata, removes uncalibrated scans from spectral library,equalizes the number of observation per class, normalizes the reflectance values and plots the median spectra for each class)
+
 ``` 
 SpecLibPSR<-SpectralLibrary_prep(filename = path/to/RawSpectralLibrary
                                 outfile = path/to/outputfolder)
