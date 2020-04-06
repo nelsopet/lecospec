@@ -23,11 +23,8 @@ JANE'S ERDS (IMAGE HERE)
 ### Preparing Spectral Libraries using PSR Data
 SAMPLE CODE SHOULD  (Use function that ads metadata, removes uncalibrated scans from spectral library,equalizes the number of observation per class and plots the median spectra for each class)
 ``` 
-SpecLib<-Reduce(spectrolab::combine,list_of_SpecLib)%>% # dim(n_samples=1989, n_wavelegths=2151)
-  as.data.frame()%>% # Converts Spectral Object to a dataframe
-  dplyr::select(-sample_name)%>% # Removes unwanted column 
-  inner_join(Species_groups,by="PFT")%>% #Joins dataframe with all the species info to our spectral library
-  dplyr::select(ScanID,PFT,PFT_2,PFT_3,PFT_4,Area,everything()) #Reorders columns  
+SpecLibPSR<-SpectralLibrary_prep(filename = path/to/shapefiles-0f-didgitizedpolygons
+                                outfile = path/to/outputfolder)
   ```
   
 FACET PLOT SHOWING SPECTRAL FEATURES OF EACH CLASS
@@ -37,7 +34,7 @@ FACET PLOT SHOWING SPECTRAL FEATURES OF EACH CLASS
 ### Preparing Spectral Libraries using didgitized Raster Pixels
 SAMPLE CODE SHOULD  (Use a function that adds metadata, removes uncalibrated scans from spectral library,equalizes the number of observation per class and plots the median spectra for each class)
 ``` 
-SpecLib<-SpectralLibrary_prep(filename = path/to/shapefiles-0f-didgitizedpolygons
+SpecLibHypIMG<-SpectralLibrary_prep(filename = path/to/shapefiles-0f-didgitizedpolygons
                                 outfile = path/to/outputfolder)
   ```
 
