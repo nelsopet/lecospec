@@ -14,16 +14,19 @@ This tutorial demonstrates how to use functions developed to read, process and c
 2. Building classification model 
 3. Classifying Headwall Hyperspectral Raster
 
-JANE'S ERDS (Inage here)
+JANE'S ERDS (IMAGE HERE)
 
 ## Preparing Spectral Libraries
 There are three main folders in this repository. The folders contain data that is either raw, processed or output data. 
 
 ### Building classification model
 SAMPLE CODE
+MODEL RESULTS
+CONFUSION MATRIX
 
 ### Classifying Hyperspectral Data
 SAMPLE CODE
+
 IMAGE OF DATACUBE
 
 
