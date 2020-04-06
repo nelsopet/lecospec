@@ -3,6 +3,7 @@ Nelson, P.
 Smith, K.  
 Pettit, J.  
 
+## Contents
 - [Introduction](#Introduction)
 - [Preparing Spectral Libraries](#Introduction)
 - [Building classification model](#Introduction)
