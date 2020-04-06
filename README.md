@@ -17,7 +17,7 @@ This tutorial demonstrates how to use functions developed to read, process and c
 
 JANE'S ERDS (IMAGE HERE)
 
-### Preparing Spectral Libraries
+### Preparing Spectral Libraries using PSR Data
 SAMPLE CODE  
 ``` 
 SpecLib<-Reduce(spectrolab::combine,list_of_SpecLib)%>% # dim(n_samples=1989, n_wavelegths=2151)
@@ -31,6 +31,16 @@ FACET PLOT SHOWING SPECTRAL FEATURES OF EACH CLASS
 
 ![](/Cladonia.jpg)
 
+### Preparing Spectral Libraries using didgitized Raster Pixels
+SAMPLE CODE  
+``` 
+SpecLib<-Reduce(spectrolab::combine,list_of_SpecLib)%>% # dim(n_samples=1989, n_wavelegths=2151)
+  as.data.frame()%>% # Converts Spectral Object to a dataframe
+  dplyr::select(-sample_name)%>% # Removes unwanted column 
+  inner_join(Species_groups,by="PFT")%>% #Joins dataframe with all the species info to our spectral library
+  dplyr::select(ScanID,PFT,PFT_2,PFT_3,PFT_4,Area,everything()) #Reorders columns  
+  ```
+
 ### Building classification model
 SAMPLE CODE  
 ``` 
@@ -41,11 +51,20 @@ SpecLib<-Reduce(spectrolab::combine,list_of_SpecLib)%>% # dim(n_samples=1989, n_
   dplyr::select(ScanID,PFT,PFT_2,PFT_3,PFT_4,Area,everything()) #Reorders columns  
   ```
 MODEL RESULTS
-CONFUSION MATRIX
+```
+Call:
+ randomForest(formula = Classes ~ ., data = newdf, mtry = sqrt(ncol(newdf)),      ntree = 1001, localImp = TRUE) 
+               Type of random forest: classification
+                     Number of trees: 1001
+No. of variables tried at each split: 7
+
+        OOB estimate of  error rate: 25.69%
+CONFUSION MATRIX  
+```  
 
 ### Classifying Hyperspectral Data
 SAMPLE CODE
-``` 
+```
 SpecLib<-Reduce(spectrolab::combine,list_of_SpecLib)%>% # dim(n_samples=1989, n_wavelegths=2151)
   as.data.frame()%>% # Converts Spectral Object to a dataframe
   dplyr::select(-sample_name)%>% # Removes unwanted column 
