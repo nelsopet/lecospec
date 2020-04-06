@@ -21,7 +21,20 @@ This tutorial demonstrates how to use functions created by our team to read, pro
 1. Preparing your spectral library from field spectroradiometers
 2. Preparing your spectral library from digitized pixels
 2. Building classification model 
-3. Classifying Headwall Hyperspectral Raster
+3. Classifying Headwall Hyperspectral Raster  
+
+Packages used in this tutorial include:
+```
+library(spectrolab)
+library(tidyverse)
+library(raster)
+library(SpaDES)
+library(doParallel)
+library(hsdar)
+library(caret)
+library(randomForest)
+library(randomcoloR)
+```
 
 ### Preparing Spectral Libraries using PSR Data
 SAMPLE CODE SHOULD  (Use function that adds metadata, removes uncalibrated scans from spectral library,equalizes the number of observation per class, normalizes the reflectance values and plots the median spectra for each class)
