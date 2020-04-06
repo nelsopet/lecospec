@@ -1,21 +1,11 @@
-# Alaska_Spectral_Library
-The repository analyzes high-resolution hyperspectral scans and images of Arctic and Tundra communities. The aim of the repository is to generate fine-scale, species-level vegetation maps and associated voucher collections for ecological and evolutionary analysis, and to study patterns of community assembly across spatial scales.
+# Processing Headwall Hyperspectral Rasters using Tiling and Parallelization:  R (tutorial)
+Nelson, P. Smith, K. Pettit,J.
 
-## Table of Content
-
-- [Getting Started](#Table-of-Content)
-- [Folders](#Getting-Started)
-    + [Original_data](#Folders)
-      + [Field_spec](#Original_data)
-      + [Test_imagery](#Original_data)
-  + [Outputs](#Folders)
-    + [1_Field_spec](#FOutputs)
-    + [2_HDW_Imagery](#Outputs)
-  + [Scripts](#Folders)
-    + [1_Field_spec_processing](#Scripts)
-    + [2_Image_processing](#Scripts)
-    + [3_Field_spec_Models](#Scripts)
-    + [4_Image_Models](#Scripts)
+- [Introduction]
+- [Preparing Spectral Libraries](#Introduction)
+- [Building classification model](#Introduction)
+- [Classifying Hyperspectral Data](#Introduction)
+    
   
 
 ### Getting Started
