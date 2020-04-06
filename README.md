@@ -8,9 +8,9 @@
 
 ## Contents
 - [Introduction](#Introduction)
-- [Preparing Spectral Libraries](#Intr<br />oduction)
-- [Building classification model](#Introduction)
-- [Classifying Hyperspectral Data](#Introduction)
+- [Preparing Spectral Libraries](#Preparing<br />Spectral<br />Libraries)
+- [Building classification model](#Building<br />classification<br />model)
+- [Classifying Hyperspectral Data](#Classifying<br />Hyperspectral<br />Data)
     
 ### Introduction
 The electromagnetic spectrum is composed of thousands of bands representing different types of light energy. Imaging spectrometers (instruments that collect hyperspectral data) break the electromagnetic spectrum into groups of bands that support classification of objects by their spectral properties on the Earth's surface. Hyperspectral data consists of many bands - up to hundreds of bands - that cover the electromagnetic spectrum.  
