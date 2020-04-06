@@ -5,11 +5,11 @@
 *2. Kevaughan Smith*  
 *3. Jane Pettit*  
 *4. Catherine Chan*  
-
+Building<br/>classification<br/>model
 ## Contents
 - [Introduction](#Introduction)
 - [Preparing Spectral Libraries](#Preparing<br/>Spectral<br/>Libraries)
-- [Building classification model](#Building<br/>classification<br/>model)
+- [Building classification model](#Preparing<br/>Spectral<br/>Libraries)
 - [Classifying Hyperspectral Data](#Classifying<br/>Hyperspectral<br/>Data)
     
 ### Introduction
