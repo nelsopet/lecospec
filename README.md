@@ -19,7 +19,7 @@ JANE'S ERDS (IMAGE HERE)
 
 ### Preparing Spectral Libraries
 SAMPLE CODE  
-...
+...  
 SpecLib<-Reduce(spectrolab::combine,list_of_SpecLib)%>% # dim(n_samples=1989, n_wavelegths=2151)
   as.data.frame()%>% # Converts Spectral Object to a dataframe
   dplyr::select(-sample_name)%>% # Removes unwanted column 
