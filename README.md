@@ -8,7 +8,7 @@
 
 ## Contents
 - [Introduction](#Introduction)
-- [Preparing Spectral Libraries](#Introduction)
+- [Preparing Spectral Libraries](#Intr<br />oduction)
 - [Building classification model](#Introduction)
 - [Classifying Hyperspectral Data](#Introduction)
     
