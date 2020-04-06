@@ -13,7 +13,7 @@
 - [Classifying Hyperspectral Data](#Introduction)
     
 ### Introduction
-This tutorial demonstrates how to use functions developed to read, process and create large spatial (Headwall raster) data sets. In principle, both examples follow the same systematic approach:
+This tutorial demonstrates how to use functions created by our team to read, process and create large spatial (Headwall raster) data sets. In principle, both examples follow the same systematic approach:
 1. Preparing your spectral library
 2. Building classification model 
 3. Classifying Headwall Hyperspectral Raster
@@ -21,7 +21,7 @@ This tutorial demonstrates how to use functions developed to read, process and c
 JANE'S ERDS (IMAGE HERE)
 
 ### Preparing Spectral Libraries using PSR Data
-SAMPLE CODE SHOULD  (Use function that ads metadata, removes uncalibrated scans from spectral library,equalizes the number of observation per class and plots the median spectra for each class)
+SAMPLE CODE SHOULD  (Use function that adds metadata, removes uncalibrated scans from spectral library,equalizes the number of observation per class, normalizes the reflectance values and plots the median spectra for each class)
 ``` 
 SpecLibPSR<-SpectralLibrary_prep(filename = path/to/shapefiles-0f-didgitizedpolygons
                                 outfile = path/to/outputfolder)
