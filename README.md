@@ -28,7 +28,7 @@ JANE'S ERDS (IMAGE HERE)
 ### Preparing Spectral Libraries using PSR Data
 SAMPLE CODE SHOULD  (Use function that adds metadata, removes uncalibrated scans from spectral library,equalizes the number of observation per class, normalizes the reflectance values and plots the median spectra for each class)
 ``` 
-SpecLibPSR<-SpectralLibrary_prep(filename = path/to/shapefiles-of-RawSpectralLibrary
+SpecLibPSR<-SpectralLibrary_prep(filename = path/to/RawSpectralLibrary
                                 outfile = path/to/outputfolder)
   ```
   
@@ -39,7 +39,7 @@ FACET PLOT SHOWING SPECTRAL FEATURES OF EACH CLASS
 ### Preparing Spectral Libraries using didgitized Raster Pixels
 SAMPLE CODE SHOULD  (Use a function that adds metadata, removes uncalibrated scans from spectral library,equalizes the number of observation per class and plots the median spectra for each class)
 ``` 
-SpecLibHypIMG<-SpectralLibrary_prep(filename = path/to/shapefiles-0f-didgitizedpolygons
+SpecLibHypIMG<-SpectralLibrary_prep(filename = path/to/shapefiles_of_didgitizedpolygons
                                 outfile = path/to/outputfolder)
   ```
 
