@@ -5,7 +5,7 @@
 *2. Kevaughan Smith*  
 *3. Jane Pettit*  
 *4. Catherine Chan*  
-Building<br/>classification<br/>model
+
 ## Contents
 - [Introduction](#Introduction)
 - [Preparing Spectral Libraries](#Preparing<br/>Spectral<br/>Libraries)
@@ -37,16 +37,29 @@ library(randomcoloR)
 ```
 
 ### Preparing Spectral Libraries using PSR Data
-Spectral libraries can be compiled form portable spectrometers. The one used in this here was a (Spectral Evolution PSR+) which covers the full spectrum (350-2500 nm). Note that the spectrtal range of the field spec exceeds the spectral range of the imaging sensor. 
+Spectral libraries can be compiled form portable spectrometers. The one used inhere was a (Spectral Evolution PSR+) which covers the full spectrum (350-2500 nm). Note that the spectrtal range of the field spec exceeds the spectral range of the imaging sensor. Hence resampling these bandpasses to match the snesor bandpasses is essential.   
 
-SAMPLE CODE BELOW SHOULD  (Use function that adds metadata, removes uncalibrated scans from spectral library,equalizes the number of observation per class, normalizes the reflectance values and plots the median spectra for each class)
-
+Lets take a look at our spectral library unprocessed (user would have already done some data munging) 
+```
+SpectralLibrary<- read.csv ("/data/SpectralLibrary_raw.csv"
+str(SpectralLibrary)
+```
+Note that there are different classes types (class 1, class 2, class 3, class 4) and wavelengths across the full spectrum (350-2500 nm. However, we're intrested in one class (Class 2 = represents functional groups of plant species).  
+Lets take a look at class 1
+```
+table(SpectralLibrary$Class1)
+```
+Note that there are a few functional groups with many observations. Lets use our function to:  
+1. Remove reflectance values <2 or <0 
+2. Resample the bandpasses so the they match that of the sensor
+3. Make observations equal across all classes
+4. Plots the median spectra for each class. 
 ``` 
 SpecLibPSR<-SpectralLibrary_prep(filename = path/to/RawSpectralLibrary
-                                outfile = path/to/outputfolder)
+                                  outfile = path/to/outputfolder)
   ```
   
-FACET PLOT SHOWING SPECTRAL FEATURES OF EACH CLASS
+THIS SHOULD BE A FACET PLOT SHOWING SPECTRAL FEATURES OF EACH CLASS OF INTEREST
 
 ![](/Cladonia.jpg)
 
