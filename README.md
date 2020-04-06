@@ -19,14 +19,15 @@ JANE'S ERDS (IMAGE HERE)
 
 ### Preparing Spectral Libraries
 SAMPLE CODE  
-...  
-# Combines specral libraries from all locations
+...
 SpecLib<-Reduce(spectrolab::combine,list_of_SpecLib)%>% # dim(n_samples=1989, n_wavelegths=2151)
   as.data.frame()%>% # Converts Spectral Object to a dataframe
   dplyr::select(-sample_name)%>% # Removes unwanted column 
   inner_join(Species_groups,by="PFT")%>% #Joins dataframe with all the species info to our spectral library
   dplyr::select(ScanID,PFT,PFT_2,PFT_3,PFT_4,Area,everything()) #Reorders columns  
-  ...  
+  ...
+  
+# Combines specral libraries from all locations  
 FACET PLOT SHOWING SPECTRAL FEATURES OF EACH CLASS
 
 ### Building classification model
