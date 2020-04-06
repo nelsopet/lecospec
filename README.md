@@ -28,7 +28,7 @@ JANE'S ERDS (IMAGE HERE)
 ### Preparing Spectral Libraries using PSR Data
 SAMPLE CODE SHOULD  (Use function that adds metadata, removes uncalibrated scans from spectral library,equalizes the number of observation per class, normalizes the reflectance values and plots the median spectra for each class)
 ``` 
-SpecLibPSR<-SpectralLibrary_prep(filename = path/to/shapefiles-0f-didgitizedpolygons
+SpecLibPSR<-SpectralLibrary_prep(filename = path/to/shapefiles-of-RawSpectralLibrary
                                 outfile = path/to/outputfolder)
   ```
   
