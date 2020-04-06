@@ -27,7 +27,6 @@ SpecLib<-Reduce(spectrolab::combine,list_of_SpecLib)%>% # dim(n_samples=1989, n_
   dplyr::select(ScanID,PFT,PFT_2,PFT_3,PFT_4,Area,everything()) #Reorders columns  
   ```
   
-# Combines specral libraries from all locations  
 FACET PLOT SHOWING SPECTRAL FEATURES OF EACH CLASS
 
 ![](/Cladonia.jpg)
@@ -56,7 +55,7 @@ SpecLib<-Reduce(spectrolab::combine,list_of_SpecLib)%>% # dim(n_samples=1989, n_
 
 IMAGE OF DATACUBE  
 
-![](/EightMileTest Plot Prediction.jpg)
+![](EightMileTest Plot Prediction.jpg)
 
 
 
