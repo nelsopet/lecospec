@@ -19,8 +19,13 @@ JANE'S ERDS (IMAGE HERE)
 
 ### Preparing Spectral Libraries
 SAMPLE CODE
-  ![](https://github.com/nelsopet/Alaska_Spectral_Library/blob/f46ff9c884da5402e02b66cdae622a08d1f9af3a/Scripts/3_PSR_SpecLib.R#L27-L31)
-FACET PLOT SHOWING SPECTRAL FEATURES OF EACH CLASS 
+...# Combines specral libraries from all locations
+SpecLib<-Reduce(spectrolab::combine,list_of_SpecLib)%>% # dim(n_samples=1989, n_wavelegths=2151)
+  as.data.frame()%>% # Converts Spectral Object to a dataframe
+  dplyr::select(-sample_name)%>% # Removes unwanted column 
+  inner_join(Species_groups,by="PFT")%>% #Joins dataframe with all the species info to our spectral library
+  dplyr::select(ScanID,PFT,PFT_2,PFT_3,PFT_4,Area,everything()) #Reorders columns 
+FACET PLOT SHOWING SPECTRAL FEATURES OF EACH CLASS...
 
 ### Building classification model
 SAMPLE CODE
