@@ -13,6 +13,10 @@
 - [Classifying Hyperspectral Data](#Introduction)
     
 ### Introduction
+The electromagnetic spectrum is composed of thousands of bands representing different types of light energy. Imaging spectrometers (instruments that collect hyperspectral data) break the electromagnetic spectrum into groups of bands that support classification of objects by their spectral properties on the Earth's surface. Hyperspectral data consists of many bands - up to hundreds of bands - that cover the electromagnetic spectrum.  
+
+The Headwall Micro A-series VINIR imaging spectrometer collects data within the 400 nm to 1000 nm portions of the electromagnetic spectrum within bands that are approximately 3 nm in width. This results in a hyperspectral data cube that contains approximately 326 bands.  
+
 This tutorial demonstrates how to use functions created by our team to read, process and create large spatial (Headwall raster) data sets. In principle, both examples follow the same systematic approach:
 1. Preparing your spectral library
 2. Building classification model 
