@@ -56,7 +56,7 @@ table(SpectralLibrary$Class1)
   class32           21
 ```
 Note that there are a few functional groups with many observations. Lets use our function to:  
-1. Remove reflectance values <2 or <0 
+1. Remove reflectance values >2 or <0 
 2. Resample the bandpasses so the they match that of the sensor
 3. Make observations equal across all classes
 4. Plots the median spectra for each class. 
