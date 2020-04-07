@@ -7,6 +7,7 @@
 *4. Catherine Chan*  
 
 ## Contents
+
 - [Introduction](#Introduction)
 - [Preparing Spectral Libraries](#Preparing<br/>Spectral<br/>Libraries)
 - [Building classification model](#Preparing<br/>Spectral<br/>Libraries)
