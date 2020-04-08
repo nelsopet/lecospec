@@ -73,9 +73,9 @@ SpecLibPSR<-SpectralLibrary_prep(filename = path/to/RawSpectralLibrary
                                   outfile = path/to/outputfolder)
   ```
   
-THIS SHOULD BE A FACET PLOT SHOWING SPECTRAL FEATURES OF EACH CLASS OF INTEREST
+THIS SHOULD BE A FACET PLOT SHOWING SPECTRAL FEATURES OF EACH CLASS OF INTEREST (Place Holder)
 
-![](/Cladonia.jpg)
+![](/Cladonia.jpg) 
 
 ### Preparing Spectral Libraries using didgitized Raster Pixels
 SAMPLE CODE SHOULD  (Use a function that adds metadata, removes uncalibrated scans from spectral library,equalizes the number of observation per class and plots the median spectra for each class)
@@ -90,7 +90,7 @@ SAMPLE CODE SHOULD (use a function to build a Build a classification model)
 Classification_Model<-Spectral_Classifier(spectral_Library = path/to/SpectralLibrary,
                                           Out_file = path/to/outputfolder)
   ```
-MODEL RESULTS
+MODEL RESULTS (Place Holder)
 ```
 Call:
  randomForest(formula = Classes ~ ., data = newdf, mtry = sqrt(ncol(newdf)),      ntree = 1001, localImp = TRUE) 
@@ -100,7 +100,7 @@ No. of variables tried at each split: 7
 
         OOB estimate of  error rate: 25.69%
 ```  
-CONFUSION MATRIX 
+CONFUSION MATRIX (Place Holder)
 ```
                  Abiotic_Litter Abiotic_Rock Abiotic_Soil Dwarf_Shrub_Broad Dwarf_Shrub_Needle Forb Graminoid_Grass
 Abiotic_Litter                  4            0            0                 0                  1    0               0
@@ -127,7 +127,7 @@ PredictedRaster_Layer<-HyperspecImageClassifier(filename = Path/to/datacube.envi
                                                 Out_file = path/to/outputfile)
   ```
 
-IMAGE OF DATACUBE 
+IMAGE OF DATACUBE (Place Holder)
 ```
 plot(PredictedRaster_Layer)
 ```
