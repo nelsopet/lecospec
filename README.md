@@ -61,9 +61,10 @@ metadata (3 of 9): ScanID, Class1, Class2, ...
 ```  
 Note taht we have a total of 748 samples. We can convert to a dataframe and look at its features.
 ```
-SpectralLibrary%>%
-    as.data.frame()%>%
-    dplyr::select(-sample_name)
+SpectralLibrary<-SpectralLibrary%>%
+                    as.data.frame()%>%
+                    dplyr::select(-sample_name)
+str(SpectralLibrary)
     
 'data.frame':	748 obs. of  2160 variables:
  $ ScanID     : chr  "salsic_AK2018_07" "salsic_AK2018_05" "salsic_AK2018_03" "salsic_AK2018_06" ...
