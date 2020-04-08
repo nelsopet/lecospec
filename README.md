@@ -9,9 +9,10 @@
 ## Contents
 
 - [Introduction](#Introduction)
-- [Preparing Spectral Libraries](#Preparing<br/>Spectral<br/>Libraries)
-- [Building classification model](#Preparing<br/>Spectral<br/>Libraries)
-- [Classifying Hyperspectral Data](#Classifying<br/>Hyperspectral<br/>Data)
+- [Preparing Spectral Libraries](#Preparing-Spectral-Libraries)
+- [Building classification model](#Building-classification-model)
+- [Classifying Hyperspectral Data](#Classifying-Hyperspectral-Data)
+- [References](#References)
     
 ### Introduction
 The electromagnetic spectrum is composed of thousands of bands representing different types of light energy. Imaging spectrometers (instruments that collect hyperspectral data) break the electromagnetic spectrum into groups of bands that support classification of objects by their spectral properties on the Earth's surface. Hyperspectral data consists of many bands - up to hundreds of bands - that cover the electromagnetic spectrum.  
@@ -22,7 +23,9 @@ This tutorial demonstrates how to use functions created by our team to read, pro
 1. Preparing your spectral library from field spectroradiometers
 2. Preparing your spectral library from digitized pixels
 2. Building classification model 
-3. Classifying Headwall Hyperspectral Raster  
+3. Classifying Headwall Hyperspectral Images 
+
+*Click [here](https://drive.google.com/drive/u/2/folders/1HIgyxhXO0kYDXYohvymxGupc2yR0k1-4) to download the data and output folder to the repository after cloning:*
 
 Packages used in this tutorial include:
 ```
@@ -37,11 +40,16 @@ library(randomForest)
 library(randomcoloR)
 ```
 
-### Preparing Spectral Libraries using PSR Data
+### Preparing Spectral Libraries
 
-Spectral libraries can be compiled form portable spectrometers. The one used here was a (Spectral Evolution PSR+) which covers the full spectrum (350-2500 nm). Note that the spectrtal range of the field spec exceeds the spectral range of the imaging sensor. Hence resampling these bandpasses to match the sensor bandpasses is essential.   
+Spectral Libraries can be complied from:
+1. Portable spectrometers
+2. Digitizing pixels of known classes in your image
 
-Lets take a look at our spectral library unprocessed (user would have already done some data munging) 
+#### Preparing Spectral Libraries using PSR
+The one used here was a (Spectral Evolution PSR+) which covers the full spectrum (350-2500 nm) and have 1nm wide bands. Note that the spectrtal range and width of the field spec exceeds that of the imaging sensor (400nm - 1000nm, 2nm wide bands). Hence, resampling these bandpasses to match the sensor bandpasses is essential.   
+
+Lets take a look at our spectral library before we resample the bands to match our sensor (user would have already done some data munging) 
 ```
 SpectralLibrary<- read.csv ("/data/SpectralLibrary_raw.csv")
 str(SpectralLibrary)
