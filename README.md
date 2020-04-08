@@ -189,7 +189,7 @@ str(SpecLib_resampled)
            file = paste(outputs_folder,"D_001_",
                         "SpecLib_resampled.csv",sep=""), row.names = F)
 ```
-Notice the change in the bandpasses and the number of variables in your new dataframe. We can now use the HyperspecGenFunction function to calculate the derivatives. These are saved on disk because of R's memory limit.
+Notice the change in the bandpasses and the number of variables in your new dataframe. We can now use the [HyperspecGenFunction](https://github.com/nelsopet/lecospec/blob/111338ecb754bbdc3861a86ecf68eb2757204315/Functions/Spectral_classifier.R#L3-L26) function to calculate the derivatives. These are saved on disk because of R's memory limit.
 ```
 # Source the function that will calculate derivatives of our new spectral library
 source("Functions/HyperspecGenFunction.R")
@@ -199,7 +199,7 @@ source("Functions/HyperspecGenFunction.R")
 HyperSpec_DerivGenerator("Output/D_001_SpecLib_resampled.csv", out_file= "Output/")
 
 ```
-Once that's done we can go ahead and build our model with the spectral classifier function.
+Once that's done we can go ahead and build our model with the [spectral classifier](https://github.com/nelsopet/lecospec/blob/111338ecb754bbdc3861a86ecf68eb2757204315/Functions/Spectral_classifier.R#L3-L26) function.
 ```
 # Source Function That will Build randomForest model
 source("Functions/Spectral_classifier.R")
