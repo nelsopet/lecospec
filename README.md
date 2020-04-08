@@ -9,7 +9,7 @@
 ## Contents
 
 - [Introduction](#Introduction)
-- [Preparing Spectral Libraries](#Preparing-Spectral-Libraries)
+- [Approaches to fine-scale image classification](#Approaches-to-fine-scale-image-classification)
 - [Building classification model](#Building-classification-model)
 - [Classifying Hyperspectral Data](#Classifying-Hyperspectral-Data)
 - [References](#References)
@@ -40,12 +40,12 @@ library(randomForest)
 library(randomcoloR)
 ```
 
-### Preparing Spectral Libraries
-Spectral Libraries can be complied from:
-1. Portable spectrometers
+### Approaches to fine-scale image classification
+Ground truthed data for image classification can be collected using:
+1. Portable Field spectrometers
 2. Digitizing pixels of known classes in your image
 
-#### Preparing Spectral Libraries using PSR
+#### The Portable Field Spectrometer Approach
 The one used here was a (Spectral Evolution PSR+) which covers the full spectrum (350-2500 nm) and have 1nm wide bands. Note that the spectrtal range and width of this field spec exceeds that of the imaging sensor (400nm - 1000nm, 2nm wide bands). Hence, resampling these bandpasses to match the sensor bandpasses is essential.  
 
 Lets take a look at our spectral library before we resample the bands to match our sensor (user would have already done some data munging).
