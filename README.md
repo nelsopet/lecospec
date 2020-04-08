@@ -125,7 +125,8 @@ First we'll need the bandpasses from headwall.
 ``` 
 # Creates a vector of the bandpasses for the headwall sensor that will be used
 # Noisey band were omitted (only bands 1:272 below)
-Headwall_bandpasses<-c()
+Headwall_bandpasses<-c(https://github.com/nelsopet/lecospec/blob/fd09b2b3af2262635bc202ccc6d945b4a3ffa103/Scripts/3_Classify_Image.R#L17-L47)
+
 ```
 
 Now we can use the function below to resample
