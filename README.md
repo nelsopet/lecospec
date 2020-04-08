@@ -1,4 +1,4 @@
-# Processing Headwall Hyperspectral Rasters using Tiling and Parallelization:  R (tutorial)
+# Processing Fine-scale Hyperspectral Rasters using Tiling and Parallelization:  R (tutorial)
 
 ## Authors & Contributors 
 *1. Dr. Peter Nelson*      
