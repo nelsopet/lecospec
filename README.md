@@ -237,12 +237,8 @@ No. of variables tried at each split: 16
         OOB estimate of  error rate: 30.12%
 ```
 
-### Preparing Spectral Libraries using didgitized Raster Pixels
+#### The didgitized pixel Approach
 SAMPLE CODE SHOULD  (Use a function that adds metadata, removes uncalibrated scans from spectral library,equalizes the number of observation per class and plots the median spectra for each class)
-``` 
-SpecLibHypIMG<-SpectralLibrary_prep(filename = path/to/shapefiles_of_didgitizedpolygons
-                                outfile = path/to/outputfolder)
-  ```
 
 ### Building classification model
 SAMPLE CODE SHOULD (use a function to build a Build a classification model)
