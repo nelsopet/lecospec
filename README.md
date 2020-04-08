@@ -22,7 +22,7 @@ This tutorial demonstrates how to use functions created by our team to read, pro
 1. Preparing your spectral library from field spectroradiometers
 2. Preparing your spectral library from digitized pixels
 2. Building classification model 
-3. Classifying Headwall Hyperspectral Raster  
+3. Classifying Headwall Hyperspectral Images 
 
 Packages used in this tutorial include:
 ```
