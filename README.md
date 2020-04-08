@@ -25,6 +25,8 @@ This tutorial demonstrates how to use functions created by our team to read, pro
 2. Building classification model 
 3. Classifying Headwall Hyperspectral Images 
 
+Click [here](https://drive.google.com/drive/u/2/folders/1HIgyxhXO0kYDXYohvymxGupc2yR0k1-4) to download the data and output folder to the repository after cloning:
+
 Packages used in this tutorial include:
 ```
 library(spectrolab)
