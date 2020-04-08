@@ -131,8 +131,7 @@ IMAGE OF DATACUBE
 ```
 plot(PredictedRaster_Layer)
 ```
-
-![](/EightMileTest_Plot_Prediction.jpg)
+![](/FullDatacube_Rplot.jpeg)
 
 ### HypIMGPredictor_generator Entity relationship diagram
 JANE'S ERDS (IMAGE HERE)
