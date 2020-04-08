@@ -2,7 +2,8 @@
 
 Spectral_classifier<-function(classifier){
   
-  # Creates a string of possible names that will be removed
+  # Creates a string of possible names that will be removed from spectral library 
+  # These are all the metadata that will not be used for classification
   remove_names<-c("ScanID","Class1","Class2","Class4","Area","Class2_Freq"
                   ,"Class3_Freq","Class4_Freq","Tree_numbe","x","y")
   
@@ -21,8 +22,9 @@ Spectral_classifier<-function(classifier){
   rf_mod<-randomForest(Classes ~ .,data = Spectral_Library,
                        mtry = sqrt(ncol(Spectral_Library)),
                        ntree = 1001,
-                       localImp = TRUE)}
-  
+                       localImp = TRUE)
+  }
+# ------------------------------------------------- working on varible importance ---------------------------------------
 #  # Function selects the 50 most importnat variables
 #  ImportantVars<-function(x){
 #    
