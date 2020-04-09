@@ -49,7 +49,7 @@ Ground truthed data for image classification can be collected using:
 The one used here was a (Spectral Evolution PSR+) which covers the full spectrum (350-2500 nm) and have 1nm wide bands. Note that the spectrtal range and width of this field spec exceeds that of the imaging sensor (400nm - 1000nm, 2nm wide bands). Hence, resampling these bandpasses to match the sensor bandpasses is essential.  
 
 Lets take a look at our spectral library before we resample the bands to match our sensor (user would have already done some data munging).
-![](HypIMGPredictor_generator_v.2.jpeg) ![](HypIMGPredictor_generator_v.2.jpeg)
+![](HypIMGPredictor_generator_v.2.jpeg)(HypIMGPredictor_generator_v.2.jpeg)
 ```
 # Note that this a spectral object
 SpectralLibrary<-readRDS("Output/C_004_SpecLib_FunctionalGroupsEqual_DF.rds")
