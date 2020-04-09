@@ -105,13 +105,17 @@ SpecLib_reduced<- reduce_SpeciesPerGroup(SpecLib_new)
 # Combines the list above into one dataframe
 SpecLib_reduced_df<-do.call("rbind", SpecLib_reduced)
 
+# str(SpecLib_reduced_df)
+
 # Writes out dataframe
 SpecLib_reduced_df%>%
   write.csv("Output/C_003_SpecLib_FunctionalGroupsEqual_DF.csv",row.names = F)
 
 # Lets check the number of scans we have for each functional category now that we reduced the distribution
 # These will be used in models
-# SpecLib_reduced_df %>%group_by(Class3) %>%tally()
+ SpecLib_reduced_df %>%
+   group_by(Class3) %>%
+   tally()
 # Class3                 n
 # <fct>              <int>
 # Abiotic_Litter        11

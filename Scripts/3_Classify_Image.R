@@ -73,7 +73,7 @@ ResampBands<-function(x){
     filter_at(vars(-(ScanID:Class4_Freq)), all_vars(. <2))%>%
     filter_at(vars(-(ScanID:Class4_Freq)), all_vars(. >=0))
 
- #Writes out each dataframe as a .csv file
+  # Writes out each dataframe as a .csv file
   write.csv(goodscans,
             file = paste(outputs_folder,"D_001_",
                          "Headwall_SpecLibDF.csv",sep=""), row.names = F)
