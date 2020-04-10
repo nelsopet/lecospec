@@ -49,6 +49,7 @@ Ground truthed data for image classification can be collected using:
 The one used here was a (Spectral Evolution PSR+) which covers the full spectrum (350-2500 nm) and have 1nm wide bands. Note that the spectrtal range and width of this field spec exceeds that of the imaging sensor (400nm - 1000nm, 2nm wide bands). Hence, resampling these bandpasses to match the sensor bandpasses is essential.  
 
 Lets take a look at our spectral library before we resample the bands to match our sensor (user would have already done some data munging).
+
 ```
 # Note that this a spectral object
 SpectralLibrary<-readRDS("Output/C_004_SpecLib_FunctionalGroupsEqual_DF.rds")
@@ -126,7 +127,6 @@ First we'll need the bandpasses from headwall. You can  find those [here](https:
 # Creates a vector of the bandpasses for the headwall sensor that will be used
 # Noisey band were omitted (only bands 1:272 below)
 Headwall_bandpasses<-c() 
-
 
 ```
 
@@ -220,14 +220,9 @@ No. of variables tried at each split: 16
 ```
 
 #### The didgitized pixel Approach
-SAMPLE CODE SHOULD  (Use a function that adds metadata, removes uncalibrated scans from spectral library,equalizes the number of observation per class and plots the median spectra for each class)
+
 
 ### Building classification model
-SAMPLE CODE SHOULD (use a function to build a Build a classification model)
-``` 
-Classification_Model<-Spectral_Classifier(spectral_Library = path/to/SpectralLibrary,
-                                          Out_file = path/to/outputfolder)
-```
 We can also visualize a confusion matrix CONFUSION MATRIX (Place Holder)
 ```
  RF_MOD$confusion
