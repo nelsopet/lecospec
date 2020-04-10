@@ -128,7 +128,6 @@ First we'll need the bandpasses from headwall. You can  find those [here](https:
 # Noisey band were omitted (only bands 1:272 below)
 Headwall_bandpasses<-c() 
 
-
 ```
 
 Now we can use the function below to resample
@@ -221,14 +220,9 @@ No. of variables tried at each split: 16
 ```
 
 #### The didgitized pixel Approach
-SAMPLE CODE SHOULD  (Use a function that adds metadata, removes uncalibrated scans from spectral library,equalizes the number of observation per class and plots the median spectra for each class)
+
 
 ### Building classification model
-SAMPLE CODE SHOULD (use a function to build a Build a classification model)
-``` 
-Classification_Model<-Spectral_Classifier(spectral_Library = path/to/SpectralLibrary,
-                                          Out_file = path/to/outputfolder)
-```
 We can also visualize a confusion matrix CONFUSION MATRIX (Place Holder)
 ```
  RF_MOD$confusion
