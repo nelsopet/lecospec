@@ -1,11 +1,11 @@
 ## Function generates Derivatives for hyperspectral libraries and Hyperspectral images
 ## The Function takes spectral libraries that are .csv files and Headwall datacubes 
-## The function takes three arguments, see lines 5 and 6 below 
+## The function takes three arguments, see lines 4 - 6 below 
 ## filename = dir.path to where your datacube or Spectral library is located, e.g "path1/path2/path3/"
-## Classif_Model = dir.path to where the model to be used for classification is located
 ## out_file =  dir.path to where your results will be written, eg "path1/path2/path3/"
-## A subfolder will be created in you out_file path for the respective input file
-# Classif_Model
+## Classif_Model = dir.path to where the model to be used for classification is located
+## A subfolder will be created in you out_file path for aving all the output files
+
 HyperSpec_DerivGenerator<-function(filename,out_file,Classif_Model){
   
   print("calling Packages")
@@ -22,6 +22,7 @@ HyperSpec_DerivGenerator<-function(filename,out_file,Classif_Model){
   
   # Creates a vector of the bandpasses for the headwall sensor that will be used
   # Noisey band were omitted (only bands 1:272 below)
+  # Need to find a way to decide what bands we want to leave out
   Headwall_bandpasses<-c(397.593,399.444, 401.296, 403.148, 405.000, 406.851, 408.703, 410.555, 412.407,
                          414.258,416.110, 417.962, 419.814, 421.666, 423.517, 425.369, 427.221, 429.073,
                          430.924,432.776, 434.628, 436.480, 438.332, 440.183, 442.035, 443.887, 445.739,
@@ -68,7 +69,7 @@ HyperSpec_DerivGenerator<-function(filename,out_file,Classif_Model){
     return(colremove)
   }# bandsRemove Function ends
  
-  ###### Functions For Derivative Calculations #######
+  #--------------------------- Functions For Derivative Calculations ------------------------
   # Function responsible for resampling
   Func_Resamp<-function(Resamp){
     
@@ -131,21 +132,22 @@ HyperSpec_DerivGenerator<-function(filename,out_file,Classif_Model){
     # Renames columns 
     colnames(ResampledDF)<-str_remove_all(names(ResampledDF),"wvl_005nm.|wvl_010nm.|wvl_050nm.|wvl_100nm.")
     
-    if(ncol(bandsRemove(ResampledDF)) == 2){
-      
-      # Converts rows with negative values or values >2 to 0
-      # This is for hyperspec Image
-      #ResampledDF[-1:-2][ResampledDF[-1:-2] < 0] <- 0
-      #ResampledDF[-1:-2][ResampledDF[-1:-2] > 2] <- 0
-      
-    } else {
-      
-      # Removes rows with negative values or values >2
-      # This is for your spectral library/ground truth data
-      ResampledDF%>%
-        filter_at(vars(c(colnames(metaRemove(ResampledDF)))), all_vars(.  <2))%>%
-        filter_at(vars(c(colnames(metaRemove(ResampledDF)))), all_vars(. >=0))
-    }
+    # Need to get rid of hard coding here 
+    #if(ncol(bandsRemove(ResampledDF)) == 2){
+    #  
+    #  # Converts rows with negative values or values >2 to 0
+    #  # This is for hyperspec Image
+    #  #ResampledDF[-1:-2][ResampledDF[-1:-2] < 0] <- 0
+    #  #ResampledDF[-1:-2][ResampledDF[-1:-2] > 2] <- 0
+    #  
+    #} else {
+    #  
+    #  # Removes rows with negative values or values >2
+    #  # This is for your spectral library/ground truth data
+    #  ResampledDF%>%
+    #    filter_at(vars(c(colnames(metaRemove(ResampledDF)))), all_vars(.  <2))%>%
+    #    filter_at(vars(c(colnames(metaRemove(ResampledDF)))), all_vars(. >=0))
+    #}
     
     print("Resampling sucessful")
     
@@ -229,7 +231,7 @@ HyperSpec_DerivGenerator<-function(filename,out_file,Classif_Model){
     return(cbind(VegIndex_data,metaRemove(Resampled_data)))
   } # Deriv_combine ends
   
-  ###### Functions For Derivative Calculations above #######
+  # --------------------- Functions applied to Datacube/Spectral Library ---------------------
   
   # Creates SubFolder
   SubFolder<-(paste(out_file,basename(filename),sep=""))
@@ -279,10 +281,10 @@ HyperSpec_DerivGenerator<-function(filename,out_file,Classif_Model){
       # Should I put the number of tiles as a parameter in my function??
       # I also need to come up with a more efficient approach to splitting the raster
       
-      print("Splitting raster into 24 tiles")
+      print("Splitting raster into 30 tiles")
       
       # Creates x tiles 
-      Tiles<-splitRaster(Converted_Dcube[[1]],24)
+      Tiles<-splitRaster(Converted_Dcube[[1]],30)
       
       # prepare for parallel process
       # Need a more efficient approach here
@@ -318,7 +320,7 @@ HyperSpec_DerivGenerator<-function(filename,out_file,Classif_Model){
       
       print("Tiles were sucessfully created")
       
-      print("Calculating Derivatives")
+      print("Creating Predicted Layer")
       
       # Creates a list of the names of all the tiles created 
       list_of_Tiles<-list.files(SubFolder,
@@ -327,14 +329,14 @@ HyperSpec_DerivGenerator<-function(filename,out_file,Classif_Model){
       
       # Now Lets calculate derivatives for each tile
       # Create an empty loop
-      list_built<-list()
+      # list_built<-list()
       
       # Iterate through the list using lapply
-      lapply(1:length(list_of_Tiles), function(i){
+      List_of_PredLayers<-lapply(1:length(list_of_Tiles), function(i){
         
         out_tif2 = paste0(list_of_Tiles[[i]] %>% 
-                            gsub("A_001", "B_001", .))%>%
-                            gsub(".envi", ".csv" , .)
+                            gsub("A_001", "B_001", .))#%>%
+                            #gsub(".envi", ".csv" , .))
                           
         
         # Statement checks if file already exist
@@ -346,11 +348,13 @@ HyperSpec_DerivGenerator<-function(filename,out_file,Classif_Model){
           as.data.frame()
         
         # Removes noisey bands
-        # Automatically remove bands based on the variance
+        # Find out a way to Automatically remove bands based on the variance
+        # remove hard coding 
         DfofRas<-DfofRas[1:274]
         
         # Rename bandpasses
         # Change numeric reference to columns
+        # Remove hard coding
         names(DfofRas)[-1:-2]<-Headwall_bandpasses
         
         # Converts NA values
@@ -360,20 +364,87 @@ HyperSpec_DerivGenerator<-function(filename,out_file,Classif_Model){
         DfofRas<-Deriv_combine(DfofRas)
         
         # Converts the results to a raster Brick and saves it on disk
-        # RastoDF<-raster::brick(DfofRas)
+        RastoDF<-rasterFromXYZ(DfofRas, 
+                               crs = "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0" )
+        
+        # Change the names of the raster layers
+        names(RastoDF)<-colnames(DfofRas)[-1:-2]
+        
+        # Deletes the dataframe
+        rm(DfofRas)
         
         # Write raster out as a brick
-        # writeRaster(DfofRas,filename = out_tif2,
-        #    format = "ENVI",overwrite = T)
+        # writeRaster(RastoDF,filename = out_tif2,
+        #   format = "ENVI",overwrite = T)
         
         # Writes each out as .csv files
-        write.csv(DfofRas,out_tif2,row.names = F)
+        # write.csv(DfofRas,out_tif2,row.names = F)
         
+        # Reads in classifier
+        Model = load(Classif_Model)
+        
+        # Grabs the spitial information from original raster layer
+        RasterBrick<-brick(filename)
+        
+        # Predict calss of each pixel and returns a Raster layer
+        Predicted_layer<-raster::predict(RastoDF,get(Model),na.rm = TRUE, progress = "text")
+        
+        # Mtches the spaitial information to the original raster
+        Predicted_layerResamp<-raster::resample(Predicted_layer,RasterBrick,method = "ngb")
+        
+        # Writes each out as .tif files
+        #writeRaster(Predicted_layerResamp,paste0(SubFolder,
+        #                                       "/B_0",i,"_",
+        #                                       basename(filename),"_PredLayer.tif"), overwrite = T)
+  
         }
         
       })
   
   print("Derivatives for all 24 tiles were created and saved as .envi file")
+  
+  # Adds the output file name to the metadata
+  List_of_PredLayers$filename<-paste0(SubFolder,"/",basename(filename),"_PredLayer.tif")
+  
+  # combines the tiles and writes the output to disk
+  Predicted_Layer<-do.call(raster::merge, List_of_PredLayers)
+  
+  return(Predicted_Layer)
+  
+
+  # Applies Random forest model to each Tile created
+  # Gets the list of all the tiles
+  #list_of_Tiles<-list.files(SubFolder,
+  #                          pattern = glob2rx("B_001*.envi"),full.names = T)
+  #
+  ## Reads in classifier
+  #Model = load(Classif_Model)
+  #
+  ## Grabs the spitial information from original raster layer
+  #RasterBrick<-brick(filename)
+  #
+  ## Reads in each raster and build moel
+  #List_of_predictedLayers<-lapply(1:length(list_of_Tiles),function(i){
+  #  
+  #  # Reads in the tiles and the derivaties calculated for each as rasbrick
+  #  Tile_Derivs<-brick(list_of_Tiles[[i]])
+  #  
+  #  # need to get rid of hard coding 
+  #  # need to find the string of colnames for the output dataframe
+  #  # names(Tile_Derivs)<-colnames(DfofRas)[-1:-2]
+  #  
+  #  Predicted_layer<-raster::predict(Tile_Derivs,get(Model),na.rm = TRUE, progress = "text")
+  #  
+  #  raster::resample(Predicted_layer,RasterBrick,method = "ngb")
+  #  
+  #})
+  #
+  ## Saves predicted layer in out_file
+  #List_of_predictedLayers$filename<-paste0(SubFolder,"/",basename(filename),"_PredLayer.tif")
+  #
+  #Predicted_Layer<-do.call(raster::merge,List_of_predictedLayers)
+  
+  
   
 # ------------------------------------------------------Prediction Portion being updated ----------------------------
   

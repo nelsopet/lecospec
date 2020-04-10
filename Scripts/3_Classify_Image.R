@@ -10,6 +10,7 @@ library(hsdar)
 library(caret)
 library(randomForest)
 library(randomForestExplainer)
+library(ranger)
 
 # --------------------------------------------Headwall Bandpasses ------------------------------------------------
 # Creates a vector of the bandpasses for the headwall sensor that will be used
@@ -97,7 +98,7 @@ HyperSpec_DerivGenerator("Output/D_001_Headwall_SpecLibDF.csv", out_file= "Outpu
 source("Functions/Spectral_classifier.R")
 
 # Build Model
-Headwall_RFMOD<-Spectral_classifier("Output/SpecLib_Derivs.csv")
+Headwall_RFMOD<-Spectral_classifier_ranger("Output/SpecLib_Derivs.csv",out_file = "Output/")
 
 # Save results
 save(Headwall_RFMOD,file = "Output/Headwall_model.rda")

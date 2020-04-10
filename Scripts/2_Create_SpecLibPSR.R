@@ -168,15 +168,16 @@ Plot_Func<-function(x, Class){
     FunctionalGroupDf[[i]]$Wavelength    <-as.numeric(FunctionalGroupDf[[i]]$Wavelength)
     
     # Create an empt jpeg
-    jpeg(paste("Output/","C_005","_",names_of_classes[[i]],".jpg",sep =""), units="px",height = 1400, width=2400, res=350)
+    # jpeg(paste("Output/","C_005","_",names_of_classes[[i]],".jpg",sep =""), units="px",height = 1400, width=2400, res=350)
     
     # Plot the output
     FunctionalGroupDf[[i]]%>%
       group_by(Class2, Wavelength) %>% mutate(Median_Reflectance = median(Reflectance)) %>% 
-      ggplot(aes(Wavelength,Median_Reflectance))+geom_line(aes(color = Class2))+ 
+      ggplot(aes(Wavelength,Median_Reflectance))+geom_line(aes(color = Class3.))+ 
       theme(panel.background = element_rect(fill = "white", colour = "grey50"), legend.key.size = unit(0.3, "cm"),legend.text = element_text(size=3))+
       labs(title = paste(names_of_classes[[i]],"Spectral Signatures", sep = ""))
-    dev.off()
+    
+    ggsave(paste("Output/","C_005","_",names_of_classes[[i]],".png",sep =""))
     
     }
   
