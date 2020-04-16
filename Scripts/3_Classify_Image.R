@@ -92,13 +92,13 @@ ResampBands(Speclib)
 source("Functions/HyperspecGenFunction.R")
 
 # Calculate Derivative for spectral libaray
-HyperSpec_DerivGenerator("Output/D_001_Headwall_SpecLibDF.csv", out_file= "Output/")
+Spectral_Library<-HyperSpec_DerivGenerator("Output/D_001_Headwall_SpecLibDF.csv", out_file= "Output/")
 
 # Source Function That will Build randomForest model
 source("Functions/Spectral_classifier.R")
 
 # Build Model
-Headwall_RFMOD<-Spectral_classifier_ranger("Output/SpecLib_Derivs.csv",out_file = "Output/")
+Headwall_RFMOD<-Spectral_classifier("Output/D_002_SpecLib_Derivs.csv",out_file = "Output/")
 
 # Save results
 save(Headwall_RFMOD,file = "Output/Headwall_model.rda")

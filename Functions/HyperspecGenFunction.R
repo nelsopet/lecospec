@@ -246,7 +246,7 @@ HyperSpec_DerivGenerator<-function(filename,out_file,Classif_Model){
       
       Spectral_lib<-Deriv_combine(Spectral_lib)
       
-      write.csv(Spectral_lib,paste(out_file,"SpecLib_Derivs",".csv", sep=""),row.names = F)
+      write.csv(Spectral_lib,paste(out_file,"D_002_SpecLib_Derivs",".csv", sep=""),row.names = F)
       
       # Normalize Values here
       return(Spectral_lib)
@@ -334,9 +334,8 @@ HyperSpec_DerivGenerator<-function(filename,out_file,Classif_Model){
       # Iterate through the list using lapply
       List_of_PredLayers<-lapply(1:length(list_of_Tiles), function(i){
         
-        out_tif2 = paste0(list_of_Tiles[[i]] %>% 
-                            gsub("A_001", "B_001", .))#%>%
-                            #gsub(".envi", ".csv" , .))
+        # Creates the name of the output file and the location in which its stored
+        out_tif2 = paste0(SubFolder,"/",basename(filename),"_PredLayer1.tif")
                           
         
         # Statement checks if file already exist
@@ -373,30 +372,18 @@ HyperSpec_DerivGenerator<-function(filename,out_file,Classif_Model){
         # Deletes the dataframe
         rm(DfofRas)
         
-        # Write raster out as a brick
-        # writeRaster(RastoDF,filename = out_tif2,
-        #   format = "ENVI",overwrite = T)
-        
-        # Writes each out as .csv files
-        # write.csv(DfofRas,out_tif2,row.names = F)
-        
         # Reads in classifier
-        Model = load(Classif_Model)
+        Model = get(load(Classif_Model))
         
         # Grabs the spitial information from original raster layer
         RasterBrick<-brick(filename)
         
         # Predict calss of each pixel and returns a Raster layer
-        Predicted_layer<-raster::predict(RastoDF,get(Model),na.rm = TRUE, progress = "text")
+        Predicted_layer<-raster::predict(RastoDF,Model,na.rm = TRUE, progress = "text")
         
-        # Mtches the spaitial information to the original raster
+        # Matches the spaitial information to the original raster
         Predicted_layerResamp<-raster::resample(Predicted_layer,RasterBrick,method = "ngb")
-        
-        # Writes each out as .tif files
-        #writeRaster(Predicted_layerResamp,paste0(SubFolder,
-        #                                       "/B_0",i,"_",
-        #                                       basename(filename),"_PredLayer.tif"), overwrite = T)
-  
+      
         }
         
       })
@@ -404,47 +391,44 @@ HyperSpec_DerivGenerator<-function(filename,out_file,Classif_Model){
   print("Derivatives for all 24 tiles were created and saved as .envi file")
   
   # Adds the output file name to the metadata
-  List_of_PredLayers$filename<-paste0(SubFolder,"/",basename(filename),"_PredLayer.tif")
+  List_of_PredLayers$filename<-paste0(SubFolder,"/",basename(filename),"_PredLayer1.tif")
   
   # combines the tiles and writes the output to disk
   Predicted_Layer<-do.call(raster::merge, List_of_PredLayers)
   
-  return(Predicted_Layer)
+    }  
   
-
-  # Applies Random forest model to each Tile created
-  # Gets the list of all the tiles
-  #list_of_Tiles<-list.files(SubFolder,
-  #                          pattern = glob2rx("B_001*.envi"),full.names = T)
-  #
-  ## Reads in classifier
-  #Model = load(Classif_Model)
-  #
-  ## Grabs the spitial information from original raster layer
-  #RasterBrick<-brick(filename)
-  #
-  ## Reads in each raster and build moel
-  #List_of_predictedLayers<-lapply(1:length(list_of_Tiles),function(i){
-  #  
-  #  # Reads in the tiles and the derivaties calculated for each as rasbrick
-  #  Tile_Derivs<-brick(list_of_Tiles[[i]])
-  #  
-  #  # need to get rid of hard coding 
-  #  # need to find the string of colnames for the output dataframe
-  #  # names(Tile_Derivs)<-colnames(DfofRas)[-1:-2]
-  #  
-  #  Predicted_layer<-raster::predict(Tile_Derivs,get(Model),na.rm = TRUE, progress = "text")
-  #  
-  #  raster::resample(Predicted_layer,RasterBrick,method = "ngb")
-  #  
-  #})
-  #
-  ## Saves predicted layer in out_file
-  #List_of_predictedLayers$filename<-paste0(SubFolder,"/",basename(filename),"_PredLayer.tif")
-  #
-  #Predicted_Layer<-do.call(raster::merge,List_of_predictedLayers)
+  # ---------------------Add functional group names to teh attribute table ---------------------
   
+  # Reads in Raster created
+  Raster<-raster(SubFolder,"/",basename(filename),"_PredLayer1.tif")%>%
+    
+    # Converts values to factor
+    as.factor()
   
-    }   
+  # Creates a dataframe with all the class names
+  Model_Class<-Model$predicted%>%
+    unique()%>%
+    as.data.frame()%>%
+    'names<-'("Func_Groups")
+  
+  # Creates a unique ID fro those class names
+  Model_Class$ID<-seq(1:nrow(Model_Class))
+  
+  # Adds class names (FUNCTIONAL GROUP) bansed on code
+  # Saves the categorties into a table
+  Ras_cat<-levels(Raster)
+  
+  # Adds a column for functional group that corresponds with each code
+  Ras_cat<-inner_join(Ras_cat[[1]],Model_Class, by = "ID")
+  
+  # adds to attribute table of raster
+  levels(Raster)<-Ras_cat
+  
+  # Saves raster 
+  writeRaster(Raster,filename = SubFolder,"/",basename(filename),"_PredLayer2.tif",
+              overwrite = T)
+  
+  return(Raster)
  
 }

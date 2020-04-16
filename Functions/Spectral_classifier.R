@@ -2,7 +2,7 @@
 # Function takes two arguments, the spectral library object and 
 # output directory in which you want your files to be stored
 
-Spectral_classifier_ranger<-function(x, out_file){
+Spectral_classifier<-function(x, out_file){
   
   # Creates a string of possible names that will be removed
   remove_names<-c("ScanID","Class1","Class2","Class4","Area","Class2_Freq"
@@ -26,53 +26,52 @@ Spectral_classifier_ranger<-function(x, out_file){
   set.seed(123)
   # Unit test passes
   rf_mod_rang<-ranger(Classes ~ .,data = Spectral_Library,
-                      num.trees = 300,
+                      num.trees = 1000,
                       importance = "impurity_corrected",
                       local.importance = TRUE)
   
   # Selects the 50 most important variables
-  ImportantVarsFrame<-enframe(rf_mod_rang$variable.importance, 
-                              name="predictor", value="importance")
-  
-  # Selects the 50 most important variables
-  Imp_Vars50<-ImportantVarsFrame[order(ImportantVarsFrame$importance,decreasing = TRUE),][1:50,]
-  
-  # Creates a plot of the 25 most important varibles
-  #pdf(paste(out_file,"ImpVars",".pdf",sep =""))#, units="px",height = 1400, width=2400, res=350)
-  
-  # Creates plot
-  ImportantVarsFrame[order(ImportantVarsFrame$importance,decreasing = TRUE),][1:25,]%>%
-    ggplot()+
-    geom_col(aes(x  = predictor, y = importance))+
-    coord_flip()+
-    theme_bw()
-  
-  # Saves the plot 
-  ggsave(paste(out_file,"ImpVars.png", sep=""))
-  dev.off
-  
-  # Grabs the names of the 50 most important variables from predictors dataframe
-  ImpVars_names<-unique(Imp_Vars50$predictor)%>%as.character()
-  
-  # Creates a new model built on important variables
-  New_Speclib<-Spectral_Library%>%
-    dplyr::select(Classes,ImpVars_names)
-  
-  # Build ne model
-  rfNew<-ranger(Classes ~ .,data = New_Speclib,
-                num.trees =500,
-                importance = "impurity_corrected",
-                local.importance = TRUE)
-  
-  
-  # Lets save the confusion matrix from the model above
-  Confusion_matrix<-rfNew$confusion.matrix%>%
-    as.data.frame()
+  #ImportantVarsFrame<-enframe(rf_mod_rang$variable.importance, 
+  #                            name="predictor", value="importance")
+  #
+  ## Selects the 50 most important variables
+  #Imp_Vars50<-ImportantVarsFrame[order(ImportantVarsFrame$importance,decreasing = TRUE),][1:50,]
+  #
+  ## Creates a plot of the 25 most important varibles
+  ##pdf(paste(out_file,"ImpVars",".pdf",sep =""))#, units="px",height = 1400, width=2400, res=350)
+  #
+  ## Creates plot
+  #ImportantVarsFrame[order(ImportantVarsFrame$importance,decreasing = TRUE),][1:25,]%>%
+  #  ggplot()+
+  #  geom_col(aes(x  = predictor, y = importance))+
+  #  coord_flip()+
+  #  theme_bw()
+  #
+  ## Saves the plot 
+  #ggsave(paste(out_file,"D_003_ImpVars.png", sep=""))
+  #
+  ## Grabs the names of the 50 most important variables from predictors dataframe
+  #ImpVars_names<-unique(Imp_Vars50$predictor)%>%as.character()
+  #
+  ## Creates a new model built on important variables
+  #New_Speclib<-Spectral_Library%>%
+  #  dplyr::select(Classes,ImpVars_names)
+  #
+  ## Build ne model
+  #rfNew<-ranger(Classes ~ .,data = New_Speclib,
+  #              num.trees =500,
+  #              importance = "impurity_corrected",
+  #              local.importance = TRUE)
+  #
+  #
+  ## Lets save the confusion matrix from the model above
+  #Confusion_matrix<-rfNew$confusion.matrix%>%
+  #  as.data.frame()
   
   # Writes out confusion matrix to output folder
-  write.csv(Confusion_matrix,paste0(out_file,"confusion_matrix.csv"),row.names = F)
+  #write.csv(Confusion_matrix,paste0(out_file,"D_004_confusion_matrix.csv"),row.names = F)
   
-  return(rfNew)
+  #return(rfNew)
   
 } # Random Forest Function ends
 
