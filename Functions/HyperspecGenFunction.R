@@ -400,8 +400,11 @@ HyperSpec_DerivGenerator<-function(filename,out_file,Classif_Model){
   
   # ---------------------Add functional group names to teh attribute table ---------------------
   
+  # Reads in classifier
+  Model = get(load(Classif_Model))
+  
   # Reads in Raster created
-  Raster<-raster(SubFolder,"/",basename(filename),"_PredLayer1.tif")%>%
+  Raster<-raster(paste0(SubFolder,"/",basename(filename),"_PredLayer1.tif"))%>%
     
     # Converts values to factor
     as.factor()
@@ -426,7 +429,7 @@ HyperSpec_DerivGenerator<-function(filename,out_file,Classif_Model){
   levels(Raster)<-Ras_cat
   
   # Saves raster 
-  writeRaster(Raster,filename = SubFolder,"/",basename(filename),"_PredLayer2.tif",
+  writeRaster(Raster,filename = paste0(SubFolder,"/",basename(filename),"_PredLayer2.tif"),
               overwrite = T)
   
   return(Raster)
