@@ -2,7 +2,7 @@
 # Function takes two arguments, the spectral library object and 
 # output directory in which you want your files to be stored
 
-Spectral_classifier<-function(x, out_file){
+Spectral_classifier<-function(Spectral_Library){
   
   # Creates a string of possible names that will be removed
   remove_names<-c("ScanID","Class1","Class2","Class4","Area","Class2_Freq"
@@ -11,7 +11,7 @@ Spectral_classifier<-function(x, out_file){
   # Unit test PASSES
   # Spectral_Library<-read.csv(names_SpecLibPreds) %>% dim() #6506 by 268
   # Reads in spectral library
-  Spectral_Library<-read.csv(x)
+  # Spectral_Library<-read.csv(x)
   
   # Unit test PASSES 
   # Spectral_Library[remove_names] = NULL # dim( Spectral_Library) 6506 by 265 ... removes 3 columns
