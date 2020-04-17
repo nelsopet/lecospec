@@ -256,18 +256,7 @@ HyperSpec_DerivGenerator<-function(filename,out_file,Classif_Model){
       print("Importing Datacube")
       
       # Reads in the Hyperspectral datacubes as a Rasterstack raster
-      # Only 272 Layers/bands
-      # This takes a while, might be able to parallelize or ignore completely
-      # Compare The time it takes using a Raster Stack instead of a RaterBrick
       Converted_Dcube<-brick(filename)
-      
-      
-      print("Masking negative values and values greater than 2 percent reflectance")
-      
-      # Mask out weird values
-      # Need to check if this is being done right
-      # Need to parralellize this
-      #Converted_Dcube[Converted_Dcube > 0.2 | Converted_Dcube[[i]] < 0 ]<-NA
       
       # You could normalize Values here
       # what should I use 
@@ -282,6 +271,7 @@ HyperSpec_DerivGenerator<-function(filename,out_file,Classif_Model){
       # I also need to come up with a more efficient approach to splitting the raster
       
       print("Splitting raster into 30 tiles")
+      
       
       # Creates x tiles 
       Tiles<-splitRaster(Converted_Dcube[[1]],30)
@@ -342,7 +332,16 @@ HyperSpec_DerivGenerator<-function(filename,out_file,Classif_Model){
         if(!file.exists(out_tif2)){
     
         # Reads in the tiles and converts it to a dataframe
-        DfofRas<-brick(list_of_Tiles[[i]])%>%
+        DfofRas<-brick(list_of_Tiles[[i]])
+        
+        print("Masking negative values and values greater than 2 percent reflectance")
+        
+        # Mask out weird values
+        # Need to parralellize this
+        DfofRas[Converted_Dcube > 0.15 | Converted_Dcube[[i]] < 0 ]<-NA
+        
+        # convert to adataframe
+        DfofRas%>%
           rasterToPoints()%>%
           as.data.frame()
         
@@ -355,6 +354,9 @@ HyperSpec_DerivGenerator<-function(filename,out_file,Classif_Model){
         # Change numeric reference to columns
         # Remove hard coding
         names(DfofRas)[-1:-2]<-Headwall_bandpasses
+        
+        # Index all rows with NAs
+        
         
         # Converts NA values
         DfofRas[is.na(DfofRas)] <- -999
