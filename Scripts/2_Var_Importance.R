@@ -47,13 +47,22 @@ rf_mod_rang2<-ranger(Classes ~ .,data = predictor_df_reduced,
 # Creates a dataframe with all varibles and their imoportance
 ImportantVarsFrame<-enframe(rf_mod_rang2$variable.importance, 
                             name="predictor", value="importance")
+  
+# Function Creates a plot of the 30 most important vars
+ImportantVarsFrame30<-ImportantVarsFrame[order(ImportantVarsFrame$importance,decreasing = TRUE),][1:30,]
 
-# Function Creates a plot of the 25 most important vars
-ImportantVarsFrame[order(ImportantVarsFrame$importance,decreasing = TRUE),][1:30,]%>%
-    ggplot()+
-    geom_col(aes(x  = predictor, y = importance))+
-    coord_flip()+
-    theme_bw()
+# Lets R respect the order in data.frame.
+ImportantVarsFrame30$predictor <- factor(ImportantVarsFrame30$predictor,
+                                       levels = ImportantVarsFrame30$predictor
+                                       [order(ImportantVarsFrame30$importance)])
+
+# Creates a plot of the 30 most important varibles
+ImportantVarsFrame30%>%
+  ggplot(aes(x  = predictor, y = importance))+
+  theme_bw()+
+  geom_bar(stat = "identity")+
+  coord_flip()
+  
 
 # Creates a sequence of numbers that, represents the number of varibles to choose to build models
 NoofVars<-seq(20,70,by = 5)
