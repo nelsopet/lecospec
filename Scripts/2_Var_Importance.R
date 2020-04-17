@@ -82,10 +82,42 @@ Modslist<-lapply(1:length(NoofVars),function(x){
 })%>%
   setNames(paste(NoofVars,"Varibles",sep="_"))
 
-# We can print the prediction error for each model
+# We can print the prediction error for each model, see below
 lapply(Modslist,function(x)
   return(x$prediction.error))
 
+#$`20_Varibles`
+#[1] 0.3279786
+#
+#$`25_Varibles`
+#[1] 0.3199465
+#
+#$`30_Varibles`
+#[1] 0.3078983
+#
+#$`35_Varibles`
+#[1] 0.3092369
+#
+#$`40_Varibles`
+#[1] 0.2958501
+#
+#$`45_Varibles`
+#[1] 0.3145917
+#
+#$`50_Varibles`
+#[1] 0.291834
+#
+#$`55_Varibles`
+#[1] 0.313253
+#
+#$`60_Varibles`
+#[1] 0.2958501
+#
+#$`65_Varibles`
+#[1] 0.2851406
+#
+#$`70_Varibles`
+#[1] 0.291834
 
 
 
