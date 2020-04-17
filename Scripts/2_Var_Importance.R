@@ -65,7 +65,7 @@ ImportantVarsFrame30%>%
   
 
 # Creates a sequence of numbers that, represents the number of varibles to choose to build models
-NoofVars<-seq(20,70,by = 5)
+NoofVars<-seq(5,70,by = 5)
 
 # List of models
 Modslist<-lapply(1:length(NoofVars),function(x){
@@ -89,44 +89,39 @@ Modslist<-lapply(1:length(NoofVars),function(x){
   return(rfNew)
  
 })%>%
-  setNames(paste(NoofVars,"Varibles",sep="_"))
+  setNames(paste(NoofVars,"Most_ImpVaribles",sep="_"))
 
 # We can print the prediction error for each model, see below
-lapply(Modslist,function(x)
+listofmoderors<-lapply(Modslist,function(x)
   return(x$prediction.error))
 
-#$`20_Varibles`
-#[1] 0.3279786
-#
-#$`25_Varibles`
-#[1] 0.3199465
-#
-#$`30_Varibles`
-#[1] 0.3078983
-#
-#$`35_Varibles`
-#[1] 0.3092369
-#
-#$`40_Varibles`
-#[1] 0.2958501
-#
-#$`45_Varibles`
-#[1] 0.3145917
-#
-#$`50_Varibles`
-#[1] 0.291834
-#
-#$`55_Varibles`
-#[1] 0.313253
-#
-#$`60_Varibles`
-#[1] 0.2958501
-#
-#$`65_Varibles`
-#[1] 0.2851406
-#
-#$`70_Varibles`
-#[1] 0.291834
+# Creates a dataframe with errors for each model
+error_df<-do.call("rbind",listofmoderors)%>%
+  as.data.frame()
+
+# Adds another column
+error_df$Vars<-rownames(error_df)
+
+# Changes column names
+names(error_df)<-c("error","Vars")
+
+# Lets R respect the order in data.frame.
+error_df$Vars <- factor(error_df$Var,
+                        levels = error_df$Var
+                        [order(error_df$error)])
+
+# Creates a plot of the 30 most important varibles
+error_df%>%
+  ggplot(aes(x  = Vars, y = error))+
+  theme_bw()+
+  geom_bar(stat = "identity")+
+  coord_flip()
+
+
+
+
+
+
 
 
 
