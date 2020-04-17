@@ -49,7 +49,7 @@ ImportantVarsFrame<-enframe(rf_mod_rang2$variable.importance,
                             name="predictor", value="importance")
 
 # Creates a sequence of numbers that, represents the number of varibles to choose to build models
-NoofVars<-seq(20,60,by = 5)
+NoofVars<-seq(20,70,by = 5)
 
 # List of models
 Modslist<-lapply(1:length(NoofVars),function(x){
