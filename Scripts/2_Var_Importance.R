@@ -95,6 +95,48 @@ Modslist<-lapply(1:length(NoofVars),function(x){
 listofmoderors<-lapply(Modslist,function(x)
   return(x$prediction.error))
 
+#$`5_Most_ImpVaribles`
+#[1] 0.4899598
+#
+#$`10_Most_ImpVaribles`
+#[1] 0.4149933
+#
+#$`15_Most_ImpVaribles`
+#[1] 0.3614458
+#
+#$`20_Most_ImpVaribles`
+#[1] 0.3226238
+#
+#$`25_Most_ImpVaribles`
+#[1] 0.3092369
+#
+#$`30_Most_ImpVaribles`
+#[1] 0.3105756
+#
+#$`35_Most_ImpVaribles`
+#[1] 0.3065596
+#
+#$`40_Most_ImpVaribles`
+#[1] 0.3065596
+#
+#$`45_Most_ImpVaribles`
+#[1] 0.3159304
+#
+#$`50_Most_ImpVaribles`
+#[1] 0.3092369
+#
+#$`55_Most_ImpVaribles`
+#[1] 0.2971888
+#
+#$`60_Most_ImpVaribles`
+#[1] 0.2945114
+#
+#$`65_Most_ImpVaribles`
+#[1] 0.2891566
+#
+#$`70_Most_ImpVaribles`
+#[1] 0.3025435
+
 # Creates a dataframe with errors for each model
 error_df<-do.call("rbind",listofmoderors)%>%
   as.data.frame()
