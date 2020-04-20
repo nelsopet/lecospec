@@ -175,13 +175,12 @@ Modslist<-lapply(1:length(NoofVars),function(x){
   
   # Build ne model
   rfNew<-ranger(Classes ~ .,data = New_Speclib,
-                num.trees =10000,
-                importance = "impurity_corrected",
+                num.trees =1000,
                 local.importance = TRUE)
   return(rfNew)
  
 })%>%
-  setNames(paste(NoofVars,"Most_ImpVaribles",sep="_"))
+  setNames(paste("A",NoofVars,"Most_ImpVaribles",sep="_"))
 
 # We can print the prediction error for each model, see below
 listofmoderors<-lapply(Modslist,function(x)
@@ -241,6 +240,11 @@ error_df%>%
   ggtitle("Model errors after selecting the most important varibles")
 
 ggsave("Model_errors_VarImp.jpg")
+
+list2env(Modslist ,.GlobalEnv)
+
+# saves the model with the lowest error
+save(A_30_Most_ImpVaribles, file = "Output/Best_Model.rda")
 
 
 

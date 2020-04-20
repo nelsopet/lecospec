@@ -132,23 +132,6 @@ HyperSpec_DerivGenerator<-function(filename,out_file,Classif_Model){
     # Renames columns 
     colnames(ResampledDF)<-str_remove_all(names(ResampledDF),"wvl_005nm.|wvl_010nm.|wvl_050nm.|wvl_100nm.")
     
-    # Need to get rid of hard coding here 
-    #if(ncol(bandsRemove(ResampledDF)) == 2){
-    #  
-    #  # Converts rows with negative values or values >2 to 0
-    #  # This is for hyperspec Image
-    #  #ResampledDF[-1:-2][ResampledDF[-1:-2] < 0] <- 0
-    #  #ResampledDF[-1:-2][ResampledDF[-1:-2] > 2] <- 0
-    #  
-    #} else {
-    #  
-    #  # Removes rows with negative values or values >2
-    #  # This is for your spectral library/ground truth data
-    #  ResampledDF%>%
-    #    filter_at(vars(c(colnames(metaRemove(ResampledDF)))), all_vars(.  <2))%>%
-    #    filter_at(vars(c(colnames(metaRemove(ResampledDF)))), all_vars(. >=0))
-    #}
-    
     print("Resampling sucessful")
     
     return(ResampledDF)} # Func_Resamp ends
@@ -210,10 +193,6 @@ HyperSpec_DerivGenerator<-function(filename,out_file,Classif_Model){
     # Conbines VIs and Lat/long info
     VI_DF<-cbind(bandsRemove(VI),VI_CALC)
     
-    # converts NAs and Infs to 0s 
-    #is.na(VI_DF)<-sapply(VI_DF, is.infinite)
-    #VI_DF[is.na(VI_DF)]<-0
-    
     print("Vegitation index calculations successful")
     
     return(VI_DF)
@@ -258,27 +237,12 @@ HyperSpec_DerivGenerator<-function(filename,out_file,Classif_Model){
       # Reads in the Hyperspectral datacubes as a Rasterstack raster
       Converted_Dcube<-brick(filename)
       
-      # You could normalize Values here
-      # what should I use 
-      # Min-max (does not cope well with outlies) scaling or 
-      # standardization/z-score normalization (Normalized data may be on different scales)
-      # This might help with memory/speed up raster calculations
-      
-      print("Masking Completed")
-      
-      # Lets Split the raster into tiles by cropping
-      # Should I put the number of tiles as a parameter in my function??
-      # I also need to come up with a more efficient approach to splitting the raster
-      
       print("Splitting raster into 30 tiles")
       
-      
-      # Creates x tiles 
+      # Creates 30 tiles 
       Tiles<-splitRaster(Converted_Dcube[[1]],30)
       
-      # prepare for parallel process
-      # Need a more efficient approach here
-      # This currently takes 13 minutes on 6 cores for whole datacube
+      # Prepare for parallel process
       cores<-parallel::detectCores()-1
       
       if(cores < detectCores()-1){
@@ -308,7 +272,7 @@ HyperSpec_DerivGenerator<-function(filename,out_file,Classif_Model){
       # Stops cluster
       stopCluster(c1)
       
-      print("Tiles were sucessfully created")
+      print("30 Tiles were sucessfully created")
       
       print("Creating Predicted Layer")
       
@@ -317,16 +281,11 @@ HyperSpec_DerivGenerator<-function(filename,out_file,Classif_Model){
                                 pattern = glob2rx("A_001*.envi"),
                                 full.names = T)
       
-      # Now Lets calculate derivatives for each tile
-      # Create an empty loop
-      # list_built<-list()
-      
       # Iterate through the list using lapply
       List_of_PredLayers<-lapply(1:length(list_of_Tiles), function(i){
         
         # Creates the name of the output file and the location in which its stored
         out_tif2 = paste0(SubFolder,"/",basename(filename),"_PredLayer1.tif")
-                          
         
         # Statement checks if file already exist
         if(!file.exists(out_tif2)){
@@ -338,15 +297,6 @@ HyperSpec_DerivGenerator<-function(filename,out_file,Classif_Model){
         
         print("Masking negative values and values greater than 2 percent reflectance")
         
-        # Mask out weird values
-        # Need to parralellize this
-        #DfofRas[Converted_Dcube > 0.15 | Converted_Dcube[[i]] < 0 ]<-NA
-        
-        # convert to adataframe
-        # DfofRas%>%
-        #   rasterToPoints()%>%
-        #   as.data.frame()
-        
         # Removes noisey bands
         # Find out a way to Automatically remove bands based on the variance
         # remove hard coding 
@@ -357,8 +307,16 @@ HyperSpec_DerivGenerator<-function(filename,out_file,Classif_Model){
         # Remove hard coding
         names(DfofRas)[-1:-2]<-Headwall_bandpasses
         
-        # gets the Index all rows with NAs
-        # Need to do that here
+        # Convert weird values
+        
+        DfofRas[-1:-2][DfofRas[-1:-2] > 1.5] <- NA 
+        DfofRas[-1:-2][DfofRas[-1:-2] < 0]   <- NA
+        
+        # Saves all the rownames with NAs
+        ALL_NAs<-which(is.na(DfofRas), arr.ind=TRUE)
+        
+        # Saves all the rownames with NAs
+        rownames_NA<-c(ALL_NAs[,1]%>%unique)
         
         # Converts NA values
         DfofRas[is.na(DfofRas)] <- -999
@@ -366,8 +324,8 @@ HyperSpec_DerivGenerator<-function(filename,out_file,Classif_Model){
         # Applies Derivative function
         DfofRas<-Deriv_combine(DfofRas)
         
-        # Find those rows that had NA values and assings NA to them
-        # Need to do that here
+        # Convert those rows back to NAs
+        DfofRas[rownames_NA,-1:-2] <- NA
         
         # Converts the results to a raster Brick and saves it on disk
         RastoDF<-rasterFromXYZ(DfofRas, 
