@@ -332,18 +332,20 @@ HyperSpec_DerivGenerator<-function(filename,out_file,Classif_Model){
         if(!file.exists(out_tif2)){
     
         # Reads in the tiles and converts it to a dataframe
-        DfofRas<-brick(list_of_Tiles[[i]])
+        DfofRas<-brick(list_of_Tiles[[i]])%>%
+          rasterToPoints()%>%
+          as.data.frame()
         
         print("Masking negative values and values greater than 2 percent reflectance")
         
         # Mask out weird values
         # Need to parralellize this
-        DfofRas[Converted_Dcube > 0.15 | Converted_Dcube[[i]] < 0 ]<-NA
+        #DfofRas[Converted_Dcube > 0.15 | Converted_Dcube[[i]] < 0 ]<-NA
         
         # convert to adataframe
-        DfofRas%>%
-          rasterToPoints()%>%
-          as.data.frame()
+        # DfofRas%>%
+        #   rasterToPoints()%>%
+        #   as.data.frame()
         
         # Removes noisey bands
         # Find out a way to Automatically remove bands based on the variance
@@ -355,14 +357,17 @@ HyperSpec_DerivGenerator<-function(filename,out_file,Classif_Model){
         # Remove hard coding
         names(DfofRas)[-1:-2]<-Headwall_bandpasses
         
-        # Index all rows with NAs
-        
+        # gets the Index all rows with NAs
+        # Need to do that here
         
         # Converts NA values
         DfofRas[is.na(DfofRas)] <- -999
         
         # Applies Derivative function
         DfofRas<-Deriv_combine(DfofRas)
+        
+        # Find those rows that had NA values and assings NA to them
+        # Need to do that here
         
         # Converts the results to a raster Brick and saves it on disk
         RastoDF<-rasterFromXYZ(DfofRas, 
