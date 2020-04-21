@@ -252,12 +252,6 @@ PredictedRaster_Layer<-HyperspecImageClassifier(filename = Path/to/datacube.envi
                                                 Out_file = path/to/outputfile)
   ```
 
-IMAGE OF DATACUBE (Place Holder)
-```
-plot(PredictedRaster_Layer)
-```
-![](/FullDatacube_Rplot.jpeg)
-
 ### HypIMGPredictor_generator Entity relationship diagram
 JANE'S ERDS (IMAGE HERE)
 ![](HypIMGPredictor_generator_v.2.jpeg)
