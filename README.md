@@ -51,7 +51,7 @@ The one used here was a (Spectral Evolution PSR+) which covers the full spectrum
 Lets take a look at our spectral library before we resample the bands to match our sensor (user would have already done some data munging).
 
 ```
-# Note that this a spectral object
+# Note that this is a spectral object
 SpectralLibrary<-readRDS("Output/C_004_SpecLib_FunctionalGroupsEqual_DF.rds")
 str(SpectralLibrary)
 
@@ -60,7 +60,7 @@ number of samples: 748
 wavelengths: 350 to 2500 (2151 bands)
 metadata (3 of 9): ScanID, Class1, Class2, ...
 ```  
-Note taht we have a total of 748 samples. We can convert to a dataframe and look at its features.
+Note that we have a total of 748 samples. We can convert to a dataframe and look at its features.
 ```
 SpectralLibrary<-SpectralLibrary%>%
                     as.data.frame()%>%
