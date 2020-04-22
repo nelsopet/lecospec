@@ -223,26 +223,6 @@ No. of variables tried at each split: 16
 
 
 ### Building classification model
-We can also visualize a confusion matrix CONFUSION MATRIX (Place Holder)
-```
- RF_MOD$confusion
- 
-                 Abiotic_Litter Abiotic_Rock Abiotic_Soil Dwarf_Shrub_Broad Dwarf_Shrub_Needle Forb Graminoid_Grass
-Abiotic_Litter                  4            0            0                 0                  1    0               0
-Abiotic_Rock                    1           13            5                 0                  0    0               0
-Abiotic_Soil                    0            5            2                 0                  0    0               0
-Dwarf_Shrub_Broad               0            0            0                79                  0    3               0
-Dwarf_Shrub_Needle              0            0            0                 4                 13    0               0
-Forb                            0            0            0                 1                  0   28               0
-Graminoid_Grass                 0            0            0                 0                  0    0               3
-Graminoid_Sedge                 0            0            0                 1                  0    1               0
-Lichen_Dark                     0            0            0                 4                  0    2               0
-Lichen_Light                    0            0            0                 0                  0    2               0
-Lichen_Yellow                   0            0            0                 1                  0    0               0
-Moss_Acrocarp                   0            0            0                 0                  2    0               0
-Moss_Pleurocarp                 0            0            0                 0                  0    0               0
-Moss_Sphagnum                   0            0            0                 0                  0    0               0
-```
 
 ### Classifying Hyperspectral Data
 SAMPLE CODE (use a function to created a predicted layer of a datacube)
@@ -251,6 +231,8 @@ PredictedRaster_Layer<-HyperspecImageClassifier(filename = Path/to/datacube.envi
                                                 spectral_Library = path/to/SpectralLibrary.csv,
                                                 Out_file = path/to/outputfile)
   ```
+ See Predicted Layer below (Made using ESRI)
+ ![](Predicted_Map_Layer.jpg) 
 
 ### HypIMGPredictor_generator Entity relationship diagram
 JANE'S ERDS (IMAGE HERE)
