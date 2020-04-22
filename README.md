@@ -231,6 +231,9 @@ PredictedRaster_Layer<-HyperspecImageClassifier(filename = Path/to/datacube.envi
                                                 spectral_Library = path/to/SpectralLibrary.csv,
                                                 Out_file = path/to/outputfile)
   ```
+ RGB image of datacube
+ ![](Raster_RGB.jpg)  
+ 
  See Predicted Layer below (Made using ESRI)
  ![](Predicted_Map_Layer.jpg) 
 
