@@ -122,7 +122,7 @@ Lets take a look at the categories in  Class 3
 ```
 Note that there are 19 different functional groups that will be used for classification. Lets resample the banpasses to match the sensor. 
 
-First we'll need the bandpasses from headwall. You can  find those [here](https://github.com/nelsopet/lecospec/blob/master/Scripts/3_Classify_Image.R#L17-L47)
+First we'll need the bandpasses from headwall. You can  find those [here](https://github.com/nelsopet/lecospec/blob/56ecca41daba5ffc682e6c6fb15deafe38cb2489/Scripts/3_Classify_Image.R#L18-L48)
 ``` 
 # Creates a vector of the bandpasses for the headwall sensor that will be used
 # Noisey band were omitted (only bands 1:272 below)
