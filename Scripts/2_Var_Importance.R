@@ -19,12 +19,12 @@ SpecLib[remove_names] = NULL
 # Change column name with all the levels to "classes"
 names(SpecLib)[1]<-"Classes"
 
-set.seed(123)
-# Build Model
-rf_mod_rang1<-ranger(Classes ~ .,data = SpecLib,
-                    num.trees = 10000,
-                    importance = "impurity_corrected",
-                    local.importance = TRUE) # OOB prediction error:             33.07 % 
+#set.seed(123)
+## Build Model
+#rf_mod_rang1<-ranger(Classes ~ .,data = SpecLib,
+#                    num.trees = 10000,
+#                    importance = "impurity_corrected",
+#                    local.importance = TRUE) # OOB prediction error:             33.07 % 
 
 # ------------------------------- Remove correlated varibles ---------------------------
 # Creates a sequence of numbers that, represents the number of varibles to choose to build models
@@ -47,7 +47,7 @@ Modslist_cor<-lapply(1:length(NoofVars1),function(x){
   rf_mod_rang2<-ranger(Classes ~ .,data = predictor_df_reduced,
                        num.trees = 10000,
                        importance = "impurity_corrected",
-                       local.importance = TRUE) # OOB prediction error:             29.32 % 
+                       local.importance = TRUE) 
   return(rf_mod_rang2)
   
 })%>%
@@ -139,7 +139,7 @@ ggsave("Important_Varibles_30.jpg")
 # Creates corelation matrix
 CorelationMatrix<-cor(SpecLib[-1])
 
-# Select most correlated varibles
+# Select most correlated varibles based on the correlation assesment above (lines 60 - 88)
 caret_findCorr<-findCorrelation(CorelationMatrix, cutoff = 0.94, names = T)
 
 # Remove corelated vars

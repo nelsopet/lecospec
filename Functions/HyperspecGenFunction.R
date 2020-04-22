@@ -289,6 +289,8 @@ HyperSpec_DerivGenerator<-function(filename,out_file,Classif_Model){
         
         # Statement checks if file already exist
         if(!file.exists(out_tif2)){
+          
+          print(paste0("Prediction for Tile ", i, " Initiated"))
     
         # Reads in the tiles and converts it to a dataframe
         DfofRas<-brick(list_of_Tiles[[i]])%>%
@@ -310,13 +312,14 @@ HyperSpec_DerivGenerator<-function(filename,out_file,Classif_Model){
         # Convert weird values
         
         DfofRas[-1:-2][DfofRas[-1:-2] > 1.5] <- NA 
-        DfofRas[-1:-2][DfofRas[-1:-2] < 0]   <- NA
+        DfofRas[-1:-2][DfofRas[-1:-2] < 0  ] <- NA
         
         # Saves all the rownames with NAs
         ALL_NAs<-which(is.na(DfofRas), arr.ind=TRUE)
         
         # Saves all the rownames with NAs
-        rownames_NA<-c(ALL_NAs[,1]%>%unique)
+        rownames_NA<-c(ALL_NAs[,1]%>%
+                         unique)
         
         # Converts NA values
         DfofRas[is.na(DfofRas)] <- -999
@@ -327,41 +330,55 @@ HyperSpec_DerivGenerator<-function(filename,out_file,Classif_Model){
         # Convert those rows back to NAs
         DfofRas[rownames_NA,-1:-2] <- NA
         
+        # Reads in classifier
+        Model = get(load(Classif_Model))
+        
+        # Grabs the names of the varibles
+        Vars_names<-c(Model$forest$independent.variable.names)
+        
+        # Removes the X from columns with the names of banpasses
+        Vars_names<-gsub("^X","",Vars_names[1:length(Vars_names)])
+        
+        # Creates a new model built on important variables
+        New_df<-DfofRas%>%
+          dplyr::select(x,y,Vars_names) 
+        
         # Converts the results to a raster Brick and saves it on disk
-        RastoDF<-rasterFromXYZ(DfofRas, 
+        RastoDF<-rasterFromXYZ(New_df, 
                                crs = "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0" )
         
         # Change the names of the raster layers
-        names(RastoDF)<-colnames(DfofRas)[-1:-2]
+        # names(RastoDF)<-colnames(New_df)[-1:-2]
         
         # Deletes the dataframe
         rm(DfofRas)
-        
-        # Reads in classifier
-        Model = get(load(Classif_Model))
+        rm(New_df) 
         
         # Grabs the spitial information from original raster layer
         RasterBrick<-brick(filename)
         
         # Predict calss of each pixel and returns a Raster layer
-        Predicted_layer<-raster::predict(RastoDF,Model,na.rm = TRUE, progress = "text")
+        Predicted_layer<-raster::predict(RastoDF,Model,na.rm = TRUE,type='response', progress='text', 
+                                         fun = function(Model, ...) predict(Model, ...)$predictions)
         
         # Matches the spaitial information to the original raster
         Predicted_layerResamp<-raster::resample(Predicted_layer,RasterBrick,method = "ngb")
+        
+        print(paste0(" Prediction for Tile ",i," Completed"))
+        
+        return(Predicted_layerResamp)
       
         }
         
       })
-  
-  print("Derivatives for all 24 tiles were created and saved as .envi file")
   
   # Adds the output file name to the metadata
   List_of_PredLayers$filename<-paste0(SubFolder,"/",basename(filename),"_PredLayer1.tif")
   
   # combines the tiles and writes the output to disk
   Predicted_Layer<-do.call(raster::merge, List_of_PredLayers)
-  
-    }  
+    
+  }
   
   # ---------------------Add functional group names to teh attribute table ---------------------
   
@@ -375,7 +392,7 @@ HyperSpec_DerivGenerator<-function(filename,out_file,Classif_Model){
     as.factor()
   
   # Creates a dataframe with all the class names
-  Model_Class<-Model$predicted%>%
+  Model_Class<-Model$predictions%>%
     unique()%>%
     as.data.frame()%>%
     'names<-'("Func_Groups")
