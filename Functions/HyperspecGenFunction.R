@@ -310,7 +310,6 @@ HyperSpec_DerivGenerator<-function(filename,out_file,Classif_Model){
         names(DfofRas)[-1:-2]<-Headwall_bandpasses
         
         # Convert weird values
-        
         DfofRas[-1:-2][DfofRas[-1:-2] > 1.5] <- NA 
         DfofRas[-1:-2][DfofRas[-1:-2] < 0  ] <- NA
         
@@ -334,7 +333,8 @@ HyperSpec_DerivGenerator<-function(filename,out_file,Classif_Model){
         Model = get(load(Classif_Model))
         
         # Grabs the names of the varibles
-        Vars_names<-c(Model$forest$independent.variable.names)
+        # Vars_names<-c(Model$forest$independent.variable.names)
+        Vars_names<-c(as.data.frame(Model$importance)%>%rownames())
         
         # Removes the X from columns with the names of banpasses
         Vars_names<-gsub("^X","",Vars_names[1:length(Vars_names)])
@@ -358,11 +358,18 @@ HyperSpec_DerivGenerator<-function(filename,out_file,Classif_Model){
         RasterBrick<-brick(filename)
         
         # Predict calss of each pixel and returns a Raster layer
-        Predicted_layer<-raster::predict(RastoDF,Model,na.rm = TRUE,type='response', progress='text', 
-                                         fun = function(Model, ...) predict(Model, ...)$predictions)
+         Predicted_layer<-raster::predict(RastoDF,Model,na.rm = TRUE, progress='text')
+        
+         # Predicted_layer<-raster::predict(RastoDF,Model,na.rm = TRUE,type='response', progress='text', 
+         #                                  fun = function(Model, ...) predict(Model, ...)$predictions)
         
         # Matches the spaitial information to the original raster
-        Predicted_layerResamp<-raster::resample(Predicted_layer,RasterBrick,method = "ngb")
+        # Find soulution (here)
+        Predicted_layerResamp<-raster::resample(Predicted_layer,RasterBrick,method = "ngb")%>%
+          as.factor()
+        
+        # Restores attribute table
+        Predicted_layerResamp@data@attributes <- Predicted_layer@data@attributes
         
         print(paste0(" Prediction for Tile ",i," Completed"))
         
@@ -373,47 +380,57 @@ HyperSpec_DerivGenerator<-function(filename,out_file,Classif_Model){
       })
   
   # Adds the output file name to the metadata
-  List_of_PredLayers$filename<-paste0(SubFolder,"/",basename(filename),"_PredLayer1.tif")
+  # List_of_PredLayers$filename<-paste0(SubFolder,"/",basename(filename),"_PredLayer1.tif")
   
   # combines the tiles and writes the output to disk
-  Predicted_Layer<-do.call(raster::merge, List_of_PredLayers)
-    
+  Predicted_Layer<-do.call(raster::merge, List_of_PredLayers)%>%
+    as.factor()
+  
+  # Restres attribute table
+  Predicted_Layer@data@attributes <- List_of_PredLayers[[1]]@data@attributes
+  
+  writeRaster(Predicted_Layer,filename = paste0(SubFolder,"/",basename(filename),"_PredLayer.tif")
+              ,overwrite = T)
+  
+  return(Predicted_Layer)
+  
   }
   
   # ---------------------Add functional group names to teh attribute table ---------------------
   
   # Reads in classifier
-  Model = get(load(Classif_Model))
-  
-  # Reads in Raster created
-  Raster<-raster(paste0(SubFolder,"/",basename(filename),"_PredLayer1.tif"))%>%
-    
-    # Converts values to factor
-    as.factor()
-  
-  # Creates a dataframe with all the class names
-  Model_Class<-Model$predictions%>%
-    unique()%>%
-    as.data.frame()%>%
-    'names<-'("Func_Groups")
-  
-  # Creates a unique ID fro those class names
-  Model_Class$ID<-seq(1:nrow(Model_Class))
-  
-  # Adds class names (FUNCTIONAL GROUP) bansed on code
-  # Saves the categorties into a table
-  Ras_cat<-levels(Raster)
-  
-  # Adds a column for functional group that corresponds with each code
-  Ras_cat<-inner_join(Ras_cat[[1]],Model_Class, by = "ID")
-  
-  # adds to attribute table of raster
-  levels(Raster)<-Ras_cat
-  
-  # Saves raster 
-  writeRaster(Raster,filename = paste0(SubFolder,"/",basename(filename),"_PredLayer2.tif"),
-              overwrite = T)
-  
-  return(Raster)
+  #Model = get(load(Classif_Model))
+  #
+  ## Reads in Raster created
+  #Raster<-raster(paste0(SubFolder,"/",basename(filename),"_PredLayer1.tif"))%>%
+  #  
+  #  # Converts values to factor
+  #  as.factor()
+  #
+  ## Creates a dataframe with all the class names
+  #Model_Class<-Model$predictions%>%
+  #  unique()%>%
+  #  as.data.frame()%>%
+  #  'names<-'("Func_Groups")
+  #
+  ## Creates a unique ID fro those class names
+  #Model_Class$ID<-seq(1:nrow(Model_Class))
+  #
+  ## Adds class names (FUNCTIONAL GROUP) bansed on code
+  ## Saves the categorties into a table
+  #Ras_cat<-levels(Raster)
+  #
+  ## Adds a column for functional group that corresponds with each code
+  #Ras_cat<-inner_join(Ras_cat[[1]],Model_Class, by = "ID")
+  #
+  ## adds to attribute table of raster
+  #levels(Raster)<-Ras_cat
+  #
+  ## Saves raster 
+  #writeRaster(Raster,filename = paste0(SubFolder,"/",basename(filename),"_PredLayer2.tif"),
+  #            overwrite = T)
+  #
+  #return(Raster)
  
 }
+

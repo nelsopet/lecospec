@@ -114,33 +114,33 @@ ggsave("Model_errors_Cors.jpg")
 
 #------------------------------ Select Important varibles -----------------------------------
 # Creates a dataframe with all varibles and their imoportance
-ImportantVarsFrame<-enframe(Modslist_cor[[5]]$variable.importance, 
-                            name="predictor", value="importance")
-  
-# Function Creates a plot of the 30 most important vars
-ImportantVarsFrame30<-ImportantVarsFrame[order(ImportantVarsFrame$importance,decreasing = TRUE),][1:30,]
-
-# Lets R respect the order in data.frame.
-ImportantVarsFrame30$predictor <- factor(ImportantVarsFrame30$predictor,
-                                       levels = ImportantVarsFrame30$predictor
-                                       [order(ImportantVarsFrame30$importance)])
-
-# Creates a plot of the 30 most important varibles
-ImportantVarsFrame30%>%
-  ggplot(aes(x  = predictor, y = importance))+
-  theme_bw()+
-  geom_bar(stat = "identity")+
-  coord_flip()+
-  ggtitle("30 Most Important Varibles")
-
-ggsave("Important_Varibles_30.jpg")
+# ImportantVarsFrame<-enframe(Modslist_cor[[10]]$variable.importance, 
+#                             name="predictor", value="importance")
+#   
+# # Function Creates a plot of the 30 most important vars
+# ImportantVarsFrame30<-ImportantVarsFrame[order(ImportantVarsFrame$importance,decreasing = TRUE),][1:30,]
+# 
+# # Lets R respect the order in data.frame.
+# ImportantVarsFrame30$predictor <- factor(ImportantVarsFrame30$predictor,
+#                                        levels = ImportantVarsFrame30$predictor
+#                                        [order(ImportantVarsFrame30$importance)])
+# 
+# # Creates a plot of the 30 most important varibles
+# ImportantVarsFrame30%>%
+#   ggplot(aes(x  = predictor, y = importance))+
+#   theme_bw()+
+#   geom_bar(stat = "identity")+
+#   coord_flip()+
+#   ggtitle("30 Most Important Varibles")
+# 
+# ggsave("Important_Varibles_30.jpg")
   
 
 # Creates corelation matrix
 CorelationMatrix<-cor(SpecLib[-1])
 
 # Select most correlated varibles based on the correlation assesment above (lines 60 - 88)
-caret_findCorr<-findCorrelation(CorelationMatrix, cutoff = 0.94, names = T)
+caret_findCorr<-findCorrelation(CorelationMatrix, cutoff = 0.99, names = T)
 
 # Remove corelated vars
 predictor_df_reduced<-SpecLib %>%
@@ -153,7 +153,7 @@ rf_mod_rang2<-ranger(Classes ~ .,data = predictor_df_reduced,
                      local.importance = TRUE) # OOB prediction error:             28.78 % 
 
 # Creates a sequence of numbers that, represents the number of varibles to choose to build models
-NoofVars<-seq(5,50,by = 5)
+NoofVars<-c(seq(5,87,by = 5),"87")
 
 # List of models
 Modslist<-lapply(1:length(NoofVars),function(x){
@@ -174,9 +174,12 @@ Modslist<-lapply(1:length(NoofVars),function(x){
     dplyr::select(Classes,ImpVars_names)
   
   # Build ne model
-  rfNew<-ranger(Classes ~ .,data = New_Speclib,
-                num.trees =1000,
-                local.importance = TRUE)
+  # rfNew<-ranger(Classes ~ .,data = New_Speclib,
+  #               num.trees =1000,
+  #               local.importance = TRUE)
+  
+  rfNew<-randomForest(Classes ~ .,data = New_Speclib
+                      ,ntree=1000,importance=TRUE)
   return(rfNew)
  
 })%>%
@@ -184,7 +187,10 @@ Modslist<-lapply(1:length(NoofVars),function(x){
 
 # We can print the prediction error for each model, see below
 listofmoderors<-lapply(Modslist,function(x)
-  return(x$prediction.error))
+  return(x$err.rate[1]))
+
+#listofmoderors<-lapply(Modslist,function(x)
+  #return(x$prediction.error))
 
 #$`5_Most_ImpVaribles`
 #[1] 0.4605087
@@ -244,7 +250,12 @@ ggsave("Model_errors_VarImp.jpg")
 list2env(Modslist ,.GlobalEnv)
 
 # saves the model with the lowest error
-save(A_30_Most_ImpVaribles, file = "Output/Best_Model.rda")
+save(A_30_Most_ImpVaribles, file = "Output/Best_Model25.rda")
+# saves the model with the lowest error
+save(A_87_Most_ImpVaribles, file = "Output/Best_Model99rf.rda")
+
+
+
 
 
 
