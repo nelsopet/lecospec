@@ -28,8 +28,4 @@ system.time(PredLayer<-LandCoverEstimator(filename = "Data/SubsetDatacube",
                                           datatype = "raster",
                                           extension = FALSE))
 
-system.time(PredLayer<-HyperSpec_DerivGeneratorRF(filename = "Data/SubsetDatacube",
-                                          out_file = "Output/",
-                                          Classif_Model = "Output/E_003_Best_Model_RandomForest.rda"))
-
 

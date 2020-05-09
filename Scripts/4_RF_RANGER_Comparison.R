@@ -18,9 +18,12 @@ SpecLib[remove_names] = NULL
 # Change column name with all the levels to "classes"
 names(SpecLib)[1]<-"Classes"
 
+# Converts column to a fctor
+SpecLib$Classes<-SpecLib$Classes%>%as.factor()
+
 set.seed(123)
 # Build Model
-rf_mod_ranger<-ranger(Classes ~ .,data = SpecLib,
+rf_mod_ranger<-ranger::ranger(Classes ~ .,data = SpecLib,
                       num.trees = 1000,
                       local.importance = TRUE) # OOB prediction error:             25.93 %
 

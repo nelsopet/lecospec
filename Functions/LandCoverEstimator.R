@@ -210,7 +210,7 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
     Tiles<-splitRaster(Converted_Dcube[[1]],30)
 
     # Use 4 cores
-    cores<- 4
+    cores<- detectCores()-1
     
     print(paste0(cores, " cores being used"))
     
@@ -252,7 +252,7 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
     # Creates a list of the names of all the tiles created 
     list_of_Tiles<-list.files(SubFolder,
                               pattern = glob2rx("A_001*.envi"),
-                              full.names = T)
+                              full.names = T)[1:5]
     
     # Iterate through the list using lapply
     List_of_PredLayers<-lapply(1:length(list_of_Tiles), function(i){
@@ -324,7 +324,6 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
         cat("\n")
         
         # Matches the spaitial information to the original raster
-        # Find soulution (here)
         Predicted_layerResamp<-raster::resample(Predicted_layer,RasterBrick,method = "ngb")%>%
           as.factor()
         

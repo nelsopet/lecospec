@@ -1,7 +1,7 @@
 # ------------------------------------------- 12mile ----------------------------------------------------------------
 library(spectrolab)
 library(tidyverse)
-setwd("/lecospec")
+
 
 ####Read in data as spectra (all scans collected at this location)
 TwelveMile_spectra<-read_spectra("Data/SpectraByLocation/12_mile/original_samples",
@@ -118,7 +118,7 @@ meta(bethelLib_spectra) = data.frame(bethelLib_metadata, stringsAsFactors = FALS
 ##save spectra (Raw)
 saveRDS(bethelLib_spectra      ,"Output/A_003_bethelLib_spectra.rds")
 # ------------------------------------------- BigTrail ---------------------------------------------------
-setwd("/lecospec")
+
 
 ####Read in data as spectra
 Big_Trail_Lake_spectra<-read_spectra("Data/SpectraByLocation/Big_Trail_Lake/original_samples",
