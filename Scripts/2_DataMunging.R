@@ -139,7 +139,7 @@ Big_Trail_Lake_metadata$Area<- "Big Trail"
 meta(Big_Trail_Lake_spectra) = data.frame(Big_Trail_Lake_metadata, stringsAsFactors = FALSE)
 
 ##save spectra (Raw)
-saveRDS(Big_Trail_Lake_spectra      ,"Output/A_003_Big_Trail_Lake_spectra.rds"      )
+saveRDS(Big_Trail_Lake_spectra      ,"Output/A_004_Big_Trail_Lake_spectra.rds"      )
 # ------------------------------------------- Brooks -----------------------------------------------------
 ####Read in data as spectra
 brooksLib_spectra<-read_spectra("Data/SpectraByLocation/BrooksLib",
