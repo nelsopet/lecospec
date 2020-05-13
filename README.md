@@ -29,15 +29,32 @@ This tutorial demonstrates how to use functions created by our team to read, pro
 
 Packages used in this tutorial include:
 ```
+install.packages("devtools")
+install.packages("tidyverse")
+install.packages("raster")
+install.packages("SpaDES")
+install.packages("doParallel")
+install.packages("parallel")
+install.packages("hsdar")
+install.packages("caret")
+install.packages("ranger")
+install.packages("tools")
+install.packages("randomForest")
+
+install_github("annakat/spectrolab")
+library(devtools)
 library(spectrolab)
 library(tidyverse)
 library(raster)
 library(SpaDES)
 library(doParallel)
+library(parallel)
 library(hsdar)
 library(caret)
+library(ranger)
+library(tools)
 library(randomForest)
-library(randomcoloR)
+
 ```
 
 ### Approaches to fine-scale image classification
