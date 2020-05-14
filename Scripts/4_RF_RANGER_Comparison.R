@@ -5,7 +5,7 @@ library(tidyverse)
 
 #------------------Building Model without identifying important varibles --------------
 # Spectral Library
-SpecLib<-read.csv("Output/D_002_SpecLib_Derivs.csv")
+SpecLib_derivs<-read.csv("Output/D_002_SpecLib_Derivs.csv")
 
 # Remove Unwanted columns
 # Creates a string of possible names that will be removed
@@ -13,32 +13,32 @@ remove_names<-c("ScanID","Class1","Class2","Class4","Area","Class2_Freq"
                 ,"Class3_Freq","Class4_Freq","Tree_numbe","x","y")
 
 # Remove Unwanted columns
-SpecLib[remove_names] = NULL
+SpecLib_derivs[remove_names] = NULL
 
 # Change column name with all the levels to "classes"
-names(SpecLib)[1]<-"Classes"
+names(SpecLib_derivs)[1]<-"Classes"
 
 # Converts column to a fctor
-SpecLib$Classes<-SpecLib$Classes%>%as.factor()
+SpecLib_derivs$Classes<-SpecLib_derivs$Classes%>%as.factor()
 
 set.seed(123)
 # Build Model
-rf_mod_ranger<-ranger::ranger(Classes ~ .,data = SpecLib,
+rf_mod_ranger<-ranger::ranger(Classes ~ .,data = SpecLib_derivs,
                       num.trees = 1000,
                       local.importance = TRUE) # OOB prediction error:             25.93 %
 
-rf_mod_randomforest<-randomForest(Classes ~ .,data = SpecLib
+rf_mod_randomforest<-randomForest(Classes ~ .,data = SpecLib_derivs
                                   ,ntree=1000,importance=TRUE) # OOB prediction error 26.18%
 
 # Build models using 0.99 percent cutoff for corelated varibles
 # Creates corelation matrix
-CorelationMatrix<-cor(SpecLib[-1])
+CorelationMatrix<-cor(SpecLib_derivs[-1])
 
 # Select most correlated varibles 
 caret_findCorr<-findCorrelation(CorelationMatrix, cutoff = 0.99, names = T)
 
 # Remove corelated vars
-predictor_df_reduced<-SpecLib %>%
+predictor_df_reduced<-SpecLib_derivs %>%
   dplyr::select(-caret_findCorr)
 
 # Rebuild models after intercorelated vars are removed

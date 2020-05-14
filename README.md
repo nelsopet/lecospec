@@ -41,8 +41,9 @@ install.packages("ranger")
 install.packages("tools")
 install.packages("randomForest")
 
-install_github("annakat/spectrolab")
 library(devtools)
+#Select opion 3 and press enter on keybaord
+install_github("annakat/spectrolab")
 library(spectrolab)
 library(tidyverse)
 library(raster)
@@ -56,6 +57,7 @@ library(tools)
 library(randomForest)
 
 ```
+When prompted to update packages, after running install_github("spectrolab", Please select none by entering 3 in the console window and clicking enter on your key board
 
 ### Approaches to fine-scale image classification
 Ground truthed data for image classification can be collected using:

@@ -37,22 +37,22 @@ SpecLib<-Reduce(spectrolab::combine,list_of_SpecLib)%>% # dim(n_samples=1989, n_
 
 # Lets remove all the rows with negative values or Values >2
 SpecLib_new<-SpecLib%>% 
-  filter_at(vars(-(ScanID:Area)), all_vars((.) < 2)) %>% # Removes rows with values greater than 2
-  filter_at(vars(-(ScanID:Area)), all_vars((.) >=0)) # Removes row with values less than 0, # dim (nrows = 1984 ncol = 2157)
+  dplyr::filter_at(vars(-(ScanID:Area)), all_vars((.) < 2)) %>% # Removes rows with values greater than 2
+  dplyr::filter_at(vars(-(ScanID:Area)), all_vars((.) >=0)) # Removes row with values less than 0, # dim (nrows = 1984 ncol = 2157)
 
 # Lets check the number of scans we have for each functional group because we removed all the bad scans
 # table(SpecLib_new$Class3)%>%as.data.frame()
 
 # Lets add more details to our spectral library by adding frequency columns
 # Frequency values represent the number of scans per species and the number of scans per functional group
-SpecLib_new<-SpecLib_new%>%
-  ddply( .(Class2), mutate, Class2_Freq = length(Class2))%>% # Add column to data frame that shows frequency of species
-  ddply( .(Class3), mutate, Class3_Freq = length(Class3))%>% # Add column to data frame that shows frequency of functional group
-  ddply( .(Class4), mutate, Class4_Freq = length(Class4))%>% # Add column to data frame that shows frequency of courser functional groups
+SpecLib_new_All<-SpecLib_new%>%
+  plyr::ddply( .(Class2), mutate, Class2_Freq = length(Class2))%>% # Add column to data frame that shows frequency of species
+  plyr::ddply( .(Class3), mutate, Class3_Freq = length(Class3))%>% # Add column to data frame that shows frequency of functional group
+  plyr::ddply( .(Class4), mutate, Class4_Freq = length(Class4))%>% # Add column to data frame that shows frequency of courser functional groups
   dplyr::select(ScanID,Class1,Class2,Class3,Class4,Area,Class2_Freq,Class3_Freq,Class4_Freq,everything()) # Rearrange columns 
 
 # Writes out our spectral library as a .csv
-write.csv(SpecLib_new,"Output/C_001_Spectral_Library_all.csv", row.names = F)
+write.csv(SpecLib_new_All,"Output/C_001_Spectral_Library_all.csv", row.names = F)
 
 # Convers our new spectral library back to a spectral object to be saved
 # Spectral object with 1984 samples with spectral range of 350-2500nm
@@ -67,7 +67,7 @@ write.csv(SpecLib_new,"Output/C_001_Spectral_Library_all.csv", row.names = F)
 # ------------------------------------------------- Even distribution among species --------------------------------------------
 
 # Creates a dataframe that shows scans per species within each functional group
-Species_table_df<-SpecLib_new%>%
+Species_table_df<-SpecLib_new_All%>%
   group_by(Class3,Class2)%>%
     tally()
 # View(Species_table)
@@ -102,7 +102,7 @@ reduce_SpeciesPerGroup<-function(x){
 }
 
 # Applies function to spectral library
-SpecLib_reduced<- reduce_SpeciesPerGroup(SpecLib_new)
+SpecLib_reduced<- reduce_SpeciesPerGroup(SpecLib_new_All)
   
 # Combines the list above into one dataframe
 SpecLib_reduced_df<-do.call("rbind", SpecLib_reduced)
@@ -228,7 +228,7 @@ Headwall_bandpasses<-c(397.593,399.444, 401.296, 403.148, 405.000, 406.851, 408.
 # Reads in spectral library as a spectral object
 # This is the spectral library that had all uncalibrated scans removed
 # Even distribution of species within each functional group applied
-Speclib<-readRDS("Output/C_004_SpecLib_FunctionalGroupsEqual.rds")
+Speclib_spec<-readRDS("Output/C_004_SpecLib_FunctionalGroupsEqual.rds")
 
 # Function resamples the PSR band passes to match the sensor
 ResampBands<-function(x){
@@ -256,7 +256,7 @@ ResampBands<-function(x){
 }
 
 # Apply function
-Speclib<-ResampBands(Speclib)
+Speclib<-ResampBands(Speclib_spec)
 
 # Cleans up R memeory
 # rm(list=ls())
