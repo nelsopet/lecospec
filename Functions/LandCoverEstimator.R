@@ -157,8 +157,6 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
     
     DF<-cbind(VegIndex_data,metaRemove(Resampled_data))
     
-    #DF<-DF[!duplicated(as.list(DF))]
-    
     return(DF)
   } # Deriv_combine ends
   
@@ -235,11 +233,6 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
         # Add if statement here to include .tiff and .dat files here
         
         print("30 Tiles were sucessfully created")
-        
-      }else {
-        
-        print("Tiles already exist")
-        
       }
     })
     
@@ -252,13 +245,13 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
     # Creates a list of the names of all the tiles created 
     list_of_Tiles<-list.files(SubFolder,
                               pattern = glob2rx("A_001*.envi"),
-                              full.names = T)[1:5]
+                              full.names = T)
     
     # Iterate through the list using lapply
     List_of_PredLayers<-lapply(1:length(list_of_Tiles), function(i){
       
       # Creates the name of the output file and the location in which its stored
-      out_tif2 = paste0(SubFolder,"/",basename(filename),"_PredLayer1.tif")
+      out_tif2 = paste0(SubFolder,"/",basename_F,"_PredLayer1.tif")
       
       # Statement checks if file already exist
       if(!file.exists(out_tif2)){
@@ -287,16 +280,27 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
         DfofRas[-1:-2][DfofRas[-1:-2] > 1.5] <- -999
         DfofRas[-1:-2][DfofRas[-1:-2] < 0  ] <- -999
         
+        # Saves all the rownames with NAs
+        # ALL_NAs<-which(is.na(DfofRas), arr.ind=TRUE)
+        
+        # # Saves all the rownames with NAs
+        # rownames_NA<-c(ALL_NAs[,1]%>%
+        #                  unique)
+        
         # Converts NA values
         DfofRas[is.na(DfofRas)] <- -999
         
         # Applies Derivative function
         DfofRas<-Deriv_combine(DfofRas)
         
+        # Convert those rows back to NAs
+        # DfofRas[rownames_NA,-1:-2] <- NA
+        
         # Reads in classifier
         Model = get(load(Classif_Model))
         
         # Grabs the names of the varibles
+        # Vars_names<-c(Model$forest$independent.variable.names) (ranger model)
         Vars_names<-c(as.data.frame(Model$importance)%>%rownames())
         
         # Removes the X from columns with the names of banpasses
@@ -307,8 +311,8 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
           dplyr::select(x,y,Vars_names) 
         
         # Converts the results to a raster Brick and saves it on disk
-        RastoDF<-rasterFromXYZ(New_df,
-                               crs = "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0")
+        RastoDF<-raster::rasterFromXYZ(New_df,
+                                       crs = "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0")
         
         # Deletes the dataframe
         rm(DfofRas)
@@ -337,7 +341,7 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
         print(paste0(" Prediction for Tile ",i," Completed"))
         cat("\n")
         
-        return(Predicted_layer)
+        return(Predicted_layerResamp)
         
       }
       
