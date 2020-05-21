@@ -256,7 +256,7 @@ ResampBands<-function(x){
 }
 
 # Apply function
-Speclib<-ResampBands(Speclib_spec)
+Speclib_resamp<-ResampBands(Speclib_spec)
 
 # Cleans up R memeory
 # rm(list=ls())
