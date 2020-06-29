@@ -1,4 +1,4 @@
-# Processing Fine-scale Hyperspectral Rasters using Tiling and Parallelization:  R (tutorial)
+# LECOSPEC
 
 ## Authors & Contributors 
 *1. Dr. Peter Nelson*      
