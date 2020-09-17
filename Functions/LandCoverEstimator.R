@@ -220,20 +220,17 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
     parallel::parLapply(c1,1:length(Tiles),function(x){
       
       # Creates outfile
-      Out_tif = paste(SubFolder,"/A_001_",basename_F,"_Tile_",x,".envi",sep = "")
-
+      Out_tif = paste(SubFolder,"/A_001_",basename_F,"_Tile_",x,".tif",sep = "")
       # Statement checks if file already exist
       if(!file.exists(Out_tif)){
         
         # Crops raster based on the extent of the 24 tiles that we created
         raster::crop(Converted_Dcube,extent(Tiles[[x]]),
                      filename = Out_tif,
-                     dataType = "INT4S",overwrite = T)
+                     dataType = "INT4S",format="GTiff",overwrite = T)
         
-        # Add if statement here to include .tiff and .dat files here
-        
-        print("30 Tiles were sucessfully created")
       }
+      print("30 Tiles were sucessfully created")
     })
     
     # Stops cluster
@@ -243,8 +240,9 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
     print("Creating Predicted Layer")
     
     # Creates a list of the names of all the tiles created 
+    print("Creating a list of the names of all the tiles created")
     list_of_Tiles<-list.files(SubFolder,
-                              pattern = glob2rx("A_001*.envi"),
+                              pattern = glob2rx("A_001*.tif"),
                               full.names = T)
     
     # Iterate through the list using lapply
@@ -264,85 +262,100 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
           rasterToPoints()%>%
           as.data.frame()
         
-        print("Masking negative values and values greater than 2 percent reflectance")
+        if (nrow(DfofRas) == 0){print("No data in tile")} 
         
-        # Removes noisey bands
-        # Find out a way to Automatically remove bands based on the variance
-        # remove hard coding 
-        DfofRas<-DfofRas[1:274]
         
-        # Rename bandpasses
-        # Change numeric reference to columns
-        # Remove hard coding
-        names(DfofRas)[-1:-2]<-Headwall_bandpasses
-        
-        # Convert weird values
-        DfofRas[-1:-2][DfofRas[-1:-2] > 1.5] <- -999
-        DfofRas[-1:-2][DfofRas[-1:-2] < 0  ] <- -999
-        
-        # Saves all the rownames with NAs
-        # ALL_NAs<-which(is.na(DfofRas), arr.ind=TRUE)
-        
-        # # Saves all the rownames with NAs
-        # rownames_NA<-c(ALL_NAs[,1]%>%
-        #                  unique)
-        
-        # Converts NA values
-        DfofRas[is.na(DfofRas)] <- -999
-        
-        # Applies Derivative function
-        DfofRas<-Deriv_combine(DfofRas)
-        
-        # Convert those rows back to NAs
-        # DfofRas[rownames_NA,-1:-2] <- NA
-        
-        # Reads in classifier
-        Model = get(load(Classif_Model))
-        
-        # Grabs the names of the varibles
-        # Vars_names<-c(Model$forest$independent.variable.names) (ranger model)
-        Vars_names<-c(as.data.frame(Model$importance)%>%rownames())
-        
-        # Removes the X from columns with the names of banpasses
-        Vars_names<-gsub("^X","",Vars_names[1:length(Vars_names)])
-        
-        # Creates a new model built on important variables
-        New_df<-DfofRas%>%
-          dplyr::select(x,y,Vars_names) 
-        
-        # Converts the results to a raster Brick and saves it on disk
-        RastoDF<-raster::rasterFromXYZ(New_df,
-                                       crs = "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0")
-        
-        # Deletes the dataframe
-        rm(DfofRas)
-        rm(New_df) 
-        
-        # Grabs the spitial information from original raster layer
-        RasterBrick<-brick(filename)
-        
-        print(paste0("Pointing Model at Tile ", i))
-        
-        # Predict calss of each pixel and returns a Raster layer
-        Predicted_layer<-raster::predict(RastoDF,Model,na.rm = TRUE,progress='text')
-        cat("\n")
-        
-        # Matches the spaitial information to the original raster
-        Predicted_layerResamp<-raster::resample(Predicted_layer,RasterBrick,method = "ngb")%>%
-          as.factor()
-        
-        # Restores attribute table
-        Predicted_layerResamp@data@attributes <- Predicted_layer@data@attributes
-        
-        # # Writes out the predicted Layer
-        writeRaster(Predicted_layerResamp,filename = paste0(SubFolder,"/B_001_",basename(filename),"_Tile",i,"_PredLayer.tif")
-                    ,overwrite = T)
-        
-        print(paste0(" Prediction for Tile ",i," Completed"))
-        cat("\n")
-        
-        return(Predicted_layerResamp)
-        
+        if (nrow(DfofRas) > 0) {
+          
+          print("Masking negative values and values greater than 2 percent reflectance")
+          
+          # Removes noisey bands
+          # Find out a way to Automatically remove bands based on the variance
+          # remove hard coding 
+          DfofRas<-DfofRas[1:274]
+          
+          # Rename bandpasses
+          # Change numeric reference to columns
+          # Remove hard coding
+          print("Renaming bandpasses")
+          names(DfofRas)[-1:-2]<-Headwall_bandpasses
+          
+          # Convert weird values
+          print("Converting weird values to -999")
+          DfofRas[-1:-2][DfofRas[-1:-2] > 1.5] <- -999
+          DfofRas[-1:-2][DfofRas[-1:-2] < 0  ] <- -999
+          
+          # Saves all the rownames with NAs
+          # ALL_NAs<-which(is.na(DfofRas), arr.ind=TRUE)
+          
+          # # Saves all the rownames with NAs
+          # rownames_NA<-c(ALL_NAs[,1]%>%
+          #                  unique)
+          
+          # Converts NA values
+          print("Converting NA values to -999")
+          DfofRas[is.na(DfofRas)] <- -999
+          
+          # Applies Derivative function
+          print("Calculating derivatives -999")
+          DfofRas<-Deriv_combine(DfofRas)
+          
+          # Convert those rows back to NAs
+          # DfofRas[rownames_NA,-1:-2] <- NA
+          
+          # Reads in classifier
+          print("Loading classifier")
+          Model = get(load(Classif_Model))
+          
+          # Grabs the names of the varibles
+          print("Loading varible names")
+          # Vars_names<-c(Model$forest$independent.variable.names) (ranger model)
+          Vars_names<-c(as.data.frame(Model$importance)%>%rownames())
+          
+          # Removes the X from columns with the names of banpasses
+          print("Fixing Names of varibles ")
+          Vars_names2<-gsub("^X","",Vars_names[1:length(Vars_names)])
+          
+          # Creates a new model built on important variables
+          print("Selecting important varibles")
+          New_df<-DfofRas%>%
+            dplyr::select(x,y,all_of(Vars_names2))
+          
+          # Converts the results to a raster Brick and saves it on disk
+          print("Converting results to a raster brick")
+          RastoDF<-raster::rasterFromXYZ(New_df,
+                                         crs = "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0")
+          
+          # Deletes the dataframe
+          rm(DfofRas)
+          rm(New_df) 
+          
+          # Grabs the spitial information from original raster layer
+          RasterBrick<-brick(filename)
+          
+          print(paste0("Pointing Model at Tile ", i))
+          
+          # Predict calss of each pixel and returns a Raster layer
+          Predicted_layer<-raster::predict(RastoDF,Model,na.rm = TRUE,progress='text')
+          cat("\n")
+          
+          # Matches the spaitial information to the original raster
+          Predicted_layerResamp<-raster::resample(Predicted_layer,RasterBrick,method = "ngb")%>%
+            as.factor()
+          
+          # Restores attribute table
+          Predicted_layerResamp@data@attributes <- Predicted_layer@data@attributes
+          
+          # # Writes out the predicted Layer
+          writeRaster(Predicted_layerResamp,filename = paste0(SubFolder,"/B_001_",basename(filename),"_Tile",i,"_PredLayer.tif")
+                      ,overwrite = T)
+          
+          print(paste0(" Prediction for Tile ",i," Completed"))
+          cat("\n")
+          
+          return(Predicted_layerResamp)
+          
+        }
       }
       
     })

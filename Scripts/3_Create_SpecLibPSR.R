@@ -148,45 +148,49 @@ meta(SpecLib_reduced_spectra)<-data.frame(SpecLib_reduced_df[1:9], stringsAsFact
 saveRDS(SpecLib_reduced_spectra,"Output/C_004_SpecLib_FunctionalGroupsEqual.rds")
 
 # ------------------------------------------ Plots ---------------------------------------------------
-# Plot_Func<-function(x, Class){
-#   
-#   # Creates a vector with the name of all the categories of interest
-#   names_of_classes<-c(as.character(unique(x[,Class])))
-#   
-#   # Creates an empty list
-#   FunctionalGroupDf<-list()
-#   
-#   for(i in 1:length(names_of_classes)){
-#     
-#     # Subset a functional group
-#     FunctionalGroupDf[[i]]<-subset(x,Class == names_of_classes[i])
-#     
-#     
-#     # change the dtaframe to a long dataframe 
-#     FunctionalGroupDf[[i]]<-gather(x ,Wavelength,Reflectance,-1:-9)
-#     
-#     
-#     # Make column name Wavelength numeric
-#     FunctionalGroupDf[[i]]$Wavelength    <-as.numeric(FunctionalGroupDf[[i]]$Wavelength)
-#     
-#     # Create an empt jpeg
-#     # jpeg(paste("Output/","C_005","_",names_of_classes[[i]],".jpg",sep =""), units="px",height = 1400, width=2400, res=350)
-#     
-#     # Plot the output
-#     FunctionalGroupDf[[i]]%>%
-#       group_by(Class2, Wavelength) %>% mutate(Median_Reflectance = median(Reflectance)) %>% 
-#       ggplot(aes(Wavelength,Median_Reflectance))+geom_line(aes(color = Class3.))+ 
-#       theme(panel.background = element_rect(fill = "white", colour = "grey50"), legend.key.size = unit(0.3, "cm"),legend.text = element_text(size=3))+
-#       labs(title = paste(names_of_classes[[i]],"Spectral Signatures", sep = ""))
-#     
-#     ggsave(paste("Output/","C_005","_",names_of_classes[[i]],".png",sep =""))
-#     
-#     }
-#   
-# }
-# 
-# # Create Outputs
-# Plot_Func(SpecLib_reduced_df, Class = "Class3")
+   
+   # Creates a vector with the name of all the categories of interest
+   names_of_classes<-c(as.character(unique(SpecLib_reduced_df[,"Class3"])))
+   
+   # Creates an empty list
+   FunctionalGroupDf<-list()
+   
+   for(i in 1:length(names_of_classes)){
+     
+     # Subset a functional group
+     FunctionalGroupDf[[i]]<-subset(SpecLib_reduced_df,Class3 == names_of_classes[i])
+
+     
+     # change the dtaframe to a long dataframe 
+     FunctionalGroupDf[[i]]<-gather(FunctionalGroupDf[[i]] ,Wavelength,Reflectance,-1:-9)
+     
+     
+     # Make column name Wavelength numeric
+     FunctionalGroupDf[[i]]$Wavelength    <-as.numeric(FunctionalGroupDf[[i]]$Wavelength)
+     
+     # Create an empt jpeg
+     #jpeg(paste("Output/","C_005","_",names_of_classes[[i]],".jpg",sep =""), units="px",height = 1400, width=2400, res=350)
+     
+     # Plot the output
+     FunctionalGroupDf[[i]]<-FunctionalGroupDf[[i]]%>%
+       group_by(Class2, Wavelength) %>%  
+       dplyr::summarise(Median_Reflectance = median(Reflectance))%>%
+       as.data.frame()
+   }
+   
+   for(i in 1:length(FunctionalGroupDf)){
+       
+     # Creates a ggplot for each functional group with all species
+     ggplot(FunctionalGroupDf[[i]],aes(Wavelength,Median_Reflectance))+geom_line(aes(color = Class2))+
+       labs(color="Functional Group")+
+       theme(panel.background = element_rect(fill = "white", colour = "grey50"), 
+             legend.key.size = unit(0.5, "cm"),legend.text = element_text(size=12))+
+       labs(title = paste(names_of_classes[[i]]," Spectral Signatures", sep = ""))
+     
+     # Saves the plots
+     ggsave(paste("Output/","C_005","_",names_of_classes[[i]],".png",sep =""))
+     
+     }
 
 # ---------------------------------------------------- Resample bands based on headwall bandpasses -------------------------------------------
 

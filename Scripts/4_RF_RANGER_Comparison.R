@@ -58,14 +58,10 @@ write.csv(Ranger_confusionmatrix,"Output/E_002_Ranger_confusionmatrix.csv")
 
 
 # saves the model with the lowest error
-save(rf_mod_randomforest, file = "Output/E_003_Best_Model_RandomForest.rda")
+save(rf_mod_randomforest, file = "Output/E_003_Best_Model_RandomForest_86vars.rda")
 
 # saves the model with the lowest error
-save(rf_mod_ranger      , file = "Output/E_004_Best_Model_Ranger.rda")
-
-
-
-
+save(rf_mod_ranger      , file = "Output/E_004_Best_Model_Ranger_86vars.rda")
 
 
 
