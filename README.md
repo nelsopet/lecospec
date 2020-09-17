@@ -208,8 +208,14 @@ str(SpecLib_resampled)
            file = paste(outputs_folder,"D_001_",
                         "SpecLib_resampled.csv",sep=""), row.names = F)
 ```
-Notice the change in the bandpasses and the number of variables in your new dataframe. We can now use the [HyperSpec_DerivGenerator](https://github.com/nelsopet/lecospec/blob/111338ecb754bbdc3861a86ecf68eb2757204315/Functions/Spectral_classifier.R#L3-L26) function to calculate the derivatives. These are saved on disk because of R's memory limit.
+Notice the change in the bandpasses and the number of variables in your new dataframe. We can now use the [SpectralLibrayCreator](https://github.com/nelsopet/lecospec/blob/111338ecb754bbdc3861a86ecf68eb2757204315/Functions/Spectral_classifier.R#L3-L26) function to calculate the derivatives. These are saved on disk because of R's memory limit.
+
+Spectral sigantures of each functional group
+
+![](C_005_Abiotic_Litter.png) 
+
 ```
+
 # Source the function that will calculate derivatives of our new spectral library
 source("Functions/HyperspecGenFunction.R")
 
@@ -254,7 +260,7 @@ PredictedRaster_Layer<-HyperspecImageClassifier(filename = Path/to/datacube.envi
  ![](Raster_RGB.jpg)  
  
  See Predicted Layer below (Made using ESRI)
- ![](Predicted_Map_Layer.jpg) 
+ ![](Predicted_Map_Layer_RF.jpg)
 
 ### HypIMGPredictor_generator Entity relationship diagram
 JANE'S ERDS (IMAGE HERE)
