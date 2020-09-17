@@ -212,7 +212,7 @@ Notice the change in the bandpasses and the number of variables in your new data
 
 Spectral sigantures of each functional group
 
-![](C_005_Abiotic_Litter.jpg) 
+![](Output/C_005_Abiotic_Litter.jpg) 
 
 ```
 
@@ -261,8 +261,6 @@ PredictedRaster_Layer<-HyperspecImageClassifier(filename = Path/to/datacube.envi
  
  See Predicted Layer below (Made using ESRI)
  ![](Predicted_Map_Layer_RF.jpg)
- 
- ![](C_005_Abiotic_Litter.jpg)
 
 ### HypIMGPredictor_generator Entity relationship diagram
 JANE'S ERDS (IMAGE HERE)
