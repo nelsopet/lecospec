@@ -212,7 +212,7 @@ Notice the change in the bandpasses and the number of variables in your new data
 
 Spectral sigantures of each functional group
 
-![](C_005_Abiotic_Litter.png) 
+![](C_005_Abiotic_Litter.jpg) 
 
 ```
 
