@@ -214,6 +214,43 @@ Spectral sigantures of each functional group
 
 ![](Output/C_005_Abiotic_Litter.jpg) 
 
+![](Output/C_005_Abiotic_Rock.png) 
+
+![](C_005_Abiotic_Soil.png) 
+
+![](Output/C_005_Dwarf_Shrub_Broad.png) 
+
+![](Output/C_005_Dwarf_Shrub_Needle.png) 
+
+![](Output/C_005_Forb.png) 
+
+![](Output/C_005_Graminoid_Grass.png) 
+
+![](Output/C_005_Graminoid_Sedge.png) 
+
+![](Output/C_005_Lichen_Dark.png) 
+
+![](Output/C_005_Lichen_Light.png) 
+
+![](Output/C_005_Lichen_Yellow.png) 
+
+![](Output/C_005_Moss_Acrocarp.png) 
+
+![](Output/C_005_Moss_Pleurocarp.png) 
+
+![](Output/C_005_Moss_Sphagnum.png) 
+
+![](Output/C_005_Shrub_Alder.png) 
+
+![](Output/C_005_Shrub_Other.png) 
+
+![](Output/C_005_Shrub_Salix.png) 
+
+![](Output/C_005_Tree_Broad.png) 
+
+![](Output/C_005_Tree_Needle.png)
+
+
 ```
 
 # Source the function that will calculate derivatives of our new spectral library
