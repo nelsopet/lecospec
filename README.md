@@ -211,43 +211,9 @@ str(SpecLib_resampled)
 Notice the change in the bandpasses and the number of variables in your new dataframe. We can now use the [SpectralLibrayCreator](https://github.com/nelsopet/lecospec/blob/111338ecb754bbdc3861a86ecf68eb2757204315/Functions/Spectral_classifier.R#L3-L26) function to calculate the derivatives. These are saved on disk because of R's memory limit.
 
 Spectral sigantures of each functional group
+
 ![](C_005_Abiotic_Litter.png) 
 
-![](C_005_Abiotic_Rock.png) 
-
-![](C_005_Abiotic_Soil.png) 
-
-![](C_005_Dwarf_Shrub_Broad.png) 
-
-![](C_005_Dwarf_Shrub_Needle.png) 
-
-![](C_005_Forb.png) 
-
-![](C_005_Graminoid_Grass.png) 
-
-![](C_005_Graminoid_Sedge.png) 
-
-![](C_005_Lichen_Dark.png) 
-
-![](C_005_Lichen_Light.png) 
-
-![](C_005_Lichen_Yellow.png) 
-
-![](C_005_Moss_Acrocarp.png) 
-
-![](C_005_Moss_Pleurocarp.png) 
-
-![](C_005_Moss_Sphagnum.png) 
-
-![](C_005_Shrub_Alder.png) 
-
-![](C_005_Shrub_Other.png) 
-
-![](C_005_Shrub_Salix.png) 
-
-![](C_005_Tree_Broad.png) 
-
-![](C_005_Tree_Needle.png) 
 ```
 
 # Source the function that will calculate derivatives of our new spectral library
