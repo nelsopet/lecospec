@@ -214,41 +214,41 @@ Spectral sigantures of each functional group
 
 ![](Output/C_005_Abiotic_Litter.jpg) 
 
-![](Output/C_005_Abiotic_Rock.png) 
+![](Output/C_005_Abiotic_Rock.jpg) 
 
-![](C_005_Abiotic_Soil.png) 
+![](C_005_Abiotic_Soil.jpg) 
 
-![](Output/C_005_Dwarf_Shrub_Broad.png) 
+![](Output/C_005_Dwarf_Shrub_Broad.jpg) 
 
-![](Output/C_005_Dwarf_Shrub_Needle.png) 
+![](Output/C_005_Dwarf_Shrub_Needle.jpg) 
 
-![](Output/C_005_Forb.png) 
+![](Output/C_005_Forb.jpg) 
 
-![](Output/C_005_Graminoid_Grass.png) 
+![](Output/C_005_Graminoid_Grass.jpg) 
 
-![](Output/C_005_Graminoid_Sedge.png) 
+![](Output/C_005_Graminoid_Sedge.jpg) 
 
-![](Output/C_005_Lichen_Dark.png) 
+![](Output/C_005_Lichen_Dark.jpg) 
 
-![](Output/C_005_Lichen_Light.png) 
+![](Output/C_005_Lichen_Light.jpg) 
 
-![](Output/C_005_Lichen_Yellow.png) 
+![](Output/C_005_Lichen_Yellow.jpg) 
 
-![](Output/C_005_Moss_Acrocarp.png) 
+![](Output/C_005_Moss_Acrocarp.jpg) 
 
-![](Output/C_005_Moss_Pleurocarp.png) 
+![](Output/C_005_Moss_Pleurocarp.jpg) 
 
-![](Output/C_005_Moss_Sphagnum.png) 
+![](Output/C_005_Moss_Sphagnum.jpg) 
 
-![](Output/C_005_Shrub_Alder.png) 
+![](Output/C_005_Shrub_Alder.jpg) 
 
-![](Output/C_005_Shrub_Other.png) 
+![](Output/C_005_Shrub_Other.jpg) 
 
-![](Output/C_005_Shrub_Salix.png) 
+![](Output/C_005_Shrub_Salix.jpg) 
 
-![](Output/C_005_Tree_Broad.png) 
+![](Output/C_005_Tree_Broad.jpg) 
 
-![](Output/C_005_Tree_Needle.png)
+![](Output/C_005_Tree_Needle.jpg)
 
 
 ```
