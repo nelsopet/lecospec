@@ -261,10 +261,13 @@ PredictedRaster_Layer<-HyperspecImageClassifier(filename = Path/to/datacube.envi
  
  See Predicted Layer below (Made using ESRI)
  ![](Predicted_Map_Layer_RF.jpg)
+ 
+ ![](C_005_Abiotic_Litter.jpg)
 
 ### HypIMGPredictor_generator Entity relationship diagram
 JANE'S ERDS (IMAGE HERE)
 ![](HypIMGPredictor_generator_v.2.jpeg)
+
 
 ### References
 
