@@ -212,7 +212,44 @@ Notice the change in the bandpasses and the number of variables in your new data
 
 Spectral sigantures of each functional group
 
-![](C_005_Abiotic_Litter.png) 
+![](Output/C_005_Abiotic_Litter.jpg) 
+
+![](Output/C_005_Abiotic_Rock.jpg) 
+
+![](C_005_Abiotic_Soil.jpg) 
+
+![](Output/C_005_Dwarf_Shrub_Broad.jpg) 
+
+![](Output/C_005_Dwarf_Shrub_Needle.jpg) 
+
+![](Output/C_005_Forb.jpg) 
+
+![](Output/C_005_Graminoid_Grass.jpg) 
+
+![](Output/C_005_Graminoid_Sedge.jpg) 
+
+![](Output/C_005_Lichen_Dark.jpg) 
+
+![](Output/C_005_Lichen_Light.jpg) 
+
+![](Output/C_005_Lichen_Yellow.jpg) 
+
+![](Output/C_005_Moss_Acrocarp.jpg) 
+
+![](Output/C_005_Moss_Pleurocarp.jpg) 
+
+![](Output/C_005_Moss_Sphagnum.jpg) 
+
+![](Output/C_005_Shrub_Alder.jpg) 
+
+![](Output/C_005_Shrub_Other.jpg) 
+
+![](Output/C_005_Shrub_Salix.jpg) 
+
+![](Output/C_005_Tree_Broad.jpg) 
+
+![](Output/C_005_Tree_Needle.jpg)
+
 
 ```
 
@@ -265,6 +302,7 @@ PredictedRaster_Layer<-HyperspecImageClassifier(filename = Path/to/datacube.envi
 ### HypIMGPredictor_generator Entity relationship diagram
 JANE'S ERDS (IMAGE HERE)
 ![](HypIMGPredictor_generator_v.2.jpeg)
+
 
 ### References
 
