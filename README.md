@@ -15,9 +15,7 @@
 - [References](#References)
     
 ### Introduction
-The Laboratory of Ecological Spectroscopy (LEcoSpec or lecospec) is a set of functions that use reflectance spectra of plants and other surfaces in the visible and near-infrared range to estimate the presence or amount of those plants in images. lecospec uses data from imaging spectrometers (instruments that collect hyperspectral data) break the electromagnetic spectrum into groups of bands that support classification of objects by their spectral properties on the Earth's surface. Hyperspectral data consists of many bands - up to hundreds of bands - that cover the electromagnetic spectrum.  
-
-The Headwall Micro A-series VINIR imaging spectrometer collects data within the 400 nm to 1000 nm portions of the electromagnetic spectrum within bands that are approximately 2 nm in width. This results in a hyperspectral data cube that contains approximately 326 bands. However (say something about noisey bands in the 900-100nm wavelength region)
+The Laboratory of Ecological Spectroscopy (LEcoSpec or lecospec) is a set of functions in R that use reflectance spectra of targets in the visible and near-infrared range to estimate the presence or amount of those plants in images collected with imaging spectrometers (instruments that collect hyperspectral data). LEcoSpec operates a Headwall Micro A-series VINIR imaging spectrometer collects data within the 400 nm to 1000 nm portions of the electromagnetic spectrum within bands that are approximately 2 nm in width. This results in a hyperspectral data cube that contains approximately 326 bands. LEcoSpec can also process other types of imaging spectrometer data, such as NASA's G-LiHT and AVIRIS ng sensors.
 
 This tutorial demonstrates how to use functions created by our team to read, process and create large spatial (Headwall raster) data sets. In principle, both examples follow the same systematic approach:
 1. Preparing your spectral library from field spectroradiometers
