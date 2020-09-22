@@ -11,6 +11,8 @@ SpectralLibrayCreator<-function(filename,out_file,Classif_Model,datatype,extensi
   # Creates a vector of the bandpasses for the headwall sensor that will be used
   # Noisey band were omitted (only bands 1:272 below)
   # Need to find a way to decide what bands we want to leave out
+    # PRN Yes, finding a way to select the vegetation indices that are possibly calculate for a given
+    # sensors bandpasses would be very helpful.
   Headwall_bandpasses<-c(397.593,399.444, 401.296, 403.148, 405.000, 406.851, 408.703, 410.555, 412.407,
                          414.258,416.110, 417.962, 419.814, 421.666, 423.517, 425.369, 427.221, 429.073,
                          430.924,432.776, 434.628, 436.480, 438.332, 440.183, 442.035, 443.887, 445.739,
@@ -45,6 +47,9 @@ SpectralLibrayCreator<-function(filename,out_file,Classif_Model,datatype,extensi
   
   # Functions returns columns that are bandpasses
   metaRemove<-function(x){
+    #PRN Is the grep below hard coding removal of columns? Would be nice to not have absolute locations of info
+    # being grepped (or whatever). Instead, selecting what you want in a relative way, eg. names of columns rather than
+    # their position, is a safer way to do this.
     meta<-c(grep("^[0-9][0-9][0-9]",colnames(x)))
     colremove<-x[,meta]
     return(colremove)
@@ -52,6 +57,7 @@ SpectralLibrayCreator<-function(filename,out_file,Classif_Model,datatype,extensi
   
   # Functions returns columns that are not bandpasses
   bandsRemove<-function(x){
+    # Same comment as lines 50-52 in this function
     meta<-c(grep("[a-z A-Z]",colnames(x)))
     colremove<-x[,meta]
     return(colremove)
@@ -70,6 +76,8 @@ SpectralLibrayCreator<-function(filename,out_file,Classif_Model,datatype,extensi
     print("Resampling spectra every 5nm")
     
     # Creates functions that will do the resampling every 5nm
+    # PRN This is hard coding the wavelengths for Headwall. Would be nice to grab this info from a look up
+    # table that the user could create or provide containing this info for resampling rather than hard coding.
     final<-spectrolab::resample(SpeclibObj,seq(397.593,899.424,5))%>%
       as.data.frame()%>%
       dplyr::select(-sample_name)
