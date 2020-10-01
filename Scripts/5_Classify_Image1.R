@@ -1,5 +1,6 @@
 # ------------------------------     Classify Image ------------------------------------------
 # List of packages to install
+# Need to find a way to easily install these
 library(spectrolab)
 library(tidyverse)
 library(raster)
@@ -22,8 +23,9 @@ source("Functions/LandCoverEstimator.R")
 # datatype = is you data is a raster file or a .csv file
 # extension = does your input file has a extension associated with it? e.g (.tif,.csv, .dat)
 
-system.time(PredLayer<-LandCoverEstimator(filename = "Data/Subset_EightMile_2018_07_28_22_56_17_5968_rd_rf_or",
+system.time(PredLayer<-LandCoverEstimator(filename = "Data/Little_LakeTest",
                                           out_file = "Output/",
                                           Classif_Model = "Output/E_003_Best_Model_RandomForest_86vars.rda",
                                           datatype = "raster",
                                           extension = FALSE))
+
