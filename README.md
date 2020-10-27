@@ -2,7 +2,7 @@
 
 ## Authors & Contributors 
 *1. Dr. Peter Nelson*      
-*2. Kevaughan Smith*  
+*2. Kevaughan S Smith*  
 *3. Jane Pettit*  
 *4. Catherine Chan*  
 

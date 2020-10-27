@@ -300,6 +300,11 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
           print("Calculating derivatives -999")
           DfofRas<-Deriv_combine(DfofRas)
           
+          # Convert NANs AND infs to NAs
+          # NANs are being created because there's 0/0 = NAN
+          DfofRas[-1:-2][sapply(DfofRas[-1:-2],is.nan)]     <-NA
+          DfofRas[-1:-2][sapply(DfofRas[-1:-2],is.infinite)]<-NA
+          
           # Convert those rows back to NAs
           # DfofRas[rownames_NA,-1:-2] <- NA
           
