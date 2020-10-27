@@ -202,6 +202,19 @@ each_target<-each_target%>%setNames(target_names)
 #   
 # }
 
+# You could read in all these targets using the code below
+# listofnames<-list.files("Output/Spectral_profiles",full.names = T) 
+#  Targets_speclib<-lapply(listofnames,readRDS)
+
+
+# Creates a dataframe with the names of the list of species
+# target_table<-names(New_targets)%>%
+#   as.data.frame()
+# 
+# write.csv(target_table,"Output/targets_df.csv",row.names = F)
+
+
+
 # ------------------------------------------------- Even distribution among species --------------------------------------------
 
 # Creates a dataframe that shows scans per species within each functional group
@@ -284,14 +297,14 @@ SpecLib_reduced_df%>%
  Spectralobj<-spectrolab::as.spectra(Spectralobj1[-1:-9])
  meta(Spectralobj)<-data.frame(Spectralobj1[,c(1:9)], stringsAsFactors = FALSE)
  
- plot_interactive(Spectralobj)
- 
-# Lets convert our new spectral library to a spectral object to be used later 
-SpecLib_reduced_spectra <-spectrolab::as.spectra(SpecLib_reduced_df[-1:-9])
-
-# adds metadata
-meta(SpecLib_reduced_spectra)<-data.frame(SpecLib_reduced_df[1:9], stringsAsFactors = FALSE)
-saveRDS(SpecLib_reduced_spectra,"Output/C_004_SpecLib_FunctionalGroupsEqual.rds")
+#plot_interactive(Spectralobj)
+# 
+## Lets convert our new spectral library to a spectral object to be used later 
+#SpecLib_reduced_spectra <-spectrolab::as.spectra(SpecLib_reduced_df[-1:-9])
+#
+## adds metadata
+#meta(SpecLib_reduced_spectra)<-data.frame(SpecLib_reduced_df[1:9], stringsAsFactors = FALSE)
+#saveRDS(SpecLib_reduced_spectra,"Output/C_004_SpecLib_FunctionalGroupsEqual.rds")
 
 # ------------------------------------------ Plots ---------------------------------------------------
    
