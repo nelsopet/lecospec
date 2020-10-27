@@ -203,10 +203,155 @@ each_target<-each_target%>%setNames(target_names)
 # }
 
 # You could read in all these targets using the code below
-# listofnames<-list.files("Output/Spectral_profiles",full.names = T) 
-# Targets_speclib<-lapply(listofnames,readRDS)%>%setNames(basename(listofnames))
+ listofnames<-list.files("Output/Spectral_profiles",full.names = T) 
+ Targets_speclib<-lapply(listofnames,readRDS)%>%setNames(basename(listofnames))
+ #     Alectoria ochroleuca    6 #plot_interactive(Targets_speclib[[1]]) # Scan 2 is weird
+  #                Alnus sp.   44 #plot_interactive(Targets_speclib[[2]]) #Good
+  # Arctocetraria centrifuga    4 #plot_interactive(Targets_speclib[[3]]) #Good
+  #          Arctostaphyllos   19 #plot_interactive(Targets_speclib[[4]]) #Scans 9 and 10 are weird above the VNIR but maybe that is ok?
+  #      Asahinea chrysantha   19 #plot_interactive(Targets_speclib[[5]]) #Scans 3 and maybe 11 are weird             
+  #     Aulacomnium palustre    6 #plot_interactive(Targets_speclib[[6]]) #Good            
+  #     Aulacomnium turgidum    6 #plot_interactive(Targets_speclib[[7]])  #Good           
+  #                Bare Rock    7 #plot_interactive(Targets_speclib[[8]])  #MAKE THIS A SEPARATE PFT FROM THE NEXT ONEGood but quite variables           
+  #                Bare Soil    8 #plot_interactive(Targets_speclib[[9]])  #Scan 5 is weird       
+  #              Betula nana   56 #plot_interactive(Targets_speclib[[10]])  #Seem ok but definitely a lot of variation. Explore more later.           
+  #       Betula neoalaskana    4 #plot_interactive(Targets_speclib[[11]])  #Good but very few scans.        
+  #              Bryoria sp.   10 #plot_interactive(Targets_speclib[[12]])   #Good          
+  #        Calamogrostis sp.    4 #plot_interactive(Targets_speclib[[13]])    #Good but very few scans         
+  #                Carex sp.   16 #plot_interactive(Targets_speclib[[14]])     #Scans 12, 13 and 14 are much brighter than the rest in the VNIR        
+  #       Cassiope tetragona    9 # plot_interactive(Targets_speclib[[15]])   #looks good        
+ #      Ceratadon purpureus    5 # plot_interactive(Targets_speclib[[16]]) #looks good
+ #       Cetraria islandica   14 #plot_interactive(Targets_speclib[[17]]) #Scan 4 doesn't look right
+ #       Cetraria laevigata    3 # plot_interactive(Targets_speclib[[18]]) # Looks good
+ #     Cladonia amaurocraea    6 #plot_interactive(Targets_speclib[[19]]) #Scan 4 is the right shape but super bright. Why?
+ #         Cladonia cornuta    3 # plot_interactive(Targets_speclib[[20]]) #looks good
+ #        Cladonia gracilis   18 # plot_interactive(Targets_speclib[[21]]) #looks good. Very interesing VIS reflectance shape
+ #           Cladonia mitis   17 # plot_interactive(Targets_speclib[[22]]) #Scans 2 and 8 look weird
+ #     Cladonia rangiferina   20 #plot_interactive(Targets_speclib[[23]]) #looks good. Again, very interesting VIS reflectance shape.
+ #      Cladonia steallaris   20
+ #          Cladonia stygia   18
+ #      Cladonia sulphurina    3
+ #        Cladonia uncialis   10
+ #        Dactylina arctica    7
+ #               Dead Salix    8
+ #             Dicranum sp.    5
+ #        Dryas alleghenies  272
+ #         Dryas octopetala  612
+ #                Dryas sp.   43
+ #          Empetrum nigrum   12
+ #        Equisetum arvense    4
+ #     Equisetum sylvaticum    4
+ #     Eriophorum vaginatum    5
+ #       Evernia mesomorpha   20
+ #  Flavocetraria cucculata   14
+ #    Flavocetraria nivalis   19
+ #                   Gravel    5
+ #        Heracleum lanatum    8
+ #     Hylocomium splendens   13
+ #    Hypogymnia austerodes   13
+ #   Icmadophila ericetorum    8
+ #                 Iris sp.    4
+ #          Ledum decumbens   19
+ #    Loisleuria procumbens    3
+ #              Lupinus sp.   12
+ #  Masonhalea richardsonii   14
+ #            Melanelia sp.   13
+ #        Nephroma arcticum   21
+ #      Parmelia omphalodes    4
+ #     Parmeliopsis ambigua    4
+ #         Parmelis sulcata   12
+ #     Pedicularis racemosa   11
+ #     Pedicularis sudetica    4
+ #        Peltigera apthosa   14
+ #        Peltigera malacea    4
+ #       Peltigera scabrata    7
+ #   Peltigers leucophlebia    4
+ #        Petasites frigida    8
+ #            Picea mariana   17
+ #             Pices (bark)    5
+ #    Pilophorus acicularis   15
+ #          Plagiomnium sp.    4
+ #     Pleurozium schreberi    4
+ #  Polytrichum juniperinum   10
+ #          Polytrichum sp.   13
+ #      Populus balsamifera    8
+ #             Porpidia sp.   11
+ #                   Quartz   25
+ # Racomitrium lanoiginosum    4
+ # Rhizocarpon geographicum   18
+ #          Rhizocarpon sp.    3
+ #         Rhytidum rugosum    6
+ #          Rosa acicularis   20
+ #                Rubus sp.   12
+ #            Salix (wooly)   10
+ #          Salix alaxensis   47
+ #      Salix arbusculoides    4
+ #             Salix glauca   16
+ #             Salix lanata    4
+ #         Salix ovalifolia    6
+ #            Salix pulchra   10
+ #       Salix richardsonii    4
+ #          Sphagnum fuscum    4
+ #             Sphagnum sp.    8
+ #         Stereocaulon sp.    8
+ #            Toefeldia sp.    5
+ #      Tomenthypnum nitens    2
+ #    Trapelopsis granulosa    5
+ #      Umbilicaria arctica    4
+ #   Umbilicaria hyperborea   15
+ #          Usnea lapponica   12
+ #           Usnea scabrata   12
+ #     Vaccinium uliginosum   10
+ #     Vaccinium vitis-idea   21
+ #       Vulpicida pinastri   12
+ 
 
-
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+   
 # Creates a dataframe with the names of the list of species
 # target_table<-names(New_targets)%>%
 #   as.data.frame()
