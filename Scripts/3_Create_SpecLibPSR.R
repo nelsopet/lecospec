@@ -161,7 +161,7 @@ table(SpecLib_new_All$Class2)%>%as.data.frame() # There are 100 targets in our s
 #       Vulpicida pinastri   12
 
 # First lets create an object with all the names 
-target_names<-unique(SpecLib_new_All$Class2)
+target_names<-unique(sort(SpecLib_new_All$Class2))
 
 # Creates an empty list
 each_target<-list()
@@ -204,7 +204,7 @@ each_target<-each_target%>%setNames(target_names)
 
 # You could read in all these targets using the code below
 # listofnames<-list.files("Output/Spectral_profiles",full.names = T) 
-#  Targets_speclib<-lapply(listofnames,readRDS)
+# Targets_speclib<-lapply(listofnames,readRDS)%>%setNames(basename(listofnames))
 
 
 # Creates a dataframe with the names of the list of species
