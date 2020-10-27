@@ -51,18 +51,156 @@ SpecLib_new_All<-SpecLib_new%>%
   plyr::ddply( .(Class4), mutate, Class4_Freq = length(Class4))%>% # Add column to data frame that shows frequency of courser functional groups
   dplyr::select(ScanID,Class1,Class2,Class3,Class4,Area,Class2_Freq,Class3_Freq,Class4_Freq,everything()) # Rearrange columns 
 
-# Writes out our spectral library as a .csv
-write.csv(SpecLib_new_All,"Output/C_001_Spectral_Library_all.csv", row.names = F)
+# Remove all unkown scans
+# Remove bad scans
+SpecLib_new_All<-SpecLib_new_All[!(SpecLib_new_All$Class2=="Unknown"),]
 
-# Convers our new spectral library back to a spectral object to be saved
-# Spectral object with 1984 samples with spectral range of 350-2500nm
-# SpecLib_spectra<-spectrolab::as.spectra(SpecLib_new[,c(-1:-9)])
-# str(SpecLib_spectra)
+# ------------------------------------------------- Spectral Library Clean Up --------------------------------------------------
+# Script removes bad scans from each species in the library
+# First lets check how many species are available and the amount of scans we have for each species
+table(SpecLib_new_All$Class2)%>%as.data.frame() # There are 100 targets in our spectral library
 
-# Adds metadata to new Spectral Library 
-# Final product is a spectral object with 1984 samples with spectral range of 350-2500nm and  9 variables being metadata
-# meta(SpecLib_spectra)<-data.frame(SpecLib_new[,c(1:9)], stringsAsFactors = FALSE)
-# saveRDS(SpecLib_spectra,"Outputs/alaskaSpecLib.rds")
+#     Alectoria ochroleuca    6
+#                Alnus sp.   44
+# Arctocetraria centrifuga    4
+#          Arctostaphyllos   19
+#      Asahinea chrysantha   19
+#     Aulacomnium palustre    6
+#     Aulacomnium turgidum    6
+#                Bare Rock    7
+#                Bare Soil    8
+#              Betula nana   56
+#       Betula neoalaskana    4
+#              Bryoria sp.   10
+#        Calamogrostis sp.    4
+#                Carex sp.   16
+#       Cassiope tetragona    9
+#      Ceratadon purpureus    5
+#       Cetraria islandica   14
+#       Cetraria laevigata    3
+#     Cladonia amaurocraea    6
+#         Cladonia cornuta    3
+#        Cladonia gracilis   18
+#           Cladonia mitis   17
+#     Cladonia rangiferina   20
+#      Cladonia steallaris   20
+#          Cladonia stygia   18
+#      Cladonia sulphurina    3
+#        Cladonia uncialis   10
+#        Dactylina arctica    7
+#               Dead Salix    8
+#             Dicranum sp.    5
+#        Dryas alleghenies  272
+#         Dryas octopetala  612
+#                Dryas sp.   43
+#          Empetrum nigrum   12
+#        Equisetum arvense    4
+#     Equisetum sylvaticum    4
+#     Eriophorum vaginatum    5
+#       Evernia mesomorpha   20
+#  Flavocetraria cucculata   14
+#    Flavocetraria nivalis   19
+#                   Gravel    5
+#        Heracleum lanatum    8
+#     Hylocomium splendens   13
+#    Hypogymnia austerodes   13
+#   Icmadophila ericetorum    8
+#                 Iris sp.    4
+#          Ledum decumbens   19
+#    Loisleuria procumbens    3
+#              Lupinus sp.   12
+#  Masonhalea richardsonii   14
+#            Melanelia sp.   13
+#        Nephroma arcticum   21
+#      Parmelia omphalodes    4
+#     Parmeliopsis ambigua    4
+#         Parmelis sulcata   12
+#     Pedicularis racemosa   11
+#     Pedicularis sudetica    4
+#        Peltigera apthosa   14
+#        Peltigera malacea    4
+#       Peltigera scabrata    7
+#   Peltigers leucophlebia    4
+#        Petasites frigida    8
+#            Picea mariana   17
+#             Pices (bark)    5
+#    Pilophorus acicularis   15
+#          Plagiomnium sp.    4
+#     Pleurozium schreberi    4
+#  Polytrichum juniperinum   10
+#          Polytrichum sp.   13
+#      Populus balsamifera    8
+#             Porpidia sp.   11
+#                   Quartz   25
+# Racomitrium lanoiginosum    4
+# Rhizocarpon geographicum   18
+#          Rhizocarpon sp.    3
+#         Rhytidum rugosum    6
+#          Rosa acicularis   20
+#                Rubus sp.   12
+#            Salix (wooly)   10
+#          Salix alaxensis   47
+#      Salix arbusculoides    4
+#             Salix glauca   16
+#             Salix lanata    4
+#         Salix ovalifolia    6
+#            Salix pulchra   10
+#       Salix richardsonii    4
+#          Sphagnum fuscum    4
+#             Sphagnum sp.    8
+#         Stereocaulon sp.    8
+#            Toefeldia sp.    5
+#      Tomenthypnum nitens    2
+#    Trapelopsis granulosa    5
+#      Umbilicaria arctica    4
+#   Umbilicaria hyperborea   15
+#          Usnea lapponica   12
+#           Usnea scabrata   12
+#     Vaccinium uliginosum   10
+#     Vaccinium vitis-idea   21
+#       Vulpicida pinastri   12
+
+# First lets create an object with all the names 
+target_names<-unique(SpecLib_new_All$Class2)
+
+# Creates an empty list
+each_target<-list()
+
+# Function splits the spectrallibrary into spectral objects based on each target (99 Spectral Objects)
+for(i in 1:length(target_names)){
+  
+  # Subset a functional group
+  each_target[[i]]<-subset(SpecLib_new_All,Class2 == target_names[i])
+  
+  # saves metadata
+  metadata<-each_target[[i]][,c(1:9)]%>%as.data.frame()
+  
+  # Convert to a spectral object
+  each_target[[i]]<-spectrolab::as.spectra(each_target[[i]][-1:-9])
+  
+  # Add metadata
+  meta(each_target[[i]])<-data.frame(metadata[,c(1:9)], stringsAsFactors = FALSE)
+  
+}
+
+# Renames each target in list 
+each_target<-each_target%>%setNames(target_names)
+
+# Plots spectral profile for each target (You'll have to gor through all 99 targets)
+# plot_interactive(each_target[[1]])
+
+# Remove bad scans after looking at spectral profiles
+# each_target[[100]]<-each_target[[100]][-c(1,3),]
+
+# Create a new object with clenaed spectral library
+# New_targets<-each_target
+
+# for(i in 1:length(New_targets)){
+#   
+#   # Writes out each target and their spectral profiles
+#   saveRDS(New_targets[[i]],paste0("Output/Spectral_profiles/",names(New_targets[i]),".rds"))
+#   
+# }
 
 # ------------------------------------------------- Even distribution among species --------------------------------------------
 
@@ -139,7 +277,15 @@ SpecLib_reduced_df%>%
 # Shrub_Salix           50
 # Tree_Broad            10
 # Tree_Needle           17
-
+ 
+ Spectralobj1<-SpecLib_reduced_df%>%
+   dplyr::filter(Class2=="Betula nana")
+ 
+ Spectralobj<-spectrolab::as.spectra(Spectralobj1[-1:-9])
+ meta(Spectralobj)<-data.frame(Spectralobj1[,c(1:9)], stringsAsFactors = FALSE)
+ 
+ plot_interactive(Spectralobj)
+ 
 # Lets convert our new spectral library to a spectral object to be used later 
 SpecLib_reduced_spectra <-spectrolab::as.spectra(SpecLib_reduced_df[-1:-9])
 
@@ -168,9 +314,6 @@ saveRDS(SpecLib_reduced_spectra,"Output/C_004_SpecLib_FunctionalGroupsEqual.rds"
      # Make column name Wavelength numeric
      FunctionalGroupDf[[i]]$Wavelength    <-as.numeric(FunctionalGroupDf[[i]]$Wavelength)
      
-     # Create an empt jpeg
-     #jpeg(paste("Output/","C_005","_",names_of_classes[[i]],".jpg",sep =""), units="px",height = 1400, width=2400, res=350)
-     
      # Plot the output
      FunctionalGroupDf[[i]]<-FunctionalGroupDf[[i]]%>%
        group_by(Class2, Wavelength) %>%  
@@ -179,16 +322,16 @@ saveRDS(SpecLib_reduced_spectra,"Output/C_004_SpecLib_FunctionalGroupsEqual.rds"
    }
    
    for(i in 1:length(FunctionalGroupDf)){
-       
+     
      # Creates a ggplot for each functional group with all species
      ggplot(FunctionalGroupDf[[i]],aes(Wavelength,Median_Reflectance))+geom_line(aes(color = Class2))+
-       labs(color="Functional Group")+
+       labs(color="Species")+
        theme(panel.background = element_rect(fill = "white", colour = "grey50"), 
              legend.key.size = unit(0.5, "cm"),legend.text = element_text(size=12))+
        labs(title = paste(names_of_classes[[i]]," Spectral Signatures", sep = ""))
      
      # Saves the plots
-     ggsave(paste("Output/","C_005","_",names_of_classes[[i]],".png",sep =""))
+      ggsave(paste("Output/","C_005","_",names_of_classes[[i]],".jpg",sep =""))
      
      }
 
@@ -274,7 +417,6 @@ source("Functions/SpectralLibrayCreator.R")
 Spectral_Library<-SpectralLibrayCreator("Output/D_001_Headwall_SpecLibDF.csv",
                                         out_file= "Output/",datatype = "csv", 
                                         extension = FALSE)
-
 
 
 
