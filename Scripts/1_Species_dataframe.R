@@ -2,6 +2,7 @@
 library (tidyverse)
 
 # Creates column Class1
+# PRN This is hard coded. How can we do this more automatically, like reading in a file of names?
 SpecLib_groups<-data.frame("Class1"= c("abibal"
                                       ,"acerub"
                                       ,"acepen"
@@ -137,6 +138,7 @@ SpecLib_groups<-data.frame("Class1"= c("abibal"
                                       ,"wooly_salix"))
 
 # Add column Class2 (SPECIES) to spectral library
+# PRN This is also hard coded. How to automate from user input?
 SpecLib_groups$Class2[SpecLib_groups$Class1=="abibal"]<-"Abies balsamea"
 SpecLib_groups$Class2[SpecLib_groups$Class1=="acerub"]<-"Acer rubrum"
 SpecLib_groups$Class2[SpecLib_groups$Class1=="acepen"]<-"Acer pensylvanicum"
@@ -271,6 +273,7 @@ SpecLib_groups$Class2[SpecLib_groups$Class1=="vulpin"]<-"Vulpicida pinastri"
 SpecLib_groups$Class2[SpecLib_groups$Class1=="wooly_salix"]<-"Salix (wooly)"
 
 ###Add column Class3 (Courser response variables)
+# PRN This is hard coded. We should be using a look up table for functional group (Class 3) each plant species (Class 2) is.
 SpecLib_groups$Class3[SpecLib_groups$Class1=="abibal"]<-"Tree_Broad"
 SpecLib_groups$Class3[SpecLib_groups$Class1=="acerub"]<-"Tree_Broad"
 SpecLib_groups$Class3[SpecLib_groups$Class1=="acepen"]<-"Tree_Broad"
