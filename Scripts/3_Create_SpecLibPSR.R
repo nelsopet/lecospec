@@ -202,110 +202,124 @@ each_target<-each_target%>%setNames(target_names)
 #   
 # }
 
+
 # You could read in all these targets using the code below
-#listofnames<-list.files("Output/Spectral_profiles",full.names = T) 
-#Targets_speclib<-lapply(listofnames,readRDS)%>%setNames(basename(listofnames))
- #     Alectoria ochroleuca    6 #plot_interactive(Targets_speclib[[1]]) # Scan 2 is weird
-  #                Alnus sp.   44 #plot_interactive(Targets_speclib[[2]]) #Good
-  # Arctocetraria centrifuga    4 #plot_interactive(Targets_speclib[[3]]) #Good
-  #          Arctostaphyllos   19 #plot_interactive(Targets_speclib[[4]]) #Scans 9 and 10 are weird above the VNIR but maybe that is ok?
-  #      Asahinea chrysantha   19 #plot_interactive(Targets_speclib[[5]]) #Scans 3 and maybe 11 are weird             
-  #     Aulacomnium palustre    6 #plot_interactive(Targets_speclib[[6]]) #Good            
-  #     Aulacomnium turgidum    6 #plot_interactive(Targets_speclib[[7]])  #Good           
-  #                Bare Rock    7 #plot_interactive(Targets_speclib[[8]])  #MAKE THIS A SEPARATE PFT FROM THE NEXT ONEGood but quite variables           
-  #                Bare Soil    8 #plot_interactive(Targets_speclib[[9]])  #Scan 5 is weird       
-  #              Betula nana   56 #plot_interactive(Targets_speclib[[10]])  #Seem ok but definitely a lot of variation. Explore more later.           
-  #       Betula neoalaskana    4 #plot_interactive(Targets_speclib[[11]])  #Good but very few scans.        
-  #              Bryoria sp.   10 #plot_interactive(Targets_speclib[[12]])   #Epiphyte: Don't use in spec lib but scans Good          
-  #        Calamogrostis sp.    4 #plot_interactive(Targets_speclib[[13]])    #Good but very few scans         
-  #                Carex sp.   16 #plot_interactive(Targets_speclib[[14]])     #Scans 12, 13 and 14 are much brighter than the rest in the VNIR        
-  #       Cassiope tetragona    9 # plot_interactive(Targets_speclib[[15]])   #looks good        
- #      Ceratadon purpureus    5 # plot_interactive(Targets_speclib[[16]]) #looks good
- #       Cetraria islandica   14 #plot_interactive(Targets_speclib[[17]]) #Scan 4 doesn't look right
- #       Cetraria laevigata    3 # plot_interactive(Targets_speclib[[18]]) # Looks good
- #     Cladonia amaurocraea    6 #plot_interactive(Targets_speclib[[19]]) #Scan 4 is the right shape but super bright. Why?
- #         Cladonia cornuta    3 # plot_interactive(Targets_speclib[[20]]) #looks good
- #        Cladonia gracilis   18 # plot_interactive(Targets_speclib[[21]]) #looks good. Very interesing VIS reflectance shape
- #           Cladonia mitis   17 # plot_interactive(Targets_speclib[[22]]) #Scans 2 and 8 look weird
- #     Cladonia rangiferina   20 #plot_interactive(Targets_speclib[[23]]) #looks good. Again, very interesting VIS reflectance shape.
- #      Cladonia steallaris   20 #plot_interactive(Targets_speclib[[24]]) #looks good
- #          Cladonia stygia   18 #plot_interactive(Targets_speclib[[25]]) # Scans 1-4 look like they are a different PFT. Scan 7 looks weird.
- #      Cladonia sulphurina    3 #plot_interactive(Targets_speclib[[26]]) #Looks good
- #        Cladonia uncialis   10 #plot_interactive(Targets_speclib[[27]]) #Looks good. Very bright in blue wavelengths.
- #        Dactylina arctica    7 #plot_interactive(Targets_speclib[[28]]) #Looks good. Very bright in blue wavelengths.
- #               Dead Salix    8 #plot_interactive(Targets_speclib[[29]]) #Scans 4 and 8 look different. Bright green peak.
- #             Dicranum sp.    5 #plot_interactive(Targets_speclib[[30]]) #Looks good
- #        Dryas alleghenies  272 #plot_interactive(Targets_speclib[[31]]) #Looks good.
- #         Dryas octopetala  612 #plot_interactive(Targets_speclib[[32]]) #Scan 89 is weird.
- #                Dryas sp.   43 #plot_interactive(Targets_speclib[[33]]) #Looks good
- #          Empetrum nigrum   12 #plot_interactive(Targets_speclib[[34]]) #Looks good
- #        Equisetum arvense    4 #plot_interactive(Targets_speclib[[35]]) #Looks good
- #     Equisetum sylvaticum    4 #plot_interactive(Targets_speclib[[36]]) #Looks good
- #     Eriophorum vaginatum    5 #plot_interactive(Targets_speclib[[37]]) #Delete wavelengths >1000
- #       Evernia mesomorpha   20 #plot_interactive(Targets_speclib[[38]]) #Epiphyte and Too variable: Don't use this species in spectral library
- #  Flavocetraria cucculata   14 #plot_interactive(Targets_speclib[[39]]) #Epiphyte and Too variable: Don't use this species in spectral library
- #    Flavocetraria nivalis   19 #plot_interactive(Targets_speclib[[40]]) #Scans 11 and 12 are weird
- #                   Gravel    5 #plot_interactive(Targets_speclib[[41]]) #Looks good
- #        Heracleum lanatum    8 #plot_interactive(Targets_speclib[[42]]) #Looks good. Very stable signature.
- #     Hylocomium splendens   13 #plot_interactive(Targets_speclib[[43]]) #Looks good
- #    Hypogymnia austerodes   13 #plot_interactive(Targets_speclib[[44]]) #Epiphyte: Don't use this in spectral library but scans looks good.
- #   Icmadophila ericetorum    8 #plot_interactive(Targets_speclib[[45]]) #Good
- #                 Iris sp.    4 #plot_interactive(Targets_speclib[[46]]) #Good
- #          Ledum decumbens   19 #plot_interactive(Targets_speclib[[47]]) #Good but strangely variable between 600-700 nm
- #    Loisleuria procumbens    3 #plot_interactive(Targets_speclib[[48]]) #Good
- #              Lupinus sp.   12 #plot_interactive(Targets_speclib[[49]]) #Good
- #  Masonhalea richardsonii   14 #plot_interactive(Targets_speclib[[50]]) #Good
- #            Melanelia sp.   13 #plot_interactive(Targets_speclib[[51]]) #Good
- #        Nephroma arcticum   21 #plot_interactive(Targets_speclib[[52]]) #Good
- #      Parmelia omphalodes    4 #plot_interactive(Targets_speclib[[53]]) #Good
- #     Parmeliopsis ambigua    4 #plot_interactive(Targets_speclib[[54]]) #Good
- #         Parmelis sulcata   12 #plot_interactive(Targets_speclib[[55]]) #Epiphyte (mostly): Good
- #     Pedicularis racemosa   11 #plot_interactive(Targets_speclib[[56]]) #Good
- #     Pedicularis sudetica    4 #plot_interactive(Targets_speclib[[57]]) #Good
- #        Peltigera apthosa   14 #plot_interactive(Targets_speclib[[58]]) #Scan 1 is weird
- #        Peltigera malacea    4 #plot_interactive(Targets_speclib[[59]]) #Good
- #       Peltigera scabrata    7 #plot_interactive(Targets_speclib[[60]]) #Good
- #   Peltigers leucophlebia    4 #plot_interactive(Targets_speclib[[61]]) #Good
- #        Petasites frigida    8 #plot_interactive(Targets_speclib[[62]]) #Good.
- #            Picea mariana   17 #plot_interactive(Targets_speclib[[63]]) #Good.Very bright <400 nm. 
- #             Pices (bark)    5 #plot_interactive(Targets_speclib[[64]]) #Good
- #    Pilophorus acicularis   15 #plot_interactive(Targets_speclib[[65]]) #Good. Interesting drop in reflectance at 350-375 nm
- #          Plagiomnium sp.    4 #plot_interactive(Targets_speclib[[66]]) #Good
- #     Pleurozium schreberi    4 #plot_interactive(Targets_speclib[[67]]) #Good
- #  Polytrichum juniperinum   10  #plot_interactive(Targets_speclib[[68]]) #Good. Interesting sharp corner on IR plateau
- #          Polytrichum sp.   13  #plot_interactive(Targets_speclib[[69]]) #Good
- #      Populus balsamifera    8  #plot_interactive(Targets_speclib[[70]]) #Good
- #             Porpidia sp.   11  #plot_interactive(Targets_speclib[[71]]) #Good
- #                   Quartz   25 #plot_interactive(Targets_speclib[[72]]) #Quite variable. Consider deleting
- # Racomitrium lanoiginosum    4  #plot_interactive(Targets_speclib[[73]]) #Good
- # Rhizocarpon geographicum   18  #plot_interactive(Targets_speclib[[74]]) #Good
- #          Rhizocarpon sp.    3  #plot_interactive(Targets_speclib[[75]]) #Good
- #         Rhytidum rugosum    6  #plot_interactive(Targets_speclib[[76]]) #Good
- #          Rosa acicularis   20  #plot_interactive(Targets_speclib[[77]]) #Scan 19 is bad
- #                Rubus sp.   12  #plot_interactive(Targets_speclib[[78]]) #Scans 6 and 8 have weird green regions
- #            Salix (wooly)   10  #plot_interactive(Targets_speclib[[79]]) #Good
- #          Salix alaxensis   47  #plot_interactive(Targets_speclib[[80]]) #Good
- #      Salix arbusculoides    4  #plot_interactive(Targets_speclib[[81]]) #Good Interesting hard corner on IR plateau
- #             Salix glauca   16  #plot_interactive(Targets_speclib[[82]]) #Good
- #             Salix lanata    4  #plot_interactive(Targets_speclib[[83]]) #Good
- #         Salix ovalifolia    6  #plot_interactive(Targets_speclib[[84]]) #Scan 2 may be something different
- #            Salix pulchra   10  #plot_interactive(Targets_speclib[[85]]) #Good
- #       Salix richardsonii    4  #plot_interactive(Targets_speclib[[86]]) #Good
- #          Sphagnum fuscum    4  #plot_interactive(Targets_speclib[[87]]) #Good Interesting profiles
- #             Sphagnum sp.    8  #plot_interactive(Targets_speclib[[88]]) #Good
- #         Stereocaulon sp.    8  #plot_interactive(Targets_speclib[[89]]) #Good
- #            Toefeldia sp.    5  #plot_interactive(Targets_speclib[[90]]) #Good
- #      Tomenthypnum nitens    2  #plot_interactive(Targets_speclib[[91]]) #Good
- #    Trapelopsis granulosa    5  #plot_interactive(Targets_speclib[[92]]) #Good
- #      Umbilicaria arctica    4  #plot_interactive(Targets_speclib[[93]]) #Good
- #   Umbilicaria hyperborea   15  #plot_interactive(Targets_speclib[[94]]) #Good
- #          Usnea lapponica   12  #plot_interactive(Targets_speclib[[95]]) #Epiphyte: Good but Don't use in spec lib. Scan 4 seems weird.
- #           Usnea scabrata   12  #plot_interactive(Targets_speclib[[96]]) #Epiphyte: Good but don't use in spec lib.
- #     Vaccinium uliginosum   10  #plot_interactive(Targets_speclib[[97]]) #Scans 9, 10, 11 and 12 are weird.
- #     Vaccinium vitis-idea   21  #plot_interactive(Targets_speclib[[98]]) #Good
- #       Vulpicida pinastri   12  #plot_interactive(Targets_speclib[[99]]) #Epiphyte: Don't use: Scans 5 and 7 are weird
- 
- 
+# listofnames<-list.files("Output/Spectral_profiles",full.names = T) 
+# Targets_speclib<-lapply(listofnames,readRDS)%>%setNames(basename(listofnames))
+#      Alectoria ochroleuca    6 #plot_interactive(Targets_speclib[[1]])  # Scan 2 removed  Targets_speclib[[1]]<-Targets_speclib[[1]][-c(2),]
+#                 Alnus sp.   44 #plot_interactive(Targets_speclib[[2]]) #Good
+#  Arctocetraria centrifuga    4 #plot_interactive(Targets_speclib[[3]]) #Good
+#           Arctostaphyllos   19 #plot_interactive(Targets_speclib[[4]]) #Scans 9 and 10 removed Targets_speclib[[4]]<-Targets_speclib[[4]][-c(9,10),]
+#       Asahinea chrysantha   19 #plot_interactive(Targets_speclib[[5]]) #Scans 3 and 11 removed Targets_speclib[[5]]<-Targets_speclib[[5]][-c(3,11),]            
+#      Aulacomnium palustre    6 #plot_interactive(Targets_speclib[[6]]) #Good            
+#      Aulacomnium turgidum    6 #plot_interactive(Targets_speclib[[7]])  #Good           
+#                 Bare Rock    7 #plot_interactive(Targets_speclib[[8]])  #MAKE THIS A SEPARATE PFT FROM THE NEXT ONEGood but quite variables (not sure what this means)          
+#                 Bare Soil    8 #plot_interactive(Targets_speclib[[9]])  #Scan 5 removed    Targets_speclib[[9]]<-Targets_speclib[[9]][-c(5),]  
+#               Betula nana   56 #plot_interactive(Targets_speclib[[10]])  #Seem ok but definitely a lot of variation. Explore more later.           
+#        Betula neoalaskana    4 #plot_interactive(Targets_speclib[[11]])  #Good but very few scans.        
+#               Bryoria sp.   10 #plot_interactive(Targets_speclib[[12]])   #Epiphyte: Don't use in spec lib but scans Good          
+#         Calamogrostis sp.    4 #plot_interactive(Targets_speclib[[13]])    #Good but very few scans         
+#                 Carex sp.   16 #plot_interactive(Targets_speclib[[14]])     #Scans 12, 13 and 14 are much brighter than the rest in the VNIR (should I remove these?)       
+#        Cassiope tetragona    9 # plot_interactive(Targets_speclib[[15]])   #looks good        
+#      Ceratadon purpureus    5 # plot_interactive(Targets_speclib[[16]]) #looks good
+#       Cetraria islandica   14 #plot_interactive(Targets_speclib[[17]]) #Scan 4 removed Targets_speclib[[17]]<-Targets_speclib[[17]][-c(4),]
+#       Cetraria laevigata    3 # plot_interactive(Targets_speclib[[18]]) # Looks good
+#     Cladonia amaurocraea    6 #plot_interactive(Targets_speclib[[19]]) #Scan 4 is the right shape but super bright. Why? (not sure should I just remove this?)
+#         Cladonia cornuta    3 # plot_interactive(Targets_speclib[[20]]) #looks good
+#        Cladonia gracilis   18 # plot_interactive(Targets_speclib[[21]]) #looks good. Very interesing VIS reflectance shape
+#           Cladonia mitis   17 # plot_interactive(Targets_speclib[[22]]) #Scans 2 and 8 removed Targets_speclib[[22]]<-Targets_speclib[[22]][-c(2,8),]
+#     Cladonia rangiferina   20 #plot_interactive(Targets_speclib[[23]]) #looks good. Again, very interesting VIS reflectance shape.
+#      Cladonia steallaris   20 #plot_interactive(Targets_speclib[[24]]) #looks good
+#          Cladonia stygia   18 #plot_interactive(Targets_speclib[[25]]) # Scans 1-4 look like they are a different PFT. Scan 7 looks weird. (Not sure how to track what PFT these belong to)
+#      Cladonia sulphurina    3 #plot_interactive(Targets_speclib[[26]]) #Looks good
+#        Cladonia uncialis   10 #plot_interactive(Targets_speclib[[27]]) #Looks good. Very bright in blue wavelengths.
+#        Dactylina arctica    7 #plot_interactive(Targets_speclib[[28]]) #Looks good. Very bright in blue wavelengths.
+#               Dead Salix    8 #plot_interactive(Targets_speclib[[29]]) #Scans 4 and 8 look different (removed). Bright green peak.Targets_speclib[[29]]<-Targets_speclib[[29]][-c(4,8),]
+#             Dicranum sp.    5 #plot_interactive(Targets_speclib[[30]]) #Looks good
+#        Dryas alleghenies  272 #plot_interactive(Targets_speclib[[31]]) #Looks good.
+#         Dryas octopetala  612 #plot_interactive(Targets_speclib[[32]]) #Scan 89 removed.Targets_speclib[[32]]<-Targets_speclib[[32]][-c(89),]
+#                Dryas sp.   43 #plot_interactive(Targets_speclib[[33]]) #Looks good
+#          Empetrum nigrum   12 #plot_interactive(Targets_speclib[[34]]) #Looks good
+#        Equisetum arvense    4 #plot_interactive(Targets_speclib[[35]]) #Looks good
+#     Equisetum sylvaticum    4 #plot_interactive(Targets_speclib[[36]]) #Looks good
+#     Eriophorum vaginatum    5 #plot_interactive(Targets_speclib[[37]]) #Delete wavelengths >1000
+#       Evernia mesomorpha   20 #plot_interactive(Targets_speclib[[38]]) #Epiphyte and Too variable: Don't use this species in spectral library
+#  Flavocetraria cucculata   14 #plot_interactive(Targets_speclib[[39]]) #Epiphyte and Too variable: Don't use this species in spectral library
+#    Flavocetraria nivalis   19 #plot_interactive(Targets_speclib[[40]]) #Scans 11 and 12 removed Targets_speclib[[40]]<-Targets_speclib[[40]][-c(11,12),]
+#                   Gravel    5 #plot_interactive(Targets_speclib[[41]]) #Looks good
+#        Heracleum lanatum    8 #plot_interactive(Targets_speclib[[42]]) #Looks good. Very stable signature.
+#     Hylocomium splendens   13 #plot_interactive(Targets_speclib[[43]]) #Looks good
+#    Hypogymnia austerodes   13 #plot_interactive(Targets_speclib[[44]]) #Epiphyte: Don't use this in spectral library but scans looks good.
+#   Icmadophila ericetorum    8 #plot_interactive(Targets_speclib[[45]]) #Good
+#                 Iris sp.    4 #plot_interactive(Targets_speclib[[46]]) #Good
+#          Ledum decumbens   19 #plot_interactive(Targets_speclib[[47]]) #Good but strangely variable between 600-700 nm (How do we fix this?)
+#    Loisleuria procumbens    3 #plot_interactive(Targets_speclib[[48]]) #Good
+#              Lupinus sp.   12 #plot_interactive(Targets_speclib[[49]]) #Good
+#  Masonhalea richardsonii   14 #plot_interactive(Targets_speclib[[50]]) #Good
+#            Melanelia sp.   13 #plot_interactive(Targets_speclib[[51]]) #Good
+#        Nephroma arcticum   21 #plot_interactive(Targets_speclib[[52]]) #Good
+#      Parmelia omphalodes    4 #plot_interactive(Targets_speclib[[53]]) #Good
+#     Parmeliopsis ambigua    4 #plot_interactive(Targets_speclib[[54]]) #Good
+#         Parmelis sulcata   12 #plot_interactive(Targets_speclib[[55]]) #Epiphyte (mostly): Good (Should I leave this in library?)
+#     Pedicularis racemosa   11 #plot_interactive(Targets_speclib[[56]]) #Good
+#     Pedicularis sudetica    4 #plot_interactive(Targets_speclib[[57]]) #Good
+#        Peltigera apthosa   14 #plot_interactive(Targets_speclib[[58]]) #Scan 1 is weird Targets_speclib[[58]]<-Targets_speclib[[58]][-c(1),]
+#        Peltigera malacea    4 #plot_interactive(Targets_speclib[[59]]) #Good
+#       Peltigera scabrata    7 #plot_interactive(Targets_speclib[[60]]) #Good
+#   Peltigers leucophlebia    4 #plot_interactive(Targets_speclib[[61]]) #Good
+#        Petasites frigida    8 #plot_interactive(Targets_speclib[[62]]) #Good.
+#            Picea mariana   17 #plot_interactive(Targets_speclib[[63]]) #Good.Very bright <400 nm. (How do we fix this?)
+#             Pices (bark)    5 #plot_interactive(Targets_speclib[[64]]) #Good
+#    Pilophorus acicularis   15 #plot_interactive(Targets_speclib[[65]]) #Good. Interesting drop in reflectance at 350-375 nm (How do we address this?)
+#          Plagiomnium sp.    4 #plot_interactive(Targets_speclib[[66]]) #Good
+#     Pleurozium schreberi    4 #plot_interactive(Targets_speclib[[67]]) #Good
+#  Polytrichum juniperinum   10  #plot_interactive(Targets_speclib[[68]]) #Good. Interesting sharp corner on IR plateau
+#          Polytrichum sp.   13  #plot_interactive(Targets_speclib[[69]]) #Good
+#      Populus balsamifera    8  #plot_interactive(Targets_speclib[[70]]) #Good
+#             Porpidia sp.   11  #plot_interactive(Targets_speclib[[71]]) #Good
+#                   Quartz   25 #plot_interactive(Targets_speclib[[72]]) #Quite variable. Consider deleting
+# Racomitrium lanoiginosum    4  #plot_interactive(Targets_speclib[[73]]) #Good
+# Rhizocarpon geographicum   18  #plot_interactive(Targets_speclib[[74]]) #Good
+#          Rhizocarpon sp.    3  #plot_interactive(Targets_speclib[[75]]) #Good
+#         Rhytidum rugosum    6  #plot_interactive(Targets_speclib[[76]]) #Good
+#          Rosa acicularis   20  #plot_interactive(Targets_speclib[[77]]) #Scan 19 removed Targets_speclib[[77]]<-Targets_speclib[[77]][-c(19),]
+#                Rubus sp.   12  #plot_interactive(Targets_speclib[[78]]) #Scans 6 and 8 removed Targets_speclib[[78]]<-Targets_speclib[[78]][-c(6,8),]
+#            Salix (wooly)   10  #plot_interactive(Targets_speclib[[79]]) #Good
+#          Salix alaxensis   47  #plot_interactive(Targets_speclib[[80]]) #Good
+#      Salix arbusculoides    4  #plot_interactive(Targets_speclib[[81]]) #Good Interesting hard corner on IR plateau
+#             Salix glauca   16  #plot_interactive(Targets_speclib[[82]]) #Good
+#             Salix lanata    4  #plot_interactive(Targets_speclib[[83]]) #Good
+#         Salix ovalifolia    6  #plot_interactive(Targets_speclib[[84]]) #Scan 2 removed Targets_speclib[[84]]<-Targets_speclib[[84]][-c(2),]
+#            Salix pulchra   10  #plot_interactive(Targets_speclib[[85]]) #Good
+#       Salix richardsonii    4  #plot_interactive(Targets_speclib[[86]]) #Good
+#          Sphagnum fuscum    4  #plot_interactive(Targets_speclib[[87]]) #Good Interesting profiles
+#             Sphagnum sp.    8  #plot_interactive(Targets_speclib[[88]]) #Good
+#         Stereocaulon sp.    8  #plot_interactive(Targets_speclib[[89]]) #Good
+#            Toefeldia sp.    5  #plot_interactive(Targets_speclib[[90]]) #Good
+#      Tomenthypnum nitens    2  #plot_interactive(Targets_speclib[[91]]) #Good
+#    Trapelopsis granulosa    5  #plot_interactive(Targets_speclib[[92]]) #Good
+#      Umbilicaria arctica    4  #plot_interactive(Targets_speclib[[93]]) #Good
+#   Umbilicaria hyperborea   15  #plot_interactive(Targets_speclib[[94]]) #Good
+#          Usnea lapponica   12  #plot_interactive(Targets_speclib[[95]]) #Epiphyte: Good but Don't use in spec lib. Scan 4 seems weird.
+#           Usnea scabrata   12  #plot_interactive(Targets_speclib[[96]]) #Epiphyte: Good but don't use in spec lib.
+#     Vaccinium uliginosum   10  #plot_interactive(Targets_speclib[[97]]) #Scans 9, 10, 11 and 12 removed. Targets_speclib[[97]]<-Targets_speclib[[97]][-c(9,10,11),]
+#     Vaccinium vitis-idea   21  #plot_interactive(Targets_speclib[[98]]) #Good
+#       Vulpicida pinastri   12  #plot_interactive(Targets_speclib[[99]]) #Epiphyte: Don't use: Scans 5 and 7 are weird
+
+# creates new object
+New_targets<-Targets_speclib
+
+# Remove scans that are Epiphytes
+New_targets[c(12,38,39,55,95,96)]<-NULL
+
+# Saves scans from new spectral library
+ for(i in 1:length(New_targets)){
+   
+   # Writes out each target and their spectral profiles
+   saveRDS(New_targets[[i]],paste0("Output/Spectral_profiles_updated/",names(New_targets[i]),".rds"))
+   
+ }
+
 # Creates a dataframe with the names of the list of species
 # target_table<-names(New_targets)%>%
 #   as.data.frame()
