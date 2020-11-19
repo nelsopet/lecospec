@@ -1,23 +1,28 @@
-# ----Creates a spectral library object, combining all the scans collected in Alaksa during 2018 and 2019----
-
-library(spectrolab)
-library(tidyverse)
+# ---- Script creates a spectral library object, combining all the scans collected in Alaksa during 2018 and 2019 ---------
 library(plyr)
 library(dplyr)
 library(ggplot2)
+library(spectrolab)
+library(tidyverse)
+library(raster)
+library(SpaDES)
 library(doParallel)
 library(parallel)
+library(hsdar)
+library(caret)
+library(ranger)
+library(tools)
+library(randomForest)
 
-# ------------------------------- Data Munging -----------------------------------------------
+# ------------------------------------------------ Data Munging Step ---------------------------------------------------------
 
 # Creates a file path to where our spectral libraries for each site is loacated
-# Data collected in 2018 and 2019
 mypath_atkin = "Output/"
 
 # Reads in species and functional level groups dataframe
 Species_groups<-read.csv("Output/B_001_Species_Table.csv")
 
-# Import names of .rds files into character list
+# Import file path names of .rds files into character list (Spectral libraries based on each location) 
 SpecLib_by_location = list.files(mypath_atkin, pattern="A_0",full.names = T) 
 
 # Reads in the spectral libraries for each location in a list...List of 13 spectral objects
@@ -32,12 +37,11 @@ SpecLib<-Reduce(spectrolab::combine,list_of_SpecLib)%>% # dim(n_samples=1989, n_
   dplyr::select(ScanID,Class1,Class2,Class3,Class4,Area,everything()) #Reorders columns 
 
 # Please note these are the number of samples we have for each functional group
-# table(SpecLib$Class3)%>%as.data.frame()
-# The Dwarf shrub category is high because we scanned a high number of Dryas sp. in summer 2019
+# table(SpecLib$Class3)%>%as.data.frame() The Dwarf shrub category is high because we scanned a high number of Dryas sp. in summer 2019
 
 # Lets remove all the rows with negative values or Values >2
 SpecLib_new<-SpecLib%>% 
-  dplyr::filter_at(vars(-(ScanID:Area)), all_vars((.) < 2)) %>% # Removes rows with values greater than 2
+  dplyr::filter_at(vars(-(ScanID:Area)), all_vars((.) < 1)) %>% # Removes rows with values greater than 2
   dplyr::filter_at(vars(-(ScanID:Area)), all_vars((.) >=0)) # Removes row with values less than 0, # dim (nrows = 1984 ncol = 2157)
 
 # Lets check the number of scans we have for each functional group because we removed all the bad scans
@@ -52,14 +56,14 @@ SpecLib_new_All<-SpecLib_new%>%
   dplyr::select(ScanID,Class1,Class2,Class3,Class4,Area,Class2_Freq,Class3_Freq,Class4_Freq,everything()) # Rearrange columns 
 
 # Remove all unkown scans
-# Remove bad scans
 SpecLib_new_All<-SpecLib_new_All[!(SpecLib_new_All$Class2=="Unknown"),]
 
 # ------------------------------------------------- Spectral Library Clean Up --------------------------------------------------
 # Script removes bad scans from each species in the library
 # First lets check how many species are available and the amount of scans we have for each species
-table(SpecLib_new_All$Class2)%>%as.data.frame() # There are 100 targets in our spectral library
+table(SpecLib_new_All$Class2)%>%as.data.frame() # There are 99 targets in our spectral library
 
+#                     Var1 Freq
 #     Alectoria ochroleuca    6
 #                Alnus sp.   44
 # Arctocetraria centrifuga    4
@@ -91,12 +95,12 @@ table(SpecLib_new_All$Class2)%>%as.data.frame() # There are 100 targets in our s
 #               Dead Salix    8
 #             Dicranum sp.    5
 #        Dryas alleghenies  272
-#         Dryas octopetala  612
+#         Dryas octopetala  610
 #                Dryas sp.   43
 #          Empetrum nigrum   12
 #        Equisetum arvense    4
 #     Equisetum sylvaticum    4
-#     Eriophorum vaginatum    5
+#     Eriophorum vaginatum    2
 #       Evernia mesomorpha   20
 #  Flavocetraria cucculata   14
 #    Flavocetraria nivalis   19
@@ -111,7 +115,7 @@ table(SpecLib_new_All$Class2)%>%as.data.frame() # There are 100 targets in our s
 #              Lupinus sp.   12
 #  Masonhalea richardsonii   14
 #            Melanelia sp.   13
-#        Nephroma arcticum   21
+#        Nephroma arcticum   17
 #      Parmelia omphalodes    4
 #     Parmeliopsis ambigua    4
 #         Parmelis sulcata   12
@@ -160,17 +164,17 @@ table(SpecLib_new_All$Class2)%>%as.data.frame() # There are 100 targets in our s
 #     Vaccinium vitis-idea   21
 #       Vulpicida pinastri   12
 
-# First lets create an object with all the names 
-target_names<-unique(sort(SpecLib_new_All$Class2))
+# First lets create an object with all the names and make sure they are sorted in alphabetical order
+Target_names<-unique(sort(SpecLib_new_All$Class2))
 
 # Creates an empty list
 each_target<-list()
 
 # Function splits the spectrallibrary into spectral objects based on each target (99 Spectral Objects)
-for(i in 1:length(target_names)){
+for(i in 1:length(Target_names)){
   
   # Subset a functional group
-  each_target[[i]]<-subset(SpecLib_new_All,Class2 == target_names[i])
+  each_target[[i]]<-subset(SpecLib_new_All,Class2 == Target_names[i])
   
   # saves metadata
   metadata<-each_target[[i]][,c(1:9)]%>%as.data.frame()
@@ -184,128 +188,138 @@ for(i in 1:length(target_names)){
 }
 
 # Renames each target in list 
-each_target<-each_target%>%setNames(target_names)
+each_target<-each_target%>%setNames(Target_names)
 
-# Plots spectral profile for each target (You'll have to gor through all 99 targets)
-# plot_interactive(each_target[[1]])
+# Plots spectral profile for each target (You'll have to go through all 99 targets to remove bad spectra)
+plot_interactive(each_target[["Alectoria ochroleuca"    ]]) # Target 2 removed. each_target[["Alectoria ochroleuca"]]<-each_target[["Alectoria ochroleuca"    ]][-c(2),       ]
+plot_interactive(each_target[["Alnus sp."               ]]) # Signatrues Good.         
+plot_interactive(each_target[["Arctocetraria centrifuga"]]) # Signatrues Good.        
+plot_interactive(each_target[["Arctostaphyllos"         ]]) # Target 19,13,10,11,16,17 removed. each_target[["Arctostaphyllos"     ]]<-each_target[["Arctostaphyllos"         ]][-c(19,13,10,11,16,17)]
+plot_interactive(each_target[["Asahinea chrysantha"     ]]) # Target 3 removed. each_target[["Asahinea chrysantha" ]]<-each_target[["Asahinea chrysantha"     ]][-c(3),       ]
+plot_interactive(each_target[["Aulacomnium palustre"    ]]) # Signatrues Good. 
+plot_interactive(each_target[["Aulacomnium turgidum"    ]]) # Target 3,4 removed. each_target[["Aulacomnium turgidum"]]<-each_target[["Aulacomnium turgidum"    ]][-c(3,4),     ]
+plot_interactive(each_target[["Bare Rock"               ]]) # New class Rock. Signatrues Good.
+plot_interactive(each_target[["Bare Soil"               ]]) # New class soil. Target 1,3,7 removed. each_target[["Bare Soil"           ]]<-each_target[["Bare Soil"               ]][-c(1,3,7), ]
+plot_interactive(each_target[["Betula nana"             ]]) # Target 5,18,26,27,32,56 removed. each_target[["Betula nana"         ]]<-each_target[["Betula nana"             ]][-c(5,18,26,27,32,56),]
+plot_interactive(each_target[["Betula neoalaskana"      ]]) # Need more of this from Ecosis. Signatrues Good. 
+plot_interactive(each_target[["Bryoria sp."             ]]) # remove. Epiphyte: Don't use in spec lib but scans Good.
+plot_interactive(each_target[["Calamogrostis sp."       ]]) # Signatrues Good. 
+plot_interactive(each_target[["Carex sp."               ]]) # Target 10,12,13,14,15 removed.each_target[["Carex sp."           ]]<-each_target[["Carex sp."               ]][-c(10,12,13,14,15),]
+plot_interactive(each_target[["Cassiope tetragona"      ]]) # Evergreen Dwarf shrubs. Signatrues Good.
+plot_interactive(each_target[["Ceratadon purpureus"     ]]) # Signatrues Good.
+plot_interactive(each_target[["Cetraria islandica"      ]]) # Target 1,2,3,4,8 removed. each_target[["Cetraria islandica"      ]]<-each_target[["Cetraria islandica"      ]][-c(1,2,3,4,8),]
+plot_interactive(each_target[["Cetraria laevigata"      ]]) # Signatrues Good.
+plot_interactive(each_target[["Cladonia amaurocraea"    ]]) # Signatrues Good.
+plot_interactive(each_target[["Cladonia cornuta"        ]]) # Signatrues Good.
+plot_interactive(each_target[["Cladonia gracilis"       ]]) # Target 13,14,15,16,17,18 removed. each_target[["Cladonia gracilis"       ]]<-each_target[["Cladonia gracilis"       ]][-c(13,14,15,16,17,18),]
+plot_interactive(each_target[["Cladonia mitis"          ]]) # Target 8,12,13,14,15,16,17 removed. each_target[["Cladonia mitis"       ]]<-each_target[["Cladonia mitis"       ]][-c(8,12,13,14,15,16,17),]
+plot_interactive(each_target[["Cladonia rangiferina"    ]]) # Target 1,2,3,4,17 removed. each_target[["Cladonia rangiferina"    ]]<-each_target[["Cladonia rangiferina"    ]][-c(1,2,3,4,17),]
+plot_interactive(each_target[["Cladonia steallaris"     ]]) # Target 13,14,16,20 removed. each_target[["Cladonia steallaris"     ]]<-each_target[["Cladonia steallaris"     ]][-c(13,14,16,2),]
+plot_interactive(each_target[["Cladonia stygia"         ]]) # Target 13 removed. each_target[["Cladonia stygia"    ]]<-each_target[["Cladonia stygia"    ]][-c(13),]
+plot_interactive(each_target[["Cladonia sulphurina"     ]]) # Rare target remove
+plot_interactive(each_target[["Cladonia uncialis"       ]]) # Target 6 removed. each_target[["Cladonia uncialis"       ]]<-each_target[["Cladonia uncialis"       ]][-c(6),]
+plot_interactive(each_target[["Dactylina arctica"       ]]) # Rare target remove Target 3,7 removed. each_target[["Dactylina arctica"       ]]<-each_target[["Dactylina arctica"       ]][-c(3,7),]
+plot_interactive(each_target[["Dead Salix"              ]]) # Target 3,4,8 removed. each_target[["Dead Salix"              ]]<-each_target[["Dead Salix"              ]][-c(3,4,8),]
+plot_interactive(each_target[["Dicranum sp."            ]]) # Signatures Good.
+plot_interactive(each_target[["Dryas alleghenies"       ]]) # Kept up to 50 scans Target 15,22,29,37,38,46,47,48,55 removed. each_target[["Dryas alleghenies"       ]]<-each_target[["Dryas alleghenies"       ]][-c(15,22,29,37,38,46,47,48,55,60:272),]
+plot_interactive(each_target[["Dryas octopetala"        ]]) # Kept up to 50 scans Target 10,29,33,32,38,41,42,48 removed. each_target[["Dryas octopetala"        ]]<-each_target[["Dryas octopetala"        ]][-c(10,29,33,32,38,41,42,48,61:610),]
+plot_interactive(each_target[["Dryas sp."               ]]) # Signatures good.
+plot_interactive(each_target[["Empetrum nigrum"         ]]) # Target 1,3 removed. each_target[["Empetrum nigrum"         ]]<-each_target[["Empetrum nigrum"         ]][-c(1,3),]
+plot_interactive(each_target[["Equisetum arvense"       ]]) # Signatures good.Make equisetum it's own plant functional type
+plot_interactive(each_target[["Equisetum sylvaticum"    ]]) # Signatures good.Make equisetum it's own plant functional type
+plot_interactive(each_target[["Eriophorum vaginatum"    ]]) # Signatures good for our application (Bands 800:2500 will be removed)
+plot_interactive(each_target[["Evernia mesomorpha"      ]]) # Target 6,7,8,19,20 removed. Epiphyte and Too variable: Don't use this species in spectral library each_target[["Evernia mesomorpha"   ]]<-each_target[["Evernia mesomorpha"   ]][-c(6,7,8,19,20),]
+plot_interactive(each_target[["Flavocetraria cucculata" ]]) # Target 1,12,14 removed. each_target[["Flavocetraria cucculata"   ]]<-each_target[["Flavocetraria cucculata"   ]][-c(1,12,14),]
+plot_interactive(each_target[["Flavocetraria nivalis"   ]]) # Clean and remove. Target 11 removed. each_target[["Flavocetraria nivalis"   ]]<-each_target[["Flavocetraria nivalis"   ]][-c(11),]
+plot_interactive(each_target[["Gravel"                  ]]) # Target 5 removed. each_target[["Gravel"                  ]]<-each_target[["Gravel"                  ]][-c(5),]
+plot_interactive(each_target[["Heracleum lanatum"       ]]) # Clean and remove each_target[["Heracleum lanatum"       ]]<-each_target[["Heracleum lanatum"       ]][-c(2),]
+plot_interactive(each_target[["Hylocomium splendens"    ]]) # Target 5,6,7 removed. each_target[["Hylocomium splendens"    ]]<-each_target[["Hylocomium splendens"    ]][-c(5,6,7),]
+plot_interactive(each_target[["Hypogymnia austerodes"   ]]) # Clean and remove. Target 1,2,3,4 removed Epiphyte: Don't use this in spectral library but scans looks good. each_target[["Hypogymnia austerodes"  ]]<-each_target[["Hypogymnia austerodes"  ]][-c(1,2,3,4),]
+plot_interactive(each_target[["Icmadophila ericetorum"  ]]) # Clean and remove  Target 4,7 removed. each_target[["Icmadophila ericetorum"  ]]<-each_target[["Icmadophila ericetorum"  ]][-c(4,7),]
+plot_interactive(each_target[["Iris sp."                ]]) # Clean and remove  Target 2 removed. each_target[["Iris sp."                ]]<-each_target[["Iris sp."                ]][-c(2),]
+plot_interactive(each_target[["Ledum decumbens"         ]]) # Signatures Good Target 2 removed.
+plot_interactive(each_target[["Loisleuria procumbens"   ]]) # Signatures good. Clean and remove Target 2 removed
+plot_interactive(each_target[["Lupinus sp."             ]]) # Target 12 removed. each_target[["Lupinus sp."             ]]<-each_target[["Lupinus sp."             ]][-c(12),]
+plot_interactive(each_target[["Masonhalea richardsonii" ]]) # Target 3,6 removed. Clean and remove Target 2 removed. each_target[["Masonhalea richardsonii" ]]<-each_target[["Masonhalea richardsonii" ]][-c(2),]
+plot_interactive(each_target[["Melanelia sp."           ]]) # Clean and remove. Signatures good
+plot_interactive(each_target[["Nephroma arcticum"       ]]) # Clean and remove. Target 10,11,12,13. each_target[["Nephroma arcticum"       ]]<-each_target[["Nephroma arcticum"       ]][-c(10,11,12,13),]
+plot_interactive(each_target[["Parmelia omphalodes"     ]]) # Clean and remove Signatures good.
+plot_interactive(each_target[["Parmeliopsis ambigua"    ]]) # Clean and remove. Target 4 removed. each_target[["Parmeliopsis ambigua"    ]]<-each_target[["Parmeliopsis ambigua"    ]][-c(4),]
+plot_interactive(each_target[["Parmelis sulcata"        ]]) # Clean and remove. Target 1,11 removed. Epiphyte (mostly): Good (Should I leave this in library?) . each_target[["Parmelis sulcata"    ]]<-each_target[["Parmelis sulcata"    ]][-c(1,11),]
+plot_interactive(each_target[["Pedicularis racemosa"    ]]) # Target 1,8 removed. each_target[["Pedicularis racemosa"    ]]<-each_target[["Pedicularis racemosa"    ]][-c(1,8),]
+plot_interactive(each_target[["Pedicularis sudetica"    ]]) # Clean and remove. Signatures good.
+plot_interactive(each_target[["Peltigera apthosa"       ]]) # New class peltigera green. Target 3,4,5 removed. each_target[["Peltigera apthosa"       ]]<-each_target[["Peltigera apthosa"       ]][-c(3,4,5),]
+plot_interactive(each_target[["Peltigera malacea"       ]]) # New class peltigera cyano. Signatures good
+plot_interactive(each_target[["Peltigera scabrata"      ]]) # New class peltigera cyano. Signatures good. 
+plot_interactive(each_target[["Peltigers leucophlebia"  ]]) # New class peltigera green. Signatures good 
+plot_interactive(each_target[["Petasites frigida"       ]]) # remove Target 1 removed. each_target[["Petasites frigida"       ]]<-each_target[["Petasites frigida"       ]][-c(1),]
+plot_interactive(each_target[["Picea mariana"           ]]) # Signatures good.
+plot_interactive(each_target[["Pices (bark)"            ]]) # Signatures good. 
+plot_interactive(each_target[["Pilophorus acicularis"   ]]) # remove. Signatures good.
+plot_interactive(each_target[["Plagiomnium sp."         ]]) # remove. Signatures good
+plot_interactive(each_target[["Pleurozium schreberi"    ]]) # Signatures good. 
+plot_interactive(each_target[["Polytrichum juniperinum" ]]) # Target 1,2,3,4 removed. each_target[["Polytrichum juniperinum" ]]<-each_target[["Polytrichum juniperinum" ]][-c(1,2,3,4),]
+plot_interactive(each_target[["Polytrichum sp."         ]]) # Target 1,4 removed. each_target[["Polytrichum sp."         ]]<-each_target[["Polytrichum sp."         ]][-c(1,4),]
+plot_interactive(each_target[["Populus balsamifera"     ]]) # Signatures good.
+plot_interactive(each_target[["Porpidia sp."            ]]) # remove. Signatures good.
+plot_interactive(each_target[["Quartz"                  ]]) # Target 13 removed. each_target[["Quartz"                  ]]<-each_target[["Quartz"                  ]][-c(13),]
+plot_interactive(each_target[["Racomitrium lanoiginosum"]]) # Signatures good. 
+plot_interactive(each_target[["Rhizocarpon geographicum"]]) # New class yellow crust lichen. Target 8,18 removed. each_target[["Rhizocarpon geographicum"]]<-each_target[["Rhizocarpon geographicum"]][-c(8,18),]
+plot_interactive(each_target[["Rhizocarpon sp."         ]]) # remove. Signatures good.
+plot_interactive(each_target[["Rhytidum rugosum"        ]]) # Signatures good.
+plot_interactive(each_target[["Rosa acicularis"         ]]) # Target 19 removed. each_target[["Rosa acicularis"         ]]<-each_target[["Rosa acicularis"         ]][-c(19),]
+plot_interactive(each_target[["Rubus sp."               ]]) # Target 8,6 removed. each_target[["Rubus sp."               ]]<-each_target[["Rubus sp."               ]][-c(8,6),]
+plot_interactive(each_target[["Salix (wooly)"           ]]) # remove. Signatures good.
+plot_interactive(each_target[["Salix alaxensis"         ]]) # Signatures good. 
+plot_interactive(each_target[["Salix arbusculoides"     ]]) # Signatures good.
+plot_interactive(each_target[["Salix glauca"            ]]) # Signatures good.
+plot_interactive(each_target[["Salix lanata"            ]]) # Signatures good.
+plot_interactive(each_target[["Salix ovalifolia"        ]]) # Signatures good.
+plot_interactive(each_target[["Salix pulchra"           ]]) # Signatures good.
+plot_interactive(each_target[["Salix richardsonii"      ]]) # Signatures good.
+plot_interactive(each_target[["Sphagnum fuscum"         ]]) # Signatures good.
+plot_interactive(each_target[["Sphagnum sp."            ]]) # Signatures good.
+plot_interactive(each_target[["Stereocaulon sp."        ]]) # Signatures good.
+plot_interactive(each_target[["Toefeldia sp."           ]]) # remove  Target 5 removed. each_target[["Toefeldia sp."           ]]<-each_target[["Toefeldia sp."           ]][-c(5),]
+plot_interactive(each_target[["Tomenthypnum nitens"     ]]) # remove. Signatures good.
+plot_interactive(each_target[["Trapelopsis granulosa"   ]]) # dark crust lichen. Target 1 removed. each_target[["Trapelopsis granulosa"   ]]<-each_target[["Trapelopsis granulosa"   ]][-c(1),]
+plot_interactive(each_target[["Umbilicaria arctica"     ]]) # Signatures good. 
+plot_interactive(each_target[["Umbilicaria hyperborea"  ]]) # Signatures good.
+plot_interactive(each_target[["Usnea lapponica"         ]]) # remove  Epiphyte: Good but Don't use in spec lib.
+plot_interactive(each_target[["Usnea scabrata"          ]]) # remove  Epiphyte: Good but don't use in spec lib.
+plot_interactive(each_target[["Vaccinium uliginosum"    ]]) # Signatures good.
+plot_interactive(each_target[["Vaccinium vitis-idea"    ]]) # Target 1,2,3,4,5,6,7,8 removed. each_target[["Vaccinium vitis-idea"    ]]<-each_target[["Vaccinium vitis-idea"    ]][-c(1,2,3,4,5,6,7,8),]
+plot_interactive(each_target[["Vulpicida pinastri"      ]]) # remove. Target 1,2,11 removed  Epiphyte: Don't use each_target[["Vulpicida pinastri"    ]]<-each_target[["Vulpicida pinastri"    ]][-c(1,2,11),]
 
-# Remove bad scans after looking at spectral profiles
-# each_target[[100]]<-each_target[[100]][-c(1,3),]
 
-# Create a new object with clenaed spectral library
-# New_targets<-each_target
+# Creates a new object with clenaed spectral library
+New_targets<-each_target
 
-# for(i in 1:length(New_targets)){
-#   
-#   # Writes out each target and their spectral profiles
-#   saveRDS(New_targets[[i]],paste0("Output/Spectral_profiles/",names(New_targets[i]),".rds"))
-#   
-# }
+# Remove scans that are Epiphytes
+New_targets[c("Vulpicida pinastri"
+              ,"Usnea scabrata"
+              ,"Usnea lapponica"
+              ,"Parmelis sulcata"
+              ,"Hypogymnia austerodes"
+              ,"Evernia mesomorpha"     
+              ,"Flavocetraria cucculata"
+              ,"Bryoria sp." )]<-NULL
+
+# Saves each target as a spectral object (.rds)
+for(i in 1:length(New_targets)){
+  
+  # Writes out each target and their spectral profiles
+  saveRDS(New_targets[[i]],paste0("Output/Spectral_profiles/",names(New_targets[i]),".rds"))
+  
+}
+
+# Lets combine into one spectral library if we are satisfied with our results
+Cleaned_Speclib<-Reduce(spectrolab::combine,New_targets)
 
 # You could read in all these targets using the code below
-#listofnames<-list.files("Output/Spectral_profiles",full.names = T) 
-#Targets_speclib<-lapply(listofnames,readRDS)%>%setNames(basename(listofnames))
- #     Alectoria ochroleuca    6 #plot_interactive(Targets_speclib[[1]]) # Scan 2 is weird
-  #                Alnus sp.   44 #plot_interactive(Targets_speclib[[2]]) #Good
-  # Arctocetraria centrifuga    4 #plot_interactive(Targets_speclib[[3]]) #Good
-  #          Arctostaphyllos   19 #plot_interactive(Targets_speclib[[4]]) #Scans 9 and 10 are weird above the VNIR but maybe that is ok?
-  #      Asahinea chrysantha   19 #plot_interactive(Targets_speclib[[5]]) #Scans 3 and maybe 11 are weird             
-  #     Aulacomnium palustre    6 #plot_interactive(Targets_speclib[[6]]) #Good            
-  #     Aulacomnium turgidum    6 #plot_interactive(Targets_speclib[[7]])  #Good           
-  #                Bare Rock    7 #plot_interactive(Targets_speclib[[8]])  #MAKE THIS A SEPARATE PFT FROM THE NEXT ONEGood but quite variables           
-  #                Bare Soil    8 #plot_interactive(Targets_speclib[[9]])  #Scan 5 is weird       
-  #              Betula nana   56 #plot_interactive(Targets_speclib[[10]])  #Seem ok but definitely a lot of variation. Explore more later.           
-  #       Betula neoalaskana    4 #plot_interactive(Targets_speclib[[11]])  #Good but very few scans.        
-  #              Bryoria sp.   10 #plot_interactive(Targets_speclib[[12]])   #Epiphyte: Don't use in spec lib but scans Good          
-  #        Calamogrostis sp.    4 #plot_interactive(Targets_speclib[[13]])    #Good but very few scans         
-  #                Carex sp.   16 #plot_interactive(Targets_speclib[[14]])     #Scans 12, 13 and 14 are much brighter than the rest in the VNIR        
-  #       Cassiope tetragona    9 # plot_interactive(Targets_speclib[[15]])   #looks good        
- #      Ceratadon purpureus    5 # plot_interactive(Targets_speclib[[16]]) #looks good
- #       Cetraria islandica   14 #plot_interactive(Targets_speclib[[17]]) #Scan 4 doesn't look right
- #       Cetraria laevigata    3 # plot_interactive(Targets_speclib[[18]]) # Looks good
- #     Cladonia amaurocraea    6 #plot_interactive(Targets_speclib[[19]]) #Scan 4 is the right shape but super bright. Why?
- #         Cladonia cornuta    3 # plot_interactive(Targets_speclib[[20]]) #looks good
- #        Cladonia gracilis   18 # plot_interactive(Targets_speclib[[21]]) #looks good. Very interesing VIS reflectance shape
- #           Cladonia mitis   17 # plot_interactive(Targets_speclib[[22]]) #Scans 2 and 8 look weird
- #     Cladonia rangiferina   20 #plot_interactive(Targets_speclib[[23]]) #looks good. Again, very interesting VIS reflectance shape.
- #      Cladonia steallaris   20 #plot_interactive(Targets_speclib[[24]]) #looks good
- #          Cladonia stygia   18 #plot_interactive(Targets_speclib[[25]]) # Scans 1-4 look like they are a different PFT. Scan 7 looks weird.
- #      Cladonia sulphurina    3 #plot_interactive(Targets_speclib[[26]]) #Looks good
- #        Cladonia uncialis   10 #plot_interactive(Targets_speclib[[27]]) #Looks good. Very bright in blue wavelengths.
- #        Dactylina arctica    7 #plot_interactive(Targets_speclib[[28]]) #Looks good. Very bright in blue wavelengths.
- #               Dead Salix    8 #plot_interactive(Targets_speclib[[29]]) #Scans 4 and 8 look different. Bright green peak.
- #             Dicranum sp.    5 #plot_interactive(Targets_speclib[[30]]) #Looks good
- #        Dryas alleghenies  272 #plot_interactive(Targets_speclib[[31]]) #Looks good.
- #         Dryas octopetala  612 #plot_interactive(Targets_speclib[[32]]) #Scan 89 is weird.
- #                Dryas sp.   43 #plot_interactive(Targets_speclib[[33]]) #Looks good
- #          Empetrum nigrum   12 #plot_interactive(Targets_speclib[[34]]) #Looks good
- #        Equisetum arvense    4 #plot_interactive(Targets_speclib[[35]]) #Looks good
- #     Equisetum sylvaticum    4 #plot_interactive(Targets_speclib[[36]]) #Looks good
- #     Eriophorum vaginatum    5 #plot_interactive(Targets_speclib[[37]]) #Delete wavelengths >1000
- #       Evernia mesomorpha   20 #plot_interactive(Targets_speclib[[38]]) #Epiphyte and Too variable: Don't use this species in spectral library
- #  Flavocetraria cucculata   14 #plot_interactive(Targets_speclib[[39]]) #Epiphyte and Too variable: Don't use this species in spectral library
- #    Flavocetraria nivalis   19 #plot_interactive(Targets_speclib[[40]]) #Scans 11 and 12 are weird
- #                   Gravel    5 #plot_interactive(Targets_speclib[[41]]) #Looks good
- #        Heracleum lanatum    8 #plot_interactive(Targets_speclib[[42]]) #Looks good. Very stable signature.
- #     Hylocomium splendens   13 #plot_interactive(Targets_speclib[[43]]) #Looks good
- #    Hypogymnia austerodes   13 #plot_interactive(Targets_speclib[[44]]) #Epiphyte: Don't use this in spectral library but scans looks good.
- #   Icmadophila ericetorum    8 #plot_interactive(Targets_speclib[[45]]) #Good
- #                 Iris sp.    4 #plot_interactive(Targets_speclib[[46]]) #Good
- #          Ledum decumbens   19 #plot_interactive(Targets_speclib[[47]]) #Good but strangely variable between 600-700 nm
- #    Loisleuria procumbens    3 #plot_interactive(Targets_speclib[[48]]) #Good
- #              Lupinus sp.   12 #plot_interactive(Targets_speclib[[49]]) #Good
- #  Masonhalea richardsonii   14 #plot_interactive(Targets_speclib[[50]]) #Good
- #            Melanelia sp.   13 #plot_interactive(Targets_speclib[[51]]) #Good
- #        Nephroma arcticum   21 #plot_interactive(Targets_speclib[[52]]) #Good
- #      Parmelia omphalodes    4 #plot_interactive(Targets_speclib[[53]]) #Good
- #     Parmeliopsis ambigua    4 #plot_interactive(Targets_speclib[[54]]) #Good
- #         Parmelis sulcata   12 #plot_interactive(Targets_speclib[[55]]) #Epiphyte (mostly): Good
- #     Pedicularis racemosa   11 #plot_interactive(Targets_speclib[[56]]) #Good
- #     Pedicularis sudetica    4 #plot_interactive(Targets_speclib[[57]]) #Good
- #        Peltigera apthosa   14 #plot_interactive(Targets_speclib[[58]]) #Scan 1 is weird
- #        Peltigera malacea    4 #plot_interactive(Targets_speclib[[59]]) #Good
- #       Peltigera scabrata    7 #plot_interactive(Targets_speclib[[60]]) #Good
- #   Peltigers leucophlebia    4 #plot_interactive(Targets_speclib[[61]]) #Good
- #        Petasites frigida    8 #plot_interactive(Targets_speclib[[62]]) #Good.
- #            Picea mariana   17 #plot_interactive(Targets_speclib[[63]]) #Good.Very bright <400 nm. 
- #             Pices (bark)    5 #plot_interactive(Targets_speclib[[64]]) #Good
- #    Pilophorus acicularis   15 #plot_interactive(Targets_speclib[[65]]) #Good. Interesting drop in reflectance at 350-375 nm
- #          Plagiomnium sp.    4 #plot_interactive(Targets_speclib[[66]]) #Good
- #     Pleurozium schreberi    4 #plot_interactive(Targets_speclib[[67]]) #Good
- #  Polytrichum juniperinum   10  #plot_interactive(Targets_speclib[[68]]) #Good. Interesting sharp corner on IR plateau
- #          Polytrichum sp.   13  #plot_interactive(Targets_speclib[[69]]) #Good
- #      Populus balsamifera    8  #plot_interactive(Targets_speclib[[70]]) #Good
- #             Porpidia sp.   11  #plot_interactive(Targets_speclib[[71]]) #Good
- #                   Quartz   25 #plot_interactive(Targets_speclib[[72]]) #Quite variable. Consider deleting
- # Racomitrium lanoiginosum    4  #plot_interactive(Targets_speclib[[73]]) #Good
- # Rhizocarpon geographicum   18  #plot_interactive(Targets_speclib[[74]]) #Good
- #          Rhizocarpon sp.    3  #plot_interactive(Targets_speclib[[75]]) #Good
- #         Rhytidum rugosum    6  #plot_interactive(Targets_speclib[[76]]) #Good
- #          Rosa acicularis   20  #plot_interactive(Targets_speclib[[77]]) #Scan 19 is bad
- #                Rubus sp.   12  #plot_interactive(Targets_speclib[[78]]) #Scans 6 and 8 have weird green regions
- #            Salix (wooly)   10  #plot_interactive(Targets_speclib[[79]]) #Good
- #          Salix alaxensis   47  #plot_interactive(Targets_speclib[[80]]) #Good
- #      Salix arbusculoides    4  #plot_interactive(Targets_speclib[[81]]) #Good Interesting hard corner on IR plateau
- #             Salix glauca   16  #plot_interactive(Targets_speclib[[82]]) #Good
- #             Salix lanata    4  #plot_interactive(Targets_speclib[[83]]) #Good
- #         Salix ovalifolia    6  #plot_interactive(Targets_speclib[[84]]) #Scan 2 may be something different
- #            Salix pulchra   10  #plot_interactive(Targets_speclib[[85]]) #Good
- #       Salix richardsonii    4  #plot_interactive(Targets_speclib[[86]]) #Good
- #          Sphagnum fuscum    4  #plot_interactive(Targets_speclib[[87]]) #Good Interesting profiles
- #             Sphagnum sp.    8  #plot_interactive(Targets_speclib[[88]]) #Good
- #         Stereocaulon sp.    8  #plot_interactive(Targets_speclib[[89]]) #Good
- #            Toefeldia sp.    5  #plot_interactive(Targets_speclib[[90]]) #Good
- #      Tomenthypnum nitens    2  #plot_interactive(Targets_speclib[[91]]) #Good
- #    Trapelopsis granulosa    5  #plot_interactive(Targets_speclib[[92]]) #Good
- #      Umbilicaria arctica    4  #plot_interactive(Targets_speclib[[93]]) #Good
- #   Umbilicaria hyperborea   15  #plot_interactive(Targets_speclib[[94]]) #Good
- #          Usnea lapponica   12  #plot_interactive(Targets_speclib[[95]]) #Epiphyte: Good but Don't use in spec lib. Scan 4 seems weird.
- #           Usnea scabrata   12  #plot_interactive(Targets_speclib[[96]]) #Epiphyte: Good but don't use in spec lib.
- #     Vaccinium uliginosum   10  #plot_interactive(Targets_speclib[[97]]) #Scans 9, 10, 11 and 12 are weird.
- #     Vaccinium vitis-idea   21  #plot_interactive(Targets_speclib[[98]]) #Good
- #       Vulpicida pinastri   12  #plot_interactive(Targets_speclib[[99]]) #Epiphyte: Don't use: Scans 5 and 7 are weird
- 
- 
+# listofnames<-list.files("Output/Spectral_profiles",full.names = T) 
+# Targets_speclib<-lapply(listofnames,readRDS)%>%setNames(basename(listofnames))
+
 # Creates a dataframe with the names of the list of species
 # target_table<-names(New_targets)%>%
 #   as.data.frame()
@@ -319,7 +333,7 @@ each_target<-each_target%>%setNames(target_names)
 # Creates a dataframe that shows scans per species within each functional group
 Species_table_df<-SpecLib_new_All%>%
   group_by(Class3,Class2)%>%
-    tally()
+  tally()
 # View(Species_table)
 
 # Writes out species per functional group dataframe
@@ -353,7 +367,7 @@ reduce_SpeciesPerGroup<-function(x){
 
 # Applies function to spectral library
 SpecLib_reduced<- reduce_SpeciesPerGroup(SpecLib_new_All)
-  
+
 # Combines the list above into one dataframe
 SpecLib_reduced_df<-do.call("rbind", SpecLib_reduced)
 
@@ -365,9 +379,9 @@ SpecLib_reduced_df%>%
 
 # Lets check the number of scans we have for each functional category now that we reduced the distribution
 # These will be used in models
- SpecLib_reduced_df %>%
-   group_by(Class3) %>%
-   tally()
+SpecLib_reduced_df %>%
+  group_by(Class3) %>%
+  tally()
 # Class3                 n
 # <fct>              <int>
 # Abiotic_Litter        11
@@ -389,13 +403,13 @@ SpecLib_reduced_df%>%
 # Shrub_Salix           50
 # Tree_Broad            10
 # Tree_Needle           17
- 
- Spectralobj1<-SpecLib_reduced_df%>%
-   dplyr::filter(Class2=="Betula nana")
- 
- Spectralobj<-spectrolab::as.spectra(Spectralobj1[-1:-9])
- meta(Spectralobj)<-data.frame(Spectralobj1[,c(1:9)], stringsAsFactors = FALSE)
- 
+
+Spectralobj1<-SpecLib_reduced_df%>%
+  dplyr::filter(Class2=="Betula nana")
+
+Spectralobj<-spectrolab::as.spectra(Spectralobj1[-1:-9])
+meta(Spectralobj)<-data.frame(Spectralobj1[,c(1:9)], stringsAsFactors = FALSE)
+
 #plot_interactive(Spectralobj)
 # 
 ## Lets convert our new spectral library to a spectral object to be used later 
@@ -406,46 +420,46 @@ SpecLib_reduced_df%>%
 #saveRDS(SpecLib_reduced_spectra,"Output/C_004_SpecLib_FunctionalGroupsEqual.rds")
 
 # ------------------------------------------ Plots ---------------------------------------------------
-   
-   # Creates a vector with the name of all the categories of interest
-   names_of_classes<-c(as.character(unique(SpecLib_reduced_df[,"Class3"])))
-   
-   # Creates an empty list
-   FunctionalGroupDf<-list()
-   
-   for(i in 1:length(names_of_classes)){
-     
-     # Subset a functional group
-     FunctionalGroupDf[[i]]<-subset(SpecLib_reduced_df,Class3 == names_of_classes[i])
 
-     
-     # change the dtaframe to a long dataframe 
-     FunctionalGroupDf[[i]]<-gather(FunctionalGroupDf[[i]] ,Wavelength,Reflectance,-1:-9)
-     
-     
-     # Make column name Wavelength numeric
-     FunctionalGroupDf[[i]]$Wavelength    <-as.numeric(FunctionalGroupDf[[i]]$Wavelength)
-     
-     # Plot the output
-     FunctionalGroupDf[[i]]<-FunctionalGroupDf[[i]]%>%
-       group_by(Class2, Wavelength) %>%  
-       dplyr::summarise(Median_Reflectance = median(Reflectance))%>%
-       as.data.frame()
-   }
-   
-   for(i in 1:length(FunctionalGroupDf)){
-     
-     # Creates a ggplot for each functional group with all species
-     ggplot(FunctionalGroupDf[[i]],aes(Wavelength,Median_Reflectance))+geom_line(aes(color = Class2))+
-       labs(color="Species")+
-       theme(panel.background = element_rect(fill = "white", colour = "grey50"), 
-             legend.key.size = unit(0.5, "cm"),legend.text = element_text(size=12))+
-       labs(title = paste(names_of_classes[[i]]," Spectral Signatures", sep = ""))
-     
-     # Saves the plots
-      ggsave(paste("Output/","C_005","_",names_of_classes[[i]],".jpg",sep =""))
-     
-     }
+# Creates a vector with the name of all the categories of interest
+names_of_classes<-c(as.character(unique(SpecLib_reduced_df[,"Class3"])))
+
+# Creates an empty list
+FunctionalGroupDf<-list()
+
+for(i in 1:length(names_of_classes)){
+  
+  # Subset a functional group
+  FunctionalGroupDf[[i]]<-subset(SpecLib_reduced_df,Class3 == names_of_classes[i])
+  
+  
+  # change the dtaframe to a long dataframe 
+  FunctionalGroupDf[[i]]<-gather(FunctionalGroupDf[[i]] ,Wavelength,Reflectance,-1:-9)
+  
+  
+  # Make column name Wavelength numeric
+  FunctionalGroupDf[[i]]$Wavelength    <-as.numeric(FunctionalGroupDf[[i]]$Wavelength)
+  
+  # Plot the output
+  FunctionalGroupDf[[i]]<-FunctionalGroupDf[[i]]%>%
+    group_by(Class2, Wavelength) %>%  
+    dplyr::summarise(Median_Reflectance = median(Reflectance))%>%
+    as.data.frame()
+}
+
+for(i in 1:length(FunctionalGroupDf)){
+  
+  # Creates a ggplot for each functional group with all species
+  ggplot(FunctionalGroupDf[[i]],aes(Wavelength,Median_Reflectance))+geom_line(aes(color = Class2))+
+    labs(color="Species")+
+    theme(panel.background = element_rect(fill = "white", colour = "grey50"), 
+          legend.key.size = unit(0.5, "cm"),legend.text = element_text(size=12))+
+    labs(title = paste(names_of_classes[[i]]," Spectral Signatures", sep = ""))
+  
+  # Saves the plots
+  ggsave(paste("Output/","C_005","_",names_of_classes[[i]],".jpg",sep =""))
+  
+}
 
 # ---------------------------------------------------- Resample bands based on headwall bandpasses -------------------------------------------
 
