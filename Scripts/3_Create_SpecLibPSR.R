@@ -191,108 +191,155 @@ for(i in 1:length(Target_names)){
 each_target<-each_target%>%setNames(Target_names)
 
 # Plots spectral profile for each target (You'll have to go through all 99 targets to remove bad spectra)
-plot_interactive(each_target[["Alectoria ochroleuca"    ]]) # Target 2 removed. each_target[["Alectoria ochroleuca"]]<-each_target[["Alectoria ochroleuca"    ]][-c(2),       ]
-plot_interactive(each_target[["Alnus sp."               ]]) # Signatrues Good.         
-plot_interactive(each_target[["Arctocetraria centrifuga"]]) # Signatrues Good.        
-plot_interactive(each_target[["Arctostaphyllos"         ]]) # Target 19,13,10,11,16,17 removed. each_target[["Arctostaphyllos"     ]]<-each_target[["Arctostaphyllos"         ]][-c(19,13,10,11,16,17)]
-plot_interactive(each_target[["Asahinea chrysantha"     ]]) # Target 3 removed. each_target[["Asahinea chrysantha" ]]<-each_target[["Asahinea chrysantha"     ]][-c(3),       ]
-plot_interactive(each_target[["Aulacomnium palustre"    ]]) # Signatrues Good. 
-plot_interactive(each_target[["Aulacomnium turgidum"    ]]) # Target 3,4 removed. each_target[["Aulacomnium turgidum"]]<-each_target[["Aulacomnium turgidum"    ]][-c(3,4),     ]
-plot_interactive(each_target[["Bare Rock"               ]]) # New class Rock. Signatrues Good.
-plot_interactive(each_target[["Bare Soil"               ]]) # New class soil. Target 1,3,7 removed. each_target[["Bare Soil"           ]]<-each_target[["Bare Soil"               ]][-c(1,3,7), ]
-plot_interactive(each_target[["Betula nana"             ]]) # Target 5,18,26,27,32,56 removed. each_target[["Betula nana"         ]]<-each_target[["Betula nana"             ]][-c(5,18,26,27,32,56),]
-plot_interactive(each_target[["Betula neoalaskana"      ]]) # Need more of this from Ecosis. Signatrues Good. 
-plot_interactive(each_target[["Bryoria sp."             ]]) # remove. Epiphyte: Don't use in spec lib but scans Good.
-plot_interactive(each_target[["Calamogrostis sp."       ]]) # Signatrues Good. 
-plot_interactive(each_target[["Carex sp."               ]]) # Target 10,12,13,14,15 removed.each_target[["Carex sp."           ]]<-each_target[["Carex sp."               ]][-c(10,12,13,14,15),]
-plot_interactive(each_target[["Cassiope tetragona"      ]]) # Evergreen Dwarf shrubs. Signatrues Good.
-plot_interactive(each_target[["Ceratadon purpureus"     ]]) # Signatrues Good.
-plot_interactive(each_target[["Cetraria islandica"      ]]) # Target 1,2,3,4,8 removed. each_target[["Cetraria islandica"      ]]<-each_target[["Cetraria islandica"      ]][-c(1,2,3,4,8),]
-plot_interactive(each_target[["Cetraria laevigata"      ]]) # Signatrues Good.
-plot_interactive(each_target[["Cladonia amaurocraea"    ]]) # Signatrues Good.
-plot_interactive(each_target[["Cladonia cornuta"        ]]) # Signatrues Good.
-plot_interactive(each_target[["Cladonia gracilis"       ]]) # Target 13,14,15,16,17,18 removed. each_target[["Cladonia gracilis"       ]]<-each_target[["Cladonia gracilis"       ]][-c(13,14,15,16,17,18),]
-plot_interactive(each_target[["Cladonia mitis"          ]]) # Target 8,12,13,14,15,16,17 removed. each_target[["Cladonia mitis"       ]]<-each_target[["Cladonia mitis"       ]][-c(8,12,13,14,15,16,17),]
-plot_interactive(each_target[["Cladonia rangiferina"    ]]) # Target 1,2,3,4,17 removed. each_target[["Cladonia rangiferina"    ]]<-each_target[["Cladonia rangiferina"    ]][-c(1,2,3,4,17),]
-plot_interactive(each_target[["Cladonia steallaris"     ]]) # Target 13,14,16,20 removed. each_target[["Cladonia steallaris"     ]]<-each_target[["Cladonia steallaris"     ]][-c(13,14,16,2),]
-plot_interactive(each_target[["Cladonia stygia"         ]]) # Target 13 removed. each_target[["Cladonia stygia"    ]]<-each_target[["Cladonia stygia"    ]][-c(13),]
-plot_interactive(each_target[["Cladonia sulphurina"     ]]) # Rare target remove
-plot_interactive(each_target[["Cladonia uncialis"       ]]) # Target 6 removed. each_target[["Cladonia uncialis"       ]]<-each_target[["Cladonia uncialis"       ]][-c(6),]
-plot_interactive(each_target[["Dactylina arctica"       ]]) # Rare target remove Target 3,7 removed. each_target[["Dactylina arctica"       ]]<-each_target[["Dactylina arctica"       ]][-c(3,7),]
-plot_interactive(each_target[["Dead Salix"              ]]) # Target 3,4,8 removed. each_target[["Dead Salix"              ]]<-each_target[["Dead Salix"              ]][-c(3,4,8),]
-plot_interactive(each_target[["Dicranum sp."            ]]) # Signatures Good.
-plot_interactive(each_target[["Dryas alleghenies"       ]]) # Kept up to 50 scans Target 15,22,29,37,38,46,47,48,55 removed. each_target[["Dryas alleghenies"       ]]<-each_target[["Dryas alleghenies"       ]][-c(15,22,29,37,38,46,47,48,55,60:272),]
-plot_interactive(each_target[["Dryas octopetala"        ]]) # Kept up to 50 scans Target 10,29,33,32,38,41,42,48 removed. each_target[["Dryas octopetala"        ]]<-each_target[["Dryas octopetala"        ]][-c(10,29,33,32,38,41,42,48,61:610),]
-plot_interactive(each_target[["Dryas sp."               ]]) # Signatures good.
-plot_interactive(each_target[["Empetrum nigrum"         ]]) # Target 1,3 removed. each_target[["Empetrum nigrum"         ]]<-each_target[["Empetrum nigrum"         ]][-c(1,3),]
-plot_interactive(each_target[["Equisetum arvense"       ]]) # Signatures good.Make equisetum it's own plant functional type
-plot_interactive(each_target[["Equisetum sylvaticum"    ]]) # Signatures good.Make equisetum it's own plant functional type
-plot_interactive(each_target[["Eriophorum vaginatum"    ]]) # Signatures good for our application (Bands 800:2500 will be removed)
-plot_interactive(each_target[["Evernia mesomorpha"      ]]) # Target 6,7,8,19,20 removed. Epiphyte and Too variable: Don't use this species in spectral library each_target[["Evernia mesomorpha"   ]]<-each_target[["Evernia mesomorpha"   ]][-c(6,7,8,19,20),]
-plot_interactive(each_target[["Flavocetraria cucculata" ]]) # Target 1,12,14 removed. each_target[["Flavocetraria cucculata"   ]]<-each_target[["Flavocetraria cucculata"   ]][-c(1,12,14),]
-plot_interactive(each_target[["Flavocetraria nivalis"   ]]) # Clean and remove. Target 11 removed. each_target[["Flavocetraria nivalis"   ]]<-each_target[["Flavocetraria nivalis"   ]][-c(11),]
-plot_interactive(each_target[["Gravel"                  ]]) # Target 5 removed. each_target[["Gravel"                  ]]<-each_target[["Gravel"                  ]][-c(5),]
-plot_interactive(each_target[["Heracleum lanatum"       ]]) # Clean and remove each_target[["Heracleum lanatum"       ]]<-each_target[["Heracleum lanatum"       ]][-c(2),]
-plot_interactive(each_target[["Hylocomium splendens"    ]]) # Target 5,6,7 removed. each_target[["Hylocomium splendens"    ]]<-each_target[["Hylocomium splendens"    ]][-c(5,6,7),]
-plot_interactive(each_target[["Hypogymnia austerodes"   ]]) # Clean and remove. Target 1,2,3,4 removed Epiphyte: Don't use this in spectral library but scans looks good. each_target[["Hypogymnia austerodes"  ]]<-each_target[["Hypogymnia austerodes"  ]][-c(1,2,3,4),]
-plot_interactive(each_target[["Icmadophila ericetorum"  ]]) # Clean and remove  Target 4,7 removed. each_target[["Icmadophila ericetorum"  ]]<-each_target[["Icmadophila ericetorum"  ]][-c(4,7),]
-plot_interactive(each_target[["Iris sp."                ]]) # Clean and remove  Target 2 removed. each_target[["Iris sp."                ]]<-each_target[["Iris sp."                ]][-c(2),]
-plot_interactive(each_target[["Ledum decumbens"         ]]) # Signatures Good Target 2 removed.
-plot_interactive(each_target[["Loisleuria procumbens"   ]]) # Signatures good. Clean and remove Target 2 removed
-plot_interactive(each_target[["Lupinus sp."             ]]) # Target 12 removed. each_target[["Lupinus sp."             ]]<-each_target[["Lupinus sp."             ]][-c(12),]
-plot_interactive(each_target[["Masonhalea richardsonii" ]]) # Target 3,6 removed. Clean and remove Target 2 removed. each_target[["Masonhalea richardsonii" ]]<-each_target[["Masonhalea richardsonii" ]][-c(2),]
-plot_interactive(each_target[["Melanelia sp."           ]]) # Clean and remove. Signatures good
-plot_interactive(each_target[["Nephroma arcticum"       ]]) # Clean and remove. Target 10,11,12,13. each_target[["Nephroma arcticum"       ]]<-each_target[["Nephroma arcticum"       ]][-c(10,11,12,13),]
-plot_interactive(each_target[["Parmelia omphalodes"     ]]) # Clean and remove Signatures good.
-plot_interactive(each_target[["Parmeliopsis ambigua"    ]]) # Clean and remove. Target 4 removed. each_target[["Parmeliopsis ambigua"    ]]<-each_target[["Parmeliopsis ambigua"    ]][-c(4),]
-plot_interactive(each_target[["Parmelis sulcata"        ]]) # Clean and remove. Target 1,11 removed. Epiphyte (mostly): Good (Should I leave this in library?) . each_target[["Parmelis sulcata"    ]]<-each_target[["Parmelis sulcata"    ]][-c(1,11),]
-plot_interactive(each_target[["Pedicularis racemosa"    ]]) # Target 1,8 removed. each_target[["Pedicularis racemosa"    ]]<-each_target[["Pedicularis racemosa"    ]][-c(1,8),]
-plot_interactive(each_target[["Pedicularis sudetica"    ]]) # Clean and remove. Signatures good.
-plot_interactive(each_target[["Peltigera apthosa"       ]]) # New class peltigera green. Target 3,4,5 removed. each_target[["Peltigera apthosa"       ]]<-each_target[["Peltigera apthosa"       ]][-c(3,4,5),]
-plot_interactive(each_target[["Peltigera malacea"       ]]) # New class peltigera cyano. Signatures good
-plot_interactive(each_target[["Peltigera scabrata"      ]]) # New class peltigera cyano. Signatures good. 
-plot_interactive(each_target[["Peltigers leucophlebia"  ]]) # New class peltigera green. Signatures good 
-plot_interactive(each_target[["Petasites frigida"       ]]) # remove Target 1 removed. each_target[["Petasites frigida"       ]]<-each_target[["Petasites frigida"       ]][-c(1),]
-plot_interactive(each_target[["Picea mariana"           ]]) # Signatures good.
-plot_interactive(each_target[["Pices (bark)"            ]]) # Signatures good. 
-plot_interactive(each_target[["Pilophorus acicularis"   ]]) # remove. Signatures good.
-plot_interactive(each_target[["Plagiomnium sp."         ]]) # remove. Signatures good
-plot_interactive(each_target[["Pleurozium schreberi"    ]]) # Signatures good. 
-plot_interactive(each_target[["Polytrichum juniperinum" ]]) # Target 1,2,3,4 removed. each_target[["Polytrichum juniperinum" ]]<-each_target[["Polytrichum juniperinum" ]][-c(1,2,3,4),]
-plot_interactive(each_target[["Polytrichum sp."         ]]) # Target 1,4 removed. each_target[["Polytrichum sp."         ]]<-each_target[["Polytrichum sp."         ]][-c(1,4),]
-plot_interactive(each_target[["Populus balsamifera"     ]]) # Signatures good.
-plot_interactive(each_target[["Porpidia sp."            ]]) # remove. Signatures good.
-plot_interactive(each_target[["Quartz"                  ]]) # Target 13 removed. each_target[["Quartz"                  ]]<-each_target[["Quartz"                  ]][-c(13),]
-plot_interactive(each_target[["Racomitrium lanoiginosum"]]) # Signatures good. 
-plot_interactive(each_target[["Rhizocarpon geographicum"]]) # New class yellow crust lichen. Target 8,18 removed. each_target[["Rhizocarpon geographicum"]]<-each_target[["Rhizocarpon geographicum"]][-c(8,18),]
-plot_interactive(each_target[["Rhizocarpon sp."         ]]) # remove. Signatures good.
-plot_interactive(each_target[["Rhytidum rugosum"        ]]) # Signatures good.
-plot_interactive(each_target[["Rosa acicularis"         ]]) # Target 19 removed. each_target[["Rosa acicularis"         ]]<-each_target[["Rosa acicularis"         ]][-c(19),]
-plot_interactive(each_target[["Rubus sp."               ]]) # Target 8,6 removed. each_target[["Rubus sp."               ]]<-each_target[["Rubus sp."               ]][-c(8,6),]
-plot_interactive(each_target[["Salix (wooly)"           ]]) # remove. Signatures good.
-plot_interactive(each_target[["Salix alaxensis"         ]]) # Signatures good. 
-plot_interactive(each_target[["Salix arbusculoides"     ]]) # Signatures good.
-plot_interactive(each_target[["Salix glauca"            ]]) # Signatures good.
-plot_interactive(each_target[["Salix lanata"            ]]) # Signatures good.
-plot_interactive(each_target[["Salix ovalifolia"        ]]) # Signatures good.
-plot_interactive(each_target[["Salix pulchra"           ]]) # Signatures good.
-plot_interactive(each_target[["Salix richardsonii"      ]]) # Signatures good.
-plot_interactive(each_target[["Sphagnum fuscum"         ]]) # Signatures good.
-plot_interactive(each_target[["Sphagnum sp."            ]]) # Signatures good.
-plot_interactive(each_target[["Stereocaulon sp."        ]]) # Signatures good.
-plot_interactive(each_target[["Toefeldia sp."           ]]) # remove  Target 5 removed. each_target[["Toefeldia sp."           ]]<-each_target[["Toefeldia sp."           ]][-c(5),]
-plot_interactive(each_target[["Tomenthypnum nitens"     ]]) # remove. Signatures good.
-plot_interactive(each_target[["Trapelopsis granulosa"   ]]) # dark crust lichen. Target 1 removed. each_target[["Trapelopsis granulosa"   ]]<-each_target[["Trapelopsis granulosa"   ]][-c(1),]
-plot_interactive(each_target[["Umbilicaria arctica"     ]]) # Signatures good. 
-plot_interactive(each_target[["Umbilicaria hyperborea"  ]]) # Signatures good.
-plot_interactive(each_target[["Usnea lapponica"         ]]) # remove  Epiphyte: Good but Don't use in spec lib.
-plot_interactive(each_target[["Usnea scabrata"          ]]) # remove  Epiphyte: Good but don't use in spec lib.
-plot_interactive(each_target[["Vaccinium uliginosum"    ]]) # Signatures good.
-plot_interactive(each_target[["Vaccinium vitis-idea"    ]]) # Target 1,2,3,4,5,6,7,8 removed. each_target[["Vaccinium vitis-idea"    ]]<-each_target[["Vaccinium vitis-idea"    ]][-c(1,2,3,4,5,6,7,8),]
-plot_interactive(each_target[["Vulpicida pinastri"      ]]) # remove. Target 1,2,11 removed  Epiphyte: Don't use each_target[["Vulpicida pinastri"    ]]<-each_target[["Vulpicida pinastri"    ]][-c(1,2,11),]
+# plot_interactive(each_target[["Alectoria ochroleuca"    ]]) # Target 2 removed. 
+# plot_interactive(each_target[["Alnus sp."               ]]) # Signatrues Good.         
+# plot_interactive(each_target[["Arctocetraria centrifuga"]]) # Signatrues Good.        
+# plot_interactive(each_target[["Arctostaphyllos"         ]]) # Target 19,13,10,11,16,17 removed. 
+# plot_interactive(each_target[["Asahinea chrysantha"     ]]) # Target 3 removed. 
+# plot_interactive(each_target[["Aulacomnium palustre"    ]]) # Signatrues Good. 
+# plot_interactive(each_target[["Aulacomnium turgidum"    ]]) # Target 3,4 removed,
+# plot_interactive(each_target[["Bare Rock"               ]]) # New class Rock.
+# plot_interactive(each_target[["Bare Soil"               ]]) # New class soil.
+# plot_interactive(each_target[["Betula nana"             ]]) # Target 5,18,26,27,32,56 removed. 
+# plot_interactive(each_target[["Betula neoalaskana"      ]]) # Need more of this from Ecosis. Signatrues Good. 
+# plot_interactive(each_target[["Bryoria sp."             ]]) # remove. Epiphyte: Don't use in spec lib but scans Good.
+# plot_interactive(each_target[["Calamogrostis sp."       ]]) # Signatrues Good. 
+# plot_interactive(each_target[["Carex sp."               ]]) # Target 10,12,13,14,15 removed.
+# plot_interactive(each_target[["Cassiope tetragona"      ]]) # Evergreen Dwarf shrubs. Signatrues Good.
+# plot_interactive(each_target[["Ceratadon purpureus"     ]]) # Signatrues Good.
+# plot_interactive(each_target[["Cetraria islandica"      ]]) # Target 1,2,3,4,8 removed. 
+# plot_interactive(each_target[["Cetraria laevigata"      ]]) # Signatrues Good.
+# plot_interactive(each_target[["Cladonia amaurocraea"    ]]) # Signatrues Good.
+# plot_interactive(each_target[["Cladonia cornuta"        ]]) # Signatrues Good.
+# plot_interactive(each_target[["Cladonia gracilis"       ]]) # Target 13,14,15,16,17,18 removed. 
+# plot_interactive(each_target[["Cladonia mitis"          ]]) # Target 8,12,13,14,15,16,17 removed. 
+# plot_interactive(each_target[["Cladonia rangiferina"    ]]) # Target 1,2,3,4,17 removed. 
+# plot_interactive(each_target[["Cladonia steallaris"     ]]) # Target 13,14,16,20 removed. 
+# plot_interactive(each_target[["Cladonia stygia"         ]]) # Target 13 removed. 
+# plot_interactive(each_target[["Cladonia sulphurina"     ]]) # Rare target remove
+# plot_interactive(each_target[["Cladonia uncialis"       ]]) # Target 6 removed. 
+# plot_interactive(each_target[["Dactylina arctica"       ]]) # Rare target remove Target 3,7 removed. 
+# plot_interactive(each_target[["Dead Salix"              ]]) # Target 3,4,8 removed. 
+# plot_interactive(each_target[["Dicranum sp."            ]]) # Signatures Good.
+# plot_interactive(each_target[["Dryas alleghenies"       ]]) # Kept up to 50 scans Target 15,22,29,37,38,46,47,48,55 removed. 
+# plot_interactive(each_target[["Dryas octopetala"        ]]) # Kept up to 50 scans Target 10,29,33,32,38,41,42,48 removed. 
+# plot_interactive(each_target[["Dryas sp."               ]]) # Signatures good.
+# plot_interactive(each_target[["Empetrum nigrum"         ]]) # Target 1,3 removed. 
+# plot_interactive(each_target[["Equisetum arvense"       ]]) # Signatures good.Make equisetum it's own plant functional type
+# plot_interactive(each_target[["Equisetum sylvaticum"    ]]) # Signatures good.Make equisetum it's own plant functional type
+# plot_interactive(each_target[["Eriophorum vaginatum"    ]]) # Signatures good for our application (Bands 800:2500 will be removed)
+# plot_interactive(each_target[["Evernia mesomorpha"      ]]) # Target 6,7,8,19,20 removed. Epiphyte and Too variable: Don't use this species in spectral library 
+# plot_interactive(each_target[["Flavocetraria cucculata" ]]) # Target 1,12,14 removed. 
+# plot_interactive(each_target[["Flavocetraria nivalis"   ]]) # Clean and remove. Target 11 removed. 
+# plot_interactive(each_target[["Gravel"                  ]]) # Target 5 removed.
+# plot_interactive(each_target[["Heracleum lanatum"       ]]) # Clean and remove 
+# plot_interactive(each_target[["Hylocomium splendens"    ]]) # Target 5,6,7 removed. e
+# plot_interactive(each_target[["Hypogymnia austerodes"   ]]) # Clean and remove. Target 1,2,3,4 removed Epiphyte
+# plot_interactive(each_target[["Icmadophila ericetorum"  ]]) # Clean and remove  Target 4,7 removed. 
+# plot_interactive(each_target[["Iris sp."                ]]) # Clean and remove  Target 2 removed. 
+# plot_interactive(each_target[["Ledum decumbens"         ]]) # Signatures Good Target 2 removed.
+# plot_interactive(each_target[["Loisleuria procumbens"   ]]) # Signatures good. Clean and remove Target 2 removed
+# plot_interactive(each_target[["Lupinus sp."             ]]) # Target 12 removed. 
+# plot_interactive(each_target[["Masonhalea richardsonii" ]]) # Target 3,6 removed. Clean and remove Target 2 removed. 
+# plot_interactive(each_target[["Melanelia sp."           ]]) # Clean and remove. Signatures good
+# plot_interactive(each_target[["Nephroma arcticum"       ]]) # Clean and remove. Target 10,11,12,13. 
+# plot_interactive(each_target[["Parmelia omphalodes"     ]]) # Clean and remove Signatures good.
+# plot_interactive(each_target[["Parmeliopsis ambigua"    ]]) # Clean and remove. Target 4 removed. 
+# plot_interactive(each_target[["Parmelis sulcata"        ]]) # Clean and remove. Target 1,11 removed. Epiphyte 
+# plot_interactive(each_target[["Pedicularis racemosa"    ]]) # Target 1,8 removed. 
+# plot_interactive(each_target[["Pedicularis sudetica"    ]]) # Clean and remove. Signatures good.
+# plot_interactive(each_target[["Peltigera apthosa"       ]]) # New class peltigera green. Target 3,4,5 removed. 
+# plot_interactive(each_target[["Peltigera malacea"       ]]) # New class peltigera cyano. Signatures good
+# plot_interactive(each_target[["Peltigera scabrata"      ]]) # New class peltigera cyano. Signatures good. 
+# plot_interactive(each_target[["Peltigers leucophlebia"  ]]) # New class peltigera green. Signatures good 
+# plot_interactive(each_target[["Petasites frigida"       ]]) # remove Target 1 removed. 
+# plot_interactive(each_target[["Picea mariana"           ]]) # Signatures good.
+# plot_interactive(each_target[["Pices (bark)"            ]]) # Signatures good. 
+# plot_interactive(each_target[["Pilophorus acicularis"   ]]) # remove. Signatures good.
+# plot_interactive(each_target[["Plagiomnium sp."         ]]) # remove. Signatures good
+# plot_interactive(each_target[["Pleurozium schreberi"    ]]) # Signatures good. 
+# plot_interactive(each_target[["Polytrichum juniperinum" ]]) # Target 1,2,3,4 removed. 
+# plot_interactive(each_target[["Polytrichum sp."         ]]) # Target 1,4 removed. 
+# plot_interactive(each_target[["Populus balsamifera"     ]]) # Signatures good.
+# plot_interactive(each_target[["Porpidia sp."            ]]) # remove. Signatures good.
+# plot_interactive(each_target[["Quartz"                  ]]) # Target 13 removed. 
+# plot_interactive(each_target[["Racomitrium lanoiginosum"]]) # Signatures good. 
+# plot_interactive(each_target[["Rhizocarpon geographicum"]]) # New class yellow crust lichen. Target 8,18 removed. 
+# plot_interactive(each_target[["Rhizocarpon sp."         ]]) # remove. Signatures good.
+# plot_interactive(each_target[["Rhytidum rugosum"        ]]) # Signatures good.
+# plot_interactive(each_target[["Rosa acicularis"         ]]) # Target 19 removed. 
+# plot_interactive(each_target[["Rubus sp."               ]]) # Target 8,6 removed.
+# plot_interactive(each_target[["Salix (wooly)"           ]]) # remove. Signatures good.
+# plot_interactive(each_target[["Salix alaxensis"         ]]) # Signatures good. 
+# plot_interactive(each_target[["Salix arbusculoides"     ]]) # Signatures good.
+# plot_interactive(each_target[["Salix glauca"            ]]) # Signatures good.
+# plot_interactive(each_target[["Salix lanata"            ]]) # Signatures good.
+# plot_interactive(each_target[["Salix ovalifolia"        ]]) # Signatures good.
+# plot_interactive(each_target[["Salix pulchra"           ]]) # Signatures good.
+# plot_interactive(each_target[["Salix richardsonii"      ]]) # Signatures good.
+# plot_interactive(each_target[["Sphagnum fuscum"         ]]) # Signatures good.
+# plot_interactive(each_target[["Sphagnum sp."            ]]) # Signatures good.
+# plot_interactive(each_target[["Stereocaulon sp."        ]]) # Signatures good.
+# plot_interactive(each_target[["Toefeldia sp."           ]]) # remove  Target 5 removed. 
+# plot_interactive(each_target[["Tomenthypnum nitens"     ]]) # remove. Signatures good.
+# plot_interactive(each_target[["Trapelopsis granulosa"   ]]) # dark crust lichen.
+# plot_interactive(each_target[["Umbilicaria arctica"     ]]) # Signatures good. 
+# plot_interactive(each_target[["Umbilicaria hyperborea"  ]]) # Signatures good.
+# plot_interactive(each_target[["Usnea lapponica"         ]]) # remove  Epiphyte: Good but Don't use in spec lib.
+# plot_interactive(each_target[["Usnea scabrata"          ]]) # remove  Epiphyte: Good but don't use in spec lib.
+# plot_interactive(each_target[["Vaccinium uliginosum"    ]]) # Signatures good.
+# plot_interactive(each_target[["Vaccinium vitis-idea"    ]]) # Target 1,2,3,4,5,6,7,8 removed.
+# plot_interactive(each_target[["Vulpicida pinastri"      ]]) # remove. Target 1,2,11 removed.  
 
+# Hard code removes bad spectra taken for each species
+each_target[["Alectoria ochroleuca"    ]]<-each_target[["Alectoria ochroleuca"    ]][-c(2),                                ]
+each_target[["Arctostaphyllos"         ]]<-each_target[["Arctostaphyllos"         ]][-c(19,13,10,11,16,17)                 ]
+each_target[["Asahinea chrysantha"     ]]<-each_target[["Asahinea chrysantha"     ]][-c(3),                                ]
+each_target[["Aulacomnium turgidum"    ]]<-each_target[["Aulacomnium turgidum"    ]][-c(3,4),                              ]
+each_target[["Bare Soil"               ]]<-each_target[["Bare Soil"               ]][-c(1,3,7),                            ]
+each_target[["Betula nana"             ]]<-each_target[["Betula nana"             ]][-c(5,18,26,27,32,43,56),              ]
+each_target[["Carex sp."               ]]<-each_target[["Carex sp."               ]][-c(10,12,13,14,15),                   ]
+each_target[["Cetraria islandica"      ]]<-each_target[["Cetraria islandica"      ]][-c(1,2,3,4,8),                        ]
+each_target[["Cladonia gracilis"       ]]<-each_target[["Cladonia gracilis"       ]][-c(13,14,15,16,17,18),                ]
+each_target[["Cladonia mitis"          ]]<-each_target[["Cladonia mitis"          ]][-c(8,12,13,14,15,16,17),              ]
+each_target[["Cladonia rangiferina"    ]]<-each_target[["Cladonia rangiferina"    ]][-c(1,2,3,4,17,18),                    ]
+each_target[["Cladonia steallaris"     ]]<-each_target[["Cladonia steallaris"     ]][-c(13,14,16,2),                       ]
+each_target[["Cladonia stygia"         ]]<-each_target[["Cladonia stygia"         ]][-c(13),                               ]
+each_target[["Cladonia uncialis"       ]]<-each_target[["Cladonia uncialis"       ]][-c(6),                                ]
+each_target[["Dactylina arctica"       ]]<-each_target[["Dactylina arctica"       ]][-c(3,7),                              ]
+each_target[["Dead Salix"              ]]<-each_target[["Dead Salix"              ]][-c(3,4,8),                            ]
+each_target[["Dryas alleghenies"       ]]<-each_target[["Dryas alleghenies"       ]][-c(15,22,29,37,38,46,47,48,55,60:272),]
+each_target[["Dryas octopetala"        ]]<-each_target[["Dryas octopetala"        ]][-c(10,11,29,33,32,38,41,42,48,61:610),]
+each_target[["Empetrum nigrum"         ]]<-each_target[["Empetrum nigrum"         ]][-c(1,3),                              ]
+each_target[["Evernia mesomorpha"      ]]<-each_target[["Evernia mesomorpha"      ]][-c(1,5,6,7,8,19,20),                  ]
+each_target[["Flavocetraria cucculata" ]]<-each_target[["Flavocetraria cucculata" ]][-c(1,12,14),                          ]
+each_target[["Flavocetraria nivalis"   ]]<-each_target[["Flavocetraria nivalis"   ]][-c(11),                               ]
+each_target[["Gravel"                  ]]<-each_target[["Gravel"                  ]][-c(5),                                ]
+each_target[["Heracleum lanatum"       ]]<-each_target[["Heracleum lanatum"       ]][-c(2),                                ]
+each_target[["Hylocomium splendens"    ]]<-each_target[["Hylocomium splendens"    ]][-c(5,6,7),                            ]
+each_target[["Hypogymnia austerodes"   ]]<-each_target[["Hypogymnia austerodes"   ]][-c(1,2,3,4),                          ]
+each_target[["Icmadophila ericetorum"  ]]<-each_target[["Icmadophila ericetorum"  ]][-c(4,7),                              ]
+each_target[["Iris sp."                ]]<-each_target[["Iris sp."                ]][-c(2),                                ]
+each_target[["Lupinus sp."             ]]<-each_target[["Lupinus sp."             ]][-c(1,12),                             ]
+each_target[["Masonhalea richardsonii" ]]<-each_target[["Masonhalea richardsonii" ]][-c(2),                                ]
+each_target[["Nephroma arcticum"       ]]<-each_target[["Nephroma arcticum"       ]][-c(10,11,12,13),                      ]
+each_target[["Parmeliopsis ambigua"    ]]<-each_target[["Parmeliopsis ambigua"    ]][-c(4),                                ]
+each_target[["Parmelis sulcata"        ]]<-each_target[["Parmelis sulcata"        ]][-c(1,11),                             ]
+each_target[["Pedicularis racemosa"    ]]<-each_target[["Pedicularis racemosa"    ]][-c(1,8),                              ]
+each_target[["Peltigera apthosa"       ]]<-each_target[["Peltigera apthosa"       ]][-c(3,4,5),                            ]
+each_target[["Petasites frigida"       ]]<-each_target[["Petasites frigida"       ]][-c(1),                                ]
+each_target[["Polytrichum juniperinum" ]]<-each_target[["Polytrichum juniperinum" ]][-c(1,2,3,4),                          ]
+each_target[["Polytrichum sp."         ]]<-each_target[["Polytrichum sp."         ]][-c(1,4),                              ]
+each_target[["Quartz"                  ]]<-each_target[["Quartz"                  ]][-c(13),                               ]
+each_target[["Rhizocarpon geographicum"]]<-each_target[["Rhizocarpon geographicum"]][-c(8,18),                             ]
+each_target[["Rosa acicularis"         ]]<-each_target[["Rosa acicularis"         ]][-c(19),                               ]
+each_target[["Rubus sp."               ]]<-each_target[["Rubus sp."               ]][-c(8,6),                              ]
+each_target[["Toefeldia sp."           ]]<-each_target[["Toefeldia sp."           ]][-c(5),                                ]
+each_target[["Trapelopsis granulosa"   ]]<-each_target[["Trapelopsis granulosa"   ]][-c(1),                                ]
+each_target[["Vaccinium vitis-idea"    ]]<-each_target[["Vaccinium vitis-idea"    ]][-c(1,2,3,4,5,6,7,8),                  ]
+each_target[["Vulpicida pinastri"      ]]<-each_target[["Vulpicida pinastri"      ]][-c(1,2,11),                           ]
 
-# Creates a new object with clenaed spectral library
+# Creates a new object with cleaned spectral library
 New_targets<-each_target
 
 # Remove scans that are Epiphytes
