@@ -22,6 +22,22 @@ mypath_atkin = "Output/"
 # Reads in species and functional level groups dataframe
 Species_groups<-read.csv("Output/B_001_Species_Table.csv")
 
+# Reads in scans from ecosis
+Spectra_Ecosis<-read.csv("Data/leaf_spectra_barrow_2013_20180824_ecosis.csv", check.names = F)
+Metadata_Ecosis<-read.csv("Data/ngeearctic_bnl_2013_leaf_spectra_traits_metadata.csv", check.names = F)
+
+# Meges meta and spectra
+Ecosis_data<-cbind(Metadata_Ecosis[,-3],Spectra_Ecosis[,-1])
+
+# Change name of column and add an area column
+names(Ecosis_data)[2]<-"Class1"
+names(Ecosis_data)[1]<-"ScanID"
+Ecosis_data$Area<- "NOT RECORDED"
+
+# Creates final library with all the data
+Ecosis_data<-Ecosis_data%>%inner_join(Species_groups,by="Class1")%>%
+  dplyr::select(ScanID,Class1,Class2,Class3,Class4,Area,everything())
+
 # Import file path names of .rds files into character list (Spectral libraries based on each location) 
 SpecLib_by_location = list.files(mypath_atkin, pattern="A_0",full.names = T) 
 
@@ -36,8 +52,41 @@ SpecLib<-Reduce(spectrolab::combine,list_of_SpecLib)%>% # dim(n_samples=1989, n_
   inner_join(Species_groups,by="Class1")%>% #Joins dataframe with all the species info to our spectral library
   dplyr::select(ScanID,Class1,Class2,Class3,Class4,Area,everything()) #Reorders columns 
 
+# Combines Ecosis data and spectral library
+SpecLib<-rbind(SpecLib,Ecosis_data)
+
 # Please note these are the number of samples we have for each functional group
 # table(SpecLib$Class3)%>%as.data.frame() The Dwarf shrub category is high because we scanned a high number of Dryas sp. in summer 2019
+#                    Var1 Freq
+#       Dwarf_Shrub_Decid  968
+#                    Forb   80
+#         Graminoid_Grass   24
+#         Graminoid_Sedge   44
+#                  Gravel    5
+#    Lichen_Crustose_Dark   32
+#   Lichen_Crustose_Light   28
+#    Lichen_Epiphyte_Dark   23
+#  Lichen_Epiphyte_Yellow   56
+#     Lichen_Foliose_Dark   75
+#    Lichen_Foliose_Light   16
+#   Lichen_Foliose_Yellow   53
+#   Lichen_Fruticose_Dark   43
+#  Lichen_Fruticose_Light   46
+# Lichen_Fruticose_Yellow   97
+#                  Litter    8
+#           Moss_Acrocarp   55
+#         Moss_Pleurocarp   23
+#           Moss_Sphagnum   12
+#                    Rock   32
+#             Shrub_Alder   44
+#            Shrub_Betula   56
+#         Shrub_Evergreen   65
+#              Shrub_Rosa   20
+#             Shrub_Salix  101
+#                    Soil    8
+#              Tree_Decid   12
+#          Tree_Evergreen   17
+#             Wood_Coarse    5
 
 # Lets remove all the rows with negative values or Values >2
 SpecLib_new<-SpecLib%>% 
@@ -289,7 +338,13 @@ each_target<-each_target%>%setNames(Target_names)
 # plot_interactive(each_target[["Usnea scabrata"          ]]) # remove  Epiphyte: Good but don't use in spec lib.
 # plot_interactive(each_target[["Vaccinium uliginosum"    ]]) # Signatures good.
 # plot_interactive(each_target[["Vaccinium vitis-idea"    ]]) # Target 1,2,3,4,5,6,7,8 removed.
-# plot_interactive(each_target[["Vulpicida pinastri"      ]]) # remove. Target 1,2,11 removed.  
+# plot_interactive(each_target[["Pestasites frigidus"     ]]) # Signatures good.   
+# plot_interactive(each_target[["Saxifraga punctata"      ]]) # Signatures good. 
+# plot_interactive(each_target[["Arctophila fulva"        ]]) # Signatures good. 
+# plot_interactive(each_target[["Dupontia fisheri"        ]]) # Signatures good. 
+# plot_interactive(each_target[["Carex aquatilis"         ]]) # Signatures good. 
+# plot_interactive(each_target[["Arctagrostis latifolia"  ]]) # Signatures good. 
+# plot_interactive(each_target[["Eriophorum angustifolium"]]) # Signatures good. 
 
 # Hard code removes bad spectra taken for each species
 each_target[["Alectoria ochroleuca"    ]]<-each_target[["Alectoria ochroleuca"    ]][-c(2),                                ]
@@ -336,32 +391,99 @@ each_target[["Rosa acicularis"         ]]<-each_target[["Rosa acicularis"       
 each_target[["Rubus sp."               ]]<-each_target[["Rubus sp."               ]][-c(8,6),                              ]
 each_target[["Toefeldia sp."           ]]<-each_target[["Toefeldia sp."           ]][-c(5),                                ]
 each_target[["Trapelopsis granulosa"   ]]<-each_target[["Trapelopsis granulosa"   ]][-c(1),                                ]
-each_target[["Vaccinium vitis-idea"    ]]<-each_target[["Vaccinium vitis-idea"    ]][-c(1,2,3,4,5,6,7,8),                  ]
+each_target[["Vaccinium vitis+--idea"  ]]<-each_target[["Vaccinium vitis-idea"    ]][-c(1,2,3,4,5,6,7,8),                  ]
 each_target[["Vulpicida pinastri"      ]]<-each_target[["Vulpicida pinastri"      ]][-c(1,2,11),                           ]
 
 # Creates a new object with cleaned spectral library
 New_targets<-each_target
 
 # Remove scans that are Epiphytes
-New_targets[c("Vulpicida pinastri"
-              ,"Usnea scabrata"
-              ,"Usnea lapponica"
-              ,"Parmelis sulcata"
-              ,"Hypogymnia austerodes"
-              ,"Evernia mesomorpha"     
-              ,"Flavocetraria cucculata"
-              ,"Bryoria sp." )]<-NULL
-
-# Saves each target as a spectral object (.rds)
-for(i in 1:length(New_targets)){
-  
-  # Writes out each target and their spectral profiles
-  saveRDS(New_targets[[i]],paste0("Output/Spectral_profiles/",names(New_targets[i]),".rds"))
-  
-}
+# New_targets[c("Vulpicida pinastri"
+#               ,"Usnea scabrata"
+#               ,"Usnea lapponica"
+#               ,"Parmelis sulcata"
+#               ,"Hypogymnia austerodes"
+#               ,"Evernia mesomorpha"     
+#               ,"Flavocetraria cucculata"
+#               ,"Bryoria sp." )]<-NULL
+# 
+# # Saves each target as a spectral object (.rds)
+# for(i in 1:length(New_targets)){
+#   
+#   # Writes out each target and their spectral profiles
+#   saveRDS(New_targets[[i]],paste0("Output/Spectral_profiles/",names(New_targets[i]),".rds"))
+#   
+# }
 
 # Lets combine into one spectral library if we are satisfied with our results
-Cleaned_Speclib<-Reduce(spectrolab::combine,New_targets)
+Cleaned_Speclib<-Reduce(spectrolab::combine,New_targets)%>% # dim(n_samples=1989, n_wavelegths=2151)
+  as.data.frame()%>% # Converts Spectral Object to a dataframe
+  dplyr::select(-sample_name)
+
+Cleaned_Speclib_rds<-Reduce(spectrolab::combine,New_targets)
+
+# table(Cleaned_Speclib$Class3)%>%as.data.frame()
+#                      Var1 Freq
+#        Dwarf_Shrub_Decid  177
+#                     Forb   52
+#          Graminoid_Grass    4
+#          Graminoid_Sedge   13
+#                   Gravel    4
+#     Lichen_Crustose_Dark   30
+#    Lichen_Crustose_Light   25
+#     Lichen_Epiphyte_Dark   19
+#   Lichen_Epiphyte_Yellow   46
+#      Lichen_Foliose_Dark   71
+#     Lichen_Foliose_Light   14
+#    Lichen_Foliose_Yellow   38
+#    Lichen_Fruticose_Dark   31
+#   Lichen_Fruticose_Light   39
+#  Lichen_Fruticose_Yellow   79
+#                   Litter    5
+#            Moss_Acrocarp   47
+#          Moss_Pleurocarp   20
+#            Moss_Sphagnum   12
+#                     Rock   31
+#              Shrub_Alder   44
+#             Shrub_Betula   49
+#          Shrub_Evergreen   75
+#               Shrub_Rosa   19
+#              Shrub_Salix  101
+#                     Soil    5
+#               Tree_Decid   12
+#           Tree_Evergreen   17
+#              Wood_Coarse    5
+
+write.csv(Cleaned_Speclib, "Output/Cleaned_SpectralLib.csv")
+saveRDS(Cleaned_Speclib_rds,"Output/C_004_Cleaned_Speclib.rds")
+
+# Class3 == "Moss_Acrocarp"|Class3 == " Moss_Pleurocarp"|
+
+
+# Subset a functional group
+Comparison_lot<-subset(Cleaned_Speclib,Class3 == "Soil"| Class3 == "Gravel")
+
+
+# change the dtaframe to a long dataframe 
+Comparison_lot<-gather(Comparison_lot ,Wavelength,Reflectance,-1:-9)
+
+
+# Make column name Wavelength numeric
+Comparison_lot$Wavelength    <-as.numeric(Comparison_lot$Wavelength)
+
+# Plot the output
+Comparison_lot<-Comparison_lot%>%
+  group_by(Class2, Wavelength) %>%  
+  dplyr::summarise(Median_Reflectance = median(Reflectance))%>%
+  as.data.frame()
+
+# Creates a ggplot for each functional group with all species
+ggplot(Comparison_lot,aes(Wavelength,Median_Reflectance))+geom_point(aes(color = Class2))+
+  labs(color="Species")+
+  theme(panel.background = element_rect(fill = "white", colour = "grey50"), 
+        legend.key.size = unit(0.5, "cm"),legend.text = element_text(size=12))+
+  labs(title = paste(names_of_classes[[i]]," Spectral Signatures", sep = ""))
+
 
 # You could read in all these targets using the code below
 # listofnames<-list.files("Output/Spectral_profiles",full.names = T) 
@@ -378,57 +500,57 @@ Cleaned_Speclib<-Reduce(spectrolab::combine,New_targets)
 # ------------------------------------------------- Even distribution among species --------------------------------------------
 
 # Creates a dataframe that shows scans per species within each functional group
-Species_table_df<-SpecLib_new_All%>%
-  group_by(Class3,Class2)%>%
-  tally()
-# View(Species_table)
-
-# Writes out species per functional group dataframe
-Species_table_df%>%
-  write.csv("Output/C_002_SpeciesPer_FunctionalGroup.csv", row.names = F)
-
-
-# Function allows the number of scans per species (Class2) to be equal within each functinal group (Class3)
-reduce_SpeciesPerGroup<-function(x){
-  
-  #dataframe that shows scans per species within each functional group
-  Species_table<-x%>%
-    group_by(Class3,Class2)%>%
-    tally()
-  
-  # Creates a list that contains a dataframe for each functional group
-  Func_groups<-split(x,x$Class3)
-  
-  # count per species within each functional group
-  countperspecies<-split(Species_table,Species_table$Class3)
-  
-  # Lets make the Class2 groups equal within each functinal group (Class3)
-  Func_groups_reduced<-Map(x=Func_groups, y = countperspecies, function(x,y){
-    x%>%
-      group_by(Class2)%>%
-      sample_n(pmin(n(), median(y$n)))%>%
-      as.data.frame()
-  })
-  return(Func_groups_reduced)
-}
-
-# Applies function to spectral library
-SpecLib_reduced<- reduce_SpeciesPerGroup(SpecLib_new_All)
-
-# Combines the list above into one dataframe
-SpecLib_reduced_df<-do.call("rbind", SpecLib_reduced)
-
-# str(SpecLib_reduced_df)
-
-# Writes out dataframe
-SpecLib_reduced_df%>%
-  write.csv("Output/C_003_SpecLib_FunctionalGroupsEqual_DF.csv",row.names = F)
-
-# Lets check the number of scans we have for each functional category now that we reduced the distribution
-# These will be used in models
-SpecLib_reduced_df %>%
-  group_by(Class3) %>%
-  tally()
+# Species_table_df<-SpecLib_new_All%>%
+#   group_by(Class3,Class2)%>%
+#   tally()
+# # View(Species_table)
+# 
+# # Writes out species per functional group dataframe
+# Species_table_df%>%
+#   write.csv("Output/C_002_SpeciesPer_FunctionalGroup.csv", row.names = F)
+# 
+# 
+# # Function allows the number of scans per species (Class2) to be equal within each functinal group (Class3)
+# reduce_SpeciesPerGroup<-function(x){
+#   
+#   #dataframe that shows scans per species within each functional group
+#   Species_table<-x%>%
+#     group_by(Class3,Class2)%>%
+#     tally()
+#   
+#   # Creates a list that contains a dataframe for each functional group
+#   Func_groups<-split(x,x$Class3)
+#   
+#   # count per species within each functional group
+#   countperspecies<-split(Species_table,Species_table$Class3)
+#   
+#   # Lets make the Class2 groups equal within each functinal group (Class3)
+#   Func_groups_reduced<-Map(x=Func_groups, y = countperspecies, function(x,y){
+#     x%>%
+#       group_by(Class2)%>%
+#       sample_n(pmin(n(), median(y$n)))%>%
+#       as.data.frame()
+#   })
+#   return(Func_groups_reduced)
+# }
+# 
+# # Applies function to spectral library
+# SpecLib_reduced<- reduce_SpeciesPerGroup(SpecLib_new_All)
+# 
+# # Combines the list above into one dataframe
+# SpecLib_reduced_df<-do.call("rbind", SpecLib_reduced)
+# 
+# # str(SpecLib_reduced_df)
+# 
+# # Writes out dataframe
+# SpecLib_reduced_df%>%
+#   write.csv("Output/C_003_SpecLib_FunctionalGroupsEqual_DF.csv",row.names = F)
+# 
+# # Lets check the number of scans we have for each functional category now that we reduced the distribution
+# # These will be used in models
+# SpecLib_reduced_df %>%
+#   group_by(Class3) %>%
+#   tally()
 # Class3                 n
 # <fct>              <int>
 # Abiotic_Litter        11
@@ -451,14 +573,6 @@ SpecLib_reduced_df %>%
 # Tree_Broad            10
 # Tree_Needle           17
 
-Spectralobj1<-SpecLib_reduced_df%>%
-  dplyr::filter(Class2=="Betula nana")
-
-Spectralobj<-spectrolab::as.spectra(Spectralobj1[-1:-9])
-meta(Spectralobj)<-data.frame(Spectralobj1[,c(1:9)], stringsAsFactors = FALSE)
-
-#plot_interactive(Spectralobj)
-# 
 ## Lets convert our new spectral library to a spectral object to be used later 
 #SpecLib_reduced_spectra <-spectrolab::as.spectra(SpecLib_reduced_df[-1:-9])
 #
@@ -469,7 +583,7 @@ meta(Spectralobj)<-data.frame(Spectralobj1[,c(1:9)], stringsAsFactors = FALSE)
 # ------------------------------------------ Plots ---------------------------------------------------
 
 # Creates a vector with the name of all the categories of interest
-names_of_classes<-c(as.character(unique(SpecLib_reduced_df[,"Class3"])))
+names_of_classes<-c(as.character(unique(Cleaned_Speclib[,"Class3"])))
 
 # Creates an empty list
 FunctionalGroupDf<-list()
@@ -477,7 +591,7 @@ FunctionalGroupDf<-list()
 for(i in 1:length(names_of_classes)){
   
   # Subset a functional group
-  FunctionalGroupDf[[i]]<-subset(SpecLib_reduced_df,Class3 == names_of_classes[i])
+  FunctionalGroupDf[[i]]<-subset(Cleaned_Speclib,Class3 == names_of_classes[i])
   
   
   # change the dtaframe to a long dataframe 
@@ -548,7 +662,7 @@ Headwall_bandpasses<-c(397.593,399.444, 401.296, 403.148, 405.000, 406.851, 408.
 # Reads in spectral library as a spectral object
 # This is the spectral library that had all uncalibrated scans removed
 # Even distribution of species within each functional group applied
-Speclib_spec<-readRDS("Output/C_004_SpecLib_FunctionalGroupsEqual.rds")
+Speclib_spec<-readRDS("Output/C_004_Cleaned_Speclib.rds")
 
 # Function resamples the PSR band passes to match the sensor
 ResampBands<-function(x){
