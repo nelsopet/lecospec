@@ -580,3 +580,4 @@ SpecLib_groups$Class4[SpecLib_groups$Class1=="ERAN6"]<-"Graminoid"
 SpecLib_groups$Class4[SpecLib_groups$Class1=="VAVI"]<-"Shrub"
 
 write.csv(SpecLib_groups,"Output/B_001_Species_Table.csv",row.names = F)
+

@@ -108,7 +108,7 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
     cores <- parallel::detectCores()-1
     
     # prepare for parallel process
-    c1<- parallel::makeCluster(cores)
+    c1<- parallel::makeCluster(cores, setup_timeout = 0.5)
     doParallel::registerDoParallel(c1)
     
     
@@ -213,7 +213,7 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
     print(paste0(cores, " cores being used"))
     
     ## Start cluster
-    c1<- parallel::makeCluster(cores)
+    c1<- parallel::makeCluster(cores, setup_timeout = 0.5)
     doParallel::registerDoParallel(c1)
     parallel::clusterEvalQ(c1,library(raster))
     

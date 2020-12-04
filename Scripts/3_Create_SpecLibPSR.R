@@ -56,37 +56,46 @@ SpecLib<-Reduce(spectrolab::combine,list_of_SpecLib)%>% # dim(n_samples=1989, n_
 SpecLib<-rbind(SpecLib,Ecosis_data)
 
 # Please note these are the number of samples we have for each functional group
-# table(SpecLib$Class3)%>%as.data.frame() The Dwarf shrub category is high because we scanned a high number of Dryas sp. in summer 2019
-#                    Var1 Freq
-#       Dwarf_Shrub_Decid  968
-#                    Forb   80
-#         Graminoid_Grass   24
-#         Graminoid_Sedge   44
-#                  Gravel    5
-#    Lichen_Crustose_Dark   32
-#   Lichen_Crustose_Light   28
-#    Lichen_Epiphyte_Dark   23
-#  Lichen_Epiphyte_Yellow   56
-#     Lichen_Foliose_Dark   75
-#    Lichen_Foliose_Light   16
-#   Lichen_Foliose_Yellow   53
-#   Lichen_Fruticose_Dark   43
-#  Lichen_Fruticose_Light   46
-# Lichen_Fruticose_Yellow   97
-#                  Litter    8
-#           Moss_Acrocarp   55
-#         Moss_Pleurocarp   23
-#           Moss_Sphagnum   12
-#                    Rock   32
-#             Shrub_Alder   44
-#            Shrub_Betula   56
-#         Shrub_Evergreen   65
-#              Shrub_Rosa   20
-#             Shrub_Salix  101
-#                    Soil    8
-#              Tree_Decid   12
-#          Tree_Evergreen   17
-#             Wood_Coarse    5
+#table(SpecLib$Class3)%>%as.data.frame() #The Dwarf shrub category is high because we scanned a high number of Dryas sp. in summer 2019
+#Var1 Freq
+#1              Dwarf_Shrub_Decid  968
+#2                           Forb   80
+#3                Graminoid_Grass   24
+#4                Graminoid_Sedge   44
+#5           Lichen_Crustose_Dark   32
+#6          Lichen_Crustose_Light   28
+#7           Lichen_Epiphyte_Dark   23
+#8         Lichen_Epiphyte_Yellow   56
+#9            Lichen_Foliose_Dark   46
+#10 Lichen_Foliose_Dark_Peltigera   29
+#11          Lichen_Foliose_Light   16
+#12         Lichen_Foliose_Yellow   53
+#13         Lichen_Fruticose_Dark   43
+#14        Lichen_Fruticose_Light   46
+#15       Lichen_Fruticose_Yellow   97
+#16                        Litter    8
+#17              Moss_Aulacomnium   12
+#18                Moss_Ceratadon    5
+#19                 Moss_Dicranum    5
+#20              Moss_Hylocomnium   13
+#21              Moss_Plagiomnium    4
+#22               Moss_Pleurozium    4
+#23              Moss_Polytrichum   23
+#24              Moss_Racomitrium    4
+#25                Moss_Rhytidium    6
+#26          Moss_Sphagnum_fuscum    4
+#27           Moss_Sphagnum_other    8
+#28             Moss_Tomenthypnum    2
+#29                          Rock   32
+#30                   Shrub_Alder   44
+#31                  Shrub_Betula   56
+#32               Shrub_Evergreen   65
+#33                    Shrub_Rosa   20
+#34                   Shrub_Salix  111
+#35                          Soil   13
+#36                    Tree_Decid   12
+#37                Tree_Evergreen   17
+#38                   Wood_Coarse    5
 
 # Lets remove all the rows with negative values or Values >2
 SpecLib_new<-SpecLib%>% 
@@ -94,7 +103,7 @@ SpecLib_new<-SpecLib%>%
   dplyr::filter_at(vars(-(ScanID:Area)), all_vars((.) >=0)) # Removes row with values less than 0, # dim (nrows = 1984 ncol = 2157)
 
 # Lets check the number of scans we have for each functional group because we removed all the bad scans
-# table(SpecLib_new$Class3)%>%as.data.frame()
+ table(SpecLib_new$Class3)%>%as.data.frame()
 
 # Lets add more details to our spectral library by adding frequency columns
 # Frequency values represent the number of scans per species and the number of scans per functional group
@@ -110,109 +119,114 @@ SpecLib_new_All<-SpecLib_new_All[!(SpecLib_new_All$Class2=="Unknown"),]
 # ------------------------------------------------- Spectral Library Clean Up --------------------------------------------------
 # Script removes bad scans from each species in the library
 # First lets check how many species are available and the amount of scans we have for each species
-table(SpecLib_new_All$Class2)%>%as.data.frame() # There are 99 targets in our spectral library
+#table(SpecLib_new_All$Class2)%>%as.data.frame() # There are 99 targets in our spectral library
 
-#                     Var1 Freq
-#     Alectoria ochroleuca    6
-#                Alnus sp.   44
-# Arctocetraria centrifuga    4
-#          Arctostaphyllos   19
-#      Asahinea chrysantha   19
-#     Aulacomnium palustre    6
-#     Aulacomnium turgidum    6
-#                Bare Rock    7
-#                Bare Soil    8
-#              Betula nana   56
-#       Betula neoalaskana    4
-#              Bryoria sp.   10
-#        Calamogrostis sp.    4
-#                Carex sp.   16
-#       Cassiope tetragona    9
-#      Ceratadon purpureus    5
-#       Cetraria islandica   14
-#       Cetraria laevigata    3
-#     Cladonia amaurocraea    6
-#         Cladonia cornuta    3
-#        Cladonia gracilis   18
-#           Cladonia mitis   17
-#     Cladonia rangiferina   20
-#      Cladonia steallaris   20
-#          Cladonia stygia   18
-#      Cladonia sulphurina    3
-#        Cladonia uncialis   10
-#        Dactylina arctica    7
-#               Dead Salix    8
-#             Dicranum sp.    5
-#        Dryas alleghenies  272
-#         Dryas octopetala  610
-#                Dryas sp.   43
-#          Empetrum nigrum   12
-#        Equisetum arvense    4
-#     Equisetum sylvaticum    4
-#     Eriophorum vaginatum    2
-#       Evernia mesomorpha   20
-#  Flavocetraria cucculata   14
-#    Flavocetraria nivalis   19
-#                   Gravel    5
-#        Heracleum lanatum    8
-#     Hylocomium splendens   13
-#    Hypogymnia austerodes   13
-#   Icmadophila ericetorum    8
-#                 Iris sp.    4
-#          Ledum decumbens   19
-#    Loisleuria procumbens    3
-#              Lupinus sp.   12
-#  Masonhalea richardsonii   14
-#            Melanelia sp.   13
-#        Nephroma arcticum   17
-#      Parmelia omphalodes    4
-#     Parmeliopsis ambigua    4
-#         Parmelis sulcata   12
-#     Pedicularis racemosa   11
-#     Pedicularis sudetica    4
-#        Peltigera apthosa   14
-#        Peltigera malacea    4
-#       Peltigera scabrata    7
-#   Peltigers leucophlebia    4
-#        Petasites frigida    8
-#            Picea mariana   17
-#             Pices (bark)    5
-#    Pilophorus acicularis   15
-#          Plagiomnium sp.    4
-#     Pleurozium schreberi    4
-#  Polytrichum juniperinum   10
-#          Polytrichum sp.   13
-#      Populus balsamifera    8
-#             Porpidia sp.   11
-#                   Quartz   25
-# Racomitrium lanoiginosum    4
-# Rhizocarpon geographicum   18
-#          Rhizocarpon sp.    3
-#         Rhytidum rugosum    6
-#          Rosa acicularis   20
-#                Rubus sp.   12
-#            Salix (wooly)   10
-#          Salix alaxensis   47
-#      Salix arbusculoides    4
-#             Salix glauca   16
-#             Salix lanata    4
-#         Salix ovalifolia    6
-#            Salix pulchra   10
-#       Salix richardsonii    4
-#          Sphagnum fuscum    4
-#             Sphagnum sp.    8
-#         Stereocaulon sp.    8
-#            Toefeldia sp.    5
-#      Tomenthypnum nitens    2
-#    Trapelopsis granulosa    5
-#      Umbilicaria arctica    4
-#   Umbilicaria hyperborea   15
-#          Usnea lapponica   12
-#           Usnea scabrata   12
-#     Vaccinium uliginosum   10
-#     Vaccinium vitis-idea   21
-#       Vulpicida pinastri   12
-
+#Var1 Freq
+#1       Alectoria ochroleuca    6
+#2                  Alnus sp.   44
+#3     Arctagrostis latifolia    5
+#4   Arctocetraria centrifuga    4
+#5           Arctophila fulva    5
+#6            Arctostaphyllos   19
+#7        Asahinea chrysantha   19
+#8       Aulacomnium palustre    6
+#9       Aulacomnium turgidum    6
+#10                 Bare Rock    7
+#11                 Bare Soil   13
+#12               Betula nana   56
+#13        Betula neoalaskana    4
+#14               Bryoria sp.   10
+#15         Calamogrostis sp.    4
+#16           Carex aquatilis    8
+#17                 Carex sp.   16
+#18        Cassiope tetragona    9
+#19       Ceratadon purpureus    5
+#20        Cetraria islandica   14
+#21        Cetraria laevigata    3
+#22      Cladonia amaurocraea    6
+#23          Cladonia cornuta    3
+#24         Cladonia gracilis   18
+#25            Cladonia mitis   17
+#26      Cladonia rangiferina   20
+#27       Cladonia steallaris   20
+#28           Cladonia stygia   18
+#29       Cladonia sulphurina    3
+#30         Cladonia uncialis   10
+#31         Dactylina arctica    7
+#32                Dead Salix    8
+#33              Dicranum sp.    5
+#34         Dryas alleghenies  272
+#35          Dryas octopetala  610
+#36                 Dryas sp.   43
+#37          Dupontia fisheri   10
+#38           Empetrum nigrum   12
+#39         Equisetum arvense    4
+#40      Equisetum sylvaticum    4
+#41  Eriophorum angustifolium   10
+#42      Eriophorum vaginatum    2
+#43        Evernia mesomorpha   20
+#44   Flavocetraria cucculata   14
+#45     Flavocetraria nivalis   19
+#46         Heracleum lanatum    8
+#47      Hylocomium splendens   13
+#48     Hypogymnia austerodes   13
+#49    Icmadophila ericetorum    8
+#50                  Iris sp.    4
+#51           Ledum decumbens   19
+#52     Loisleuria procumbens    3
+#53               Lupinus sp.   12
+#54   Masonhalea richardsonii   14
+#55             Melanelia sp.   13
+#56         Nephroma arcticum   17
+#57       Parmelia omphalodes    4
+#58      Parmeliopsis ambigua    4
+#59          Parmelis sulcata   12
+#60      Pedicularis racemosa   11
+#61      Pedicularis sudetica    4
+#62         Peltigera apthosa   14
+#63         Peltigera malacea    4
+#64        Peltigera scabrata    7
+#65    Peltigers leucophlebia    4
+#66       Pestasites frigidus   10
+#67         Petasites frigida    8
+#68             Picea mariana   17
+#69              Pices (bark)    5
+#70     Pilophorus acicularis   15
+#71           Plagiomnium sp.    4
+#72      Pleurozium schreberi    4
+#73   Polytrichum juniperinum   10
+#74           Polytrichum sp.   13
+#75       Populus balsamifera    8
+#76              Porpidia sp.   11
+#77                    Quartz   25
+#78  Racomitrium lanoiginosum    4
+#79  Rhizocarpon geographicum   18
+#80           Rhizocarpon sp.    3
+#81          Rhytidum rugosum    6
+#82           Rosa acicularis   20
+#83                 Rubus sp.   12
+#84             Salix (wooly)   10
+#85           Salix alaxensis   47
+#86       Salix arbusculoides    4
+#87              Salix glauca   16
+#88              Salix lanata    4
+#89          Salix ovalifolia    6
+#90             Salix pulchra   20
+#91        Salix richardsonii    4
+#92        Saxifraga punctata   10
+#93           Sphagnum fuscum    4
+#94              Sphagnum sp.    8
+#95          Stereocaulon sp.    8
+#96             Toefeldia sp.    5
+#97       Tomenthypnum nitens    2
+#98     Trapelopsis granulosa    5
+#99       Umbilicaria arctica    4
+#100   Umbilicaria hyperborea   15
+#101          Usnea lapponica   12
+#102           Usnea scabrata   12
+#103     Vaccinium uliginosum   10
+#104     Vaccinium vitis-idea   22
+#105       Vulpicida pinastri   12
 # First lets create an object with all the names and make sure they are sorted in alphabetical order
 Target_names<-unique(sort(SpecLib_new_All$Class2))
 
@@ -398,22 +412,22 @@ each_target[["Vulpicida pinastri"      ]]<-each_target[["Vulpicida pinastri"    
 New_targets<-each_target
 
 # Remove scans that are Epiphytes
-# New_targets[c("Vulpicida pinastri"
-#               ,"Usnea scabrata"
-#               ,"Usnea lapponica"
-#               ,"Parmelis sulcata"
-#               ,"Hypogymnia austerodes"
-#               ,"Evernia mesomorpha"     
-#               ,"Flavocetraria cucculata"
-#               ,"Bryoria sp." )]<-NULL
-# 
-# # Saves each target as a spectral object (.rds)
-# for(i in 1:length(New_targets)){
-#   
-#   # Writes out each target and their spectral profiles
-#   saveRDS(New_targets[[i]],paste0("Output/Spectral_profiles/",names(New_targets[i]),".rds"))
-#   
-# }
+ New_targets[c("Vulpicida pinastri"
+               ,"Usnea scabrata"
+               ,"Usnea lapponica"
+               ,"Parmelis sulcata"
+               ,"Hypogymnia austerodes"
+               ,"Evernia mesomorpha"     
+               ,"Flavocetraria cucculata"
+               ,"Bryoria sp." )]<-NULL
+ 
+ # Saves each target as a spectral object (.rds)
+ for(i in 1:length(New_targets)){
+   
+   # Writes out each target and their spectral profiles
+   saveRDS(New_targets[[i]],paste0("Output/Spectral_profiles/",names(New_targets[i]),".rds"))
+   
+ }
 
 # Lets combine into one spectral library if we are satisfied with our results
 Cleaned_Speclib<-Reduce(spectrolab::combine,New_targets)%>% # dim(n_samples=1989, n_wavelegths=2151)
@@ -423,37 +437,43 @@ Cleaned_Speclib<-Reduce(spectrolab::combine,New_targets)%>% # dim(n_samples=1989
 Cleaned_Speclib_rds<-Reduce(spectrolab::combine,New_targets)
 
 # table(Cleaned_Speclib$Class3)%>%as.data.frame()
-#                      Var1 Freq
-#        Dwarf_Shrub_Decid  177
-#                     Forb   52
-#          Graminoid_Grass    4
-#          Graminoid_Sedge   13
-#                   Gravel    4
-#     Lichen_Crustose_Dark   30
-#    Lichen_Crustose_Light   25
-#     Lichen_Epiphyte_Dark   19
-#   Lichen_Epiphyte_Yellow   46
-#      Lichen_Foliose_Dark   71
-#     Lichen_Foliose_Light   14
-#    Lichen_Foliose_Yellow   38
-#    Lichen_Fruticose_Dark   31
-#   Lichen_Fruticose_Light   39
-#  Lichen_Fruticose_Yellow   79
-#                   Litter    5
-#            Moss_Acrocarp   47
-#          Moss_Pleurocarp   20
-#            Moss_Sphagnum   12
-#                     Rock   31
-#              Shrub_Alder   44
-#             Shrub_Betula   49
-#          Shrub_Evergreen   75
-#               Shrub_Rosa   19
-#              Shrub_Salix  101
-#                     Soil    5
-#               Tree_Decid   12
-#           Tree_Evergreen   17
-#              Wood_Coarse    5
-
+# Var1 Freq
+# 1              Dwarf_Shrub_Decid  177
+# 2                           Forb   72
+# 3                Graminoid_Grass   24
+# 4                Graminoid_Sedge   31
+# 5           Lichen_Crustose_Dark   30
+# 6          Lichen_Crustose_Light   25
+# 7            Lichen_Foliose_Dark   45
+# 8  Lichen_Foliose_Dark_Peltigera   26
+# 9           Lichen_Foliose_Light    4
+# 10         Lichen_Foliose_Yellow   38
+# 11         Lichen_Fruticose_Dark   27
+# 12        Lichen_Fruticose_Light   39
+# 13       Lichen_Fruticose_Yellow   72
+# 14                        Litter    5
+# 15              Moss_Aulacomnium   10
+# 16                Moss_Ceratadon    5
+# 17                 Moss_Dicranum    5
+# 18              Moss_Hylocomnium   10
+# 19              Moss_Plagiomnium    4
+# 20               Moss_Pleurozium    4
+# 21              Moss_Polytrichum   17
+# 22              Moss_Racomitrium    4
+# 23                Moss_Rhytidium    6
+# 24          Moss_Sphagnum_fuscum    4
+# 25           Moss_Sphagnum_other    8
+# 26             Moss_Tomenthypnum    2
+# 27                          Rock   31
+# 28                   Shrub_Alder   44
+# 29                  Shrub_Betula   49
+# 30               Shrub_Evergreen   77
+# 31                    Shrub_Rosa   19
+# 32                   Shrub_Salix  111
+# 33                          Soil   10
+# 34                    Tree_Decid   12
+# 35                Tree_Evergreen   17
+# 36                   Wood_Coarse    5
 write.csv(Cleaned_Speclib, "Output/Cleaned_SpectralLib.csv")
 saveRDS(Cleaned_Speclib_rds,"Output/C_004_Cleaned_Speclib.rds")
 
@@ -701,8 +721,9 @@ Speclib_resamp<-ResampBands(Speclib_spec)
 source("Functions/SpectralLibrayCreator.R")
 
 # Calculate Derivative for spectral libaray
-Spectral_Library<-SpectralLibrayCreator("Output/D_001_Headwall_SpecLibDF.csv",
-                                        out_file= "Output/",datatype = "csv", 
+Spectral_Library<-SpectralLibrayCreator("Output/Cleaned_Spectrallib.csv", #"Output/D_001_Headwall_SpecLibDF.csv",
+                                        out_file= "Output/",
+                                        datatype = "csv", 
                                         extension = FALSE)
 
 
