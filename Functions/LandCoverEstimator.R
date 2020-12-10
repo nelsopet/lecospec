@@ -323,6 +323,7 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
           
           # Creates a new model built on important variables
           print("Selecting important varibles")
+#FAIL 20201210 PNELSON
           New_df<-DfofRas%>%
             dplyr::select(x,y,all_of(Vars_names2))
           
