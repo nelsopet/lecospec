@@ -721,7 +721,7 @@ Speclib_resamp<-ResampBands(Speclib_spec)
 source("Functions/SpectralLibrayCreator.R")
 
 # Calculate Derivative for spectral libaray
-Spectral_Library<-SpectralLibrayCreator("Output/Cleaned_Spectrallib.csv", #"Output/D_001_Headwall_SpecLibDF.csv",
+Spectral_Library<-SpectralLibrayCreator("Output/D_001_Headwall_SpecLibDF.csv",
                                         out_file= "Output/",
                                         datatype = "csv", 
                                         extension = FALSE)

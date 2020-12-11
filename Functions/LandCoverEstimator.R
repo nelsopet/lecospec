@@ -319,11 +319,10 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
           
           # Removes the X from columns with the names of banpasses
           print("Fixing Names of varibles ")
-          Vars_names2<-gsub("^X","",Vars_names[1:length(Vars_names)])
+          Vars_names2<-gsub("^XIL","",Vars_names[1:length(Vars_names)])
           
           # Creates a new model built on important variables
           print("Selecting important varibles")
-#FAIL 20201210 PNELSON
           New_df<-DfofRas%>%
             dplyr::select(x,y,all_of(Vars_names2))
           
