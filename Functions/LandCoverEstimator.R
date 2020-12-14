@@ -108,7 +108,7 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
     cores <- parallel::detectCores()-1
     
     # prepare for parallel process
-    c1<- parallel::makeCluster(cores)
+    c1<- parallel::makeCluster(cores, setup_timeout = 0.5)
     doParallel::registerDoParallel(c1)
     
     
@@ -213,7 +213,7 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
     print(paste0(cores, " cores being used"))
     
     ## Start cluster
-    c1<- parallel::makeCluster(cores)
+    c1<- parallel::makeCluster(cores, setup_timeout = 0.5)
     doParallel::registerDoParallel(c1)
     parallel::clusterEvalQ(c1,library(raster))
     
@@ -319,7 +319,7 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
           
           # Removes the X from columns with the names of banpasses
           print("Fixing Names of varibles ")
-          Vars_names2<-gsub("^X","",Vars_names[1:length(Vars_names)])
+          Vars_names2<-gsub("^XIL","",Vars_names[1:length(Vars_names)])
           
           # Creates a new model built on important variables
           print("Selecting important varibles")

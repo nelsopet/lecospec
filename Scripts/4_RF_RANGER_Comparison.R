@@ -25,10 +25,10 @@ set.seed(123)
 # Build Model
 rf_mod_ranger<-ranger::ranger(Classes ~ .,data = SpecLib_derivs,
                       num.trees = 1000,
-                      local.importance = TRUE) # OOB prediction error:             25.93 %
+                      local.importance = TRUE) # OOB prediction error:             22.54 % 
 
 rf_mod_randomforest<-randomForest(Classes ~ .,data = SpecLib_derivs
-                                  ,ntree=1000,importance=TRUE) # OOB prediction error 26.18%
+                                  ,ntree=1000,importance=TRUE) # OOB prediction error 22.54%
 
 # Build models using 0.99 percent cutoff for corelated varibles
 # Creates corelation matrix
@@ -43,7 +43,7 @@ predictor_df_reduced<-SpecLib_derivs %>%
 
 # Rebuild models after intercorelated vars are removed
 rf_mod_randomforest<-randomForest(Classes ~ .,data = predictor_df_reduced
-                                  ,ntree=1000,importance=TRUE) # OOB prediction error 23.28%
+                                  ,ntree=1000,importance=TRUE) # OOB prediction error 20.86%
 # Saves confusion matrix rf
 RandomForest_confusionmatrix<-rf_mod_randomforest$confusion%>%as.data.frame()
 write.csv(RandomForest_confusionmatrix,"Output/E_001_RandomForest_confusionmatrix.csv")
@@ -51,7 +51,7 @@ write.csv(RandomForest_confusionmatrix,"Output/E_001_RandomForest_confusionmatri
 # Saves confuison Matrix Ranger
 rf_mod_ranger<-ranger(Classes ~ .,data = predictor_df_reduced,
                       num.trees = 1000,
-                      local.importance = TRUE) # OOB prediction error:             23.76 %  
+                      local.importance = TRUE) # OOB prediction error:             21.05 %   
 
 Ranger_confusionmatrix<-rf_mod_ranger$confusion.matrix%>%as.data.frame.matrix()
 write.csv(Ranger_confusionmatrix,"Output/E_002_Ranger_confusionmatrix.csv")
