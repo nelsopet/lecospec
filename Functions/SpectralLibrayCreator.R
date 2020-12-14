@@ -116,7 +116,7 @@ SpectralLibrayCreator<-function(filename,out_file,Classif_Model,datatype,extensi
     cores <- parallel::detectCores()-1
     
     # prepare for parallel process
-    c1<- parallel::makeCluster(cores)
+    c1<- parallel::makeCluster(cores, setup_timeout = 0.5)
     doParallel::registerDoParallel(c1)
     
     
@@ -184,8 +184,8 @@ SpectralLibrayCreator<-function(filename,out_file,Classif_Model,datatype,extensi
     # Creates the basename for the output filename with no extension
     basename_F = basename(filename)
     
-    }
-    
+  }
+  
   SubFolder<-(paste(out_file,basename_F,sep=""))
   dir.create(SubFolder)
   
@@ -203,7 +203,7 @@ SpectralLibrayCreator<-function(filename,out_file,Classif_Model,datatype,extensi
     # Normalize Values here
     return(Spectral_lib)
     
-    }
+  }
   
   if(datatype == "raster"){
     
@@ -232,7 +232,7 @@ SpectralLibrayCreator<-function(filename,out_file,Classif_Model,datatype,extensi
       
       # Creates outfile
       Out_tif = paste(SubFolder,"/A_001_",basename_F,"_Tile_",x,".envi",sep = "")
-
+      
       # Statement checks if file already exist
       if(!file.exists(Out_tif)){
         
