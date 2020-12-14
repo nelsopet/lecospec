@@ -11,8 +11,8 @@ SpectralLibrayCreator<-function(filename,out_file,Classif_Model,datatype,extensi
   # Creates a vector of the bandpasses for the headwall sensor that will be used
   # Noisey band were omitted (only bands 1:272 below)
   # Need to find a way to decide what bands we want to leave out
-  # PRN Yes, finding a way to select the vegetation indices that are possibly calculate for a given
-  # sensors bandpasses would be very helpful.
+    # PRN Yes, finding a way to select the vegetation indices that are possibly calculate for a given
+    # sensors bandpasses would be very helpful.
   Headwall_bandpasses<-c(397.593,399.444, 401.296, 403.148, 405.000, 406.851, 408.703, 410.555, 412.407,
                          414.258,416.110, 417.962, 419.814, 421.666, 423.517, 425.369, 427.221, 429.073,
                          430.924,432.776, 434.628, 436.480, 438.332, 440.183, 442.035, 443.887, 445.739,
