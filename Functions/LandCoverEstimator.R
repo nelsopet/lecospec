@@ -330,12 +330,13 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
           
           # Converts the results to a raster Brick and saves it on disk
           print("Converting results to a raster brick")
-          RastoDF<-raster::rasterFromXYZ(New_df,
-                                         crs = "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0")
+            #OFF for ranger
+            #RastoDF<-raster::rasterFromXYZ(New_df,
+            #                               crs = "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0")
           
           # Deletes the dataframe
           rm(DfofRas)
-          rm(New_df) 
+          #rm(New_df) 
           
           # Grabs the spitial information from original raster layer
           RasterBrick<-brick(filename)
@@ -343,9 +344,13 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
           print(paste0("Pointing Model at Tile ", i))
           
           # Predict calss of each pixel and returns a Raster layer
-          Predicted_layer<-raster::predict(RastoDF,Model,na.rm = TRUE,progress='text')
+          #Predicted_layer<-raster::predict(RastoDF,Model,na.rm = TRUE,progress='text')#Predicted_layer<-raster::predict(RastoDF,Model,na.rm = TRUE,progress='text') #randomForest 
+          Predicted_layer<-predict(New_df,Model,na.rm = TRUE,progress='text')#ranger
+          Predicted_layer<-raster::rasterFromXYZ(Predicted_layer,
+                                crs = "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0")
+          #ranger ... change back to raster for the rest of the pipline
           cat("\n")
-          
+          rm(New_df)
           # Matches the spaitial information to the original raster
           Predicted_layerResamp<-raster::resample(Predicted_layer,RasterBrick,method = "ngb")%>%
             as.factor()

@@ -99,7 +99,7 @@ save(rf_mod_ranger      , file = "Output/E_004_Best_Model_Ranger_86vars.rda")
           
           rfNew<-ranger(Classes ~ .,data = New_Speclib,
                         num.trees =10000,
-                        importance = "impurity_corrected",
+                        #importance = "impurity_corrected",
                         local.importance = TRUE)
           
           
@@ -113,23 +113,20 @@ save(rf_mod_ranger      , file = "Output/E_004_Best_Model_Ranger_86vars.rda")
           # saves the model with the lowest error
           save(rfNew, file = "Output/E_007_Best_Model_Ranger_50vars.rda")
           
-          ImportantVars_newFrame<-enframe(rfNew$variable.importance, name="predictor", value="importance")
-          #ModStat<-enframe(rf_mod_rang$prediction.error, 
-          #                           name="predictor", value="error")
-          #Modstat$
-          # Selects the 50 most important variables
-          Imp_Vars50_new<-ImportantVars_newFrame[order(ImportantVars_newFrame$importance,decreasing = TRUE),][1:50,]
+          #ImportantVars_newFrame<-enframe(rfNew$, name="predictor", value="importance")
+         # Selects the 50 most important variables
+         #  Imp_Vars50_new<-ImportantVars_newFrame[order(ImportantVars_newFrame$importance,decreasing = TRUE),][1:50,]
           
-          ImportantVars_newFrame[order(ImportantVars_newFrame$importance,decreasing = TRUE),][1:25,]%>%
-            ggplot()+
-            # geom_col(aes(x  = predictor, y = importance))+
-            geom_col(aes(x  = reorder(predictor, +importance), y = importance))+
-            coord_flip()+
-            xlab("predictor")+
-            theme_bw()
+           #ImportantVars_newFrame[order(ImportantVars_newFrame$importance,decreasing = TRUE),][1:25,]%>%
+           # ggplot()+
+           # # geom_col(aes(x  = predictor, y = importance))+
+           # geom_col(aes(x  = reorder(predictor, +importance), y = importance))+
+           # coord_flip()+
+           # xlab("predictor")+
+           # theme_bw()
           # Saves the plot 
-          ggsave("Output/_E_008_Ranger25ImpVars_50MostImpvars_omitClass.jpg")
-          dev.off
+          #ggsave("Output/_E_008_Ranger25ImpVars_50MostImpvars_omitClass.jpg")
+          #dev.off()
           
 
 
