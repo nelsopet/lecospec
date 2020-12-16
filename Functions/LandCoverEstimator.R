@@ -331,8 +331,8 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
           # Converts the results to a raster Brick and saves it on disk
           print("Converting results to a raster brick")
             #OFF for ranger
-            #RastoDF<-raster::rasterFromXYZ(New_df,
-            #                               crs = "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0")
+            RastoDF<-raster::rasterFromXYZ(New_df,
+                                           crs = "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0")
           
           # Deletes the dataframe
           rm(DfofRas)
@@ -344,8 +344,10 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
           print(paste0("Pointing Model at Tile ", i))
           
           # Predict calss of each pixel and returns a Raster layer
-          #Predicted_layer<-raster::predict(RastoDF,Model,na.rm = TRUE,progress='text')#Predicted_layer<-raster::predict(RastoDF,Model,na.rm = TRUE,progress='text') #randomForest 
-          Predicted_layer<-predict(New_df,Model,na.rm = TRUE,progress='text')#ranger
+          #Predicted_layer<-raster::predict(RastoDF,Model,na.rm = TRUE,progress='text')
+          #Predicted_layer<-raster::predict(RastoDF,Model,na.rm = TRUE,progress='text') #randomForest 
+          Predicted_layer<-raster::predict(RastoDF,Model,na.rm = TRUE,type='response', progress='text', fun = function(Model, ...) predict(Model, ...)$predictions) #(Ranger model)
+          #Predicted_layer<-predict(New_df,Model,na.rm = TRUE,progress='text')#ranger
           Predicted_layer<-raster::rasterFromXYZ(Predicted_layer,
                                 crs = "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0")
           #ranger ... change back to raster for the rest of the pipline
