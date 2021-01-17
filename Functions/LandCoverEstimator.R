@@ -333,6 +333,8 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
             #OFF for ranger
             RastoDF<-raster::rasterFromXYZ(New_df,
                                            crs = "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0")
+            
+            names(RastoDF)<-colnames(New_df)[-1:-2]
           
           # Deletes the dataframe
           rm(DfofRas)
@@ -346,7 +348,7 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
           # Predict calss of each pixel and returns a Raster layer
           #Predicted_layer<-raster::predict(RastoDF,Model,na.rm = TRUE,progress='text')
           #Predicted_layer<-raster::predict(RastoDF,Model,na.rm = TRUE,progress='text') #randomForest 
-          Predicted_layer<-raster::predict(RastoDF,Model,na.rm = TRUE,type='response', progress='text', fun = function(Model, ...) predict(Model, ...)$predictions) #(Ranger model)
+          Predicted_layer<-raster::predict(RastoDF,Model,na.rm = FALSE,type='response', progress='text', fun = function(Model, ...) predict(Model, ...)$predictions) #(Ranger model)
           #Predicted_layer<-predict(New_df,Model,na.rm = TRUE,progress='text')#ranger
           Predicted_layer<-raster::rasterFromXYZ(Predicted_layer,
                                 crs = "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0")

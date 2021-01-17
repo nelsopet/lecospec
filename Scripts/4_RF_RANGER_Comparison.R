@@ -5,7 +5,7 @@ library(tidyverse)
 
 #------------------Building Model without identifying important varibles --------------
 # Spectral Library
-SpecLib_derivs<-read.csv("Output/D_002_SpecLib_Derivs.csv")
+SpecLib_derivs<-read.csv("Output/D_002_SC4_SpecLib_Derivs.csv")
 
 # Remove Unwanted columns
 # Creates a string of possible names that will be removed
