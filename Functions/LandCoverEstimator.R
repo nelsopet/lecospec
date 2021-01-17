@@ -314,12 +314,14 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
           
           # Grabs the names of the varibles
           print("Loading varible names")
-          # Vars_names<-c(Model$forest$independent.variable.names) (ranger model)
-          Vars_names<-c(as.data.frame(Model$importance)%>%rownames())
+          Vars_names<-c(Model$forest$independent.variable.names) #(ranger model)
+          #Vars_names<-c(Model$forest$independent.variable.names) #(ranger model)
+          #Vars_names<-c(as.data.frame(Model$importance)%>%rownames())
           
           # Removes the X from columns with the names of banpasses
           print("Fixing Names of varibles ")
-          Vars_names2<-gsub("^XIL","",Vars_names[1:length(Vars_names)])
+          #Vars_names2<-gsub("^XIL","",Vars_names[1:length(Vars_names)])
+          Vars_names2<-gsub("^X","",Vars_names[1:length(Vars_names)]) #ranger
           
           # Creates a new model built on important variables
           print("Selecting important varibles")
@@ -328,12 +330,15 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
           
           # Converts the results to a raster Brick and saves it on disk
           print("Converting results to a raster brick")
-          RastoDF<-raster::rasterFromXYZ(New_df,
-                                         crs = "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0")
+            #OFF for ranger
+            RastoDF<-raster::rasterFromXYZ(New_df,
+                                           crs = "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0")
+            
+            names(RastoDF)<-colnames(New_df)[-1:-2]
           
           # Deletes the dataframe
           rm(DfofRas)
-          rm(New_df) 
+          #rm(New_df) 
           
           # Grabs the spitial information from original raster layer
           RasterBrick<-brick(filename)
@@ -341,9 +346,15 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
           print(paste0("Pointing Model at Tile ", i))
           
           # Predict calss of each pixel and returns a Raster layer
-          Predicted_layer<-raster::predict(RastoDF,Model,na.rm = TRUE,progress='text')
+          #Predicted_layer<-raster::predict(RastoDF,Model,na.rm = TRUE,progress='text')
+          #Predicted_layer<-raster::predict(RastoDF,Model,na.rm = TRUE,progress='text') #randomForest 
+          Predicted_layer<-raster::predict(RastoDF,Model,na.rm = FALSE,type='response', progress='text', fun = function(Model, ...) predict(Model, ...)$predictions) #(Ranger model)
+          #Predicted_layer<-predict(New_df,Model,na.rm = TRUE,progress='text')#ranger
+          Predicted_layer<-raster::rasterFromXYZ(Predicted_layer,
+                                crs = "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0")
+          #ranger ... change back to raster for the rest of the pipline
           cat("\n")
-          
+          rm(New_df)
           # Matches the spaitial information to the original raster
           Predicted_layerResamp<-raster::resample(Predicted_layer,RasterBrick,method = "ngb")%>%
             as.factor()
