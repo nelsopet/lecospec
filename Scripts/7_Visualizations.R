@@ -1,5 +1,48 @@
 require(Polychrome)
 require(gplots)
+
+
+##Cluster of all functional groups
+#Veg<-Cleaned_Speclib %>%  select(  -ScanID,-Code_name,-Functional_group1,-Functional_group2,-Area,-Species_name_Freq,-Functional_group1_Freq,-Functional_group2_Freq,-Species_name)
+Veg<-SpecLib_derivs %>% dplyr::select(-Classes)
+
+#Veg_env %>% group_by(Species_name, Functional_group1) %>% tally %>% View()
+
+#Veg_vnir_names<-colnames(Veg) #%>% as.numeric() %>% as.data.frame() %>% filter(.<1000)
+
+#Veg_vnir<-Veg[1:651]
+
+#Veg_env<-Cleaned_Speclib %>%  select(  ScanID,Code_name,Functional_group1,Functional_group2,Area,Species_name_Freq,Functional_group1_Freq,Functional_group2_Freq,Species_name)
+Veg_env<-SpecLib_derivs %>%  dplyr::select(Classes)
+
+#fnc_grp1_colors = createPalette(length(unique(Veg_env$Functional_group2)),  c("#ff0000", "#00ff00", "#0000ff")) %>%
+#  as.data.frame() %>%
+#  dplyr::rename(Color = ".") %>%
+#  mutate(FNC_grp1 = unique(Veg_env$Functional_group2)) %>%
+#  mutate(ColorNum = seq(1:length(unique(Veg_env$Functional_group2))));
+fnc_grp1_colors = createPalette(length(unique(Veg_env$Classes)),  c("#ff0000", "#00ff00", "#0000ff")) %>%
+  as.data.frame() %>%
+  dplyr::rename(Color = ".") %>%
+  mutate(FNC_grp1 = unique(Veg_env$Classes)) %>%
+  mutate(ColorNum = seq(1:length(unique(Veg_env$Classes))));
+
+
+
+#fnc_grp1_color_list<-Veg_env %>% select(Functional_group2) %>% inner_join(fnc_grp1_colors, by=c("Functional_group2"="FNC_grp1"), keep=FALSE)
+fnc_grp1_color_list<-Veg_env %>% dplyr::select(Classes) %>% inner_join(fnc_grp1_colors, by=c("Classes"="FNC_grp1"), keep=FALSE)
+
+Veg<-Veg %>% replace(is.na(.),0)
+dist(Veg) %>% hist()
+#hclust(as.matrix(Veg)) %>% as.dendrogram()
+
+pdf("Output/F_Heatmap_Veg_Derivs.pdf", height = 12, width = 20)
+#heatmap(as.matrix(Veg), Colv = NULL, RowSideColors = fnc_grp1_color_list$Color)
+heatmap.2(as.matrix(Veg), dendrogram="row", trace="none", Colv = FALSE, RowSideColors = fnc_grp1_color_list$Color)
+
+legend(x="topright", legend=unique(fnc_grp1_color_list$Classes), fill=unique(fnc_grp1_color_list$Color))
+dev.off()
+
+##Separate clusters for each high level functional group
 Lichen<-Cleaned_Speclib %>% filter(Functional_group2=="Lichen") %>%  select(  -ScanID,-Code_name,-Functional_group1,-Functional_group2,-Area,-Species_name_Freq,-Functional_group1_Freq,-Functional_group2_Freq,-Species_name)
 
 Lichen_env %>% group_by(Species_name, Functional_group1) %>% tally %>% View()
