@@ -26,7 +26,7 @@ source("Functions/LandCoverEstimator.R")
 system.time(PredLayer<-LandCoverEstimator(filename = "Data/SubsetDatacube",
                                           out_file = "Output/",
                                           #Classif_Model = "Output/E_003_Best_Model_RandomForest_86vars.rda",
-                                          Classif_Model = "Output/E_007_Best_Model_Ranger_50vars.rda",
+                                          Classif_Model = "Output/E_004_Best_Model_Ranger_86vars.rda",
                                           datatype = "raster",
                                           extension = FALSE))
 
