@@ -360,11 +360,11 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
           #Predicted_layer<-predict(New_df,Model,na.rm = TRUE,progress='text')#ranger
           Predicted_layer<-raster::rasterFromXYZ(Predicted_layer,
                                 crs = "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0")
-          #ranger ... change back to raster for the rest of the pipline
+          #ranger ... change back to raster for the rest of the pipeline
           cat("\n")
           rm(New_df)
-          # Matches the spaitial information to the original raster
-          Predicted_layerResamp<-raster::resample(Predicted_layer,RasterBrick,method = "ngb")%>%
+          # Matches the spatial information to the original raster
+          Predicted_layerResamp<-raster::resample(Predicted_layer,RasterBrick,method = "ngb") %>%
             as.factor()
           
           # Restores attribute table
