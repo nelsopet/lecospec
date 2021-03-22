@@ -298,7 +298,7 @@ PredictedRaster_Layer<-HyperspecImageClassifier(filename = Path/to/datacube.envi
  ![](Predicted_Map_Layer_RF.jpg)
 
 ### HypIMGPredictor_generator Entity relationship diagram
-JANE'S ERDS (IMAGE HERE)
+Example of entity relationship between code objects, functions and fields.
 ![](HypIMGPredictor_generator_v.2.jpeg)
 
 

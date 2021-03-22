@@ -30,3 +30,9 @@ system.time(PredLayer<-LandCoverEstimator(filename = "Data/SubsetDatacube",
                                           datatype = "raster",
                                           extension = FALSE))
 
+##Error
+#Error in readChar(con, 5L, useBytes = TRUE) : cannot open the connection
+#In addition: Warning message:
+#  In readChar(con, 5L, useBytes = TRUE) :
+#  cannot open compressed file 'Output/E_007_Best_Model_Ranger_50vars.rda', probable reason 'No such file or directory'
+#Called from: readChar(con, 5L, useBytes = TRUE)
