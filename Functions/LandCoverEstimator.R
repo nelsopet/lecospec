@@ -65,7 +65,7 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
     df<-metaRemove(Resamp)
     
     # Converts the dataframe to a spectral object
-    SpeclibObj<-spectrolab::as.spectra(df)
+    SpeclibObj<-as_spectra(df)
     
     print("Resampling spectra every 5nm")
     
@@ -115,11 +115,11 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
     # Creates dataframe with Vegitation indices
     VI_CALC<-if(ncol(metaRemove(VI)) == 272){
       foreach(i=1:length(Headwall_VI), .combine=cbind, .packages = 'hsdar') %dopar%{
-        a<-hsdar::vegindex(spec_library,index=Headwall_VI[[i]])}
+        a<-hsdar::vegindex(spec_library, index=Headwall_VI[[i]], weighted=FALSE)}
       
     } else {
       foreach(i=1:length(AVIRIS_VI), .combine=cbind, .packages = 'hsdar') %dopar%{
-        a<-hsdar::vegindex(spec_library,index=AVIRIS_VI[[i]])}
+        a<-hsdar::vegindex(spec_library, index=AVIRIS_VI[[i]], weighted = FALSE)}
     }
     
     # Stops cluster
@@ -231,7 +231,7 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
         
       }
       print("30 Tiles were sucessfully created")
-    })
+    })#end lapply
     
     # Stops cluster
     stopCluster(c1)
@@ -318,7 +318,7 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
           #Vars_names<-c(Model$forest$independent.variable.names) #(ranger model)
           #Vars_names<-c(as.data.frame(Model$importance)%>%rownames())
           
-          # Removes the X from columns with the names of banpasses
+          # Removes the X from columns with the names of bandpasses
           print("Fixing Names of varibles ")
           #Vars_names2<-gsub("^XIL","",Vars_names[1:length(Vars_names)])
           Vars_names2<-gsub("^X","",Vars_names[1:length(Vars_names)]) #ranger
@@ -340,24 +340,41 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
           rm(DfofRas)
           #rm(New_df) 
           
-          # Grabs the spitial information from original raster layer
+          # Grabs the spatial information from original raster layer
           RasterBrick<-brick(filename)
+          
+          
           
           print(paste0("Pointing Model at Tile ", i))
           
+          cleaned_RastoDF <- na.roughfix(RastoDF)# KRB
+          #print(paste0(summary(cleaned_RastoDF)))
+          
           # Predict calss of each pixel and returns a Raster layer
           #Predicted_layer<-raster::predict(RastoDF,Model,na.rm = TRUE,progress='text')
-          #Predicted_layer<-raster::predict(RastoDF,Model,na.rm = TRUE,progress='text') #randomForest 
-          Predicted_layer<-raster::predict(RastoDF,Model,na.rm = FALSE,type='response', progress='text', fun = function(Model, ...) predict(Model, ...)$predictions) #(Ranger model)
+          #Predicted_layer<-raster::predict(RastoDF,Model,na.action = 'omit',progress='text') #randomForest 
+          Predicted_layer<-raster::predict(cleaned_RastoDF, 
+                                          Model,
+                                          na.rm = TRUE,
+                                          type='response',
+                                          progress='text',
+                                          fun = function(Model, ...) predict(Model, ...)$predictions) #(Ranger model)
           #Predicted_layer<-predict(New_df,Model,na.rm = TRUE,progress='text')#ranger
           Predicted_layer<-raster::rasterFromXYZ(Predicted_layer,
                                 crs = "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0")
-          #ranger ... change back to raster for the rest of the pipline
-          cat("\n")
+          
+          # Set extent of predicted to be the same as the Data Brick
+          
+          extent(Predicted_layer) <- extent(RasterBrick) 
+          
+          #print("Raster Brick Attributes")
+          #print(RasterBrick)
+          #ranger ... change back to raster for the rest of the pipeline
+          #cat("\n")
           rm(New_df)
-          # Matches the spaitial information to the original raster
-          Predicted_layerResamp<-raster::resample(Predicted_layer,RasterBrick,method = "ngb")%>%
-            as.factor()
+          Predicted_layer@data@attributes <- RasterBrick@data@attributes#should fix mismatch?
+          # Matches the spatial information to the original raster
+          Predicted_layerResamp<-raster::resample(Predicted_layer, RasterBrick, method = "ngb")# %>% as.factor()
           
           # Restores attribute table
           Predicted_layerResamp@data@attributes <- Predicted_layer@data@attributes
