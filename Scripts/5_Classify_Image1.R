@@ -14,7 +14,8 @@ library(tools)
 library(randomForest)
 
 # Calls the function that will classify image
-source("Functions/LandCoverEstimator.R")
+#source("Functions/LandCoverEstimator.R")
+source("Functions/3_Simple_LandCoverEstimator.R")
 
 # Classify Image using the HyperSpec_DerivGenerator function
 # filename = file location to datacube
@@ -36,3 +37,10 @@ system.time(PredLayer<-LandCoverEstimator(filename = "Data/SubsetDatacube",
 #  In readChar(con, 5L, useBytes = TRUE) :
 #  cannot open compressed file 'Output/E_007_Best_Model_Ranger_50vars.rda', probable reason 'No such file or directory'
 #Called from: readChar(con, 5L, useBytes = TRUE)
+
+system.time(PredLayer<-LandCoverEstimator(filename = "Data/SubsetDatacube",
+                                          out_file = "Output/",
+                                          #Classif_Model = "Output/E_003_Best_Model_RandomForest_86vars.rda",
+                                          Classif_Model = "Output/E_007_Best_Model_Ranger_50vars.rda",
+                                          datatype = "raster",
+                                          extension = FALSE))

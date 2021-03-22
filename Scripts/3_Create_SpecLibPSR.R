@@ -510,9 +510,8 @@ for(i in 1:length(FunctionalGroupDf)){
 }
 
 ###Run LandCoverEstimator to generate Spectral Derivatives.
-#system.time(PredLayer<-LandCoverEstimator(filename = "Output/D_002_SpecLib_Derivs.csv",
-#                                          out_file = "Output/",
-#                                          #Classif_Model = "Output/E_003_Best_Model_RandomForest_86vars.rda",
-#                                          #Classif_Model = "Output/E_007_Best_Model_Ranger_50vars.rda",
-#                                          datatype = "csv",
-#                                          extension = FALSE))
+source("Functions/1_Simple_LandCoverEstimator.R")
+source("Functions/2_Simple_LandCoverEstimator.R")
+
+Make_Speclib_Derivs("Output/C_001_SC3_Cleaned_SpectralLib.csv",out_file="Output/")
+
