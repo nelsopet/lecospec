@@ -43,13 +43,16 @@ ResampleSpectralDataFrame <- function(df, wavelength=5){
     #Separate out data columns & convert to spectal object
     dfNoMetadata <- .RemoveMetaColumn(df)
     specLibDf <- spectrolab::as_spectra(dfNoMetadata)
+    
     # resample to new data frame
     resampledDfNoMetadata <- spectrolab::resample(specLibDf, seq(397.593, 899.424, wavelength)) %>%
         as.data.frame() %>%
         dplyr::select(-sample_name)
+    
     # rename columns and add metadata
     colnames(resampledDfNoMetadata) <- paste(colnames(resampledDfNoMetadata), "5nm", sep="_")
     resampledDf <- cbind(.RemoveBandColumn(df), resampledDfNoMetadata)
+   
     return(resampledDf)
 }
 
@@ -145,5 +148,9 @@ CalculateVegIndexFromSpecLib <- function(speclib){
 #' @examples Not Yet Implmented
 #' 
 CalculateVegIndex <- function(x){
-
+    if(is.data.frame(x)){
+        return(CalculateVegIndexFromDf(x))
+    } else {
+       return(CalculateVegIndexFromSpecLib(x))
+    }
 }
