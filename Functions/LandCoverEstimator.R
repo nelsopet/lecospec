@@ -65,7 +65,7 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
     df<-metaRemove(Resamp)
     
     # Converts the dataframe to a spectral object
-    SpeclibObj<-as_spectra(df)
+    SpeclibObj<-spectrolab::as_spectra(df)
     
     print("Resampling spectra every 5nm")
     
@@ -394,8 +394,7 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
     })
     
     # combines the tiles and writes the output to disk
-    Predicted_Layer<-do.call(raster::merge, List_of_PredLayers)%>%
-      as.factor()
+    Predicted_Layer<-do.call(raster::merge, List_of_PredLayers)# %>% as.factor()
     
     # Restres attribute table
     Predicted_Layer@data@attributes <- List_of_PredLayers[[1]]@data@attributes
