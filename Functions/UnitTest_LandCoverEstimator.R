@@ -84,8 +84,8 @@ Func_VI<-function(VI){
   matrix_a<-as.matrix(metaRemove(VI))
   
   # Creates numeric vector of wavelengths
-  namescolumn<-metaRemove(VI)%>%
-    colnames()%>%
+  namescolumn<-metaRemove(VI) %>%
+    colnames() %>%
     as.numeric()
   
   # Creates a spectralib object
