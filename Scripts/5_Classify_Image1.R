@@ -21,7 +21,8 @@ source("Functions/LandCoverEstimator.R")
 # out_file = output location for the predicted layer
 # Classif_Model = calssification model built using spectral library
 # datatype = is you data is a raster file or a .csv file
-# extension = does your input file has a extension associated with it? e.g (.tif,.csv, .dat)
+# extension = does your input file has a extension associated with it?
+# e.g (.tif,.csv, .dat)
 
 system.time(PredLayer<-LandCoverEstimator(filename = "Data/SubsetDatacube",
                                           out_file = "Output/",
