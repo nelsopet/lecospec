@@ -205,7 +205,8 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
     print("Splitting raster into 30 tiles")
     
     # Creates 30 tiles 
-    Tiles<-splitRaster(Converted_Dcube[[1]],30)
+    num_tiles <- 3# make 30 for production; reduced for faster testing
+    Tiles <- SpaDES.tools::splitRaster(Converted_Dcube[[1]], num_tiles)
 
     # Use 4 cores
     cores<- detectCores()-1
@@ -213,7 +214,7 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
     print(paste0(cores, " cores being used"))
     
     ## Start cluster
-    c1<- parallel::makeCluster(cores, setup_timeout = 0.5)
+    c1 <- parallel::makeCluster(cores, setup_timeout = 0.5)
     doParallel::registerDoParallel(c1)
     parallel::clusterEvalQ(c1,library(raster))
     
@@ -244,6 +245,8 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
     list_of_Tiles<-list.files(SubFolder,
                               pattern = glob2rx("A_001*.tif"),
                               full.names = T)
+
+    output_filenames <- list()
     
     # Iterate through the list using lapply
     List_of_PredLayers<-lapply(1:length(list_of_Tiles), function(i){
@@ -331,17 +334,19 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
           # Converts the results to a raster Brick and saves it on disk
           print("Converting results to a raster brick")
             #OFF for ranger
-            RastoDF<-raster::rasterFromXYZ(New_df,
-                                           crs = "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0")
+            RastoDF<-raster::rasterFromXYZ(
+              New_df,
+              crs = "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
+              )
             
-            names(RastoDF)<-colnames(New_df)[-1:-2]
+            names(RastoDF) <- colnames(New_df)[-1:-2]
           
           # Deletes the dataframe
           rm(DfofRas)
           #rm(New_df) 
           
           # Grabs the spatial information from original raster layer
-          RasterBrick<-brick(filename)
+          RasterBrick <- raster::brick(filename)
           
           
           
@@ -353,57 +358,112 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
           # Predict calss of each pixel and returns a Raster layer
           #Predicted_layer<-raster::predict(RastoDF,Model,na.rm = TRUE,progress='text')
           #Predicted_layer<-raster::predict(RastoDF,Model,na.action = 'omit',progress='text') #randomForest 
-          Predicted_layer<-raster::predict(cleaned_RastoDF, 
+          Predicted_layer<-raster::predict(cleaned_RastoDF,
                                           Model,
                                           na.rm = TRUE,
                                           type='response',
                                           progress='text',
                                           fun = function(Model, ...) predict(Model, ...)$predictions) #(Ranger model)
           #Predicted_layer<-predict(New_df,Model,na.rm = TRUE,progress='text')#ranger
-          Predicted_layer<-raster::rasterFromXYZ(Predicted_layer,
-                                crs = "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0")
+          Predicted_layer <- raster::rasterFromXYZ(
+            Predicted_layer,
+            crs = "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0")
           
           # Set extent of predicted to be the same as the Data Brick
           
-          extent(Predicted_layer) <- extent(RasterBrick) 
+          raster::extent(Predicted_layer) <- raster::extent(RasterBrick)
           
           #print("Raster Brick Attributes")
           #print(RasterBrick)
           #ranger ... change back to raster for the rest of the pipeline
           #cat("\n")
           rm(New_df)
-          Predicted_layer@data@attributes <- RasterBrick@data@attributes#should fix mismatch?
+          Predicted_layer@data@attributes <- RasterBrick@data@attributes
           # Matches the spatial information to the original raster
-          Predicted_layerResamp<-raster::resample(Predicted_layer, RasterBrick, method = "ngb")# %>% as.factor()
+          Predicted_layerResamp<-raster::resample(
+            Predicted_layer,
+            RasterBrick,
+            method = "ngb")# %>% as.factor()
           
           # Restores attribute table
           Predicted_layerResamp@data@attributes <- Predicted_layer@data@attributes
           
           # # Writes out the predicted Layer
-          writeRaster(Predicted_layerResamp,filename = paste0(SubFolder,"/B_001_",basename(filename),"_Tile",i,"_PredLayer.tif")
-                      ,overwrite = T)
+
+          layer_filename <- paste0(SubFolder,"/B_001_",basename(filename),"_Tile",i,"_PredLayer.tif")
+          output_filenames <- append(output_filenames, layer_filename)
+
+          writeRaster(
+            Predicted_layerResamp,
+            filename = layer_filename,
+            overwrite = TRUE)
           
           print(paste0(" Prediction for Tile ",i," Completed"))
           cat("\n")
           
-          return(Predicted_layerResamp)
+          return(c(Predicted_layerResamp, output_filenames))
           
         }
       }
       
     })
+
+    crop_layer_extents <- function(list_of_rasters, base_map){
+      cropped_rasters <- sapply(
+        list_of_rasters,
+        function(x){
+          y <- raster::resample(x, raster::crop(base_map, x))
+          return(y)
+        },
+        simplify = FALSE
+      )
+      sapply(list_of_rasters, function(x){
+        print(length(x))
+      })
+      return(cropped_rasters)
+    }
     
     # combines the tiles and writes the output to disk
-    Predicted_Layer<-do.call(raster::merge, List_of_PredLayers)# %>% as.factor()
+    print(paste0("Combining Tiles"))
+    #RasterBrick <- raster::brick(filename)
+    #list_of_predicted_layers <- crop_layer_extents(List_of_PredLayers, RasterBrick)
+    #Predicted_Layer <- do.call(raster::merge, list_of_predicted_layers)
+
+    ## To Fix: replace NAs with something reasonable -> KNN Imputer to replace them? 
+
+    predicted_output_file <- paste0(SubFolder,"/O_001_",basename(filename),"_combined_PredLayer.tif")
+    predicted_layer <- gdalUtils::mosaic_rasters(List_of_PredLayers[2], predicted_output_file, output_Raster = TRUE)
+    
+    Predicted_Layer <- raster::brick(predicted_output_file)
     
     # Restres attribute table
-    Predicted_Layer@data@attributes <- List_of_PredLayers[[1]]@data@attributes
+    print(paste0("Restoring Attribute Scale"))
+    Predicted_Layer@data@attributes <- List_of_PredLayers[1][[1]]@data@attributes
     
-    writeRaster(Predicted_Layer,filename = paste0(SubFolder,"/",basename(filename),"_PredLayer.tif")
-                ,overwrite = T)
-    
+    print(paste0("Saving data to File"))
+    writeRaster(
+      Predicted_Layer,
+      filename = paste0(
+        SubFolder,
+        "/",
+        basename(filename),
+        "_PredLayer.tif"),
+      overwrite = T)
+
     return(Predicted_Layer)
   }
-  
 }
 
+# Function Reads in the data and replace/removes weird values
+Make_Speclib_Derivs<- function(filename)  {  
+# Reads in spectral libray as .csv
+# Right now your spectral library would have already have weird values removed/replaced
+Spectral_lib<-read.csv(filename, check.names = F)
+
+Spectral_lib<-Deriv_combine(Spectral_lib)
+
+write.csv(Spectral_lib,paste(out_file,"D_002_SpecLib_Derivs",".csv", sep=""),row.names = F)
+
+# Normalize Values here
+return(Spectral_lib)
+}

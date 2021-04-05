@@ -24,9 +24,10 @@ source("Functions/LandCoverEstimator.R")
 # extension = does your input file has a extension associated with it?
 # e.g (.tif,.csv, .dat)
 
-system.time(PredLayer<-LandCoverEstimator(filename = "Data/SubsetDatacube",
-                                          out_file = "Output/",
-                                          #Classif_Model = "Output/E_003_Best_Model_RandomForest_86vars.rda",
-                                          Classif_Model = "Output/E_004_Best_Model_Ranger_86vars.rda",
-                                          datatype = "raster",
-                                          extension = FALSE))
+system.time(PredLayer <- LandCoverEstimator(
+    filename = "Data/SubsetDatacube",
+    out_file = "Output/",
+    #Classif_Model = "Output/E_003_Best_Model_RandomForest_86vars.rda",
+    Classif_Model = "Output/E_004_Best_Model_Ranger_86vars.rda",
+    datatype = "raster",
+    extension = FALSE))
