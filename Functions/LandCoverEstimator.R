@@ -352,12 +352,84 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
           
           print(paste0("Pointing Model at Tile ", i))
           
-          cleaned_RastoDF <- na.roughfix(RastoDF)# KRB
+          # function to fill in missing values using partial mean matching
+          impute_spectra <- function(x) {
+            
+            df <- x
+
+            if (! is.data.frame(x)) {
+              df <- x %>%
+                rasterToPoints() %>%
+                as.data.frame()
+            }
+            if (is.data.frame(df)){
+              print("input converted to dataframe")
+              print("input df dimension")
+              print(dim(df))
+            } else {
+              print("Conversion to dataframe failed")
+            }
+            
+            print("Imputing...")
+             missForest::missForest(df)
+            print("Checking Imputer Data Type: pass?")
+            print(is.data.frame(df))
+            print("Checking for missing Values...")
+            print(which(is.na(df)))
+
+            print("Imputed Data of size")
+            print(dim(df))
+
+            
+
+            if (! is.data.frame(x)) {
+
+              ExtractBands <- function(df){
+                bands <- .RemoveBandColumn(df) %>%
+                    colnames() %>%
+                    as.numeric()
+                    print("Bands")
+                    print(bands)
+                return(bands)
+              }
+
+              .RemoveMetaColumn<-function(x){
+                  meta <- c(grep("^[0-9][0-9][0-9]", colnames(x)))
+                  print("Input Dimension")
+                  print(dim(x))
+                  df_no_metadata <- x[, ! names(x) %in% meta]
+                  #df_no_metadata <- subset(x, select = -meta)
+                  return(df_no_metadata)
+              }
+                
+              .RemoveBandColumn<-function(x){   
+                  meta<-c(grep("[a-z A-Z]",colnames(x)))
+                  colremove <- x[,meta]
+                  return(colremove)
+              }
+              
+              print("Removing Metadata")
+              df_no_metadata <- .RemoveMetaColumn(df)
+              print("Converting to Matrix")
+              spectralMatrix <- as.matrix(df)
+              print("Converting to Spectral Library")
+              output_data <- raster::rasterFromXYZ(
+                spectralMatrix,
+                crs="+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0")
+              raster::extent(output_data) <- raster::extent(x)
+            }
+            return(output_data)
+          }
+          print("Imputing spectra")
+          cleaned_RastoDF <- impute_spectra(RastoDF)
+
+          #cleaned_RastoDF <- na.roughfix(RastoDF)# KRB
           #print(paste0(summary(cleaned_RastoDF)))
           
           # Predict calss of each pixel and returns a Raster layer
           #Predicted_layer<-raster::predict(RastoDF,Model,na.rm = TRUE,progress='text')
           #Predicted_layer<-raster::predict(RastoDF,Model,na.action = 'omit',progress='text') #randomForest 
+          print("Running Prediction")
           Predicted_layer<-raster::predict(cleaned_RastoDF,
                                           Model,
                                           na.rm = TRUE,
@@ -370,7 +442,7 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
             crs = "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0")
           
           # Set extent of predicted to be the same as the Data Brick
-          
+          print("Fixing Extents")
           raster::extent(Predicted_layer) <- raster::extent(RasterBrick)
           
           #print("Raster Brick Attributes")
