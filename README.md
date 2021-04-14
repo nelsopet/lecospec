@@ -210,13 +210,13 @@ Notice the change in the bandpasses and the number of variables in your new data
 
 Spectral sigantures of each functional group
 
-![](Output/C_005_Abiotic_Litter.jpg) 
+![](Output/C_005_Abiotic_Litter.jpg) {width=50%}
 
-![](Output/C_005_Abiotic_Rock.jpg) 
+![](Output/C_005_Abiotic_Rock.jpg) {width=50%}
 
 ![](C_005_Abiotic_Soil.jpg) 
 
-![](Output/C_005_Dwarf_Shrub_Broad.jpg) 
+![](Output/C_005_Dwarf_Shrub_Broad.jpg) {width=50%}
 
 ![](Output/C_005_Dwarf_Shrub_Needle.jpg) 
 
