@@ -210,7 +210,7 @@ Notice the change in the bandpasses and the number of variables in your new data
 
 Spectral sigantures of each functional group
 
-<img src="Output/C_005_Abiotic_Litter.jpg" width="100" height="100">
+<img src="Output/C_005_Abiotic_Litter.jpg" width="1000" height="1000">
 
 ![](Output/C_005_Abiotic_Litter.jpg) {width=50%}
 
