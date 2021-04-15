@@ -218,7 +218,7 @@ Spectral sigantures of each functional group
 
 ![](C_005_Abiotic_Soil.jpg) 
 
-![](Output/C_005_Dwarf_Shrub_Broad.jpg) {width=50%}
+![](Output/C_005_Dwarf_Shrub_Broad.jpg) {width=200%}
 
 ![](Output/C_005_Dwarf_Shrub_Needle.jpg) 
 
