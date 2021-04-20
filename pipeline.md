@@ -35,6 +35,7 @@ Data can be passed to the pipeline in any of the following formats:
     * Convert Data Type to ______
     * initialize the bandpass filters
     * initialize base vegetation indices.
+    * save X and Y Coordinates from Input to CSV
 2. Split the data into tiles
 3. initialize parallel infrastructure
     * broadcast variables as needed
@@ -44,7 +45,14 @@ Data can be passed to the pipeline in any of the following formats:
     * calculate specific vegetation indices
     * run the model on the tile
 5. Merge results
-6. Evaluate accuracy, etc. 
-7. Clean up
+    * Create a data.frame with the same X and Y coordinates as the input (from CSV)
+    * Use Model outputs to assign a label (z) to each input point
+    * create a column of numeric codes for class labels
+    * convert to a raster object as needed
+6. Use this (DF or raster) to create images of the output / overlay the input image
+7. Evaluate accuracy and performance
+8. Clean up as needed
 
-## To deploy as API
+## Publishing
+
+The Lecospec project is currently under development and will be released as an R package soon.  Currently we are targeting a mid-2021 launch.

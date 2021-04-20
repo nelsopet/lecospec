@@ -31,3 +31,4 @@ system.time(PredLayer <- LandCoverEstimator(
     Classif_Model = "Output/E_004_Best_Model_Ranger_86vars.rda",
     datatype = "raster",
     extension = FALSE))
+

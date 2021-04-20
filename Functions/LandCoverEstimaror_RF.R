@@ -3,12 +3,12 @@
 #' @inheritParams None
 #' @return a dataframe without non-bandpass columns
 #' @param x: a dataframe
-#' @seealso .RemoveBandColumn
+#' @seealso remove_band_column
 #' @export 
 #' @examples Not Yet Implmented
-.RemoveMetaColumn<-function(x){
-    meta<-c(grep("^[0-9][0-9][0-9]",colnames(x)))
-    colremove<-x[,meta]
+remove_meta_column <- function(x) {
+    meta <- c(grep("^[0-9][0-9][0-9]", colnames(x)))
+    colremove <- x[, meta]
     return(colremove)
 }
   
@@ -19,41 +19,46 @@
 #' @inheritParams None
 #' @return explanation
 #' @param x: a dataframe
-#' @seealso .RemoveMetaColumn
+#' @seealso remove_meta_column
 #' @export 
 #' @examples Not Yet Implmented
 #' 
-.RemoveBandColumn<-function(x){   
-    meta<-c(grep("[a-z A-Z]",colnames(x)))
-    colremove <- x[,meta]
+remove_band_column <- function(x) {   
+    meta <- c(grep("[a-z A-Z]", colnames(x)))
+    colremove <- x[, meta]
     return(colremove)
 }
 
-#' Resamples the given dataframe to every 'wavelength' nanometers 
-#' 
+#' Resamples the given dataframe to every 'wavelength' nanometers
+#'
 #' @inheritParams None
-#' @return A dataframe with the spectral compaonents with the specified wavelength separation 
-#'  between bands
+#' @return A dataframe with the spectral compaonents
+#' with the specified wavelength separation between bands
 #' @param df: a dataframe
 #' @param wavelength: The wavelength separation for columns, in nanometers.
 #' @seealso None
-#' @export 
-#' @examples Not Yet Implmented 
-ResampleSpectralDataFrame <- function(df, wavelength=5){
+#' @export
+#' @examples Not Yet Implmented
+resample_spectral_dataframe <- function(df, wavelength=5) {
     #Separate out data columns & convert to spectal object
-    dfNoMetadata <- .RemoveMetaColumn(df)
-    specLibDf <- spectrolab::as_spectra(dfNoMetadata)
-    
+    df_no_metadata <- remove_meta_column(df)
+    speclib_df <- spectrolab::as_spectra(df_no_metadata)
+
     # resample to new data frame
-    resampledDfNoMetadata <- spectrolab::resample(specLibDf, seq(397.593, 899.424, wavelength)) %>%
+    resampled_df_no_metadata <- spectrolab::resample(
+        speclib_df, 
+        seq(397.593, 899.424, wavelength)) %>%
         as.data.frame() %>%
         dplyr::select(-sample_name)
-    
+
     # rename columns and add metadata
-    colnames(resampledDfNoMetadata) <- paste(colnames(resampledDfNoMetadata), "5nm", sep="_")
-    resampledDf <- cbind(.RemoveBandColumn(df), resampledDfNoMetadata)
-   
-    return(resampledDf)
+    colnames(resampleddf_no_metadata) <- paste(
+        colnames(resampled_df_no_metadata),
+        "5nm",
+        sep = "_")
+    resampled_df <- cbind(remove_band_column(df), resampled_df_no_metadata)
+
+    return(resampled_df)
 }
 
 #' Extracts indices from data frame column names
@@ -66,8 +71,8 @@ ResampleSpectralDataFrame <- function(df, wavelength=5){
 #' @seealso None
 #' @export 
 #' @examples Not Yet Implmented
-ExtractBands <- function(df){
-    bands <- .RemoveBandColumn(df) %>%
+extract_bands <- function(df){
+    bands <- remove_band_column(df) %>%
         colnames() %>%
         as.numeric()
     return(bands)
@@ -83,7 +88,7 @@ ExtractBands <- function(df){
 #'
 DataframeToSpecLib <- function(df) {
     # Convert to a spectral library
-    df_no_metadata <- .RemoveMetaColumn(df)
+    df_no_metadata <- remove_meta_column(df)
     spectralMatrix <- as.matrix(df_no_metadata)
     bands <- ExtractBands(df)
     spectralLib <- hsdar::speclib(spectralMatrix, bands)
@@ -109,7 +114,7 @@ SpecLibToDataframe <- function(speclib){
 #' @inheritParams None
 #' @return 
 #' @param df: A dataframe of spectral data 
-#' @param indices: base vegetation index for the calculations.
+#' @param indices: (optional) base vegetation index for the calculations.
 #' If none is supplied, one will be calculated using the hsdar package
 #' @param aviris: The spectral indices of interest from the AVIRIS data
 #' (default list of only -58)
@@ -176,7 +181,6 @@ calculate_veg_index <- function(x){
 #'
 #' Long Description here
 #'
-#'
 #' @return explanation
 #' @param data: the input data.  
 #' @param functions: a vector or list of functions.
@@ -189,7 +193,7 @@ apply_pipeline <- function(data, functions) {
     pipeline_length <- length(functions)
     x <- functions[1](data)
 
-    for (f in functions[2:pipeline_length]){
+    for (f in functions[2:pipeline_length]) {
         x <- f(x)
     }
 
