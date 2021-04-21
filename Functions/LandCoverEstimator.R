@@ -644,7 +644,7 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
         my_plot <- ggplot2::ggplot(data = df) +
           geom_point(aes(df$x, df$y, color=df$z))
         print(my_plot)
-        ggplot2::ggsave(save_file)
+        #ggplot2::ggsave(save_file)
         return(my_plot)
       }
 
