@@ -256,7 +256,7 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
     #-------------------------List_of_Predlauers----------------------$
 
     output_filenames <- list()
-    List_of_PredLayers<-lapply(1:2, function(i){
+    List_of_PredLayers<-lapply(1:length(list_of_Tiles), function(i) {
       
       
       # Creates the name of the output file and the location in which its stored
@@ -537,26 +537,26 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
             z <- c()
 
             for (my_prediction in predictions) {
-              prediction_df <- as.data.frame(raster::levels(my_prediction), xy=TRUE)
+              prediction_df <- as.data.frame(
+                raster::levels(my_prediction)[[1]],
+                xy=TRUE)
               num_pixels <- nrow(prediction_df)
               print("Number of pixels in prediction")
               print(num_pixels)
               for (iter_idx in seq_len(num_pixels)) {
                 #print("Match Found while aggregating")
-                if (!is.na(prediction[iter_idx, 4])){
-                  print("Appending:")
-                  print(prediction_df[iter_idx, 4])
-                  z <- append(z, prediction_df[iter_idx, 4])
+                if (!is.na(prediction_df[iter_idx, 2])) {
+                  z <- append(z, prediction_df[iter_idx, 2])
                 }
               }
             }
             print("vector z")
             print(z)
 
-            if (lenght(z) > nrow(dfxy)) {
+            if (length(z) > nrow(dfxy)) {
               z <- z[1:nrow(dfxy)]
             } else if (length(z) < nrow(dfxy)) {
-               dfxy <- base::head(dfxy, n = length(z))
+               dfxy <- head(dfxy, n = length(z))
             } 
             df <- cbind(dfxy, z)
             return(df)
