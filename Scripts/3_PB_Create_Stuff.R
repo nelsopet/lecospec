@@ -1,12 +1,12 @@
-# ----------------------- Script 3 -------------------------- #
-# Script creates a Cleaned Spectral library object, 
-# combining all the Scans collected in Alaksa during 2018 and 2019
+# ------------------------------------------------------------ Script 3 ----------------------------------------------------- #
+# Script creates a Cleand Spectral library object, combining all the Scans collected in Alaksa during 2018 and 2019
 # Packages to install
 library(plyr)
 library(dplyr)
 library(ggplot2)
 library(spectrolab)
 library(tidyverse)
+library(doParallel)
 
 # ------------------------------------------------ Step1: Data Munging Step ------------------------------------------------- # 
 # In this step we will combine all our spectral profiles to form one spectral library
@@ -30,18 +30,9 @@ names(Ecosis_data)[2]<-"Code_name"
 names(Ecosis_data)[1]<-"ScanID"
 Ecosis_data$Area<- "NOT RECORDED"
 
-
-
 # Creates a spectral library from ecosis data
-Ecosis_data<-Ecosis_data %>% 
-  inner_join(Species_groups,by="Code_name") %>%
-  dplyr::select(ScanID,
-               Code_name,
-               Species_name,
-               Functional_group1,
-               Functional_group2,
-               Area,
-               everything())
+Ecosis_data<-Ecosis_data%>%inner_join(Species_groups,by="Code_name")%>%
+  dplyr::select(ScanID,Code_name,Species_name,Functional_group1,Functional_group2,Area,everything())
 
 # Import file path names of .rds files into character list (Spectral libraries based on each location in alaska) 
 SpecLib_by_location = list.files(mypath_atkin, pattern="A_0",full.names = T) 
@@ -51,12 +42,11 @@ list_of_SpecLib<-lapply(SpecLib_by_location,readRDS)%>% # Reads in the spectral 
   setNames(gsub("Output/","",SpecLib_by_location)) # Removes dir path from the name
 
 # Combines specral libraries from all locations
-SpecLib<-Reduce(spectrolab::combine,list_of_SpecLib) %>% # dim(n_samples=1989, n_wavelegths=2151)
-  as.data.frame() %>% # Converts Spectral Object to a dataframe
-  dplyr::select(-sample_name) %>% # Removes unwanted column ~ should remove this later instead
-  inner_join(Species_groups,by="Code_name") %>% #Joins dataframe with all the species info to our spectral library
+SpecLib<-Reduce(spectrolab::combine,list_of_SpecLib)%>% # dim(n_samples=1989, n_wavelegths=2151)
+  as.data.frame()%>% # Converts Spectral Object to a dataframe
+  dplyr::select(-sample_name)%>% # Removes unwanted column 
+  inner_join(Species_groups,by="Code_name")%>% #Joins dataframe with all the species info to our spectral library
   dplyr::select(ScanID,Code_name,Species_name,Functional_group1,Functional_group2,Area,everything()) #Reorders columns 
-
 
 # Combines Ecosis data and spectral library
 SpecLib<-rbind(SpecLib,Ecosis_data)
@@ -118,7 +108,7 @@ SpecLib_new_All<-SpecLib_new%>%
   plyr::ddply( .(Functional_group2), mutate, Functional_group2_Freq = length(Functional_group2))%>% # Add column to data frame that shows frequency of courser functional groups
   dplyr::select(ScanID,Code_name,Species_name,Functional_group1,Functional_group2,Area,Species_name_Freq,Functional_group1_Freq,Functional_group2_Freq,everything()) # Rearrange columns 
 
-# Removes all unknown scans
+# Removes all unkown scans
 SpecLib_new_All<-SpecLib_new_All[!(SpecLib_new_All$Species_name=="Unknown"),]
 
 # ------------------------------------------------- Step 2: Spectral Library Clean Up -------------------------------------------------- #
@@ -248,7 +238,7 @@ for(i in 1:length(Target_names)){
   metadata<-each_target[[i]][,c(1:9)]%>%as.data.frame()
   
   # Convert to a spectral object
-  each_target[[i]] <- as_spectra(each_target[[i]][-1:-9])
+  each_target[[i]]<-spectrolab::as.spectra(each_target[[i]][-1:-9])
   
   # Add metadata
   meta(each_target[[i]])<-data.frame(metadata[,c(1:9)], stringsAsFactors = FALSE)
@@ -521,7 +511,8 @@ for(i in 1:length(FunctionalGroupDf)){
 }
 
 ###Run LandCoverEstimator to generate Spectral Derivatives.
-source("Functions/1_Simple_LandCoverEstimator.R")
-source("Functions/2_Simple_LandCoverEstimator.R")
+source("Functions/LandCoverEstimator.R")
+source("Functions/1_LCE_derivs.R")
+source("Functions/2_LCE_veg_index.R")
 
-Make_Speclib_Derivs("Output/C_001_SC3_Cleaned_SpectralLib.csv",out_file="Output/")
+Make_Speclib_Derivs("Output/C_001_SC3_Cleaned_SpectralLib.csv", out_file="Output/")
