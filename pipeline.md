@@ -32,18 +32,21 @@ Data can be passed to the pipeline in any of the following formats:
 # Current Pipeline
 
 1. Load Data
-    * Convert Data Type to ______
-    * initialize the bandpass filters
+    * Load data from file
+    * initialize the band pass filters
     * initialize base vegetation indices.
     * save X and Y Coordinates from Input to CSV
-2. Split the data into tiles
+    * load the classifier (ML Model)
+2. Whole dataset pre-processing
+    * Convert Data Type to data frame
+    * data compression (WIP - currently just select important columns)
+    * Fill in missing data with Random Forest regressor (MissForest Algorithm)
+    * Split the data into tiles
 3. initialize parallel infrastructure
-    * broadcast variables as needed
-4. In parallel: `for tile in tiles do:`
-    * fill in missing values
-    * calculate derivatives
+4. In parallel: for each tile do:
+    * calculate spectral derivatives
     * calculate specific vegetation indices
-    * run the model on the tile
+    * run the model on the tile (pixel-wise classifier)
 5. Merge results
     * Create a data.frame with the same X and Y coordinates as the input (from CSV)
     * Use Model outputs to assign a label (z) to each input point
