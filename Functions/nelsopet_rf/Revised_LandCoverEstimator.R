@@ -113,14 +113,19 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
     
     
     # Creates dataframe with Vegitation indices
-    VI_CALC<-if(ncol(metaRemove(VI)) == 272){
-      foreach(i=1:length(Headwall_VI), .combine=cbind, .packages = 'hsdar') %dopar%{
-        a<-hsdar::vegindex(spec_library, index=Headwall_VI[[i]], weighted=FALSE)}
-      
-    } else {
-      foreach(i=1:length(AVIRIS_VI), .combine=cbind, .packages = 'hsdar') %dopar%{
-        a<-hsdar::vegindex(spec_library, index=AVIRIS_VI[[i]], weighted = FALSE)}
-    }
+    #NEW
+    VI_CALC<-foreach(i=1:length(Headwall_VI), .combine=cbind, .packages = 'hsdar') %dopar%{
+      a<-hsdar::vegindex(spec_library, index=Headwall_VI[[i]], weighted=FALSE)}
+    
+    #OLD
+    #VI_CALC<-if(ncol(metaRemove(VI)) == 272){
+    #  foreach(i=1:length(Headwall_VI), .combine=cbind, .packages = 'hsdar') %dopar%{
+    #    a<-hsdar::vegindex(spec_library, index=Headwall_VI[[i]], weighted=FALSE)}
+    #  
+    #} else {
+    #  foreach(i=1:length(AVIRIS_VI), .combine=cbind, .packages = 'hsdar') %dopar%{
+    #    a<-hsdar::vegindex(spec_library, index=AVIRIS_VI[[i]], weighted = FALSE)}
+    #}
     
     # Stops cluster
     parallel::stopCluster(c1)
@@ -129,10 +134,13 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
     VI_CALC<-as.data.frame(VI_CALC)
     
     # Function Renames columns
-    if(ncol(VI_CALC) == 95){
-      names(VI_CALC)<-Headwall_VI
-    } else {
-      names(VI_CALC)<-AVIRIS_VI}
+    #NEW
+    names(VI_CALC)<-Headwall_VI
+    #OLD
+    #if(ncol(VI_CALC) == 95){
+    #  names(VI_CALC)<-Headwall_VI
+    #} else {
+    #  names(VI_CALC)<-AVIRIS_VI}
     
     # Function removes spaces and special charcters from column names
     # Models will not run if these aren't removed
@@ -207,7 +215,7 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
     print("Splitting raster into 30 tiles")
     
     # Creates 30 tiles 
-    num_tiles <- 3# make 30 for production; reduced for faster testing
+    num_tiles <- 10# make 30 for production; reduced for faster testing
     Tiles <- SpaDES.tools::splitRaster(Converted_Dcube[[1]], num_tiles)
 
     # Use 4 cores
@@ -228,7 +236,7 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
       if(!file.exists(Out_tif)) {
 
         # Crops raster based on the extent of the 24 tiles that we created
-        raster::crop(Converted_Dcube,extent(Tiles[[x]]),
+        raster::crop(Converted_Dcube,
                      filename = Out_tif,
                      dataType = "INT4S",format="GTiff",overwrite = T)
         
@@ -456,6 +464,7 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
                                           type='response',
                                           progress='text',
                                           fun = function(Model, ...) predict(Model, ...)$predictions) #(Ranger model)
+          
           #Predicted_layer<-predict(New_df,Model,na.rm = TRUE,progress='text')#ranger
 
          

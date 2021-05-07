@@ -5,7 +5,7 @@ Make_Speclib_Derivs<- function(filename)  {
   
   Spectral_lib<-Deriv_combine(Spectral_lib)
   
-  write.csv(Spectral_lib,paste(out_file,"D_002_SpecLib_Derivs",".csv", sep=""),row.names = F)
+  write.csv(Spectral_lib,paste("Output/D_002_SpecLib_Derivs",".csv", sep=""),row.names = F)
   
   # Normalize Values here
   return(Spectral_lib)

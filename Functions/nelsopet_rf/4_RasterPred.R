@@ -1,4 +1,4 @@
-if(datatype == "raster"){
+RasterPred<-function (filename){
   print("Raster File Detected")
   
   print("Importing Datacube")
@@ -9,7 +9,7 @@ if(datatype == "raster"){
   print("Splitting raster into 30 tiles")
   
   # Creates 30 tiles 
-  num_tiles <- 3# make 30 for production; reduced for faster testing
+  num_tiles <- 30# make 30 for production; reduced for faster testing
   Tiles <- SpaDES.tools::splitRaster(Converted_Dcube[[1]], num_tiles)
   
   # Use 4 cores
@@ -84,7 +84,8 @@ if(datatype == "raster"){
         
         # Removes noisey bands
         # Find out a way to Automatically remove bands based on the variance
-        # remove hard coding 
+        # remove hard coding
+      #TEST
         DfofRas<-DfofRas[1:274]
         
         # Rename bandpasses
@@ -457,5 +458,4 @@ if(datatype == "raster"){
   write.table(output_df, file = "Output/full_model_results.csv")
   
   return(output_df)
-}
 }
