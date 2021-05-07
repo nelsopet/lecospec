@@ -21,11 +21,15 @@ names(SpecLib_derivs)[1]<-"Classes"
 # Converts column to a fctor
 SpecLib_derivs$Classes<-SpecLib_derivs$Classes%>%as.factor()
 
+SpecLib_derivs<-SpecLib_derivs %>% dplyr::select(-2:-7)
+
+colnames(SpecLib_derivs)
 set.seed(123)
+
+
 # Build Model
 rf_mod_ranger<-ranger::ranger(Classes ~ .,data = SpecLib_derivs,
-                      num.trees = 1000,
-                      local.importance = TRUE) # OOB prediction error:             25.93 %
+                      num.trees = 1000, local.importance = TRUE) # OOB prediction error:             25.93 %
 
 rf_mod_randomforest<-randomForest(Classes ~ .,data = SpecLib_derivs
                                   ,ntree=1000,importance=TRUE) # OOB prediction error 26.18%
@@ -71,26 +75,26 @@ save(rf_mod_ranger      , file = "Output/E_004_Best_Model_Ranger.rda")
 
 #------------------------------ Select Important varibles -----------------------------------
 # Creates a dataframe with all varibles and their imoportance
- ImportantVarsFrame<-enframe(rf_mod_ranger_IMP$variable.importance, 
-                             name="predictor", value="importance")
+# ImportantVarsFrame<-enframe(rf_mod_ranger_IMP$variable.importance, 
+#                             name="predictor", value="importance")
    
  # Function Creates a plot of the 30 most important vars
- ImportantVarsFrame25<-ImportantVarsFrame[order(ImportantVarsFrame$importance,decreasing = TRUE),][1:25,]
+# ImportantVarsFrame25<-ImportantVarsFrame[order(ImportantVarsFrame$importance,decreasing = TRUE),][1:25,]
  
  # Lets R respect the order in data.frame.
- ImportantVarsFrame25$predictor <- factor(ImportantVarsFrame25$predictor,
-                                        levels = ImportantVarsFrame25$predictor
-                                        [order(ImportantVarsFrame25$importance)])
- 
- # Creates a plot of the 30 most important varibles
- ImportantVarsFrame25%>%
-   ggplot(aes(x  = predictor, y = importance))+
-   theme_bw()+
-   geom_bar(stat = "identity")+
-   coord_flip()+
-   ggtitle("25 Most Important Varibles (Class_3)")
- 
- ggsave("Output/E_009_Class_3_VarImp.jpg")
+# ImportantVarsFrame25$predictor <- factor(ImportantVarsFrame25$predictor,
+#                                        levels = ImportantVarsFrame25$predictor
+#                                        [order(ImportantVarsFrame25$importance)])
+# 
+# # Creates a plot of the 30 most important varibles
+# ImportantVarsFrame25%>%
+#   ggplot(aes(x  = predictor, y = importance))+
+#   theme_bw()+
+#   geom_bar(stat = "identity")+
+#   coord_flip()+
+#   ggtitle("25 Most Important Varibles (Class_3)")
+# 
+# ggsave("Output/E_009_Class_3_VarImp.jpg")
  
 
 

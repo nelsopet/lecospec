@@ -207,7 +207,7 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
     print("Splitting raster into 30 tiles")
     
     # Creates 30 tiles 
-    num_tiles <- 50# make 30 for production; reduced for faster testing
+    num_tiles <- 100# make 30 for production; reduced for faster testing
     Tiles <- SpaDES.tools::splitRaster(Converted_Dcube[[1]], num_tiles)
 
     # Use 4 cores
@@ -463,9 +463,13 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
           print("Model Output")
           print(Predicted_layer_df)
 
-          Predicted_layer <- raster::rasterFromXYZ(
-            Predicted_layer_df,
-            crs = "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0")
+          
+          #OFF ... Caused error because output of prediction already was a raster
+          #Predicted_layer <- raster::rasterFromXYZ(
+          #  Predicted_layer_df,
+          #  crs = "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0")
+          #NEW
+          Predicted_layer<-Predicted_layer_df
           
           # Set extent of predicted to be the same as the Data Brick
           print("Fixing Extents")
@@ -503,9 +507,9 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
           print(layer_filename)
 
           print("Predicted Layer")
-          print(Predicted_layer)
+          #print(Predicted_layer)
           print("Predicted Layer After Resampling")
-          print(Predicted_layerResamp)
+          #print(Predicted_layerResamp)
           
           return(Predicted_layer_df)
           

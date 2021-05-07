@@ -2,11 +2,16 @@
 # Script creates a Cleaned Spectral library object, 
 # combining all the Scans collected in Alaksa during 2018 and 2019
 # Packages to install
-library(plyr)
-library(dplyr)
-library(ggplot2)
-library(spectrolab)
 library(tidyverse)
+library(raster)
+library(SpaDES)
+library(doParallel)
+library(parallel)
+library(hsdar)
+library(caret)
+library(ranger)
+library(tools)
+library(randomForest)
 
 # ------------------------------------------------ Step1: Data Munging Step ------------------------------------------------- # 
 # In this step we will combine all our spectral profiles to form one spectral library
@@ -248,7 +253,7 @@ for(i in 1:length(Target_names)){
   metadata<-each_target[[i]][,c(1:9)]%>%as.data.frame()
   
   # Convert to a spectral object
-  each_target[[i]] <- as_spectra(each_target[[i]][-1:-9])
+  each_target[[i]] <- as.spectra(each_target[[i]][-1:-9])
   
   # Add metadata
   meta(each_target[[i]])<-data.frame(metadata[,c(1:9)], stringsAsFactors = FALSE)
@@ -481,47 +486,47 @@ saveRDS(Cleaned_Speclib_rds,"Output/C_002_SC3_Cleaned_Speclib.rds")
 # ------------------------------------------ Step 3: Create Plots showing spectral profiles ------------------------------------------------- #
 
 # Creates a vector with the name of all the categories of interest
-names_of_classes<-c(as.character(unique(Cleaned_Speclib[,"Functional_group1"])))
+#names_of_classes<-c(as.character(unique(Cleaned_Speclib[,"Functional_group1"])))
 
 # Creates an empty list
-FunctionalGroupDf<-list()
-
-for(i in 1:length(names_of_classes)){
-  
-  # Subset a functional group
-  FunctionalGroupDf[[i]]<-subset(Cleaned_Speclib,Functional_group1 == names_of_classes[i])
-  
-  
-  # change the dtaframe to a long dataframe 
-  FunctionalGroupDf[[i]]<-gather(FunctionalGroupDf[[i]] ,Wavelength,Reflectance,-1:-9)
-  
-  
-  # Make column name Wavelength numeric
-  FunctionalGroupDf[[i]]$Wavelength    <-as.numeric(FunctionalGroupDf[[i]]$Wavelength)
-  
-  # Plot the output
-  FunctionalGroupDf[[i]]<-FunctionalGroupDf[[i]]%>%
-    group_by(Species_name, Wavelength) %>%  
-    dplyr::summarise(Median_Reflectance = median(Reflectance))%>%
-    as.data.frame()
-}
-
-for(i in 1:length(FunctionalGroupDf)){
-  
-  # Creates a ggplot for each functional group with all species
-  ggplot(FunctionalGroupDf[[i]],aes(Wavelength,Median_Reflectance))+geom_line(aes(color = Species_name))+
-    labs(color="Species")+
-    theme(panel.background = element_rect(fill = "white", colour = "grey50"), 
-          legend.key.size = unit(0.5, "cm"),legend.text = element_text(size=12))+
-    labs(title = paste(names_of_classes[[i]]," Spectral Signatures", sep = ""))
-  
-  # Saves the plots
-  ggsave(paste("Output/","C_003_SC3","_",names_of_classes[[i]],".jpg",sep =""))
-  
-}
+#FunctionalGroupDf<-list()
+#
+#for(i in 1:length(names_of_classes)){
+#  
+#  # Subset a functional group
+#  FunctionalGroupDf[[i]]<-subset(Cleaned_Speclib,Functional_group1 == names_of_classes[i])
+#  
+#  
+#  # change the dtaframe to a long dataframe 
+#  FunctionalGroupDf[[i]]<-gather(FunctionalGroupDf[[i]] ,Wavelength,Reflectance,-1:-9)
+#  
+#  
+#  # Make column name Wavelength numeric
+#  FunctionalGroupDf[[i]]$Wavelength    <-as.numeric(FunctionalGroupDf[[i]]$Wavelength)
+#  
+#  # Plot the output
+#  FunctionalGroupDf[[i]]<-FunctionalGroupDf[[i]]%>%
+#    group_by(Species_name, Wavelength) %>%  
+#    dplyr::summarise(Median_Reflectance = median(Reflectance))%>%
+#    as.data.frame()
+#}
+#
+#for(i in 1:length(FunctionalGroupDf)){
+#  
+#  # Creates a ggplot for each functional group with all species
+#  ggplot(FunctionalGroupDf[[i]],aes(Wavelength,Median_Reflectance))+geom_line(aes(color = Species_name))+
+#    labs(color="Species")+
+#    theme(panel.background = element_rect(fill = "white", colour = "grey50"), 
+#          legend.key.size = unit(0.5, "cm"),legend.text = element_text(size=12))+
+#    labs(title = paste(names_of_classes[[i]]," Spectral Signatures", sep = ""))
+#  
+#  # Saves the plots
+#  ggsave(paste("Output/","C_003_SC3","_",names_of_classes[[i]],".jpg",sep =""))
+#  
+#}
 
 ###Run LandCoverEstimator to generate Spectral Derivatives.
-source("Functions/1_Simple_LandCoverEstimator.R")
-source("Functions/2_Simple_LandCoverEstimator.R")
+source("Functions/nelsopet_rf/2_DerivCombine.R")
+source("Functions/nelsopet_rf/3_Make_SpecLib_Derivs.R")
 
-Make_Speclib_Derivs("Output/C_001_SC3_Cleaned_SpectralLib.csv",out_file="Output/")
+Make_Speclib_Derivs("Output/C_001_SC3_Cleaned_SpectralLib.csv") 

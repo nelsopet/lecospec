@@ -14,7 +14,11 @@ library(tools)
 library(randomForest)
 
 # Calls the function that will classify image
-source("Functions/LandCoverEstimator.R")
+source("Functions/nelsopet_rf/Original_LandCoverEstimator.R")
+#source("Functions/1_LCE_derivs.R")
+#source("Functions/2_LCE_veg_index.R")
+#source("Functions/3_LCE_main_function.R")
+#source("Functions/nelsopet_rf/4_RasterPred.R")
 
 # Classify Image using the HyperSpec_DerivGenerator function
 # filename = file location to datacube
@@ -24,11 +28,19 @@ source("Functions/LandCoverEstimator.R")
 # extension = does your input file has a extension associated with it?
 # e.g (.tif,.csv, .dat)
 
+#system.time(PredLayer <- LandCoverEstimator(
+#    filename = "Data/SubsetDatacube",
+#    out_file = "Output/",
+#    #Classif_Model = "Output/E_003_Best_Model_RandomForest_86vars.rda",
+#    Classif_Model = "Output/E_004_Best_Model_Ranger.rda",
+#    datatype = "raster",
+#    extension = FALSE))
+
 system.time(PredLayer <- LandCoverEstimator(
-    filename = "Data/SubsetDatacube",
-    out_file = "Output/",
+    filename = "M:/Alaksa_Datacubes/Raw_files/WickershamDome_2019_08_08_19_31_51_2000_rd_rf_or",
+    out_file = "M:/Alaksa_Datacubes/Predictions/NEW/",
     #Classif_Model = "Output/E_003_Best_Model_RandomForest_86vars.rda",
-    Classif_Model = "Output/E_004_Best_Model_Ranger_86vars.rda",
+    Classif_Model = "Output/E_004_Best_Model_Ranger.rda",
     datatype = "raster",
     extension = FALSE))
 
