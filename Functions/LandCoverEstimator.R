@@ -7,6 +7,8 @@
 ## A subfolder will be created in you out_file path for aving all the output files
 
 LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension){
+
+  
   
   # Creates a vector of the bandpasses for the headwall sensor that will be used
   # Noisey band were omitted (only bands 1:272 below)
@@ -43,6 +45,89 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
                          880.906,882.758, 884.610, 886.462, 888.313, 890.165, 892.017, 893.869, 895.720,
                          897.572,899.424)
   
+            unregister_dopar <- function() {
+              env <- foreach:::.foreachGlobals
+              rm(list=ls(name=env), pos=env)
+            }
+
+
+           impute_spectra <- function(x) {
+            
+            df <- x
+
+            if (! is.data.frame(x)) {
+              df <- x %>%
+                rasterToPoints() %>%
+                as.data.frame()
+            }
+            if (is.data.frame(df)){
+              print("input converted to dataframe")
+              print("input df dimension")
+              print(dim(df))
+              print("Imputing...")
+            #missForest::missForest(df, maxiter = 1, parallelize = "trees")
+            
+            df <- useful::simple.impute(df)
+            return(df)
+            } else {
+              print("Conversion to dataframe failed")
+            }
+            
+
+            print("Checking Imputer Data Type: pass?")
+            print(is.data.frame(df))
+            print("Checking for missing Values...")
+            print(which(is.na(df)))
+
+            print("Imputed Data of size")
+            print(dim(df))
+
+
+
+            
+
+            if (! is.data.frame(x)) {
+
+              ExtractBands <- function(df){
+                bands <- .RemoveBandColumn(df) %>%
+                    colnames() %>%
+                    as.numeric()
+                    print("Bands")
+                    print(bands)
+                return(bands)
+              }
+
+              .RemoveMetaColumn<-function(x){
+                  meta <- c(grep("^[0-9][0-9][0-9]", colnames(x)))
+                  print("Input Dimension")
+                  print(dim(x))
+                  df_no_metadata <- x[, ! names(x) %in% meta]
+                  #df_no_metadata <- subset(x, select = -meta)
+                  return(df_no_metadata)
+              }
+                
+              .RemoveBandColumn<-function(x){   
+                  meta<-c(grep("[a-z A-Z]",colnames(x)))
+                  colremove <- x[,meta]
+                  return(colremove)
+              }
+              
+              print("Removing Metadata")
+
+              print("Imputing...")
+              df <- useful::simple.impute(df)
+              df_no_metadata <- .RemoveMetaColumn(df)
+              print("Converting to Matrix")
+              spectralMatrix <- as.matrix(df)
+              print("Converting to Spectral Library")
+              output_data <- raster::rasterFromXYZ(
+                spectralMatrix,
+                crs="+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0")
+              raster::extent(output_data) <- raster::extent(x)
+            }
+            return(output_data)
+          }#end impute_spectra
+
   # Functions returns columns that are bandpasses
   metaRemove<-function(x){
     meta<-c(grep("^[0-9][0-9][0-9]",colnames(x)))
@@ -71,7 +156,7 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
     
     # Creates functions that will do the resampling every 5nm
     final<-spectrolab::resample(SpeclibObj,seq(397.593,899.424,5))%>%
-      as.data.frame()%>%
+      as.data.frame() %>%
       dplyr::select(-sample_name)
     
     # Rename columns
@@ -101,16 +186,11 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
     spec_library<-hsdar::speclib(matrix_a,namescolumn)
     
     # creates a vectror of names of all the vegitation indices
-    AVIRIS_VI  <-hsdar::vegindex()[-58]
-    Headwall_VI<-hsdar::vegindex()[-c(3,26,27,31,32,33,35,48,49,58,60,66,67,71,82,99,102,103,104,105)]
+    base_index <- hsdar::vegindex()
+    AVIRIS_VI  <-base_index [-58]
+    Headwall_VI<-base_index [-c(3,26,27,31,32,33,35,48,49,58,60,66,67,71,82,99,102,103,104,105)]
     
-    # Get amount of cores to use
-    cores <- parallel::detectCores()-1
-    
-    # prepare for parallel process
-    c1<- parallel::makeCluster(cores, setup_timeout = 0.5)
-    doParallel::registerDoParallel(c1)
-    
+
     
     # Creates dataframe with Vegitation indices
     VI_CALC<-if(ncol(metaRemove(VI)) == 272){
@@ -122,17 +202,16 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
         a<-hsdar::vegindex(spec_library, index=AVIRIS_VI[[i]], weighted = FALSE)}
     }
     
-    # Stops cluster
-    parallel::stopCluster(c1)
+
     
     # Converts Matrix to a datframe 
-    VI_CALC<-as.data.frame(VI_CALC)
+    VI_CALC <- as.data.frame(VI_CALC)
     
     # Function Renames columns
     if(ncol(VI_CALC) == 95){
-      names(VI_CALC)<-Headwall_VI
+      names(VI_CALC) <- Headwall_VI
     } else {
-      names(VI_CALC)<-AVIRIS_VI}
+      names(VI_CALC) <- AVIRIS_VI}
     
     # Function removes spaces and special charcters from column names
     # Models will not run if these aren't removed
@@ -210,15 +289,55 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
     num_tiles <- 3# make 30 for production; reduced for faster testing
     Tiles <- SpaDES.tools::splitRaster(Converted_Dcube[[1]], num_tiles)
 
+
+    # define some helper functions here
+    remove_meta_column <- function(x) {
+        meta <- c(grep("^[0-9][0-9][0-9]", colnames(x)))
+        colremove <- x[, meta]
+        return(colremove)
+    }
+    remove_band_column <- function(x) {   
+      meta <- c(grep("[a-z A-Z]", colnames(x)))
+      colremove <- x[, meta]
+      return(colremove)
+    }
+
+    extract_bands <- function(df){
+        bands <- remove_band_column(df) %>%
+            colnames() %>%
+            as.numeric()
+        return(bands)
+    }
+
+
+    #' Converts Data Frame to a spaectral library
+    df_to_speclib <- function(df) {
+        # Convert to a spectral library
+        df_no_metadata <- remove_meta_column(df)
+        spectral_matrix <- as.matrix(df_no_metadata)
+        bands <- extract_bands(df)
+        spectral_lib <- hsdar::speclib(spectral_matrix, bands)
+        return(spectral_lib)
+    }
+
     # Use 4 cores
     cores <- parallel::detectCores() - 1
 
     print(paste0(cores, " cores being used"))
 
     ## Start cluster
+        # parallel infrastructure
+
+        # Get amount of cores to use
+    cores <- parallel::detectCores()-1
+    
+    # prepare for parallel process
     c1 <- parallel::makeCluster(cores, setup_timeout = 0.5)
     doParallel::registerDoParallel(c1)
-    parallel::clusterEvalQ(c1,library(raster))
+    parallel::clusterEvalQ(c1, library(raster))
+
+    # imputing
+
 
     parallel::parLapply(c1,1:length(Tiles),function(x){
 
@@ -237,8 +356,9 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
     })#end lapply
     
     # Stops cluster
-    stopCluster(c1)
-    
+    unregister_dopar()
+    parallel::stopCluster(c1)
+
     cat("\n")
     print("Creating Predicted Layer")
     
@@ -255,7 +375,6 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
     
     #-------------------------List_of_Predlauers----------------------$
 
-    output_filenames <- list()
     List_of_PredLayers<-lapply(1:length(list_of_Tiles), function(i) {
       
       
@@ -266,7 +385,10 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
       if(!file.exists(out_tif2)){
         
         print(paste0("Prediction for Tile ", i, " Initiated"))
+
         print(paste0("Derivative calculation for Tile ",i, " initiated"))
+
+
         
         # Reads in the tiles and converts it to a dataframe
         DfofRas<-brick(list_of_Tiles[[i]])%>%
@@ -290,6 +412,8 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
           # Remove hard coding
           print("Renaming bandpasses")
           names(DfofRas)[-1:-2]<-Headwall_bandpasses
+
+          DfofRas <- impute_spectra(DfofRas)
           
           # Convert weird values
           print("Converting weird values to -999")
@@ -339,6 +463,9 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
           New_df<-DfofRas%>%
             dplyr::select(x,y,all_of(Vars_names2))
 
+          #print("Imputing spectra")
+          #cleaned_df <- impute_spectra(New_df)
+
           print("Data Frame of Variables Selected")
           print(colnames(New_df))
 
@@ -353,8 +480,8 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
               New_df,
               crs = "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
               )
-
-            names(RastoDF) <- colnames(New_df)[-1:-2]
+              
+            #colnames(RastoDF) <- colnames(New_df)[-1:-2]
           
           # Deletes the dataframe
           rm(DfofRas)
@@ -368,100 +495,37 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
           print(paste0("Pointing Model at Tile ", i))
           
           # function to fill in missing values using partial mean matching
-          impute_spectra <- function(x) {
-            
-            df <- x
+ 
+          
 
-            if (! is.data.frame(x)) {
-              df <- x %>%
-                rasterToPoints() %>%
-                as.data.frame()
-            }
-            if (is.data.frame(df)){
-              print("input converted to dataframe")
-              print("input df dimension")
-              print(dim(df))
-            } else {
-              print("Conversion to dataframe failed")
-            }
-            
-            print("Imputing...")
-             missForest::missForest(df, maxiter = 1)
-            print("Checking Imputer Data Type: pass?")
-            print(is.data.frame(df))
-            print("Checking for missing Values...")
-            print(which(is.na(df)))
-
-            print("Imputed Data of size")
-            print(dim(df))
-
-            
-
-            if (! is.data.frame(x)) {
-
-              ExtractBands <- function(df){
-                bands <- .RemoveBandColumn(df) %>%
-                    colnames() %>%
-                    as.numeric()
-                    print("Bands")
-                    print(bands)
-                return(bands)
-              }
-
-              .RemoveMetaColumn<-function(x){
-                  meta <- c(grep("^[0-9][0-9][0-9]", colnames(x)))
-                  print("Input Dimension")
-                  print(dim(x))
-                  df_no_metadata <- x[, ! names(x) %in% meta]
-                  #df_no_metadata <- subset(x, select = -meta)
-                  return(df_no_metadata)
-              }
-                
-              .RemoveBandColumn<-function(x){   
-                  meta<-c(grep("[a-z A-Z]",colnames(x)))
-                  colremove <- x[,meta]
-                  return(colremove)
-              }
-              
-              print("Removing Metadata")
-              df_no_metadata <- .RemoveMetaColumn(df)
-              print("Converting to Matrix")
-              spectralMatrix <- as.matrix(df)
-              print("Converting to Spectral Library")
-              output_data <- raster::rasterFromXYZ(
-                spectralMatrix,
-                crs="+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0")
-              raster::extent(output_data) <- raster::extent(x)
-            }
-            return(output_data)
-          }#end impute_spectra
-
-          print("Imputing spectra")
-          cleaned_RastoDF <- impute_spectra(RastoDF)
-          print("DF Before Imputing")
-          print(RastoDF)
-          print("DF After Imputing")
-          print(cleaned_RastoDF)
+          #tile_speclib <- df_to_speclib(cleaned_RastoDF)
+          #print("DF Before Imputing")
+          #print(RastoDF)
+          #print("DF After Imputing")
+          #print(cleaned_RastoDF)
 
           #cleaned_RastoDF <- na.roughfix(RastoDF)# KRB
           #print(paste0(summary(cleaned_RastoDF)))
           
           # Predict calss of each pixel and returns a Raster layer
+          print("Running Prediction")
           #Predicted_layer<-raster::predict(RastoDF,Model,na.rm = TRUE,progress='text')
           #Predicted_layer_df<-raster::predict(RastoDF,Model,progress='text') #randomForest 
-          print("Running Prediction")
-          Predicted_layer_df<-raster::predict(cleaned_RastoDF,
+
+          
+          
+          Predicted_layer_df<-raster::predict(RastoDF,
                                           Model,
                                           na.rm = TRUE,
                                           type='response',
                                           progress='text',
                                           fun = function(Model, ...) predict(Model, ...)$predictions) #(Ranger model)
-          #Predicted_layer<-predict(New_df,Model,na.rm = TRUE,progress='text')#ranger
+          #Predicted_layer <- predict(Model, New_df, type="response")
+          #randomForest Model
 
          
 
-          print("Model Output")
-          print(Predicted_layer_df)
+          print("Prediction complete")
 
           Predicted_layer <- raster::rasterFromXYZ(
             Predicted_layer_df,
@@ -490,7 +554,7 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
           # # Writes out the predicted Layer
 
           layer_filename <- paste0(SubFolder,"/B_001_",basename(filename),"_Tile",i,"_PredLayer.tif")
-          output_filenames <- append(output_filenames, layer_filename)
+          #output_filenames <- append(output_filenames, layer_filename)
 
           writeRaster(
             Predicted_layerResamp,
@@ -640,7 +704,19 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
     #    "_PredLayer.tif"),
     #  overwrite = T)
 
+<<<<<<< Updated upstream
       plot_agg_results <- function(df, save_file = "Outputs/results.jpeg") {
+=======
+    create_raster_image <- function(df, base_image = NULL) {
+      speclib <- raster(df)
+      #speclib@data@attributes <- base_image@data@attributes
+      png("model_output.png")
+      raster::image(speclib)
+      dev.off()
+    }
+
+      plot_agg_results <- function(df, save_file = "Output/results.jpeg") {
+>>>>>>> Stashed changes
         my_plot <- ggplot2::ggplot(data = df) +
           geom_point(aes(df$x, df$y, color=df$z))
         print(my_plot)
@@ -671,3 +747,4 @@ write.csv(Spectral_lib,paste(out_file,"D_002_SpecLib_Derivs",".csv", sep=""),row
 # Normalize Values here
 return(Spectral_lib)
 }
+
