@@ -4,7 +4,7 @@ Func_Resamp<-function(Resamp){
   df<-metaRemove(Resamp)
   
   # Converts the dataframe to a spectral object
-  SpeclibObj<-spectrolab::as.spectra(df)
+  SpeclibObj<-spectrolab::as_spectra(df)
   
   print("Resampling spectra every 5nm")
   

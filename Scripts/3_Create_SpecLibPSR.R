@@ -67,7 +67,7 @@ SpecLib<-Reduce(spectrolab::combine,list_of_SpecLib) %>% # dim(n_samples=1989, n
 SpecLib<-rbind(SpecLib,Ecosis_data)
 
 ## Please note: these are the number of samples we have for each functional group
-# table(SpecLib$Functional_group1)%>%as.data.frame()
+#table(SpecLib$Functional_group1)%>%as.data.frame()
 #                         Var1  Freq
 #            Dwarf_Shrub_Decid  968
 #                         Forb   80
@@ -253,7 +253,7 @@ for(i in 1:length(Target_names)){
   metadata<-each_target[[i]][,c(1:9)]%>%as.data.frame()
   
   # Convert to a spectral object
-  each_target[[i]] <- as.spectra(each_target[[i]][-1:-9])
+  each_target[[i]] <- as_spectra(each_target[[i]][-1:-9])
   
   # Add metadata
   meta(each_target[[i]])<-data.frame(metadata[,c(1:9)], stringsAsFactors = FALSE)
@@ -484,47 +484,76 @@ saveRDS(Cleaned_Speclib_rds,"Output/C_002_SC3_Cleaned_Speclib.rds")
 
 
 # ------------------------------------------ Step 3: Create Plots showing spectral profiles ------------------------------------------------- #
+# 
+tst<-Cleaned_Speclib %>%
+  subset(Functional_group2 == "Lichen") %>%
+  dplyr::select(Functional_group1, `350`:`2500`) %>%
+      pivot_longer(cols =c(-Functional_group1,`350`:`2500`), names_to = "wavelength") %>% #dim [1] 2299419       3
+        group_by(Functional_group1, wavelength) %>%
+          
+  #pivot_longer(cols =c(-1:-9,`350`:`2500`), names_to = "wavelength") %>%
+  #group_by(Species_name, Functional_group1, Functional_group2, wavelength) %>%
+  #group_by(Functional_group2, Functional_group1, wavelength) %>%
+            dplyr::summarise(Median_Reflectance = median(value)) %>%
+              mutate(wavelength = as.numeric(wavelength))
 
+  ggplot(tst) +
+  aes(wavelength,Median_Reflectance)+
+  geom_line(aes(color = Functional_group1), size=1.5)+
+  labs(color="Species")+
+  theme(panel.background = element_rect(fill = "white", colour = "grey50"), 
+        legend.key.size = unit(0.5, "cm"),
+        legend.text = element_text(size=20),
+        title = element_text(size=20),
+        axis.text = element_text(size=20))+
+  labs(title = "Lichen Color-Group Median Spectral Signatures")
+
+  #    ggsave("Output/Functional_group2_median_spectra.jpg", dpi = 1000, width = 12, height =8)
+      ggsave("Output/Lichen_Functional_group1_median_spectra.jpg", dpi = 1000, width = 12, height =8)
+  
 # Creates a vector with the name of all the categories of interest
-#names_of_classes<-c(as.character(unique(Cleaned_Speclib[,"Functional_group1"])))
+names_of_classes<-c(as.character(unique(Cleaned_Speclib[,"Functional_group2"])))
 
 # Creates an empty list
-#FunctionalGroupDf<-list()
-#
-#for(i in 1:length(names_of_classes)){
-#  
-#  # Subset a functional group
-#  FunctionalGroupDf[[i]]<-subset(Cleaned_Speclib,Functional_group1 == names_of_classes[i])
-#  
-#  
-#  # change the dtaframe to a long dataframe 
-#  FunctionalGroupDf[[i]]<-gather(FunctionalGroupDf[[i]] ,Wavelength,Reflectance,-1:-9)
-#  
-#  
-#  # Make column name Wavelength numeric
-#  FunctionalGroupDf[[i]]$Wavelength    <-as.numeric(FunctionalGroupDf[[i]]$Wavelength)
-#  
-#  # Plot the output
-#  FunctionalGroupDf[[i]]<-FunctionalGroupDf[[i]]%>%
-#    group_by(Species_name, Wavelength) %>%  
-#    dplyr::summarise(Median_Reflectance = median(Reflectance))%>%
-#    as.data.frame()
-#}
-#
-#for(i in 1:length(FunctionalGroupDf)){
-#  
-#  # Creates a ggplot for each functional group with all species
-#  ggplot(FunctionalGroupDf[[i]],aes(Wavelength,Median_Reflectance))+geom_line(aes(color = Species_name))+
-#    labs(color="Species")+
-#    theme(panel.background = element_rect(fill = "white", colour = "grey50"), 
-#          legend.key.size = unit(0.5, "cm"),legend.text = element_text(size=12))+
-#    labs(title = paste(names_of_classes[[i]]," Spectral Signatures", sep = ""))
-#  
-#  # Saves the plots
-#  ggsave(paste("Output/","C_003_SC3","_",names_of_classes[[i]],".jpg",sep =""))
-#  
-#}
+FunctionalGroupDf<-list()
 
+for(i in 1:length(names_of_classes)){
+  
+  # Subset a functional group
+  FunctionalGroupDf[[i]]<-subset(Cleaned_Speclib,Functional_group2 == names_of_classes[i])
+  
+  
+  # change the dtaframe to a long dataframe 
+  FunctionalGroupDf[[i]]<-gather(FunctionalGroupDf[[i]] ,Wavelength,Reflectance,-1:-9)
+  
+  
+  # Make column name Wavelength numeric
+  FunctionalGroupDf[[i]]$Wavelength    <-as.numeric(FunctionalGroupDf[[i]]$Wavelength)
+  
+  # Plot the output
+  FunctionalGroupDf[[i]]<-FunctionalGroupDf[[i]]%>%
+    group_by(Species_name, Wavelength) %>%  
+    dplyr::summarise(Median_Reflectance = median(Reflectance))%>%
+    as.data.frame()
+}
+
+for(i in 1:length(FunctionalGroupDf)){
+  
+  # Creates a ggplot for each functional group with all species
+  ggplot(FunctionalGroupDf[[i]],aes(Wavelength,Median_Reflectance))+geom_line(aes(color = Species_name), size=1.5)+
+    labs(color="Species")+
+    theme(panel.background = element_rect(fill = "white", colour = "grey50"), 
+          legend.key.size = unit(0.5, "cm"),legend.text = element_text(size=20),
+          title = element_text(size=20),
+          axis.text = element_text(size=20))+
+    labs(title = paste(names_of_classes[[i]]," Spectral Signatures", sep = ""))
+  
+  # Saves the plots
+  ggsave(paste("Output/","C_003_SC3","_",names_of_classes[[i]],".jpg",sep =""), dpi = 350, width = 12, height =8)
+  
+}
+
+  
 ###Run LandCoverEstimator to generate Spectral Derivatives.
 source("Functions/nelsopet_rf/2_DerivCombine.R")
 source("Functions/nelsopet_rf/3_Make_SpecLib_Derivs.R")

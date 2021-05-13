@@ -4,7 +4,7 @@ require(gplots)
 
 ##Cluster of all functional groups
 #Veg<-Cleaned_Speclib %>%  select(  -ScanID,-Code_name,-Functional_group1,-Functional_group2,-Area,-Species_name_Freq,-Functional_group1_Freq,-Functional_group2_Freq,-Species_name)
-Veg<-SpecLib_derivs %>% dplyr::select(-Classes)
+Veg<-SpecLib_derivs %>% dplyr::select(Boochs:222)
 
 #Veg_env %>% group_by(Species_name, Functional_group1) %>% tally %>% View()
 
@@ -13,7 +13,7 @@ Veg<-SpecLib_derivs %>% dplyr::select(-Classes)
 #Veg_vnir<-Veg[1:651]
 
 #Veg_env<-Cleaned_Speclib %>%  select(  ScanID,Code_name,Functional_group1,Functional_group2,Area,Species_name_Freq,Functional_group1_Freq,Functional_group2_Freq,Species_name)
-Veg_env<-SpecLib_derivs %>%  dplyr::select(Classes)
+Veg_env<-SpecLib_derivs %>% dplyr::select(Classes:Functional_group2_Freq)
 
 #fnc_grp1_colors = createPalette(length(unique(Veg_env$Functional_group2)),  c("#ff0000", "#00ff00", "#0000ff")) %>%
 #  as.data.frame() %>%
@@ -32,12 +32,13 @@ fnc_grp1_colors = createPalette(length(unique(Veg_env$Classes)),  c("#ff0000", "
 fnc_grp1_color_list<-Veg_env %>% dplyr::select(Classes) %>% inner_join(fnc_grp1_colors, by=c("Classes"="FNC_grp1"), keep=FALSE)
 
 Veg<-Veg %>% replace(is.na(.),0)
-dist(Veg) %>% hist()
+help(scale)
+scale(Veg) %>% dist() %>% hist()
 #hclust(as.matrix(Veg)) %>% as.dendrogram()
 
 pdf("Output/F_Heatmap_Veg_Derivs.pdf", height = 12, width = 20)
 #heatmap(as.matrix(Veg), Colv = NULL, RowSideColors = fnc_grp1_color_list$Color)
-heatmap.2(as.matrix(Veg), dendrogram="row", trace="none", Colv = FALSE, RowSideColors = fnc_grp1_color_list$Color)
+heatmap.2(scale(as.matrix(Veg), center = ImportantVarsFrame_species$importance, scale=TRUE), na.rm=TRUE, dendrogram="row", trace="none", Rowv = ImportantVarsFrame_species$importance,Colv = TRUE, RowSideColors = fnc_grp1_color_list$Color)
 
 legend(x="topright", legend=unique(fnc_grp1_color_list$Classes), fill=unique(fnc_grp1_color_list$Color))
 dev.off()

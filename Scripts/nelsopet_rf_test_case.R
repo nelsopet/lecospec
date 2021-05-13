@@ -4,7 +4,7 @@ source("Scripts/1_Species_dataframe.R")
 source("Scripts/2_DataMunging.R")
 source("Scripts/3_Create_SpecLibPSR.R")
 source("Scripts/4_Model_Development.R")
-source("Scripts/5_Classify_Image1.R") #Change which datacube is being used in this script
+#source("Scripts/5_Classify_Image1.R") #Change which datacube is being used in this script
 
 
 ##One tile of new image test
@@ -18,8 +18,10 @@ source("Functions/nelsopet_rf/2_DerivCombine.R"       )
 source("Functions/nelsopet_rf/3_Make_SpecLib_Derivs.R")      
 
 #Define testing inputs
-filename = "M:/Alaksa_Datacubes/Raw_files/WickershamDome_2019_08_08_19_31_51_2000_rd_rf_or"
-out_file = "M:/Alaksa_Datacubes/Predictions/NEW/"
+filename = "Data/SubsetDatacube"
+#filename = "M:/Alaksa_Datacubes/Raw_files/WickershamDome_2019_08_08_19_31_51_2000_rd_rf_or"
+#out_file = "M:/Alaksa_Datacubes/Predictions/NEW/"
+out_file = "Output/"
 extension = FALSE
 
 
@@ -60,7 +62,8 @@ Classif_Model = "Output/E_004_Best_Model_Ranger.rda"
 
 #Apply Derive_combine, classifier
 #List_of_PredLayers<-lapply(1:length(list_of_Tiles), function(i) {
-  
+output_filenames <- list()
+
   
   # Creates the name of the output file and the location in which its stored
   out_tif2 = paste0(SubFolder, "/",basename_F,"_PredLayer1.tif")
