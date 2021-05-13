@@ -13,6 +13,13 @@ library(ranger)
 library(tools)
 library(randomForest)
 
+# increase allocated memory to approx to appropriate amount 
+# (leaving 2GB reserved for OS)
+system_ram_gb <- 12
+malloc_size <- (system_ram_gb - 2) * 8000
+
+memory.limit(size = malloc_size)
+
 # Calls the function that will classify image
 source("Functions/LandCoverEstimator.R")
 
@@ -24,11 +31,14 @@ source("Functions/LandCoverEstimator.R")
 # extension = does your input file has a extension associated with it?
 # e.g (.tif,.csv, .dat)
 
+
+
 system.time(PredLayer <- LandCoverEstimator(
-    filename = "Data/SubsetDatacube",
+    filename = "Data/WickershamDome_2019_08_08_19_31_51_2000_rd_rf_or",
     out_file = "Output/",
     #Classif_Model = "Output/E_003_Best_Model_RandomForest_86vars.rda",
     Classif_Model = "Output/E_004_Best_Model_Ranger_86vars.rda",
     datatype = "raster",
     extension = FALSE))
 
+write.csv(PredLayer, "predicted_layer.csv")
