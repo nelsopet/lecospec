@@ -208,10 +208,11 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
     VI_CALC <- as.data.frame(VI_CALC)
     
     # Function Renames columns
-    if(ncol(VI_CALC) == 95){
-      names(VI_CALC) <- Headwall_VI
-    } else {
-      names(VI_CALC) <- AVIRIS_VI}
+    names(VI_CALC) <- Headwall_VI
+    #if(ncol(VI_CALC) == 95){
+    #  names(VI_CALC) <- Headwall_VI
+    #} else {
+    #  names(VI_CALC) <- AVIRIS_VI}
     
     # Function removes spaces and special charcters from column names
     # Models will not run if these aren't removed
@@ -286,7 +287,7 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
     print("Splitting raster into 30 tiles")
     
     # Creates 30 tiles 
-    num_tiles <- 3# make 30 for production; reduced for faster testing
+    num_tiles <- 50# make 30 for production; reduced for faster testing
     Tiles <- SpaDES.tools::splitRaster(Converted_Dcube[[1]], num_tiles)
 
 
@@ -523,17 +524,20 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
           #Predicted_layer <- predict(Model, New_df, type="response")
           #randomForest Model
 
-         
-
+          #write.csv(Predicted_layer_df,paste0(SubFolder,"/B_001_",basename(filename),"_Tile",i,"_PredLayer.csv"))
+            
           print("Prediction complete")
-
-          Predicted_layer <- raster::rasterFromXYZ(
-            Predicted_layer_df,
-            crs = "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0")
+          out<-str(Predicted_layer_df)
+          print(out)
+          Predicted_layer <- Predicted_layer_df
+      #Predicted_layer <- raster::rasterFromXYZ(
+      #  Predicted_layer_df,
+      #  crs = "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0")
           
+          #Predicted_layer <-
           # Set extent of predicted to be the same as the Data Brick
           print("Fixing Extents")
-          raster::extent(Predicted_layer) <- raster::extent(RasterBrick)
+      #raster::extent(Predicted_layer) <- raster::extent(RasterBrick)
 
           
           #print("Raster Brick Attributes")
@@ -541,7 +545,7 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
           #ranger ... change back to raster for the rest of the pipeline
           #cat("\n")
           rm(New_df)
-          Predicted_layer@data@attributes <- RasterBrick@data@attributes
+      #Predicted_layer@data@attributes <- RasterBrick@data@attributes
           # Matches the spatial information to the original raster
           Predicted_layerResamp<-raster::resample(
             Predicted_layer,
@@ -704,19 +708,19 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
     #    "_PredLayer.tif"),
     #  overwrite = T)
 
-<<<<<<< Updated upstream
-      plot_agg_results <- function(df, save_file = "Outputs/results.jpeg") {
-=======
-    create_raster_image <- function(df, base_image = NULL) {
-      speclib <- raster(df)
-      #speclib@data@attributes <- base_image@data@attributes
-      png("model_output.png")
-      raster::image(speclib)
-      dev.off()
-    }
-
+#<<<<<<< Updated upstream
       plot_agg_results <- function(df, save_file = "Output/results.jpeg") {
->>>>>>> Stashed changes
+#=======
+#    create_raster_image <- function(df, base_image = NULL) {
+#      speclib <- raster(df)
+#      #speclib@data@attributes <- base_image@data@attributes
+#      png("model_output.png")
+#      raster::image(speclib)
+#      dev.off()
+#    }
+#
+#      plot_agg_results <- function(df, save_file = "Output/results.jpeg") {
+#>>>>>>> Stashed changes
         my_plot <- ggplot2::ggplot(data = df) +
           geom_point(aes(df$x, df$y, color=df$z))
         print(my_plot)
@@ -728,7 +732,7 @@ LandCoverEstimator<-function(filename,out_file,Classif_Model,datatype,extension)
       
       plot_agg_results(output_df)
       print("Done")
-      write.table(output_df, file = "Outputs/full_model_results.csv")
+      write.table(output_df, file = "Output/full_model_results.csv")
 
     return(output_df)
   }

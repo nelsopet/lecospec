@@ -27,14 +27,16 @@
     
     
     # Creates dataframe with Vegitation indices
-    VI_CALC<-if(ncol(metaRemove(VI)) == 272){
-      foreach(i=1:length(Headwall_VI), .combine=cbind, .packages = 'hsdar') %dopar%{
+    VI_CALC<-foreach(i=1:length(Headwall_VI), .combine=cbind, .packages = 'hsdar') %dopar%{
         a<-hsdar::vegindex(spec_library,index=Headwall_VI[[i]])}
-      
-    } else {
-      foreach(i=1:length(AVIRIS_VI), .combine=cbind, .packages = 'hsdar') %dopar%{
-        a<-hsdar::vegindex(spec_library,index=AVIRIS_VI[[i]])}
-    }
+    #VI_CALC<-if(ncol(metaRemove(VI)) == 272){
+    #  foreach(i=1:length(Headwall_VI), .combine=cbind, .packages = 'hsdar') %dopar%{
+    #    a<-hsdar::vegindex(spec_library,index=Headwall_VI[[i]])}
+    #  
+    #} else {
+    #  foreach(i=1:length(AVIRIS_VI), .combine=cbind, .packages = 'hsdar') %dopar%{
+    #    a<-hsdar::vegindex(spec_library,index=AVIRIS_VI[[i]])}
+    #}
     
     # Stops cluster
     parallel::stopCluster(c1)
@@ -43,10 +45,11 @@
     VI_CALC<-as.data.frame(VI_CALC)
     
     # Function Renames columns
-    if(ncol(VI_CALC) == 95){
-      names(VI_CALC)<-Headwall_VI
-    } else {
-      names(VI_CALC)<-AVIRIS_VI}
+    names(VI_CALC)<-Headwall_VI
+    #if(ncol(VI_CALC) == 95){
+    #  names(VI_CALC)<-Headwall_VI
+    #} else {
+    #  names(VI_CALC)<-AVIRIS_VI}
     
     # Function removes spaces and special charcters from column names
     # Models will not run if these aren't removed
