@@ -1,5 +1,25 @@
 require(Polychrome)
 require(gplots)
+require(mapview)
+require(tidyverse)
+
+##Plot data cubes predicted at the species level.
+unique(SpecLib_derivs$Classes)
+species_colors = createPalette(length(unique(SpecLib_derivs$Classes)),  c("#ff0000", "#00ff00", "#0000ff")) %>%
+  as.data.frame() %>%
+  dplyr::rename(Color = ".") %>%
+  mutate(FNC_grp1 = unique(SpecLib_derivs$Classes)) %>%
+  mutate(ColorNum = unique(SpecLib_derivs$Classes));
+
+
+
+#fnc_grp1_color_list<-Veg_env %>% select(Functional_group2) %>% inner_join(fnc_grp1_colors, by=c("Functional_group2"="FNC_grp1"), keep=FALSE)
+species_color_list<-SpecLib_derivs %>% dplyr::select(Classes) %>% inner_join(fnc_grp1_colors, by=c("Classes"="FNC_grp1"), keep=FALSE)
+
+tst_map<-mapview(WickerTestOut, map.types = 'Esri.WorldImagery',na.color="white")
+
+plot(tst_map, colors = species_color_list$Color)
+mapshot(tst_map,file="WickerTestOut.jpeg")
 
 
 ##Cluster of all functional groups
