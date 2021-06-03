@@ -4,15 +4,15 @@ require(mapview)
 require(tidyverse)
 require(rasterVis)
 
+list.files("./Output/Prediction/")
+source("./Functions/PFT_mapper.R")
 ##Plot data cubes predicted at the species level.
 unique(SpecLib_derivs$Classes)
 species_colors = createPalette(length(unique(SpecLib_derivs$Classes)),  c("#ff0000", "#00ff00", "#0000ff")) %>%
   as.data.frame() %>%
   dplyr::rename(Color = ".") %>%
   mutate(FNC_grp1 = unique(SpecLib_derivs$Classes)) %>%
-  mutate(ColorNum = unique(SpecLib_derivs$Classes));
-
-WickerTestOut<-unique(WickerTestOut@data@values) %>% as.data.frame() %>% rename(Classes = ".")
+  mutate(ColorNum = seq(1:length(unique(SpecLib_derivs$Classes))));
 
 #fnc_grp1_color_list<-Veg_env %>% select(Functional_group2) %>% inner_join(fnc_grp1_colors, by=c("Functional_group2"="FNC_grp1"), keep=FALSE)
 species_color_list<-SpecLib_derivs %>% dplyr::select(Classes) %>% inner_join(species_colors, by=c("Classes"="FNC_grp1"), keep=FALSE)
@@ -35,8 +35,32 @@ mapshot(ChatanikaTestOut_map,file="Output/Prediction/ChatanikaTestOut.jpeg")
 EagleTestOut_map<-mapview(EagleTestOut, map.types = 'Esri.WorldImagery',na.color="NA", col.regions=species_colors$Color)
 mapshot(EagleTestOut_map,file="Output/Prediction/EagleTestOut.jpeg")
 
-tst<-raster("Output/Prediction/EagleTestOut.tif") 
-(tst)
+
+pdf("./Output/Prediction/WickerTestOut_ggplot.pdf") #, width= 10, height =20)
+PFT_Mapper("./Output/Prediction/WickerTestOut.tif")
+dev.off()
+
+pdf("./Output/Prediction/LittleLakeTestOut_ggplot.pdf") #, width= 10, height =20)
+PFT_Mapper("./Output/Prediction/LittleLakeTestOut.tif")
+dev.off()
+
+pdf("./Output/Prediction/BisonTestOut_ggplot.pdf") #, width= 10, height =20)
+PFT_Mapper("./Output/Prediction/BisonTestOut.tif")
+dev.off()
+
+pdf("./Output/Prediction/Murph1TestOut_ggplot.pdf") #, width= 10, height =20)
+PFT_Mapper("./Output/Prediction/Murph1TestOut.tif")
+dev.off()
+
+pdf("./Output/Prediction/ChatanikaTestOut_ggplot.pdf") #, width= 10, height =20)
+PFT_Mapper("./Output/Prediction/ChatanikaTestOut.tif")
+dev.off()
+
+pdf("./Output/Prediction/EagleTestOut_ggplot.pdf") #, width= 10, height =20)
+PFT_Mapper("./Output/Prediction/EagleTestOut.tif")
+dev.off()
+
+
 
 ##Cluster of all functional groups
 #Veg<-Cleaned_Speclib %>%  select(  -ScanID,-Code_name,-Functional_group1,-Functional_group2,-Area,-Species_name_Freq,-Functional_group1_Freq,-Functional_group2_Freq,-Species_name)
