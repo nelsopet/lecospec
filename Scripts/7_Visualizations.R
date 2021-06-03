@@ -2,6 +2,7 @@ require(Polychrome)
 require(gplots)
 require(mapview)
 require(tidyverse)
+require(rasterVis)
 
 ##Plot data cubes predicted at the species level.
 unique(SpecLib_derivs$Classes)
@@ -16,12 +17,26 @@ WickerTestOut<-unique(WickerTestOut@data@values) %>% as.data.frame() %>% rename(
 #fnc_grp1_color_list<-Veg_env %>% select(Functional_group2) %>% inner_join(fnc_grp1_colors, by=c("Functional_group2"="FNC_grp1"), keep=FALSE)
 species_color_list<-SpecLib_derivs %>% dplyr::select(Classes) %>% inner_join(species_colors, by=c("Classes"="FNC_grp1"), keep=FALSE)
 
-Wicker_map<-mapview(WickerTestOut, map.types = 'Esri.WorldImagery',na.color="NA", col.regions=species_color_list$Color)
-mapshot(Wicker_map,file="WickerTestOut.jpeg")
+Wicker_map<-mapview(WickerTestOut, map.types = 'Esri.WorldImagery',na.color="NA", col.regions=species_colors$Color)
+mapshot(Wicker_map,file="Output/Prediction/WickerTestOut.jpeg")
 
-LittleLake_map<-mapview(LittleLakeTestOut, map.types = 'Esri.WorldImagery',na.color="NA", col.regions=species_color_list$Color)
-mapshot(LittleLake_map,file="LittleLakeTestOut.jpeg")
+LittleLake_map<-mapview(LittleLakeTestOut, map.types = 'Esri.WorldImagery',na.color="NA", col.regions=species_colors$Color)
+mapshot(LittleLake_map,file="Output/Prediction/LittleLakeTestOut.jpeg")
 
+Bison_map<-mapview(BisonTestOut, map.types = 'Esri.WorldImagery',na.color="NA", col.regions=species_colors$Color)
+mapshot(Bison_map,file="Output/Prediction/BisonTestOut.jpeg")
+
+Murph1TestOut_map<-mapview(Murph1TestOut, map.types = 'Esri.WorldImagery',na.color="NA", col.regions=species_colors$Color)
+mapshot(Bison_map,file="Output/Prediction/Murph1TestOut.jpeg")
+
+ChatanikaTestOut_map<-mapview(ChatanikaTestOut, map.types = 'Esri.WorldImagery',na.color="NA", col.regions=species_colors$Color)
+mapshot(ChatanikaTestOut_map,file="Output/Prediction/ChatanikaTestOut.jpeg")
+
+EagleTestOut_map<-mapview(EagleTestOut, map.types = 'Esri.WorldImagery',na.color="NA", col.regions=species_colors$Color)
+mapshot(EagleTestOut_map,file="Output/Prediction/EagleTestOut.jpeg")
+
+tst<-raster("Output/Prediction/EagleTestOut.tif") 
+(tst)
 
 ##Cluster of all functional groups
 #Veg<-Cleaned_Speclib %>%  select(  -ScanID,-Code_name,-Functional_group1,-Functional_group2,-Area,-Species_name_Freq,-Functional_group1_Freq,-Functional_group2_Freq,-Species_name)
