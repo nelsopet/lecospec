@@ -6,6 +6,7 @@ require(rasterVis)
 
 list.files("./Output/Prediction/")
 source("./Functions/PFT_mapper.R")
+SpecLib_derivs<-read.csv("./Output/D_002_SpecLib_Derivs.csv")
 ##Plot data cubes predicted at the species level.
 unique(SpecLib_derivs$Classes)
 species_colors = createPalette(length(unique(SpecLib_derivs$Classes)),  c("#ff0000", "#00ff00", "#0000ff")) %>%
