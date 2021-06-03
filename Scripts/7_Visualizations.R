@@ -11,15 +11,16 @@ species_colors = createPalette(length(unique(SpecLib_derivs$Classes)),  c("#ff00
   mutate(FNC_grp1 = unique(SpecLib_derivs$Classes)) %>%
   mutate(ColorNum = unique(SpecLib_derivs$Classes));
 
-
+WickerTestOut<-unique(WickerTestOut@data@values) %>% as.data.frame() %>% rename(Classes = ".")
 
 #fnc_grp1_color_list<-Veg_env %>% select(Functional_group2) %>% inner_join(fnc_grp1_colors, by=c("Functional_group2"="FNC_grp1"), keep=FALSE)
-species_color_list<-SpecLib_derivs %>% dplyr::select(Classes) %>% inner_join(fnc_grp1_colors, by=c("Classes"="FNC_grp1"), keep=FALSE)
+species_color_list<-SpecLib_derivs %>% dplyr::select(Classes) %>% inner_join(species_colors, by=c("Classes"="FNC_grp1"), keep=FALSE)
 
-tst_map<-mapview(WickerTestOut, map.types = 'Esri.WorldImagery',na.color="white")
+Wicker_map<-mapview(WickerTestOut, map.types = 'Esri.WorldImagery',na.color="NA", col.regions=species_color_list$Color)
+mapshot(Wicker_map,file="WickerTestOut.jpeg")
 
-plot(tst_map, colors = species_color_list$Color)
-mapshot(tst_map,file="WickerTestOut.jpeg")
+LittleLake_map<-mapview(LittleLakeTestOut, map.types = 'Esri.WorldImagery',na.color="NA", col.regions=species_color_list$Color)
+mapshot(LittleLake_map,file="LittleLakeTestOut.jpeg")
 
 
 ##Cluster of all functional groups
