@@ -5,8 +5,11 @@ require(tidyverse)
 require(rasterVis)
 
 list.files("./Output/Prediction/")
+
 source("./Functions/PFT_mapper.R")
+
 SpecLib_derivs<-read.csv("./Output/D_002_SpecLib_Derivs.csv")
+
 ##Plot data cubes predicted at the species level.
 unique(SpecLib_derivs$Classes)
 species_colors = createPalette(length(unique(SpecLib_derivs$Classes)),  c("#ff0000", "#00ff00", "#0000ff")) %>%
@@ -36,6 +39,9 @@ mapshot(ChatanikaTestOut_map,file="Output/Prediction/ChatanikaTestOut.jpeg")
 EagleTestOut_map<-mapview(EagleTestOut, map.types = 'Esri.WorldImagery',na.color="NA", col.regions=species_colors$Color)
 mapshot(EagleTestOut_map,file="Output/Prediction/EagleTestOut.jpeg")
 
+TwelveMile_map<-mapview(TwelveMileTestOut, map.types = 'Esri.WorldImagery',na.color="NA", col.regions=species_colors$Color)
+mapshot(TwelveMile_map,file="Output/Prediction/TwelveMileTestOut.jpeg")
+
 
 pdf("./Output/Prediction/WickerTestOut_ggplot.pdf") #, width= 10, height =20)
 PFT_Mapper("./Output/Prediction/WickerTestOut.tif")
@@ -60,6 +66,32 @@ dev.off()
 pdf("./Output/Prediction/EagleTestOut_ggplot.pdf") #, width= 10, height =20)
 PFT_Mapper("./Output/Prediction/EagleTestOut.tif")
 dev.off()
+
+pdf("./Output/Prediction/TwelveMileTestOut_ggplot.pdf") #, width= 10, height =20)
+PFT_Mapper("./Output/Prediction/TwelveMileTestOut.tif")
+dev.off()
+
+####################
+##Plot data cubes predicted at the genera level.
+unique(SpecLib_derivs$Functional_group1)
+genera_colors = createPalette(length(unique(SpecLib_derivs$Functional_group1)),  c("#ff0000", "#00ff00", "#0000ff")) %>%
+  as.data.frame() %>%
+  dplyr::rename(Color = ".") %>%
+  mutate(FNC_grp1 = unique(SpecLib_derivs$Functional_group1)) %>%
+  mutate(ColorNum = seq(1:length(unique(SpecLib_derivs$Functional_group1))));
+
+#fnc_grp1_color_list<-Veg_env %>% select(Functional_group2) %>% inner_join(fnc_grp1_colors, by=c("Functional_group2"="FNC_grp1"), keep=FALSE)
+genera_color_list<-SpecLib_derivs %>% dplyr::select(Functional_group1) %>% inner_join(genera_colors, by=c("Functional_group1"="FNC_grp1"), keep=FALSE)
+
+TwelveMile_Genera_map<-mapview(TwelveMileTestOut_Genera, map.types = 'Esri.WorldImagery',na.color="NA", col.regions=genera_colors$Color)
+mapshot(TwelveMile_Genera_map,file="Output/Prediction/Genera/TwelveMileTestOut_Genera.jpeg")
+
+pdf("./Output/Prediction/Genera/TwelveMileTestOut_Genera_ggplot.pdf") #, width= 10, height =20)
+PFT_Mapper("./Output/Prediction/Genera/TwelveMileTestOut_Genera.tif")
+dev.off()
+
+
+
 
 
 
