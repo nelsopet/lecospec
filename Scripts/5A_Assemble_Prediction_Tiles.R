@@ -56,10 +56,17 @@ writeRaster(
 
 ##Assemble genera level maps
 twelvemile_genera_path = "./Output/B_001_TwelveMile_2019_08_09_21_28_52_0_rd_rf_or_Tile1_PredLayer_Genera"
+twelvemile_genera_path2 = "./Output/B_001_TwelveMile_2019_08_09_21_10_22_2000_rd_rf_or_Tile1_PredLayer_Genera"
 
 
 TwelveMileTestOut_Genera<-TileAssembler(twelvemile_genera_path)
 writeRaster(
   TwelveMileTestOut_Genera,
   filename = "Output/Prediction/Genera/TwelveMileTestOut_Genera.tif",
+  overwrite = TRUE)
+
+TwelveMileTestOut2_Genera<-TileAssembler(twelvemile_genera_path2)
+writeRaster(
+  TwelveMileTestOut2_Genera,
+  filename = "Output/Prediction/Genera/TwelveMileTestOut2_Genera.tif",
   overwrite = TRUE)

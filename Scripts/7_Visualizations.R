@@ -87,7 +87,14 @@ TwelveMile_Genera_map<-mapview(TwelveMileTestOut_Genera, map.types = 'Esri.World
 mapshot(TwelveMile_Genera_map,file="Output/Prediction/Genera/TwelveMileTestOut_Genera.jpeg")
 
 pdf("./Output/Prediction/Genera/TwelveMileTestOut_Genera_ggplot.pdf") #, width= 10, height =20)
-PFT_Mapper("./Output/Prediction/Genera/TwelveMileTestOut_Genera.tif")
+Genera_Mapper("./Output/Prediction/Genera/TwelveMileTestOut_Genera.tif")
+dev.off()
+
+TwelveMile2_Genera_map<-mapview(TwelveMileTestOut2_Genera, map.types = 'Esri.WorldImagery',na.color="NA", col.regions=genera_colors$Color)
+mapshot(TwelveMile2_Genera_map,file="Output/Prediction/Genera/TwelveMileTestOut2_Genera.jpeg")
+
+pdf("./Output/Prediction/Genera/TwelveMileTestOut2_Genera_ggplot.pdf") #, width= 10, height =20)
+Genera_Mapper("./Output/Prediction/Genera/TwelveMileTestOut2_Genera.tif")
 dev.off()
 
 
