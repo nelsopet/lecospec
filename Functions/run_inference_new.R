@@ -10,8 +10,12 @@ cores <- parallel::detectCores()-1
 # prepare for parallel process
 cluster <- parallel::makeCluster(cores, setup_timeout = 0.5)
 doParallel::registerDoParallel(cluster)
+
+
 # calculate vegetation indices (once only!)
 base_vegetation_indices <- hsdar::vegindex()
+
+# TODO Install switch for vegetation indices
 headwall_veg_index <- calc_headwall_veg_index(
     cluster = cluster,
     base_index = base_vegetation_indices
@@ -51,15 +55,24 @@ colnames(deriv_df) <- clean_df_colnames(deriv_df)
 
 tiles <- make_tiles(deriv_df)
 
+# save the tiles
+
+tile_filepaths <- save_tiles(tiles)#TODO
 
 
 pipeline_functions <- c(
-    speclib_to_df,
+    impute_spectra,
     run_precdiction,
+    save_tile_results #TODO
 )
 
 
-tile_results <- apply_pipeline_by_tile(deriv_df, pipeline_functions)
+
+# iterate over the file paths and apply pipeline
+tile_results_filepaths <- c()
+
+tile_results <- apply_pipeline(deriv_df, pipeline_functions)
+
 results_df <- aggregate_results(tile_results)
 results_raster <- df_to_speclib(results_df)
 

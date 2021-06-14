@@ -132,7 +132,7 @@ speclib_to_df <- function(speclib) {
     indices = hsdar::vegindex(),
     aviris = c(-58),
     headwall = NULL
-    ){
+    ) {
         headwall_bands <- headwall
         if(is.null(headwall)) {
             headwall_bands <- -c(
@@ -386,13 +386,6 @@ impute_spectra <- function(x, parallelize = NULL) {
         rasterToPoints() %>%
         as.data.frame()
     }
-    if (is.data.frame(df)){
-        print("input converted to dataframe")
-        print("input df dimension")
-        print(dim(df))
-    } else {
-        print("Conversion to dataframe failed")
-    }
 
     print("Imputing...")
     if (is.null(cluster)) {
@@ -401,21 +394,13 @@ impute_spectra <- function(x, parallelize = NULL) {
         missForest::missForest(df, maxiter = 3, parallelize = "forests")
     }
         
-    print("Checking Imputer Data Type: pass?")
-    print(is.data.frame(df))
-    print("Checking for missing Values...")
-    print(which(is.na(df)))
-
-    print("Imputed Data of size")
-    print(dim(df))
-
     if (! is.data.frame(x)) {
         print("Converting to Matrix")
         spectral_matrix <- as.matrix(df)
         print("Converting to Spectral Library")
         output_data <- raster::rasterFromXYZ(
-        spectral_matrix,
-        crs = "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0")
+            spectral_matrix,
+            crs = "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0")
         raster::extent(output_data) <- raster::extent(x)
     }
     return(output_data)
@@ -548,12 +533,22 @@ plot_agg_results <- function(df, save_file = "Output/results.jpeg") {
 #'
 make_speclib_derivs<- function(filename)  {  
     # Reads in spectral libray as .csv
-    # Right now your spectral library would have already have weird values removed/replaced
-    Spectral_lib<-read.csv(filename, check.names = F)
+    # Right now your spectral library would have already have 
+    # weird values removed/replaced
+    Spectral_lib <- read.csv(
+        filename,
+        check.names = F)
 
-    Spectral_lib<-Deriv_combine(Spectral_lib)
+    Spectral_lib <- Deriv_combine(Spectral_lib)
 
-    write.csv(Spectral_lib,paste(out_file,"D_002_SpecLib_Derivs",".csv", sep=""),row.names = F)
+    write.csv(
+        Spectral_lib,
+        paste(
+            out_file,
+            "D_002_SpecLib_Derivs",
+            ".csv",
+            sep = ""),
+        row.names = F)
 
     # Normalize Values here
     return(Spectral_lib)
