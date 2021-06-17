@@ -521,7 +521,7 @@ for(i in 1:length(FunctionalGroupDf)){
 }
 
 ###Run LandCoverEstimator to generate Spectral Derivatives.
-source("Functions/1_Simple_LandCoverEstimator.R")
-source("Functions/2_Simple_LandCoverEstimator.R")
-
+#source("Functions/1_Simple_LandCoverEstimator.R")
+#source("Functions/2_Simple_LandCoverEstimator.R")
+source("Functions/2_LCE_veg_index.R")
 Make_Speclib_Derivs("Output/C_001_SC3_Cleaned_SpectralLib.csv",out_file="Output/")

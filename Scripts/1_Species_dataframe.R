@@ -3,7 +3,7 @@
 # The final table will have 4 columns (Code_name, species name, Functional_group1 and functional_group2)
 
 # Packages to install
-
+library(plyr)
 library (tidyverse) 
 
 
