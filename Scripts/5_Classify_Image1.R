@@ -13,6 +13,13 @@ library(ranger)
 library(tools)
 library(randomForest)
 
+# increase allocated memory to approx to appropriate amount 
+# (leaving 2GB reserved for OS)
+system_ram_gb <- 32
+malloc_size <- (system_ram_gb - 2) * 8000
+
+memory.limit(size = malloc_size)
+
 # Calls the function that will classify image
 source("Functions/LandCoverEstimator.R")
 
@@ -21,12 +28,21 @@ source("Functions/LandCoverEstimator.R")
 # out_file = output location for the predicted layer
 # Classif_Model = calssification model built using spectral library
 # datatype = is you data is a raster file or a .csv file
-# extension = does your input file has a extension associated with it? e.g (.tif,.csv, .dat)
+# extension = does your input file has a extension associated with it?
+# e.g (.tif,.csv, .dat)
 
-system.time(PredLayer<-LandCoverEstimator(filename = "Data/SubsetDatacube",
-                                          out_file = "Output/",
-                                          #Classif_Model = "Output/E_003_Best_Model_RandomForest_86vars.rda",
-                                          Classif_Model = "Output/E_007_Best_Model_Ranger_50vars.rda",
-                                          datatype = "raster",
-                                          extension = FALSE))
 
+
+system.time(PredLayer <- LandCoverEstimator(
+
+#    filename = "M:/Alaska_Datacubes/Raw_files/WickershamDome_2019_08_08_19_31_51_2000_rd_rf_or",
+#    filename = "Data/SubsetDatacube",
+    filename = "Data/Datacube",
+    out_file = "Output/",
+    #Classif_Model = "Output/E_003_Best_Model_RandomForest_86vars.rda",
+    #Classif_Model = "Output/E_004_Best_Model_Ranger_86vars.rda",
+    Classif_Model = "Output/E_004_Best_Model_Ranger.rda",
+    datatype = "raster",
+    extension = FALSE))
+
+write.csv(PredLayer, "predicted_layer.csv")

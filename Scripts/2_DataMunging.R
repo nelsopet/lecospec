@@ -6,7 +6,7 @@ library(tidyverse)
 
 # ------------------------------------------- 12mile ---------------------------------------------------------------- #
 ####Read in data as spectra (all scans collected at this location)
-TwelveMile_spectra<-read_spectra("Data/SpectraByLocation/12_mile/original_samples", format="sed")
+TwelveMile_spectra<-read_spectra("./Data/SpectraByLocation/12_mile/original_samples", format="sed")
 
 ##Plots all spectral objects withing this location (scans of individuals)
 ##plot_interactive(TwelveMile_spectra)
@@ -320,10 +320,10 @@ Murphy_domeB_metadata$Area<- "Murphy B"
 meta(Murphy_domeB_spectra) = data.frame(Murphy_domeB_metadata, stringsAsFactors = FALSE)
 
 ##save spectra (Raw)
-saveRDS(Murphy_domeB_spectra      ,"Output/A_010_SC2_Murphy_domeB_spectra.rds")
+saveRDS(Murphy_domeB_spectra, "Output/A_010_SC2_Murphy_domeB_spectra.rds")
 # ------------------------------------------- WickershamDomeB -------------------------------------------- #
 ####Read in data as spectra
-Wickersham_domeA_spectra<-read_spectra("Data/SpectraByLocation/Wickersham_domeA/original_samples",
+Wickersham_domeA_spectra <- read_spectra("Data/SpectraByLocation/Wickersham_domeA/original_samples",
                                        format="sed")
 
 ##Fix Names 

@@ -3,7 +3,9 @@
 # The final table will have 4 columns (Code_name, species name, Functional_group1 and functional_group2)
 
 # Packages to install
+library(plyr)
 library (tidyverse) 
+
 
 # Code_Name = Six letter code for each species, first three letters represents the genus name and second three represents the species name
 SpecLib_groups<-data.frame("Code_name"= c("abibal"
