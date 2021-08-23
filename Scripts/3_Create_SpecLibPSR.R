@@ -103,10 +103,17 @@ SpecLib<-rbind(SpecLib,Ecosis_data)
 #               Tree_Evergreen   17
 #                  Wood_Coarse    5
 
+in_unit_interval <- function(x){
+  
+  return( (x < 1) || (x >= 1))
+}
+
 # Removes all the rows with negative values or Values >2
-SpecLib_new<-SpecLib%>% 
-  dplyr::filter_at(vars(-(ScanID:Area)), all_vars((.) < 1)) %>% # Removes rows with values greater than 2
-  dplyr::filter_at(vars(-(ScanID:Area)), all_vars((.) >=0)) # Removes row with values less than 0, # dim (nrows = 1984 ncol = 2157)
+SpecLib_new <- SpecLib %>% 
+  dplyr::filter(
+    if_any(everything(), in_unit_interval
+    )
+  )
 
 # table(SpecLib_new$Functional_group1)%>%as.data.frame()
 
