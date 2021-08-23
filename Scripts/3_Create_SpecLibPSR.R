@@ -7,6 +7,8 @@ library(dplyr)
 library(ggplot2)
 library(spectrolab)
 library(tidyverse)
+library(parallel)
+library(doParallel)
 
 # ------------------------------------------------ Step1: Data Munging Step ------------------------------------------------- # 
 # In this step we will combine all our spectral profiles to form one spectral library
@@ -105,14 +107,13 @@ SpecLib<-rbind(SpecLib,Ecosis_data)
 
 in_unit_interval <- function(x){
   
-  return( (x < 1) || (x >= 1))
+  return( (x < 1) && (x >= 1))
 }
 
 outside_unit_interval <- function(x) {
   return( !in_unit_interval(x))
 }
 
-excluded_points()
 
 # Removes all the rows with negative values or Values >2
 SpecLib_new <- SpecLib %>% 
