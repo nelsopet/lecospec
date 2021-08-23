@@ -108,10 +108,16 @@ in_unit_interval <- function(x){
   return( (x < 1) || (x >= 1))
 }
 
+outside_unit_interval <- function(x) {
+  return( !in_unit_interval(x))
+}
+
+excluded_points()
+
 # Removes all the rows with negative values or Values >2
 SpecLib_new <- SpecLib %>% 
   dplyr::filter(
-    if_any(everything(), in_unit_interval
+    if_all(everything(), in_unit_interval
     )
   )
 
