@@ -94,3 +94,44 @@
     # Normalize Values here
     return(Spectral_lib)
     }
+
+        # Functions returns columns that are bandpasses
+metaRemove<-function(x){
+meta<-c(grep("^[0-9][0-9][0-9]",colnames(x)))
+colremove<-x[,meta]
+return(colremove)
+}# metaRemove Function ends
+
+# Functions returns columns that are not bandpasses
+bandsRemove<-function(x){
+meta<-c(grep("[a-z A-Z]",colnames(x)))
+colremove<-x[,meta]
+return(colremove)
+}# bandsRemove Function ends
+
+
+    Func_Resamp<-function(Resamp){
+    
+    # Removes metadata before function can be applied
+    df<-metaRemove(Resamp)
+    
+    # Converts the dataframe to a spectral object
+    SpeclibObj<-spectrolab::as_spectra(df)
+    
+    print("Resampling spectra every 5nm")
+    
+    # Creates functions that will do the resampling every 5nm
+    final<-spectrolab::resample(SpeclibObj,seq(397.593,899.424,5))%>%
+      as.data.frame() %>%
+      dplyr::select(-sample_name)
+    
+    # Rename columns
+    colnames(final)<-paste(colnames(final),"5nm",sep = "_")
+    
+    # Combines all the dataframes created into one df
+    ResampledDF<-cbind(bandsRemove(Resamp),final)
+    
+    print("Resampling sucessful")
+    
+    return(ResampledDF)} # Func_Resamp ends
+
