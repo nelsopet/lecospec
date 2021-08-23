@@ -88,6 +88,7 @@ extract_bands <- function(df){
 #'
 df_to_speclib <- function(df) {
     # Convert to a spectral library
+    print(colnames(df))
     df_no_metadata <- remove_meta_column(df)
     spectral_matrix <- as.matrix(df_no_metadata)
     bands <- extract_bands(df)
@@ -146,6 +147,122 @@ speclib_to_df <- function(speclib) {
     calculatedVegIndex <- foreach()
 }
 
+<<<<<<< Updated upstream
+=======
+calc_veg_index <- function(spec_library, subset = NA, use_nearest = TRUE) {
+      av <- sort(
+                c(
+                    "NDVI","OSAVI","SAVI","MTVI","NDWI","PWI",
+                    "MSI", "SRWI","GMI1","GMI2","MCARI","TVI",
+                    "Vogelmann4","Boochs","Boochs2",
+                    "CARI","CI","Carter","Carter2","Carter3","Carter4",
+                    "Carter5","Carter6","Datt","Datt2","Datt3","Datt4",
+                    "Datt5","Datt6","DD","DDn","D1","D2","EVI","EGFR","EGFN",
+                    "GI","Gitelson","Gitelson2","Green NDVI","MCARI/OSAVI",
+                    "MCARI2","MCARI2/OSAVI2","mNDVI","mND705","Maccioni",
+                    "mREIP","MSAVI","mSR","mSR705","mSR2","MTCI","NDVI2",
+                    "NDVI3","NPCI","OSAVI2","RDVI","REP_LE","REP_Li",
+                    "SIPI","SPVI","SR","SR1","SR2","SR3","SR4","SR5","SR6",
+                    "SR7", "SR8","SRPI","Sum_Dr1","Sum_Dr2","TCARI","TCARI2",
+                    "TCARI/OSAVI","TCARI2/OSAVI2","Vogelmann","NDLI",
+                    "Vogelmann2","Vogelmann3","PRI","CAI","NDNI",
+                    "PSSR", "PSND", "CRI1", "CRI2", "CRI3",
+                    "CRI4", "MPRI", "PRI*CI2", "CI2", "PSRI", "ClAInt", 
+                    "TGI", "PRI_norm","PARS","DPI","Datt7","Datt8",
+                    "GDVI_2","GDVI_3","GDVI_4","LWVI1","LWVI2",
+                    "DWSI1","DWSI2","DWSI3","DWSI4","DWSI5",
+                    "SWIR FI", "SWIR LI", "SWIR SI", "SWIR VI"
+                )
+            )
+
+            if(is.na(subset)) {
+                # if no indeices are specified, return all of them.
+                all_indices_from_lib <- hsdar::vegindex(spec_library, av, weighted = (! use_nearest))
+                return(all_indices_from_lib)
+            } else {
+                # if a subset of indeices is specified, filter first
+                all_indices_from_lib <- hsdar::vegindex(spec_library, av[subset], weighted = (! use_nearest))
+                return(all_indices_from_lib)
+            }
+}
+
+
+calc_headwall_veg_index <- function(spec_library) {
+    headwall_bands <- -c(
+                3, 26, 27, 31, 32, 33,
+                35, 48, 49, 58, 60, 66, 67,
+                71, 82, 99, 102, 103, 104, 105)
+
+    indices <- calc_veg_index(
+        spec_library,
+        subset = headwall_bands,
+        use_nearest = TRUE)
+
+    return(indices)
+}
+
+calculate_aviris_veg_index <- function(spec_library) {
+    indices <- calc_veg_index(
+        spec_library, 
+        subset = c(-58),
+        use_nearest = TRUE)
+    return(indices)
+}
+
+resample_df <- function(df) {
+   df_no_metadata <- extract_bands(df)
+   print("DF after removing metadata")
+   print(summary(df_no_metadata))
+    spec_library <- spectrolab::as_spectra(df)
+    df_resampled <- spectrolab::resample(
+        spec_library,
+        seq(397.593,899.424,5)
+    ) %>%
+        as.data.frame() %>%
+        dplyr::select(-sample_name)
+
+    colnames(df_resampled) <- paste(
+        colnames(df_resampled),
+        "5nm", 
+        sep="_"
+    )
+    combined_df <- cbind(remove_band_column(df), df_resampled)
+
+    return(combined_df)
+}
+
+
+
+
+quick_veg_index <- function(df) {
+    spec_lib <- dataframe_to_speclib(df)
+
+    veg_indices <- NA
+    if(length(colnames(df))==272) {
+        veg_indices <- calc_headwall_veg_index(spec_lib)
+    } else {
+        veg_indices <- calc_aviris_veg_index(spec_lib)
+    }
+    veg_index_df <- speclib_to_dataframe(veg_indices)
+    
+    combined_df <- cbind(df, veg_index_df)
+    return(combined_df)
+}
+
+adjoin_veg_index <- function(df, index_names) {
+    spec_lib <- dataframe_to_speclib(df)
+    indices_lib <- hsdar::vegindex(
+        spec_lib,
+        index = index_names,
+        weighted = FALSE
+        )
+    indices_df <- speclib_to_dataframe(indices_lib)
+    output_df <- cbind(df, indices_df)
+    return(output_df)
+}
+
+
+>>>>>>> Stashed changes
 #' One Line
 #' 
 #' Long Description here
@@ -193,17 +310,18 @@ calculate_veg_index <- function(x){
 #' @export 
 #' @examples Not Yet Implmented
 #' 
-apply_pipeline <- function(data, functions) {
-    pipeline_length <- length(functions)
-    x <- functions[1](data)
+apply_pipeline <- function(data, pipeline_functions) {
+    pipeline_length <- length(pipeline_functions)
+    x <- pipeline_functions[[1]](data)
 
-    for (f in functions[2:pipeline_length]) {
+    for (f in pipeline_functions[2:pipeline_length]) {
         x <- f(x)
     }
 
     return(x)
 }
 
+<<<<<<< Updated upstream
 #' Calculates Headwall Vegetation Indices
 #'
 #' Long Description here
@@ -245,6 +363,43 @@ calc_headwall_veg_index <- function(
     if(is.null(cluster)) {
         parallel::stopCluster(c1)
     }
+=======
+get_var_names <- function(ml_model) {
+    Vars_names <- c(ml_model$forest$independent.variable.names) 
+    Vars_names2 <- gsub("^X", "", Vars_names[1:length(Vars_names)])
+    return(Vars_names2)
+}
+
+get_required_veg_indices <- function(ml_model) {
+    var_names <- get_var_names(ml_model)
+     av <- sort(
+                c(
+                    "NDVI","OSAVI","SAVI","MTVI","NDWI","PWI",
+                    "MSI", "SRWI","GMI1","GMI2","MCARI","TVI",
+                    "Vogelmann4","Boochs","Boochs2",
+                    "CARI","CI","Carter","Carter2","Carter3","Carter4",
+                    "Carter5","Carter6","Datt","Datt2","Datt3","Datt4",
+                    "Datt5","Datt6","DD","DDn","D1","D2","EVI","EGFR","EGFN",
+                    "GI","Gitelson","Gitelson2","Green NDVI","MCARI/OSAVI",
+                    "MCARI2","MCARI2/OSAVI2","mNDVI","mND705","Maccioni",
+                    "mREIP","MSAVI","mSR","mSR705","mSR2","MTCI","NDVI2",
+                    "NDVI3","NPCI","OSAVI2","RDVI","REP_LE","REP_Li",
+                    "SIPI","SPVI","SR","SR1","SR2","SR3","SR4","SR5","SR6",
+                    "SR7", "SR8","SRPI","Sum_Dr1","Sum_Dr2","TCARI","TCARI2",
+                    "TCARI/OSAVI","TCARI2/OSAVI2","Vogelmann","NDLI",
+                    "Vogelmann2","Vogelmann3","PRI","CAI","NDNI",
+                    "PSSR", "PSND", "CRI1", "CRI2", "CRI3",
+                    "CRI4", "MPRI", "PRI*CI2", "CI2", "PSRI", "ClAInt", 
+                    "TGI", "PRI_norm","PARS","DPI","Datt7","Datt8",
+                    "GDVI_2","GDVI_3","GDVI_4","LWVI1","LWVI2",
+                    "DWSI1","DWSI2","DWSI3","DWSI4","DWSI5",
+                    "SWIR FI", "SWIR LI", "SWIR SI", "SWIR VI"
+                )
+            )
+        # get the items in both vectors 
+        # (i.e. veg indeices used by the classifier)
+    veg_indices <- intersect(av, var_names)
+>>>>>>> Stashed changes
     return(veg_indices)
 }
 
@@ -259,6 +414,7 @@ calc_headwall_veg_index <- function(
 #' @export 
 #' @examples Not Yet Implmented
 #' 
+<<<<<<< Updated upstream
 calc_aviris_veg_index <- function(
     cluster = NULL,
     base_index = hsdar::vegindex()
@@ -272,6 +428,18 @@ calc_aviris_veg_index <- function(
         
         # prepare for parallel process
         c1<- parallel::makeCluster(cores, setup_timeout = 0.5) 
+=======
+correct_variable_names <- function(df, ml_model, save_path = NULL) {
+
+
+    Vars_names2 <- get_var_names(ml_model)
+    # Creates a new model built on important variables
+    new_df <- df %>%
+        dplyr::select(x,y,all_of(Vars_names2))
+
+    if (!is.null(save_path)) {
+        write.table(new_df, file = save_path, sep = ",")
+>>>>>>> Stashed changes
     }
     doParallel::registerDoParallel(c1)
 
