@@ -37,7 +37,7 @@ system.time(PredLayer <- LandCoverEstimator(
 
 #    filename = "M:/Alaska_Datacubes/Raw_files/WickershamDome_2019_08_08_19_31_51_2000_rd_rf_or",
 #    filename = "Data/SubsetDatacube",
-    filename = "Data/Datacube",
+    filename = "E:/Lecospec/Data/SubsetDatacube",
     out_file = "Output/",
     #Classif_Model = "Output/E_003_Best_Model_RandomForest_86vars.rda",
     #Classif_Model = "Output/E_004_Best_Model_Ranger_86vars.rda",
@@ -45,4 +45,6 @@ system.time(PredLayer <- LandCoverEstimator(
     datatype = "raster",
     extension = FALSE))
 
-write.csv(PredLayer, "predicted_layer.csv")
+#write.csv(PredLayer, "predicted_layer.csv")
+raster::writeRaster(PredLayer, "predlayer.tif")
+plot(PredLayer)

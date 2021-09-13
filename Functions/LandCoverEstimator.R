@@ -734,7 +734,10 @@ LandCoverEstimator<-function(filename, out_file, Classif_Model, datatype, extens
       print("Done")
       write.table(output_df, file = "Output/full_model_results.csv")
 
-    return(output_df)
+      output_raster <- raster::rasterFromXYZ(output_df)
+      raster::writeRaster(output_raster, "Output/full_model_results.tif")
+
+    return(output_raster)
   }
 }
 
