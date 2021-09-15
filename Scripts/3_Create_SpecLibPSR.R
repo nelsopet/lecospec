@@ -107,7 +107,7 @@ SpecLib<-rbind(SpecLib,Ecosis_data)
 
 in_unit_interval <- function(x){
   
-  return( (x < 1) && (x >= 1))
+  return( (x < 1) && (x >= 0))
 }
 
 outside_unit_interval <- function(x) {
