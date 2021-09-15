@@ -1,7 +1,6 @@
 source("Functions/LandCoverEstimaror_RF.R")
 source("Functions/slice_raster_brick.R")
 
-<<<<<<< Updated upstream
 process_image <- function(filename, classifier, options = NULL) {
     # detect file type based on extension and load it
     data <- load_file(filename)
@@ -31,7 +30,6 @@ process_image <- function(filename, classifier, options = NULL) {
         seq_len(length(data_tiles)),
         apply_pipeline(x, pipeline_functions)
         )
-=======
 preprocess_image <- function(filename,output_dir, classifier) {
     data_raster <- raster::brick(filename)
     data_df <- raster_to_dataframe(data_raster)
@@ -111,15 +109,12 @@ process_tiles <- function(
         apply_model,
         dataframe_to_raster
     )
->>>>>>> Stashed changes
 
     # stop the parallel stuff
     parallel::stopCluster(c1)
 
-<<<<<<< Updated upstream
     # aggregate the data
     output_raster <- combine_tiles(tile_predictions, data)
-=======
     # use a for loop to keep only one tile in memory at a time 
     # this is a significant slowdown compared to parLapply but solves memory issues
     tile_filenames <- list.files(
@@ -133,7 +128,6 @@ process_tiles <- function(
         save_tile(tile_output, tile_dir, index = i)
     }
     gc()
->>>>>>> Stashed changes
 
     return(output_raster)
 
