@@ -37,7 +37,7 @@ system.time(PredLayer <- LandCoverEstimator(
 
 #    filename = "M:/Alaska_Datacubes/Raw_files/WickershamDome_2019_08_08_19_31_51_2000_rd_rf_or",
 #    filename = "Data/SubsetDatacube",
-    filename = "E:/Lecospec/Data/SubsetDatacube",
+    #filename = "E:/Lecospec/Data/SubsetDatacube",
     out_file = "Output/",
     #Classif_Model = "Output/E_003_Best_Model_RandomForest_86vars.rda",
     #Classif_Model = "Output/E_004_Best_Model_Ranger_86vars.rda",

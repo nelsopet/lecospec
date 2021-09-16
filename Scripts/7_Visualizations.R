@@ -11,18 +11,20 @@ source("./Functions/PFT_mapper.R")
 SpecLib_derivs<-read.csv("./Output/D_002_SpecLib_Derivs.csv")
 
 ##Plot data cubes predicted at the species level.
-unique(SpecLib_derivs$Classes)
-species_colors = createPalette(length(unique(SpecLib_derivs$Classes)),  c("#ff0000", "#00ff00", "#0000ff")) %>%
+unique(SpecLib_derivs$Species_name)
+species_colors = createPalette(length(unique(SpecLib_derivs$Species_name)),  c("#ff0000", "#00ff00", "#0000ff")) %>%
   as.data.frame() %>%
   dplyr::rename(Color = ".") %>%
-  mutate(FNC_grp1 = unique(SpecLib_derivs$Classes)) %>%
-  mutate(ColorNum = seq(1:length(unique(SpecLib_derivs$Classes))));
+  mutate(FNC_grp1 = unique(SpecLib_derivs$Species_name)) %>%
+  mutate(ColorNum = seq(1:length(unique(SpecLib_derivs$Species_name))));
 
 #fnc_grp1_color_list<-Veg_env %>% select(Functional_group2) %>% inner_join(fnc_grp1_colors, by=c("Functional_group2"="FNC_grp1"), keep=FALSE)
-species_color_list<-SpecLib_derivs %>% dplyr::select(Classes) %>% inner_join(species_colors, by=c("Classes"="FNC_grp1"), keep=FALSE)
+species_color_list<-SpecLib_derivs %>% dplyr::select(Species_name) %>% inner_join(species_colors, by=c("Species_name"="FNC_grp1"), keep=FALSE)
 
-Wicker_map<-mapview(WickerTestOut, map.types = 'Esri.WorldImagery',na.color="NA", col.regions=species_colors$Color)
-mapshot(Wicker_map,file="Output/Prediction/WickerTestOut.jpeg")
+WickerTestOut<-raster("Output/Prediction/Species/WickerTestOut.tif")
+
+Wicker_map<-mapview(WickerTestOut, map.types = 'Esri.WorldImagery',na.color="NA", col.regions=species_colors$Color,'maxpixels =  3971968 ')
+leaflet(Wicker_map,file="Output/Prediction/WickerTestOut.jpeg")
 
 LittleLake_map<-mapview(LittleLakeTestOut, map.types = 'Esri.WorldImagery',na.color="NA", col.regions=species_colors$Color)
 mapshot(LittleLake_map,file="Output/Prediction/LittleLakeTestOut.jpeg")
