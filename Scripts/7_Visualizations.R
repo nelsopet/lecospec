@@ -22,7 +22,7 @@ species_colors = createPalette(length(unique(SpecLib_derivs$Classes)),  c("#ff00
 species_color_list<-SpecLib_derivs %>% dplyr::select(Classes) %>% inner_join(species_colors, by=c("Classes"="FNC_grp1"), keep=FALSE)
 
 Wicker_map<-mapview(WickerTestOut, map.types = 'Esri.WorldImagery',na.color="NA", col.regions=species_colors$Color)
-mapshot(Wicker_map,file="Output/Prediction/WickerTestOut.jpeg")
+mapshot(Wicker_map,file="./Output/Prediction/WickerTestOut.jpeg")
 
 LittleLake_map<-mapview(LittleLakeTestOut, map.types = 'Esri.WorldImagery',na.color="NA", col.regions=species_colors$Color)
 mapshot(LittleLake_map,file="Output/Prediction/LittleLakeTestOut.jpeg")
