@@ -13,10 +13,6 @@
 
 echo "Initializing"
 pwd; hostname; date
-
 module load singularity/3.7.1
-singularity instance start --writable /home/kbundy/lecospec/ lsContainer
-
-
-echo "Container Intitialized, Running Lecospec Prediction Pipeline"
-srun singularity exec --writable /home/kbundy/lecospec/ cd /lecospec-master && Rscript --verbose ./Scripts/5_Classify_Image1.R
+echo "Running Lecospec Prediction Pipeline"
+srun singularity exec --writable /home/kbundy/lecospec/ && Rscript --verbose /home/kbundy/lecospec-master/Scripts/5_Classify_Image1.R
