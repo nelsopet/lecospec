@@ -43,7 +43,8 @@ system.time(PredLayer <- LandCoverEstimator(
     #Classif_Model = "Output/E_004_Best_Model_Ranger_86vars.rda",
     Classif_Model = "Output/E_004_Best_Model_Ranger.rda",
     datatype = "raster",
-    extension = FALSE))
+    extension = FALSE,
+    output_filename = "WickershamDomeOutput"))
 
 #write.csv(PredLayer, "predicted_layer.csv")
 raster::writeRaster(PredLayer, "predlayer.tif")

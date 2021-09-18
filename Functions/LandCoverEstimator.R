@@ -6,7 +6,7 @@
 ## Classif_Model = dir.path to where the model to be used for classification is located
 ## A subfolder will be created in you out_file path for aving all the output files
 
-LandCoverEstimator<-function(filename, out_file, Classif_Model, datatype, extension) {
+LandCoverEstimator<-function(filename, out_file, Classif_Model, datatype = "raster", extension, output_filename = "full_model_results") {
 
   
   
@@ -732,10 +732,10 @@ LandCoverEstimator<-function(filename, out_file, Classif_Model, datatype, extens
       
       plot_agg_results(output_df)
       print("Done")
-      write.table(output_df, file = "Output/full_model_results.csv")
+      write.table(output_df, file = paste0("Output/", output_filename, ".csv")
 
       output_raster <- raster::rasterFromXYZ(output_df)
-      raster::writeRaster(output_raster, "Output/full_model_results.tif")
+      raster::writeRaster(output_raster, paste0("Output/", output_filename, ".tif")
 
     return(output_raster)
   }
