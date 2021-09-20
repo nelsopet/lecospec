@@ -3,7 +3,8 @@ require(gplots)
 require(mapview)
 require(tidyverse)
 require(rasterVis)
-
+require(leaflet.opacity)
+require(leaflegend)
 list.files("./Output/Prediction/")
 
 source("./Functions/PFT_mapper.R")
@@ -21,15 +22,21 @@ species_colors = createPalette(length(unique(SpecLib_derivs$Species_name)),  c("
 
 ##Basic species and genus maps
 AK_sp_map<- function(map) {leaflet() %>%
-    addTiles("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}") %>%
-    addRasterImage(map, colors = species_colors$Color) %>%
-    addLegend("bottomright", colors = species_colors$Color, labels = species_colors$FNC_grp1)}
+    addTiles("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+             options = providerTileOptions(minZoom = 8, maxZoom = 100)) %>%
+    addRasterImage(map, layerId = "layer", colors = species_colors$Color) %>%
+    addLegend("bottomleft", colors = species_colors$Color, labels = species_colors$FNC_grp1) %>%
+    addOpacitySlider(layerId = "layer")
+    #setView(zoom = 10)
+    }
 
 
 AK_genus_map<- function(map) {leaflet() %>%
-    addTiles("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}") %>%
-    addRasterImage(map, colors = genera_colors$Color) %>%
-    addLegend("bottomright", colors = genera_colors$Color, labels = genera_colors$FNC_grp1)}
+    addTiles("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+             options = providerTileOptions(minZoom = 8, maxZoom = 100)) %>%
+    addRasterImage(map, layerId = "layer", colors = genera_colors$Color) %>%
+    addLegend("bottomleft", colors = genera_colors$Color, labels = genera_colors$FNC_grp1) %>%
+    addOpacitySlider(layerId = "layer")}
 
 #fnc_grp1_color_list<-Veg_env %>% select(Functional_group2) %>% inner_join(fnc_grp1_colors, by=c("Functional_group2"="FNC_grp1"), keep=FALSE)
 species_color_list<-SpecLib_derivs %>% dplyr::select(Species_name) %>% inner_join(species_colors, by=c("Species_name"="FNC_grp1"), keep=FALSE)
@@ -51,6 +58,7 @@ mapshot(Bison_map,file="Output/Prediction/BisonTestOut.jpeg")
 
 Murph1TestOut<-raster("Output/Prediction/Species/Murph1TestOut.tif")
 Murph1TestOut_map<-AK_sp_map(Murph1TestOut)
+saveWidget(Murph1TestOut_map, file="Output/Prediction/Species/Murph1TestOut_map.html")
 mapshot(Bison_map,file="Output/Prediction/Murph1TestOut.jpeg")
 
 ChatanikaTestOut<-raster("Output/Prediction/Species/ChatanikaTestOut.tif")
@@ -62,7 +70,11 @@ EagleTestOut_map<-AK_sp_map(EagleTestOut)
 mapshot(EagleTestOut_map,file="Output/Prediction/EagleTestOut.jpeg")
 
 TwelveMile_map<-AK_sp_map(TwelveMileTestOut)
-mapshot(TwelveMile_map,file="Output/Prediction/TwelveMileTestOut.jpeg")
+saveWidget(TwelveMile_map, file="Output/Prediction/Species/TwelveMile_map.html")
+jpeg("Output/Prediction/Species/TwelveMile_map_hist.jpeg")
+raster::hist(TwelveMileTestOut$layer, breaks = c(0:108),labels = species_colors$FNC_grp1)
+dev.off()
+#mapshot(TwelveMile_map,file="Output/Prediction/TwelveMileTestOut.jpeg")
 
 
 #pdf("./Output/Prediction/WickerTestOut_ggplot.pdf") #, width= 10, height =20)
@@ -105,15 +117,20 @@ genera_colors = createPalette(length(unique(SpecLib_derivs$Functional_group1)), 
 #fnc_grp1_color_list<-Veg_env %>% select(Functional_group2) %>% inner_join(fnc_grp1_colors, by=c("Functional_group2"="FNC_grp1"), keep=FALSE)
 genera_color_list<-SpecLib_derivs %>% dplyr::select(Functional_group1) %>% inner_join(genera_colors, by=c("Functional_group1"="FNC_grp1"), keep=FALSE)
 
-TwelveMile_Genera_map<-mapview(TwelveMileTestOut_Genera, map.types = 'Esri.WorldImagery',na.color="NA", col.regions=genera_colors$Color)
-mapshot(TwelveMile_Genera_map,file="Output/Prediction/Genera/TwelveMileTestOut_Genera.jpeg")
+#TwelveMile_Genera_map<-mapview(TwelveMileTestOut_Genera, map.types = 'Esri.WorldImagery',na.color="NA", col.regions=genera_colors$Color)
+#mapshot(TwelveMile_Genera_map,file="Output/Prediction/Genera/TwelveMileTestOut_Genera.jpeg")
 
-pdf("./Output/Prediction/Genera/TwelveMileTestOut_Genera_ggplot.pdf") #, width= 10, height =20)
-Genera_Mapper("./Output/Prediction/Genera/TwelveMileTestOut_Genera.tif")
-dev.off()
+#pdf("./Output/Prediction/Genera/TwelveMileTestOut_Genera_ggplot.pdf") #, width= 10, height =20)
+#Genera_Mapper("./Output/Prediction/Genera/TwelveMileTestOut_Genera.tif")
+#dev.off()
 
 TwelveMile2_Genera_map<-AK_genus_map(TwelveMileTestOut2_Genera)
-mapshot(TwelveMile2_Genera_map,file= "Output/Prediction/Genera/TwelveMileTestOut2_Genera.jpeg")
+saveWidget(TwelveMile2_Genera_map, file="Output/Prediction/Genera/TwelveMile2_Genera_map.html")
+
+jpeg("Output/Prediction/Genera/TwelveMile2_Genera_map_hist.jpeg")
+hist(TwelveMileTestOut2_Genera, breaks = c(0:36),labels = genera_colors$FNC_grp1)
+dev.off()
+#mapshot(TwelveMile2_Genera_map,file= "Output/Prediction/Genera/TwelveMileTestOut2_Genera.jpeg")
 
 #pdf("./Output/Prediction/Genera/TwelveMileTestOut2_Genera_ggplot.pdf") #, width= 10, height =20)
 #Genera_Mapper("./Output/Prediction/Genera/TwelveMileTestOut2_Genera.tif")
