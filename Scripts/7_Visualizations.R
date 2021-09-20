@@ -18,60 +18,80 @@ species_colors = createPalette(length(unique(SpecLib_derivs$Species_name)),  c("
   mutate(FNC_grp1 = unique(SpecLib_derivs$Species_name)) %>%
   mutate(ColorNum = seq(1:length(unique(SpecLib_derivs$Species_name))));
 
+
+##Basic species and genus maps
+AK_sp_map<- function(map) {leaflet() %>%
+    addTiles("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}") %>%
+    addRasterImage(map, colors = species_colors$Color) %>%
+    addLegend("bottomright", colors = species_colors$Color, labels = species_colors$FNC_grp1)}
+
+
+AK_genus_map<- function(map) {leaflet() %>%
+    addTiles("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}") %>%
+    addRasterImage(map, colors = genera_colors$Color) %>%
+    addLegend("bottomright", colors = genera_colors$Color, labels = genera_colors$FNC_grp1)}
+
 #fnc_grp1_color_list<-Veg_env %>% select(Functional_group2) %>% inner_join(fnc_grp1_colors, by=c("Functional_group2"="FNC_grp1"), keep=FALSE)
 species_color_list<-SpecLib_derivs %>% dplyr::select(Species_name) %>% inner_join(species_colors, by=c("Species_name"="FNC_grp1"), keep=FALSE)
 
 WickerTestOut<-raster("Output/Prediction/Species/WickerTestOut.tif")
 
-Wicker_map<-mapview(WickerTestOut, map.types = 'Esri.WorldImagery',na.color="NA", col.regions=species_colors$Color,'maxpixels =  3971968 ')
-leaflet(Wicker_map,file="Output/Prediction/WickerTestOut.jpeg")
+Wicker_map<-AK_sp_map(WickerTestOut)
+mapshot(Wicker_map,file="Output/Prediction/WickerTestOut.jpeg")
 
-LittleLake_map<-mapview(LittleLakeTestOut, map.types = 'Esri.WorldImagery',na.color="NA", col.regions=species_colors$Color)
+LittleLakeTestOut<-raster("Output/Prediction/Species/LittleLakeTestOut.tif")
+LittleLake_map<-AK_sp_map(LittleLakeTestOut)
 mapshot(LittleLake_map,file="Output/Prediction/LittleLakeTestOut.jpeg")
 
-Bison_map<-mapview(BisonTestOut, map.types = 'Esri.WorldImagery',na.color="NA", col.regions=species_colors$Color)
+
+BisonTestOut<-raster("Output/Prediction/Species/BisonTestOut.tif")
+Bison_map<-AK_sp_map(BisonTestOut)
 mapshot(Bison_map,file="Output/Prediction/BisonTestOut.jpeg")
 
-Murph1TestOut_map<-mapview(Murph1TestOut, map.types = 'Esri.WorldImagery',na.color="NA", col.regions=species_colors$Color)
+
+Murph1TestOut<-raster("Output/Prediction/Species/Murph1TestOut.tif")
+Murph1TestOut_map<-AK_sp_map(Murph1TestOut)
 mapshot(Bison_map,file="Output/Prediction/Murph1TestOut.jpeg")
 
-ChatanikaTestOut_map<-mapview(ChatanikaTestOut, map.types = 'Esri.WorldImagery',na.color="NA", col.regions=species_colors$Color)
+ChatanikaTestOut<-raster("Output/Prediction/Species/ChatanikaTestOut.tif")
+ChatanikaTestOut_map<-AK_sp_map(ChatanikaTestOut)
 mapshot(ChatanikaTestOut_map,file="Output/Prediction/ChatanikaTestOut.jpeg")
 
-EagleTestOut_map<-mapview(EagleTestOut, map.types = 'Esri.WorldImagery',na.color="NA", col.regions=species_colors$Color)
+EagleTestOut<-raster("Output/Prediction/Species/EagleTestOut.tif")
+EagleTestOut_map<-AK_sp_map(EagleTestOut)
 mapshot(EagleTestOut_map,file="Output/Prediction/EagleTestOut.jpeg")
 
-TwelveMile_map<-mapview(TwelveMileTestOut, map.types = 'Esri.WorldImagery',na.color="NA", col.regions=species_colors$Color)
+TwelveMile_map<-AK_sp_map(TwelveMileTestOut)
 mapshot(TwelveMile_map,file="Output/Prediction/TwelveMileTestOut.jpeg")
 
 
-pdf("./Output/Prediction/WickerTestOut_ggplot.pdf") #, width= 10, height =20)
-PFT_Mapper("./Output/Prediction/WickerTestOut.tif")
-dev.off()
-
-pdf("./Output/Prediction/LittleLakeTestOut_ggplot.pdf") #, width= 10, height =20)
-PFT_Mapper("./Output/Prediction/LittleLakeTestOut.tif")
-dev.off()
-
-pdf("./Output/Prediction/BisonTestOut_ggplot.pdf") #, width= 10, height =20)
-PFT_Mapper("./Output/Prediction/BisonTestOut.tif")
-dev.off()
-
-pdf("./Output/Prediction/Murph1TestOut_ggplot.pdf") #, width= 10, height =20)
-PFT_Mapper("./Output/Prediction/Murph1TestOut.tif")
-dev.off()
-
-pdf("./Output/Prediction/ChatanikaTestOut_ggplot.pdf") #, width= 10, height =20)
-PFT_Mapper("./Output/Prediction/ChatanikaTestOut.tif")
-dev.off()
-
-pdf("./Output/Prediction/EagleTestOut_ggplot.pdf") #, width= 10, height =20)
-PFT_Mapper("./Output/Prediction/EagleTestOut.tif")
-dev.off()
-
-pdf("./Output/Prediction/TwelveMileTestOut_ggplot.pdf") #, width= 10, height =20)
-PFT_Mapper("./Output/Prediction/TwelveMileTestOut.tif")
-dev.off()
+#pdf("./Output/Prediction/WickerTestOut_ggplot.pdf") #, width= 10, height =20)
+#PFT_Mapper("./Output/Prediction/WickerTestOut.tif")
+#dev.off()
+#
+#pdf("./Output/Prediction/LittleLakeTestOut_ggplot.pdf") #, width= 10, height =20)
+#PFT_Mapper("./Output/Prediction/LittleLakeTestOut.tif")
+#dev.off()
+#
+#pdf("./Output/Prediction/BisonTestOut_ggplot.pdf") #, width= 10, height =20)
+#PFT_Mapper("./Output/Prediction/BisonTestOut.tif")
+#dev.off()
+#
+#pdf("./Output/Prediction/Murph1TestOut_ggplot.pdf") #, width= 10, height =20)
+#PFT_Mapper("./Output/Prediction/Murph1TestOut.tif")
+#dev.off()
+#
+#pdf("./Output/Prediction/ChatanikaTestOut_ggplot.pdf") #, width= 10, height =20)
+#PFT_Mapper("./Output/Prediction/ChatanikaTestOut.tif")
+#dev.off()
+#
+#pdf("./Output/Prediction/EagleTestOut_ggplot.pdf") #, width= 10, height =20)
+#PFT_Mapper("./Output/Prediction/EagleTestOut.tif")
+#dev.off()
+#
+#pdf("./Output/Prediction/TwelveMileTestOut_ggplot.pdf") #, width= 10, height =20)
+#PFT_Mapper("./Output/Prediction/TwelveMileTestOut.tif")
+#dev.off()
 
 ####################
 ##Plot data cubes predicted at the genera level.
@@ -92,12 +112,12 @@ pdf("./Output/Prediction/Genera/TwelveMileTestOut_Genera_ggplot.pdf") #, width= 
 Genera_Mapper("./Output/Prediction/Genera/TwelveMileTestOut_Genera.tif")
 dev.off()
 
-TwelveMile2_Genera_map<-mapview(TwelveMileTestOut2_Genera, map.types = 'Esri.WorldImagery',na.color="NA", col.regions=genera_colors$Color)
-mapshot(TwelveMile2_Genera_map,file="Output/Prediction/Genera/TwelveMileTestOut2_Genera.jpeg")
+TwelveMile2_Genera_map<-AK_genus_map(TwelveMileTestOut2_Genera)
+mapshot(TwelveMile2_Genera_map,file= "Output/Prediction/Genera/TwelveMileTestOut2_Genera.jpeg")
 
-pdf("./Output/Prediction/Genera/TwelveMileTestOut2_Genera_ggplot.pdf") #, width= 10, height =20)
-Genera_Mapper("./Output/Prediction/Genera/TwelveMileTestOut2_Genera.tif")
-dev.off()
+#pdf("./Output/Prediction/Genera/TwelveMileTestOut2_Genera_ggplot.pdf") #, width= 10, height =20)
+#Genera_Mapper("./Output/Prediction/Genera/TwelveMileTestOut2_Genera.tif")
+#dev.off()
 
 
 
