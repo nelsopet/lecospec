@@ -15,4 +15,4 @@ echo "Initializing"
 pwd; hostname; date
 module load singularity/3.7.1
 echo "Running Lecospec Prediction Pipeline"
-srun singularity exec --writable /home/kbundy/lecospec/ && Rscript --verbose /home/kbundy/lecospec-master/Scripts/5_Classify_Image1.R
+srun singularity exec --writable /home/kbundy/lecospec/ Rscript --verbose /home/kbundy/lecospec-master/Scripts/5_Classify_Image1.R
