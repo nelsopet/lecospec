@@ -1,7 +1,7 @@
 #!/bin/bash
 
-AUTHTOKEN=ya29.a0ARrdaM-qn-sQaTrHTEyF2SeFqirK1kqv11LeLBWXmTkhI8vecRtEC6iKTQbCHAXwEO4dpnlZqX-7IfRXNcY6dPpfFHGGLhAUWVOOiuoiRkJcekHrULoD-Vh3kIc6rV2BzBBA5nmOV9BG3aCABXOU7HIG0Azl
-outputFolder=/home/kbundy/lsdata/alaska/
+AUTHTOKEN=[ya29.a0ARrdaM8jnY2YH1r-Fp774P-Fk_xXH52SliC3liPvoQqV139GmabvSRhrsf-ZuWvSjEfvlw-jmcYeczuGpa1kiNhgMsUNsekDttfrnQjCYM29t_BUSDcFRl-MvDw6coc1zAKbtYJjwdWeaysnVh0y-yQ6DQXi
+outputFolder=/home/kbundy/lsData/alaska/
 
 # download MurphyDome file from Google Drive automatically
 curl -H "Authorization: Bearer $AUTHTOKEN" https://www.googleapis.com/drive/v3/files/1UEo19KGOexa7G3Xk0XfR2IM2R8xAibzT?alt=media -o $outputFolder/MurphyDome
