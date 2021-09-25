@@ -21,21 +21,76 @@ Species_groups<-read.csv("Output/B_001_SC1_SpeciesTable.csv")
 
 # Reads in scans from ecosis website
 # Additional spectral profiles that will be combined to the ones collected in Alaska
-Spectra_Ecosis<-read.csv("Data/leaf_spectra_barrow_2013_20180824_ecosis.csv", check.names = F)
-Metadata_Ecosis<-read.csv("Data/ngeearctic_bnl_2013_leaf_spectra_traits_metadata.csv", check.names = F)
+Spectra_Ecosis_1<-read.csv("Data/leaf_spectra_barrow_2013_20180824_ecosis.csv", check.names = F)
+Metadata_Ecosis_1<-read.csv("Data/ngeearctic_bnl_2013_leaf_spectra_traits_metadata.csv", check.names = F)
 
 # Merges meta and spectra
-Ecosis_data<-cbind(Metadata_Ecosis[,-3],Spectra_Ecosis[,-1])
+Ecosis_data_1<-cbind(Metadata_Ecosis_1[,-3],Spectra_Ecosis_1[,-1])
 
 # Change name of column and add an area column
-names(Ecosis_data)[2]<-"Code_name"
-names(Ecosis_data)[1]<-"ScanID"
-Ecosis_data$Area<- "NOT RECORDED"
+names(Ecosis_data_1)[2]<-"Code_name"
+names(Ecosis_data_1)[1]<-"ScanID"
+Ecosis_data_1$Area<- "NOT RECORDED"
+
+Ecosis_data_1$ScanID = as.character(Ecosis_data_1$ScanID)
+###
+
+Spectra_Ecosis_2<-read.csv("Data/sewpen_2019_canopy_spectral_reflectance.csv", check.names = F)
+Metadata_Ecosis_2<-read.csv("Data/sewpen_2019_canopy_spectral_reflectance_metadata.csv", check.names = F)
+
+Ecosis_data_2<- inner_join(Metadata_Ecosis_2,Spectra_Ecosis_2, by = "SampleID", keep=FALSE)
+#Ecosis_data_2<-bind_cols(Metadata_Ecosis_2,Spectra_Ecosis_2, .id = "id")
+# Merges meta and spectra
+#Ecosis_data_1<-cbind(Metadata_Ecosis_1[,-3],Spectra_Ecosis_1[,-1])
+
+# Change name of column and add an area column
+Ecosis_data_2<-Ecosis_data_2 %>%
+  dplyr::rename(Code_name = Dominant_Species, 
+         ScanID = SampleID) %>%
+  mutate(Area = "Seward_Penn",
+         ScanID = as.character(ScanID))
+#names(Ecosis_data_1$Dominant_Species)<-"Code_name"
+#names(Ecosis_data_1)[1]<-"ScanID"
+#Ecosis_data_1$Area<- "NOT RECORDED"
+
+Eco1_names<-colnames(Ecosis_data_1)
+Ecosis_data_2<-Ecosis_data_2 %>% dplyr::select(Eco1_names)
+
+###
+Spectra_Ecosis_3_1<-read.csv("Data/ngee-arctic_2014_barrow_svchr1024i_canopy_spectral_reflectance.csv", check.names = F)
+Spectra_Ecosis_3_2<-read.csv("Data/ngee-arctic_2015_barrow_svchr1024i_canopy_spectral_reflectance.csv", check.names = F)
+
+Spectra_Ecosis_3<-bind_rows(Spectra_Ecosis_3_1,Spectra_Ecosis_3_2)
+
+Metadata_Ecosis_3<-read.csv("Data/ngee-arctic_2014_to_2016_barrow_canopy_spectral_reflectance_metadata.csv", check.names = F)
+
+Ecosis_data_3<- Metadata_Ecosis_3 %>% 
+  inner_join(Spectra_Ecosis_3, by = "Sample_ID" , keep=FALSE) #%>%
+#  left_join(Spectra_Ecosis_3_2, by ="Sample_ID", keep = FALSE)
+#Ecosis_data_3 %>% filter(is.na(`350`)==FALSE) %>% dim
+#dim(Ecosis_data_3)
+#Ecosis_data_3<-bind_cols(Metadata_Ecosis_3,Spectra_Ecosis_3, .id = "id")
+# Merges meta and spectra
+#Ecosis_data_1<-cbind(Metadata_Ecosis_1[,-3],Spectra_Ecosis_1[,-1])
+
+# Change name of column and add an area column
+Ecosis_data_3<-Ecosis_data_3 %>%
+  dplyr::rename(Code_name = USDA_Species_Code, 
+                ScanID = Sample_ID) %>%
+  mutate(Area = "Barrow",
+         ScanID = as.character(ScanID))
+#names(Ecosis_data_1$Dominant_Species)<-"Code_name"
+#names(Ecosis_data_1)[1]<-"ScanID"
+#Ecosis_data_1$Area<- "NOT RECORDED"
+Ecosis_data_3<-Ecosis_data_3 %>% dplyr::select(Eco1_names)
+
+
+Ecosis_data_all<-bind_rows(Ecosis_data_1,Ecosis_data_2,Ecosis_data_3)
 
 
 
 # Creates a spectral library from ecosis data
-Ecosis_data<-Ecosis_data %>% 
+Ecosis_data<-Ecosis_data_all %>% 
   inner_join(Species_groups,by="Code_name") %>%
   dplyr::select(ScanID,
                Code_name,
@@ -61,8 +116,9 @@ SpecLib<-Reduce(spectrolab::combine,list_of_SpecLib) %>% # dim(n_samples=1989, n
 
 
 # Combines Ecosis data and spectral library
-SpecLib<-rbind(SpecLib,Ecosis_data)
-
+SpecLib<-bind_rows(SpecLib,Ecosis_data)
+#dim(SpecLib)
+#dim(Ecosis_data)
 ## Please note: these are the number of samples we have for each functional group
 # table(SpecLib$Functional_group1)%>%as.data.frame()
 #                         Var1  Freq
@@ -109,7 +165,7 @@ SpecLib<-rbind(SpecLib,Ecosis_data)
 
 # Removes all the rows with negative values or Values >2
 SpecLib_new <-  SpecLib %>% 
-  dplyr::filter(if_all(7:ncol(SpecLib), ~between(., 0, 1)))
+  dplyr::filter(if_all(7:ncol(SpecLib), ~between(., 0, 1))) #%>% dim()
 
 print(paste0("Filtered data from  ", nrow(SpecLib), " rows to ", nrow(SpecLib_new), " rows."))
 
@@ -117,15 +173,15 @@ print(paste0("Filtered data from  ", nrow(SpecLib), " rows to ", nrow(SpecLib_ne
 
 # Adds more details to our spectral library (Freq columns = The count of each Species)
 # Frequency values represent the number of scans per species and the number of scans per functional group
-SpecLib_new_All<-SpecLib_new%>%
+SpecLib_new_All<- SpecLib_new %>% #SpecLib_new%>%
   plyr::ddply( .(Species_name), mutate, Species_name_Freq = length(Species_name))%>% # Add column to data frame that shows frequency of species
   plyr::ddply( .(Functional_group1), mutate, Functional_group1_Freq = length(Functional_group1))%>% # Add column to data frame that shows frequency of functional group
   plyr::ddply( .(Functional_group2), mutate, Functional_group2_Freq = length(Functional_group2))%>% # Add column to data frame that shows frequency of courser functional groups
-  dplyr::select(ScanID,Code_name,Species_name,Functional_group1,Functional_group2,Area,Species_name_Freq,Functional_group1_Freq,Functional_group2_Freq,everything()) # Rearrange columns 
+  dplyr::select(ScanID,Area,Code_name,Species_name,Functional_group1,Functional_group2,Area,Species_name_Freq,Functional_group1_Freq,Functional_group2_Freq,everything()) # Rearrange columns 
 
 # Removes all unknown scans
 SpecLib_new_All<-SpecLib_new_All[!(SpecLib_new_All$Species_name=="Unknown"),]
-
+dim(SpecLib_new_All)
 # ------------------------------------------------- Step 2: Spectral Library Clean Up -------------------------------------------------- #
 # This section pf the script removes weird scans from each species in the combines spectral library
 # table(SpecLib_new_All$Species_name)%>%as.data.frame() # There are 105 species in our spectral library
@@ -263,6 +319,8 @@ for(i in 1:length(Target_names)){
 # Renames each target in list 
 each_target<-each_target%>%setNames(Target_names)
 
+
+
 # Plots spectral profile for each target (You'll have to go through all 99 targets to remove bad spectra)
 # plot_interactive(each_target[["Alectoria ochroleuca"    ]]) # Target 2 removed. 
 # plot_interactive(each_target[["Alnus sp."               ]]) # Signatrues Good.         
@@ -376,8 +434,8 @@ each_target[["Arctostaphyllos"         ]]<-each_target[["Arctostaphyllos"       
 each_target[["Asahinea chrysantha"     ]]<-each_target[["Asahinea chrysantha"     ]][-c(3),                                ]
 each_target[["Aulacomnium turgidum"    ]]<-each_target[["Aulacomnium turgidum"    ]][-c(3,4),                              ]
 each_target[["Bare Soil"               ]]<-each_target[["Bare Soil"               ]][-c(1,3,7),                            ]
-each_target[["Betula nana"             ]]<-each_target[["Betula nana"             ]][-c(5,18,26,27,32,43,56),              ]
-each_target[["Carex sp."               ]]<-each_target[["Carex sp."               ]][-c(10,12,13,14,15),                   ]
+each_target[["Betula nana"             ]]<-each_target[["Betula nana"             ]][-c(5),              ] #[-c(5,18,26,27,32,43,56),              ]
+each_target[["Carex sp."               ]]<-each_target[["Carex sp."               ]][-c(10),                   ]#[-c(10,12,13,14,15),                   ]
 each_target[["Cetraria islandica"      ]]<-each_target[["Cetraria islandica"      ]][-c(1,2,3,4,8),                        ]
 each_target[["Cladonia gracilis"       ]]<-each_target[["Cladonia gracilis"       ]][-c(13,14,15,16,17,18),                ]
 each_target[["Cladonia mitis"          ]]<-each_target[["Cladonia mitis"          ]][-c(8,12,13,14,15,16,17),              ]
@@ -387,7 +445,7 @@ each_target[["Cladonia stygia"         ]]<-each_target[["Cladonia stygia"       
 each_target[["Cladonia uncialis"       ]]<-each_target[["Cladonia uncialis"       ]][-c(6),                                ]
 each_target[["Dactylina arctica"       ]]<-each_target[["Dactylina arctica"       ]][-c(3,7),                              ]
 each_target[["Dead Salix"              ]]<-each_target[["Dead Salix"              ]][-c(3,4,8),                            ]
-each_target[["Dryas alleghenies"       ]]<-each_target[["Dryas alleghenies"       ]][-c(15,22,29,37,38,46,47,48,55,60:272),]
+each_target[["Dryas alleghenies"       ]]<-each_target[["Dryas alleghenies"       ]][-c(15,22,29,37,38,46,47,48,55,d),]
 each_target[["Dryas octopetala"        ]]<-each_target[["Dryas octopetala"        ]][-c(10,11,29,33,32,38,41,42,48,61:610),]
 each_target[["Empetrum nigrum"         ]]<-each_target[["Empetrum nigrum"         ]][-c(1,3),                              ]
 each_target[["Evernia mesomorpha"      ]]<-each_target[["Evernia mesomorpha"      ]][-c(1,5,6,7,8,19,20),                  ]
@@ -440,7 +498,7 @@ Cleaned_Speclib<-Reduce(spectrolab::combine,New_targets)%>%
 # Creates .rds object
 Cleaned_Speclib_rds<-Reduce(spectrolab::combine,New_targets)
 
-# table(Cleaned_Speclib$Functional_group1)%>%as.data.frame()
+#table(Cleaned_Speclib$Functional_group1)%>%as.data.frame()
 #                             Var1 Freq
 # 1              Dwarf_Shrub_Decid  177
 # 2                           Forb   72
@@ -506,8 +564,12 @@ for(i in 1:length(names_of_classes)){
   
   # Plot the output
   FunctionalGroupDf[[i]]<-FunctionalGroupDf[[i]]%>%
-    group_by(Species_name, Wavelength) %>%  
-    dplyr::summarise(Median_Reflectance = median(Reflectance))%>%
+    group_by(Functional_group1, Wavelength) %>%  
+    dplyr::summarise(Median_Reflectance = median(Reflectance),
+                     Max_Reflectance = max(Reflectance),
+                     Min_Reflectance = min(Reflectance),
+                     Upper_Reflectance = quantile(Reflectance, probs = 0.95),
+                     Lower_Reflectance = quantile(Reflectance, probs = 0.05))%>%
     as.data.frame()
 }
 
@@ -524,6 +586,36 @@ for(i in 1:length(FunctionalGroupDf)){
   ggsave(paste("Output/","C_003_SC3","_",names_of_classes[[i]],".jpg",sep =""))
   
 }
+
+##Tidy version of making the same as above
+Cleaned_Speclib_tall<-Cleaned_Speclib %>% 
+  pivot_longer(cols = `350`:`2500`,  names_to  = "Wavelength", values_to = "Reflectance") %>%
+  group_by(Functional_group2, Wavelength) %>%  
+  dplyr::summarise(Median_Reflectance = median(Reflectance),
+                   Max_Reflectance = max(Reflectance),
+                   Min_Reflectance = min(Reflectance),
+                   Upper_Reflectance = quantile(Reflectance, probs = 0.95),
+                   Lower_Reflectance = quantile(Reflectance, probs = 0.05))%>%
+  mutate(Wavelength = as.numeric(Wavelength)) %>%
+  as.data.frame() #%>%
+  #group_by(Functional_group1, Wavelength)
+
+pdf("Output/Functional_group1_spectral_profiles.pdf", height = 30, width = 30)
+ggplot(Cleaned_Speclib_tall, aes(Wavelength, Median_Reflectance, group = Functional_group2))+
+  geom_line(aes(color = Functional_group2))+
+  geom_ribbon(aes(Wavelength, ymin = Lower_Reflectance, ymax = Upper_Reflectance, alpha = 0.5))+
+  #labs(color="Functional_group1")+
+  theme(panel.background = element_rect(fill = "white", colour = "grey50"), 
+        legend.key.size = unit(0.5, "cm"),legend.text = element_text(size=25),
+        title = element_text(size=25),
+        strip.text = element_text(size = 25),
+        axis.text = element_text(size = 20)
+        ) +
+  #labs(title = paste(names_of_classes[[x]]," Median, Upper (97%) and Lower (2.5%) Reflectance Profiles", sep = ""))+
+  #facet_wrap(vars(Species_name), scales = "free")
+  facet_wrap(vars(Functional_group2), scales = "free", ncol = 3)
+dev.off()
+#ggsave("Output/Functional_group1_spectral_profiles.jpg")
 
 ###Run LandCoverEstimator to generate Spectral Derivatives.
 #source("Functions/1_Simple_LandCoverEstimator.R")
