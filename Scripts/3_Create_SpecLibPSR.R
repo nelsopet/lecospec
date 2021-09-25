@@ -590,7 +590,7 @@ for(i in 1:length(FunctionalGroupDf)){
 ##Tidy version of making the same as above
 Cleaned_Speclib_tall<-Cleaned_Speclib %>% 
   pivot_longer(cols = `350`:`2500`,  names_to  = "Wavelength", values_to = "Reflectance") %>%
-  group_by(Functional_group2, Wavelength) %>%  
+  group_by(Functional_group1,Functional_group2, Species_name, Wavelength) %>%  
   dplyr::summarise(Median_Reflectance = median(Reflectance),
                    Max_Reflectance = max(Reflectance),
                    Min_Reflectance = min(Reflectance),
@@ -598,22 +598,42 @@ Cleaned_Speclib_tall<-Cleaned_Speclib %>%
                    Lower_Reflectance = quantile(Reflectance, probs = 0.05))%>%
   mutate(Wavelength = as.numeric(Wavelength)) %>%
   as.data.frame() #%>%
-  #group_by(Functional_group1, Wavelength)
+  #group_by(Species_name, Wavelength)
 
-pdf("Output/Functional_group1_spectral_profiles.pdf", height = 30, width = 30)
-ggplot(Cleaned_Speclib_tall, aes(Wavelength, Median_Reflectance, group = Functional_group2))+
-  geom_line(aes(color = Functional_group2))+
-  geom_ribbon(aes(Wavelength, ymin = Lower_Reflectance, ymax = Upper_Reflectance, alpha = 0.5))+
-  #labs(color="Functional_group1")+
+Cleaned_Speclib_cnt<-Cleaned_Speclib %>% 
+  group_by(Species_name) %>%
+  tally() 
+
+Cleaned_Speclib_tall<- Cleaned_Speclib_tall %>% left_join(Cleaned_Speclib_cnt, by = "Species_name", keep=FALSE)
+
+Lichen_Fruticose_Light_Cleaned_Speclib_tall <- Cleaned_Speclib_tall %>% dplyr::filter(Functional_group1 == "Lichen_Fruticose_Light")
+
+Moss_Polytrichum_Cleaned_Speclib_tall <- Cleaned_Speclib_tall %>% dplyr::filter(Functional_group1 == "Moss_Polytrichum")
+
+Forb_Cleaned_Speclib_tall <- Cleaned_Speclib_tall %>% dplyr::filter(Functional_group2 == "Forb"|Functional_group2 == "Graminoid")
+
+Shrub_Cleaned_Speclib_tall <- Cleaned_Speclib_tall %>% dplyr::filter(Functional_group2 == "Shrub")
+
+Tree_Cleaned_Speclib_tall <- Cleaned_Speclib_tall %>% dplyr::filter(Functional_group2 == "Tree")
+
+Abiotic_Cleaned_Speclib_tall <- Cleaned_Speclib_tall %>% dplyr::filter(Functional_group2 == "Abiotic")
+
+jpeg("Output/Abiotic_name_spectral_profiles.jpg", height = 4000, width = 9000, res = 350)
+ggplot(Abiotic_Cleaned_Speclib_tall, aes(Wavelength, Median_Reflectance, group = Species_name))+
+  geom_line(aes(color = Species_name))+
+  geom_ribbon(aes(Wavelength, ymin = Lower_Reflectance, ymax = Upper_Reflectance, alpha = 0.2))+
+  labs(title = "Reflectance by abiotic surface with median and 90% quantiles", y="Reflectance")+
   theme(panel.background = element_rect(fill = "white", colour = "grey50"), 
-        legend.key.size = unit(0.5, "cm"),legend.text = element_text(size=25),
+        #legend.key.size = unit(0.5, "cm"),legend.text = element_text(size=25),
+        legend.position = "none",
         title = element_text(size=25),
         strip.text = element_text(size = 25),
-        axis.text = element_text(size = 20)
-        ) +
+        axis.text = element_text(size = 20),
+        axis.text.x = element_text(angle = 90)) +
+  #annotate("text", label = n) +
   #labs(title = paste(names_of_classes[[x]]," Median, Upper (97%) and Lower (2.5%) Reflectance Profiles", sep = ""))+
   #facet_wrap(vars(Species_name), scales = "free")
-  facet_wrap(vars(Functional_group2), scales = "free", ncol = 3)
+  facet_wrap(vars(Species_name), scales = "free", ncol = 3)
 dev.off()
 #ggsave("Output/Functional_group1_spectral_profiles.jpg")
 

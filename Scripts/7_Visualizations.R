@@ -6,6 +6,7 @@ require(rasterVis)
 require(leaflet.opacity)
 require(leaflegend)
 require(vegan)
+require(leaflet)
 
 list.files("./Output/Prediction/")
 
