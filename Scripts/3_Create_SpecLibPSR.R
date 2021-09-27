@@ -590,7 +590,7 @@ for(i in 1:length(FunctionalGroupDf)){
 ##Tidy version of making the same as above
 Cleaned_Speclib_tall<-Cleaned_Speclib %>% 
   pivot_longer(cols = `350`:`2500`,  names_to  = "Wavelength", values_to = "Reflectance") %>%
-  group_by(Functional_group1,Functional_group2, Species_name, Wavelength) %>%  
+  group_by(Functional_group1,Functional_group2,Species,Wavelength) %>%  
   dplyr::summarise(Median_Reflectance = median(Reflectance),
                    Max_Reflectance = max(Reflectance),
                    Min_Reflectance = min(Reflectance),
@@ -606,9 +606,13 @@ Cleaned_Speclib_cnt<-Cleaned_Speclib %>%
 
 Cleaned_Speclib_tall<- Cleaned_Speclib_tall %>% left_join(Cleaned_Speclib_cnt, by = "Species_name", keep=FALSE)
 
+Lichen_noCrusts_Cleaned_Speclib_all<- Cleaned_Speclib_tall %>% 
+  dplyr::filter(Functional_group1 != "Lichen_Crustose_Dark"|Functional_group1 !="Lichen_Crustose_Light") %>%
+  dplyr::filter(Functional_group2 =="Lichen")
+
 Lichen_Fruticose_Light_Cleaned_Speclib_tall <- Cleaned_Speclib_tall %>% dplyr::filter(Functional_group1 == "Lichen_Fruticose_Light")
 
-Moss_Polytrichum_Cleaned_Speclib_tall <- Cleaned_Speclib_tall %>% dplyr::filter(Functional_group1 == "Moss_Polytrichum")
+Moss_Cleaned_Speclib_tall <- Cleaned_Speclib_tall %>% dplyr::filter(Functional_group2 == "Moss")
 
 Forb_Cleaned_Speclib_tall <- Cleaned_Speclib_tall %>% dplyr::filter(Functional_group2 == "Forb"|Functional_group2 == "Graminoid")
 
@@ -618,11 +622,11 @@ Tree_Cleaned_Speclib_tall <- Cleaned_Speclib_tall %>% dplyr::filter(Functional_g
 
 Abiotic_Cleaned_Speclib_tall <- Cleaned_Speclib_tall %>% dplyr::filter(Functional_group2 == "Abiotic")
 
-jpeg("Output/Abiotic_name_spectral_profiles.jpg", height = 4000, width = 9000, res = 350)
-ggplot(Abiotic_Cleaned_Speclib_tall, aes(Wavelength, Median_Reflectance, group = Species_name))+
-  geom_line(aes(color = Species_name))+
+jpeg("Output/Lichen_species_no_crusts_spectral_profiles.jpg", height = 4000, width = 9000, res = 350)
+ggplot(Lichen_noCrusts_Cleaned_Speclib_all, aes(Wavelength, Median_Reflectance, group = Functional_group1))+
+  geom_line(aes(color = Functional_group1))+
   geom_ribbon(aes(Wavelength, ymin = Lower_Reflectance, ymax = Upper_Reflectance, alpha = 0.2))+
-  labs(title = "Reflectance by abiotic surface with median and 90% quantiles", y="Reflectance")+
+  labs(title = "Reflectance by lichen group with median and 90% quantiles", y="Reflectance")+
   theme(panel.background = element_rect(fill = "white", colour = "grey50"), 
         #legend.key.size = unit(0.5, "cm"),legend.text = element_text(size=25),
         legend.position = "none",
@@ -633,7 +637,7 @@ ggplot(Abiotic_Cleaned_Speclib_tall, aes(Wavelength, Median_Reflectance, group =
   #annotate("text", label = n) +
   #labs(title = paste(names_of_classes[[x]]," Median, Upper (97%) and Lower (2.5%) Reflectance Profiles", sep = ""))+
   #facet_wrap(vars(Species_name), scales = "free")
-  facet_wrap(vars(Species_name), scales = "free", ncol = 3)
+  facet_wrap(vars(Functional_group1), scales = "free", ncol = 3)
 dev.off()
 #ggsave("Output/Functional_group1_spectral_profiles.jpg")
 
