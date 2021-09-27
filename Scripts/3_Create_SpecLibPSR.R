@@ -600,8 +600,11 @@ Cleaned_Speclib_tall_sp<-Cleaned_Speclib %>%
   #group_by(Species_name, Wavelength)
 
 Cleaned_Speclib_tall_Fnc_grp2<-Cleaned_Speclib %>% 
+  group_by(Functional_group2) %>%
+  mutate(Functional_group2_wN = glue('{Functional_group2} ({n()})')) %>%
+  ungroup() %>%
   pivot_longer(cols = `350`:`2500`,  names_to  = "Wavelength", values_to = "Reflectance") %>%
-  group_by(Functional_group2,Wavelength) %>%  
+  group_by(Functional_group2_wN, Functional_group2,Wavelength) %>%  
   dplyr::summarise(Median_Reflectance = median(Reflectance),
                    Max_Reflectance = max(Reflectance),
                    Min_Reflectance = min(Reflectance),
@@ -614,6 +617,29 @@ Cleaned_Speclib_tall_Fnc_grp2<-Cleaned_Speclib %>%
   as.data.frame() #%>%
 #group_by(Species_name, Wavelength)
 
+Cleaned_Speclib_tall_Fnc_grp1<-Cleaned_Speclib %>% 
+  group_by(Functional_group2) %>%
+  mutate(Functional_group1_wN = glue('{Functional_group1} ({n()})')) %>%
+  ungroup() %>%
+  pivot_longer(cols = `350`:`2500`,  names_to  = "Wavelength", values_to = "Reflectance") %>%
+  group_by(Functional_group1_wN, Functional_group1,Wavelength) %>%  
+  dplyr::summarise(Median_Reflectance = median(Reflectance),
+                   Max_Reflectance = max(Reflectance),
+                   Min_Reflectance = min(Reflectance),
+                   Pct_87_5_Reflectance = quantile(Reflectance, probs = 0.875),
+                   Pct_12_5_Reflectance = quantile(Reflectance, probs = 0.125),
+                   Upper_Reflectance = quantile(Reflectance, probs = 0.95),
+                   Lower_Reflectance = quantile(Reflectance, probs = 0.05))%>%
+  mutate(Wavelength = as.numeric(Wavelength))  %>%
+  as.data.frame() #%>%
+#group_by(Species_name, Wavelength)
+
+Cleaned_Speclib_Fnc_grp1_cnt<-Cleaned_Speclib %>% 
+  group_by(Functional_group1) %>%
+  tally() %>%
+  #mutate(Functional_group2 = ifelse(Functional_group2=="Abiotic","Non-vegetated surface", Functional_group2)) %>%
+  dplyr::rename(Plant_Functional_Type = Functional_group1) %>%
+  arrange(Plant_Functional_Type) 
 
 Cleaned_Speclib_Fnc_grp2_cnt<-Cleaned_Speclib %>% 
   group_by(Functional_group2) %>%
@@ -622,9 +648,6 @@ Cleaned_Speclib_Fnc_grp2_cnt<-Cleaned_Speclib %>%
   dplyr::rename(Plant_Functional_Type = Functional_group2) %>%
   arrange(Plant_Functional_Type) 
   
-
-Cleaned_Speclib_tall<- Cleaned_Speclib_tall %>% left_join(Cleaned_Speclib_cnt, by = "Species_name", keep=FALSE)
-
 
 Lichen_noCrusts_Cleaned_Speclib_all<- Cleaned_Speclib_tall %>% 
   dplyr::filter(Functional_group1 != "Lichen_Crustose_Dark"|Functional_group1 !="Lichen_Crustose_Light") %>%
@@ -661,14 +684,14 @@ ggplot(Lichen_noCrusts_Cleaned_Speclib_all, aes(Wavelength, Median_Reflectance, 
 dev.off()
 ggsave("Output/Functional_group1_spectral_profiles.jpg")
 
-my_grob<-tableGrob(Cleaned_Speclib_Fnc_grp2_cnt)
+#my_grob<-tableGrob(Cleaned_Speclib_Fnc_grp2_cnt)
 
 jpeg("Output/Fnc_grp2_spectral_profiles.jpg", height = 7000, width = 5000, res = 350)
-myplot<-ggplot(Cleaned_Speclib_tall_Fnc_grp2, aes(Wavelength, Median_Reflectance, group = Functional_group2))+
+ggplot(Cleaned_Speclib_tall_Fnc_grp2, aes(Wavelength, Median_Reflectance, group = Functional_group2))+
   geom_ribbon(aes(Wavelength, ymin = Pct_12_5_Reflectance, ymax = Pct_87_5_Reflectance, alpha = 0.3))+
   geom_line(aes(color = "red"),size = 5)+
   geom_ribbon(aes(Wavelength, ymin = Lower_Reflectance, ymax = Upper_Reflectance, alpha = 0.2))+
-  labs(title = c("Reflectance by plant functional group with median (red), 75% (dark) \n and 90% (grey) quantiles based on 1302 scans and a table with \n count of scans per plant functional type"), y="Reflectance")+
+  labs(title = c("Reflectance by plant functional group and sample size with median (red), 75% (dark) \n and 90% (grey) quantiles based on 1302 scans and a table with \n count of scans per plant functional type"), y="Reflectance")+
   theme(panel.background = element_rect(fill = "white", colour = "grey50"), 
         #legend.key.size = unit(0.5, "cm"),legend.text = element_text(size=25),
         legend.position = "none",
@@ -679,14 +702,48 @@ myplot<-ggplot(Cleaned_Speclib_tall_Fnc_grp2, aes(Wavelength, Median_Reflectance
   #annotate("text", label = n) +
   #labs(title = paste(names_of_classes[[x]]," Median, Upper (97%) and Lower (2.5%) Reflectance Profiles", sep = ""))+
   #facet_wrap(vars(Species_name), scales = "free")
-  facet_wrap(vars(Functional_group2), scales = "free", ncol = 2) 
+  facet_wrap(vars(Functional_group2_wN), scales = "free", ncol = 2) 
   #annotation_custom(tableGrob(Cleaned_Speclib_Fnc_grp2_cnt)) #, xmin=35, xmax=50, ymin=-2.5, ymax=-1)
 
 
-grid.arrange(myplot, my_grob, ncol=2, widths = c(3/4,1/4)) #+
+#grid.arrange(myplot, my_grob, ncol=2, widths = c(3/4,1/4)) #+
     
 
 dev.off()
+
+
+
+
+############
+
+#my_grob<-tableGrob(Cleaned_Speclib_Fnc_grp1_cnt)
+
+jpeg("Output/Fnc_grp1_spectral_profiles.jpg", height = 12000, width = 9000, res = 350)
+ggplot(Cleaned_Speclib_tall_Fnc_grp1, aes(Wavelength, Median_Reflectance, group = Functional_group1))+
+  geom_ribbon(aes(Wavelength, ymin = Pct_12_5_Reflectance, ymax = Pct_87_5_Reflectance, alpha = 0.3))+
+  geom_line(aes(color = "red"),size = 5)+
+  geom_ribbon(aes(Wavelength, ymin = Lower_Reflectance, ymax = Upper_Reflectance, alpha = 0.2))+
+  labs(title = c("Reflectance by plant functional group and sample size with median (red), 75% (dark) \n and 90% (grey) quantiles based on 1302 scans and a table with \n count of scans per plant functional type"), y="Reflectance")+
+  theme(panel.background = element_rect(fill = "white", colour = "grey50"), 
+        #legend.key.size = unit(0.5, "cm"),legend.text = element_text(size=25),
+        legend.position = "none",
+        title = element_text(size=25),
+        strip.text = element_text(size = 25),
+        axis.text = element_text(size = 20),
+        axis.text.x = element_text(angle = 90)) +
+  #annotate("text", label = n) +
+  #labs(title = paste(names_of_classes[[x]]," Median, Upper (97%) and Lower (2.5%) Reflectance Profiles", sep = ""))+
+  #facet_wrap(vars(Species_name), scales = "free")
+  facet_wrap(vars(Functional_group1_wN), scales = "free", ncol = 3) 
+#annotation_custom(tableGrob(Cleaned_Speclib_Fnc_grp1_cnt)) #, xmin=35, xmax=50, ymin=-2.5, ymax=-1)
+
+
+#grid.arrange(myplot, my_grob, ncol=2, widths = c(3/4,1/4)) #+
+
+
+dev.off()
+
+
 
 
 ###Run LandCoverEstimator to generate Spectral Derivatives.
