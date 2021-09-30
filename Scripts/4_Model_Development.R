@@ -29,8 +29,8 @@ rf_mod_ranger<-ranger::ranger(Classes ~ .,data = SpecLib_derivs, num.trees = 100
 rf_mod_ranger
 
 rf_mod_randomforest<-randomForest(Classes ~ .,data = SpecLib_derivs
-                                  ,ntree=1000,importance=TRUE) # OOB prediction error 26.18%
-
+#                                  ,ntree=1000,importance=TRUE) # OOB prediction error 26.18%
+#rf_mod_randomforest
 # # Build models using 0.99 percent cutoff for corelated varibles
 # # Creates corelation matrix
 # CorelationMatrix<-cor(SpecLib_derivs[-1])
@@ -50,10 +50,10 @@ rf_mod_randomforest<-randomForest(Classes ~ .,data = SpecLib_derivs
 # write.csv(RandomForest_confusionmatrix,"Output/E_001_RandomForest_confusionmatrix.csv")
 # 
 # # Saves confuison Matrix Ranger
-# rf_mod_ranger<-ranger(Classes ~ .,data = predictor_df_reduced,
-#                       num.trees = 1000,
-#                       local.importance = TRUE) # OOB prediction error:             23.76 %
-# 
+#rf_mod_ranger<-ranger(Classes ~ .,data = predictor_df_reduced,
+#                      num.trees = 1000,
+#                      local.importance = TRUE) # OOB prediction error:             23.76 %
+#
 # rf_mod_ranger_IMP<-ranger(Classes ~ .,data = predictor_df_reduced,
 #                       num.trees = 1000,
 #                       importance = "impurity_corrected",
@@ -67,7 +67,7 @@ rf_mod_randomforest<-randomForest(Classes ~ .,data = SpecLib_derivs
 save(rf_mod_randomforest, file = "Output/E_003_Best_Model_RandomForest.rda")
 
 # saves the model with the lowest error
-save(rf_mod_ranger      , file = "Output/E_004_Best_Model_Ranger.rda")
+#save(rf_mod_ranger      , file = "Output/E_004_Best_Model_Ranger.rda")
 
 
 #------------------------------ Select Important varibles -----------------------------------

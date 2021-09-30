@@ -7,6 +7,7 @@ require(leaflet.opacity)
 require(leaflegend)
 require(vegan)
 require(leaflet)
+require(sf)
 
 list.files("./Output/Prediction/")
 
@@ -76,7 +77,15 @@ EagleTestOut<-raster("Output/Prediction/Species/EagleTestOut.tif")
 EagleTestOut_map<-AK_sp_map(EagleTestOut)
 mapshot(EagleTestOut_map,file="Output/Prediction/EagleTestOut.jpeg")
 
+TwelveMileTestOut<-raster("Output/Prediction/TwelveMileTestOut.tif")
 TwelveMile_map<-AK_sp_map(TwelveMileTestOut)
+
+#Read in vector layer
+TwelveMile_quads<-sf::read_sf("/Users/peternelson 1/Documents/Schoodic/Grants/Field Museum/data/12mile_shapefiles/12_mile_shapefile_1.shp")
+TwelveMile_quads_2<-sf::read_sf("/Users/peternelson 1/Documents/Schoodic/Grants/Field Museum/data/12mile_shapefiles/12_mile_shapefile_2.shp")
+
+leaflet::addPolygons(data =TwelveMile_quads_2$geometry)
+
 saveWidget(TwelveMile_map, file="Output/Prediction/Species/TwelveMile_map.html")
 jpeg("Output/Prediction/Species/TwelveMile_map_hist.jpeg")
 raster::hist(TwelveMileTestOut$layer, breaks = c(0:108),labels = species_colors$FNC_grp1)
@@ -131,13 +140,22 @@ genera_color_list<-SpecLib_derivs %>% dplyr::select(Functional_group1) %>% inner
 #Genera_Mapper("./Output/Prediction/Genera/TwelveMileTestOut_Genera.tif")
 #dev.off()
 
-TwelveMile2_Genera_map<-AK_genus_map(TwelveMileTestOut2_Genera)
+TwelveMileTestOut2<-raster("Output/Prediction/Genera/TwelveMileTestOut2_Genera.tif")
+#list.files("Output/Prediction/Genera/")
+TwelveMile2_Genera_map<-AK_genus_map(TwelveMileTestOut2)
 saveWidget(TwelveMile2_Genera_map, file="Output/Prediction/Genera/TwelveMile2_Genera_map.html")
+
+leaflet(TwelveMileTestOut2) %>%
+  leaflet::addTiles("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+                    options = providerTileOptions(minZoom = 1, maxZoom = 100)) %>%
+  leaflet::addRasterImage(TwelveMileTestOut2, layerId = "layer", colors = genera_colors$Color) %>%
+  leaflet::addLegend("bottomleft", colors = genera_colors$Color, labels = genera_colors$FNC_grp1) %>% #, opacity = 0) %>%
+  addOpacitySlider(layerId = "layer")
 
 jpeg("Output/Prediction/Genera/TwelveMile2_Genera_map_hist.jpeg")
 hist(TwelveMileTestOut2_Genera, breaks = c(0:36),labels = genera_colors$FNC_grp1)
 dev.off()
-#mapshot(TwelveMile2_Genera_map,file= "Output/Prediction/Genera/TwelveMileTestOut2_Genera.jpeg")
+mapshot(TwelveMile2_Genera_map,file= "Output/Prediction/Genera/TwelveMileTestOut2_Genera.jpeg")
 
 #pdf("./Output/Prediction/Genera/TwelveMileTestOut2_Genera_ggplot.pdf") #, width= 10, height =20)
 #Genera_Mapper("./Output/Prediction/Genera/TwelveMileTestOut2_Genera.tif")
