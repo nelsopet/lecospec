@@ -8,6 +8,7 @@ require(leaflegend)
 require(vegan)
 require(leaflet)
 require(sf)
+require(htmlwidgets)
 
 list.files("./Output/Prediction/")
 
@@ -145,12 +146,17 @@ TwelveMileTestOut2<-raster("Output/Prediction/Genera/TwelveMileTestOut2_Genera.t
 TwelveMile2_Genera_map<-AK_genus_map(TwelveMileTestOut2)
 saveWidget(TwelveMile2_Genera_map, file="Output/Prediction/Genera/TwelveMile2_Genera_map.html")
 
-leaflet(TwelveMileTestOut2) %>%
+jpeg("Output/Prediction/Genera/TwelveMile2_Genera_map.jpeg")
+
+maprint<-leaflet(TwelveMileTestOut2) %>%
   leaflet::addTiles("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-                    options = providerTileOptions(minZoom = 1, maxZoom = 100)) %>%
+                    options = providerTileOptions(minZoom = 3, maxZoom = 100)) %>%
   leaflet::addRasterImage(TwelveMileTestOut2, layerId = "layer", colors = genera_colors$Color) %>%
   leaflet::addLegend("bottomleft", colors = genera_colors$Color, labels = genera_colors$FNC_grp1) %>% #, opacity = 0) %>%
   addOpacitySlider(layerId = "layer")
+saveWidget(maprint, file="Output/Prediction/Genera/TwelveMile2_Genera_map.html")
+mapshot(maprint, file="Output/Prediction/Genera/TwelveMile2_Genera_map.jpeg")
+
 
 jpeg("Output/Prediction/Genera/TwelveMile2_Genera_map_hist.jpeg")
 hist(TwelveMileTestOut2_Genera, breaks = c(0:36),labels = genera_colors$FNC_grp1)

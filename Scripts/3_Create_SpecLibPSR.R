@@ -10,6 +10,7 @@ library(tidyverse)
 library(parallel)
 library(doParallel)
 library(gridExtra)
+library(glue)
 # ------------------------------------------------ Step1: Data Munging Step ------------------------------------------------- # 
 # In this step we will combine all our spectral profiles to form one spectral library
 
@@ -653,7 +654,7 @@ Lichen_noCrusts_Cleaned_Speclib_all<- Cleaned_Speclib %>%
       mutate(Wavelength = as.numeric(Wavelength))  %>%
       as.data.frame() #%>%
 
-Lichen_Fruticose_Light_Cleaned_Speclib_tall <- Cleaned_Speclib_tall %>% dplyr::filter(Functional_group1 == "Lichen_Fruticose_Light")
+#Lichen_Fruticose_Light_Cleaned_Speclib_tall <- Cleaned_Speclib_tall %>% dplyr::filter(Functional_group1 == "Lichen_Fruticose_Light")
 
 Moss_Cleaned_Speclib_tall <- Cleaned_Speclib %>% 
         dplyr::filter(Functional_group2 == "Moss") %>%
