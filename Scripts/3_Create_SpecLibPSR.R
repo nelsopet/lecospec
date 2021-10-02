@@ -749,8 +749,8 @@ Abiotic_Cleaned_Speclib_tall <-
 ######## Lichen species spectral profiles
 jpeg("Output/Lichen_species_no_crusts_spectral_profiles.jpg", height = 5000, width = 7000, res = 350)
 ggplot(Lichen_noCrusts_Cleaned_Speclib_all, aes(Wavelength, Median_Reflectance, group = Functional_group1_wN))+
-  geom_ribbon(aes(Wavelength, ymin = Pct_12_5_Reflectance, ymax = Pct_87_5_Reflectance, alpha = 0.3))+
-  geom_ribbon(aes(Wavelength, ymin = Lower_Reflectance, ymax = Upper_Reflectance, alpha = 0.2))+
+  geom_ribbon(aes(Wavelength, ymin = Pct_12_5_Reflectance, ymax = Pct_87_5_Reflectance), alpha = 0.3)+
+  geom_ribbon(aes(Wavelength, ymin = Lower_Reflectance, ymax = Upper_Reflectance), alpha = 0.2)+
   labs(title = c("Reflectance by lichen group and sample size with median (red), 75% (dark) and \n 90% (grey) quantiles based on 1302 scans"), y="Reflectance")+
   theme(panel.background = element_rect(fill = "white", colour = "grey50"), 
         #legend.key.size = unit(0.5, "cm"),legend.text = element_text(size=25),

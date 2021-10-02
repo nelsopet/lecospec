@@ -159,7 +159,7 @@ mapshot(maprint, file="Output/Prediction/Genera/TwelveMile2_Genera_map.jpeg")
 
 
 jpeg("Output/Prediction/Genera/TwelveMile2_Genera_map_hist.jpeg")
-hist(TwelveMileTestOut2_Genera, breaks = c(0:36),labels = genera_colors$FNC_grp1)
+hist(TwelveMileTestOut2, maxpixels = 1E10, breaks = c(0:36),labels = genera_colors$FNC_grp1)
 dev.off()
 mapshot(TwelveMile2_Genera_map,file= "Output/Prediction/Genera/TwelveMileTestOut2_Genera.jpeg")
 
