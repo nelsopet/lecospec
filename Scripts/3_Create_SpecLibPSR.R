@@ -903,7 +903,7 @@ ggplot(Forb_Cleaned_Speclib_tall, aes(Wavelength, Median_Reflectance, group = Fu
         title = element_text(size=25),
         strip.text = element_text(size = 25),
         axis.text = element_text(size = 20),
-        axis.text.x = element_text(angle = 90)) +
+        axis.text.x = element_ztext(angle = 90)) +
   geom_line(aes(color = "red"), size = 1.5)+
   facet_wrap(vars(Functional_group1_wN), scales = "fixed", ncol = 2) 
 dev.off()

@@ -15,7 +15,7 @@ library(randomForest)
 
 # increase allocated memory to approx to appropriate amount 
 # (leaving 2GB reserved for OS)
-system_ram_gb <- 32
+system_ram_gb <- 24
 malloc_size <- (system_ram_gb - 2) * 8000
 
 memory.limit(size = malloc_size)
@@ -31,17 +31,18 @@ source("Functions/LandCoverEstimator.R")
 # extension = does your input file has a extension associated with it?
 # e.g (.tif,.csv, .dat)
 
-
+#list.files("F:/TwelveMile")
 
 system.time(PredLayer <- LandCoverEstimator(
-
+#    filename = "F:/TwelveMile/TwelveMile_2019_08_09_21_10_22_2000_rd_rf_or",
+    filename = "Data/TwelveMile_2019_08_09_21_10_22_2000_rd_rf_or",
 #    filename = "M:/Alaska_Datacubes/Raw_files/WickershamDome_2019_08_08_19_31_51_2000_rd_rf_or",
 #    filename = "Data/SubsetDatacube",
     #filename = "E:/Lecospec/Data/SubsetDatacube",
     out_file = "Output/",
     #Classif_Model = "Output/E_003_Best_Model_RandomForest_86vars.rda",
     #Classif_Model = "Output/E_004_Best_Model_Ranger_86vars.rda",
-    Classif_Model = "Output/E_004_Best_Model_Ranger.rda",
+    Classif_Model = "Output/E_004_Best_Model_Ranger_pred.rda",
     datatype = "raster",
     extension = FALSE))
 
