@@ -755,3 +755,12 @@ write.csv(Spectral_lib,paste(out_file,"D_002_SpecLib_Derivs",".csv", sep=""),row
 return(Spectral_lib)
 }
 
+estimate_land_cover <- function(
+  input_filepath,
+  model_filepath, 
+  output_filepath = "./"
+  cache_path = "./",
+  output_filename = "predictions",
+  ) {
+    datacube <- 
+  }

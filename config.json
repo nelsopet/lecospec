@@ -5,7 +5,7 @@
 	"runAllInputs": true,
 	"outpuPath": "./Output",
 	"modelPath": "./Output/Models/",
-	"model": "ranger_best_86vars.rda",
+	"model": "./ranger_best_86vars.rda",
 	"application": "alaska",
 	"plotResults": false,
 	"useSegmentation": false,
@@ -13,4 +13,5 @@
 	"pipeline": "default",
 	"outputFormat": ".tif",
 	"inputFormat": null,
+	"tiles": 30
 }

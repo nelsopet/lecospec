@@ -147,8 +147,6 @@ speclib_to_df <- function(speclib) {
     calculatedVegIndex <- foreach()
 }
 
-<<<<<<< Updated upstream
-=======
 calc_veg_index <- function(spec_library, subset = NA, use_nearest = TRUE) {
       av <- sort(
                 c(
@@ -235,7 +233,7 @@ resample_df <- function(df) {
 
 
 quick_veg_index <- function(df) {
-    spec_lib <- dataframe_to_speclib(df)
+    spec_lib <- df_to_speclib(df)
 
     veg_indices <- NA
     if(length(colnames(df))==272) {
@@ -262,7 +260,6 @@ adjoin_veg_index <- function(df, index_names) {
 }
 
 
->>>>>>> Stashed changes
 #' One Line
 #' 
 #' Long Description here
@@ -321,49 +318,6 @@ apply_pipeline <- function(data, pipeline_functions) {
     return(x)
 }
 
-<<<<<<< Updated upstream
-#' Calculates Headwall Vegetation Indices
-#'
-#' Long Description here
-#'
-#' @return 
-#' @param cluster (optional): A parallel computing framework  
-#' @param base_index (optional): vegetation indices for computations.  
-#' @seealso None
-#' @export 
-#' @examples Not Yet Implmented
-#' 
-calc_headwall_veg_index <- function(
-    cluster = NULL, 
-    base_index = hsdar::vegindex() ){
-    
-    Headwall_VI <- base_index[
-        -c(3,26,27,31,32,33,35,48,49,58,60,66,67,71,82,99,102,103,104,105)
-        ]
-    
-    c1 <- cluster
-    if (is.null(cluster)) {
-        # Get amount of cores to use
-        cores <- parallel::detectCores()-1
-        
-        # prepare for parallel process
-        c1<- parallel::makeCluster(cores, setup_timeout = 0.5) 
-    }
-    doParallel::registerDoParallel(c1)
-
-    veg_indices <- foreach(
-        i=1:length(Headwall_VI), 
-        .combine = cbind, 
-        .packages = 'hsdar') %dopar% {
-        a<-hsdar::vegindex(
-            spec_library, 
-            index = Headwall_VI[[i]], 
-            weighted = FALSE)}
-
-    if(is.null(cluster)) {
-        parallel::stopCluster(c1)
-    }
-=======
 get_var_names <- function(ml_model) {
     Vars_names <- c(ml_model$forest$independent.variable.names) 
     Vars_names2 <- gsub("^X", "", Vars_names[1:length(Vars_names)])
@@ -399,7 +353,6 @@ get_required_veg_indices <- function(ml_model) {
         # get the items in both vectors 
         # (i.e. veg indeices used by the classifier)
     veg_indices <- intersect(av, var_names)
->>>>>>> Stashed changes
     return(veg_indices)
 }
 
@@ -414,21 +367,6 @@ get_required_veg_indices <- function(ml_model) {
 #' @export 
 #' @examples Not Yet Implmented
 #' 
-<<<<<<< Updated upstream
-calc_aviris_veg_index <- function(
-    cluster = NULL,
-    base_index = hsdar::vegindex()
-    ) {
-
-    AVIRIS_VI <- base_index[-58]
-    c1 <- cluster
-    if (is.null(cluster)){
-        # Get amount of cores to use
-        cores <- parallel::detectCores()-1
-        
-        # prepare for parallel process
-        c1<- parallel::makeCluster(cores, setup_timeout = 0.5) 
-=======
 correct_variable_names <- function(df, ml_model, save_path = NULL) {
 
 
@@ -439,7 +377,6 @@ correct_variable_names <- function(df, ml_model, save_path = NULL) {
 
     if (!is.null(save_path)) {
         write.table(new_df, file = save_path, sep = ",")
->>>>>>> Stashed changes
     }
     doParallel::registerDoParallel(c1)
 
@@ -466,7 +403,10 @@ correct_variable_names <- function(df, ml_model, save_path = NULL) {
 #' @seealso None
 #' @export 
 #' @examples Not Yet Implmented
-resample_
+resample_spectra <- function(spec_lib) {
+    print("Not yet implemented")
+    return(spec_lib)
+}
 
 
 
@@ -520,18 +460,18 @@ clean_df_colnames <- function(df) {
 #' @examples Not Yet Implmented
 #'
 load_csv <- function(filepath, output_type = "df") {
-     Spectral_lib <- read.csv(filepath, check.names = F)
+     spectral_lib <- read.csv(filepath, check.names = F)
     
-    Spectral_lib <- deriv_combine(Spectral_lib)
+    spectral_lib <- deriv_combine(spectral_lib)
     
     write.csv(
-        Spectral_lib,
+        spectral_lib,
         paste(out_file,"D_002_SpecLib_Derivs",".csv", sep=""),
         row.names = F
         )
     
     # Normalize Values here
-    return(Spectral_lib)
+    return(spectral_lib)
 }
 
 # function to fill in missing values using partial mean matching
@@ -539,8 +479,8 @@ load_csv <- function(filepath, output_type = "df") {
 #'
 #' Long Description here
 #'
-#' @return 
-#' @param x
+#' @return a dataframe with missing values filled
+#' @param x: a dataframe to be imputed
 #' @seealso None
 #' @export 
 #' @examples Not Yet Implmented
@@ -609,7 +549,7 @@ make_tiles <- function(data, num_tiles = 100) {
 #'
 apply_pipeline_by_tile <- function(df, functions, cluster) {
     tiles <- make_tiles(df)
-    tile_outputs <- foreach::foreach(index=seq_len(tiles)) %dopar% 
+    tile_outputs <- foreach::foreach(index=seq_along(tiles)) %dopar% 
         apply_pipeline(tile, functions)
 }
 
@@ -703,14 +643,14 @@ make_speclib_derivs<- function(filename)  {
     # Reads in spectral libray as .csv
     # Right now your spectral library would have already have 
     # weird values removed/replaced
-    Spectral_lib <- read.csv(
+    spectral_lib <- read.csv(
         filename,
         check.names = F)
 
-    Spectral_lib <- Deriv_combine(Spectral_lib)
+    spectral_lib <- Deriv_combine(spectral_lib)
 
     write.csv(
-        Spectral_lib,
+        spectral_lib,
         paste(
             out_file,
             "D_002_SpecLib_Derivs",
@@ -719,7 +659,7 @@ make_speclib_derivs<- function(filename)  {
         row.names = F)
 
     # Normalize Values here
-    return(Spectral_lib)
+    return(spectral_lib)
 }
 
 #' Function Reads in the data and replace/removes weird values
@@ -733,5 +673,76 @@ make_speclib_derivs<- function(filename)  {
 #' @examples Not Yet Implmented
 #'
 load_model <- function(filepath) {
+
+}
+
+#' Function Reads in the configuration file
+#'
+#' Long Description here
+#'
+#' @return 
+#' @param x
+#' @seealso None
+#' @export 
+#' @examples Not Yet Implmented
+#'
+load_config <- function(filename) {
+    
+}
+
+#' equivalent to the old LandCoverEstimator()
+#'
+#' Long Description here
+#'
+#' @return 
+#' @param x
+#' @seealso None
+#' @export 
+#' @examples Not Yet Implmented
+#'
+estimate_land_cover <- function(
+    input_filepath,
+    config_path = "./config.json",
+    output_filepath = "./",
+    cache_filepath = "./",
+    output_filename = "predictions"
+) {
+
+    num_cores <- parallel::detectCores()
+    print(paste0(num_cores, " Cores Detected for processing..."))
+    ls_cluster <- parallel::makeCluster(num_cores)
+    # Read in the configuration file
+    config <- rjson::fromJSON(file = config_path)
+
+    # Load the model and extract the relevant information
+    model <- load_model(config$model_path)
+    model_indices <- get_required_veg_indices(model)
+
+    input_raster <- raster::brick(input_filepath)
+    input_df <- raster::rasterToPoints(input_raster) 
+
+    parallel::parApply(
+        cl = ls_cluster,
+        X = input_df
+        FUN = process_pixel,
+        MARGIN = 1
+    )
+    # load the input datacube and split into tiles
+    
+    tiles <- make_tiles(input_raster, num_tiles = config$tiles)
+    #edge artifacts?
+
+    tile_results <- parallel::parLapply(tile=tiles) %dopar% { process_tile(tile)}
+
+    results <- merge_results(tile_results)
+
+    return(results)
+}
+
+process_tile <- function(tile) {
+    
+}
+
+clean_tile_df <- function(tile) {
 
 }

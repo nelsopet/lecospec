@@ -30,6 +30,7 @@ process_image <- function(filename, classifier, options = NULL) {
         seq_len(length(data_tiles)),
         apply_pipeline(x, pipeline_functions)
         )
+        
 preprocess_image <- function(filename,output_dir, classifier) {
     data_raster <- raster::brick(filename)
     data_df <- raster_to_dataframe(data_raster)
@@ -76,18 +77,7 @@ process_tiles <- function(
    
 
    # create wrappers for functions with more than one argument
-    apply_model <- function(x) {
-        predictions <- raster::predict(
-            x,
-            classifier,
-            na.rm = TRUE,
-            type='response',
-            progress='text',
-            fun = function(classifier, ...) {
-                return(predict(classifier, ...)$predictions)
-            })
-        return(predictions)
-    }
+    
 
     set_variable_names_from_model <- function(df) {
         corrected_names_df <- correct_variable_names(df, classifier)
@@ -132,4 +122,19 @@ process_tiles <- function(
     return(output_raster)
 
 }
+
+apply_model <- function(x) {
+        predictions <- raster::predict(
+            x,
+            classifier,
+            na.rm = TRUE,
+            type='response',
+            progress='text',
+            fun = function(classifier, ...) {
+                return(predict(classifier, ...)$predictions)
+            })
+        return(predictions)
+    }
+
+
 
