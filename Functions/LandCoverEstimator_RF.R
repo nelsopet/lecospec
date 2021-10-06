@@ -1,3 +1,6 @@
+require(dplyr)
+require(compiler)
+
 #' Functions returns columns that are bandpasses
 #' 
 #' @inheritParams None
@@ -367,25 +370,28 @@ get_required_veg_indices <- function(ml_model) {
 #' @export 
 #' @examples Not Yet Implmented
 #' 
-correct_variable_names <- function(df, ml_model, save_path = NULL) {
+get_vegetation_indices <- function(
+    df,
+    ml_model,
+    cluster = parallel::makeCluster()) {
 
-
-    Vars_names2 <- get_var_names(ml_model)
+    target_model_vars <- get_var_names(ml_model)
     # Creates a new model built on important variables
     new_df <- df %>%
-        dplyr::select(x,y,all_of(Vars_names2))
+        dplyr::select(x,y,all_of(target_model_vars))
 
-    if (!is.null(save_path)) {
-        write.table(new_df, file = save_path, sep = ",")
-    }
-    doParallel::registerDoParallel(c1)
 
-    veg_indices <- foreach(i=1:length(AVIRIS_VI), .combine=cbind, .packages = 'hsdar') %dopar%{
-        a<-hsdar::vegindex(spec_library, index=AVIRIS_VI[[i]], weighted = FALSE)}
+    doParallel::registerDoParallel(cluster)
 
-    if(is.null(cluster)){
-        parallel::stopCluster(c1)
-    }
+    veg_indices <- foreach(
+        i = seq_along(target_model_vars),
+        .combine = cbind,
+        .packages = "hsdar") %dopar% {
+            a <- hsdar::vegindex(
+                spec_library,
+                index = AVIRIS_VI[[i]],
+                weighted = FALSE)
+            }
 
     return(veg_indices)
 }
@@ -718,18 +724,27 @@ estimate_land_cover <- function(
     model <- load_model(config$model_path)
     model_indices <- get_required_veg_indices(model)
 
+    
+    # load the data and convert to file.
     input_raster <- raster::brick(input_filepath)
-    input_df <- raster::rasterToPoints(input_raster) 
+    df <- preprocess_raster_to_df(input_raster)
+
+    # get the vegetation indices
+    vegetation_indices <- get_vegetation_indices(df, model)
+
+    write.csv(df, cache_filepath)
+
+    
 
     parallel::parApply(
         cl = ls_cluster,
-        X = input_df
+        X = input_df,
         FUN = process_pixel,
         MARGIN = 1
     )
     # load the input datacube and split into tiles
     
-    tiles <- make_tiles(input_raster, num_tiles = config$tiles)
+    
     #edge artifacts?
 
     tile_results <- parallel::parLapply(tile=tiles) %dopar% { process_tile(tile)}
@@ -746,3 +761,41 @@ process_tile <- function(tile) {
 clean_tile_df <- function(tile) {
 
 }
+
+# a quick function based on the original code
+remove_noisy_cols <- function(df) {
+    return(df[1:274])
+}
+
+filter_bands <- function(df) {
+    # from original code, but sets the values to NA instead of -999 
+    df[-1:-2][df[-1:-2] > 1.5] <- NA
+    df[-1:-2][df[-1:-2] < 0  ] <- NA
+    df[-1:-2][sapply(df[-1:-2], is.nan)] <- NA
+    df[-1:-2][sapply(df[-1:-2], is.infinite)] <- NA
+    return(df)
+}
+
+preprocess_raster_to_df <- function(raster_obj, model) {
+    df <- raster::rasterToPoints(raster_obj)
+    df <- remove_noisy_cols(df)
+    df <- filter_bands(df)
+    gc()
+    target_model_cols <- get_var_names(model)
+    df <- clean_df_colnames(df)
+    df <- df %>% dplyr::select(x, y, dplyr::all_of(target_model_cols))
+    gc()
+    df <- impute_spectra(df)
+    return(df)
+}
+
+add_derivatives <- function(df, target_indices) {
+
+}
+
+datacube_to_csv <- function(raster_path, save_path) {
+    datacube <- raster::brick(raster_path)
+    df <- raster::rasterToPoints(datacube)
+    write.csv(df, save_path)
+}
+

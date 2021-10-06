@@ -404,7 +404,7 @@ LandCoverEstimator<-function(filename, out_file, Classif_Model, datatype = "rast
           
           print("Masking negative values and values greater than 2 percent reflectance")
           
-          # Removes noisey bands
+          # Removes noisey bands 
           # Find out a way to Automatically remove bands based on the variance
           # remove hard coding 
           DfofRas<-DfofRas[1:274]
