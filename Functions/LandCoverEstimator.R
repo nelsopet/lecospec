@@ -711,20 +711,9 @@ LandCoverEstimator<-function(filename, out_file, Classif_Model, datatype = "rast
 
 
       plot_agg_results <- function(df, save_file = "Output/results.jpeg") {
-
-#    create_raster_image <- function(df, base_image = NULL) {
-#      speclib <- raster(df)
-#      #speclib@data@attributes <- base_image@data@attributes
-#      png("model_output.png")
-#      raster::image(speclib)
-#      dev.off()
-#    }
-#
-#      plot_agg_results <- function(df, save_file = "Output/results.jpeg") {
         my_plot <- ggplot2::ggplot(data = df) +
           geom_point(aes(df$x, df$y, color=df$z))
         print(my_plot)
-        #ggplot2::ggsave(save_file)
         return(my_plot)
       }
 
@@ -732,10 +721,10 @@ LandCoverEstimator<-function(filename, out_file, Classif_Model, datatype = "rast
       
       plot_agg_results(output_df)
       print("Done")
-      write.table(output_df, file = paste0("Output/", output_filename, ".csv")
-
+      write.table(output_df, file = paste0("Output/", output_filename, ".csv"))
+      
       output_raster <- raster::rasterFromXYZ(output_df)
-      raster::writeRaster(output_raster, paste0("Output/", output_filename, ".tif")
+      raster::writeRaster(output_raster, paste0("./", output_filename, ".tif"))
 
     return(output_raster)
   }
