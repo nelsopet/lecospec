@@ -392,3 +392,6 @@ pdf("Output/F_Heatmap_Shrub_Salix.pdf", height = 12, width = 20)
 heatmap.2(as.matrix(Shrub[,Shrub_vnir_names]), dendrogram="row", trace="none", Colv = FALSE, RowSideColors = fnc_grp1_color_list$Color)
 legend(x="topright", legend=unique(fnc_grp1_color_list$Species_name), fill=unique(fnc_grp1_color_list$Color))
 dev.off()
+
+
+
