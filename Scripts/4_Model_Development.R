@@ -22,6 +22,7 @@ SpecLib_derivs_Fnc1<-
   rename(Classes = Functional_group1) %>%
   mutate(Classes = as.factor(Classes)) %>% as.data.frame()
 
+
 SpecLib_derivs_Fnc2<-
   SpecLib_derivs %>%
   dplyr::select(Functional_group2, everything()) %>% #colnames()
@@ -80,14 +81,9 @@ rf_mod_ranger_FncGrp2_pred
 
 
 # saves the model with the lowest error
-save(rf_mod_ranger_species_pred, file = "Output/E_003_Pred_Model_RandomForest_species_10ktrees.rda")
-save(rf_mod_ranger_FncGrp1_pred, file = "Output/E_003_Pred_Model_RandomForest_FncGrp1_10ktrees.rda")
-save(rf_mod_ranger_FncGrp2_pred, file = "Output/E_003_Pred_Model_RandomForest_FncGrp2_10ktrees.rda")
-
-# saves the model with the lowest error
-#save(rf_mod_ranger      , file = "Output/E_004_Best_Model_Ranger.rda")
-#save(rf_mod_ranger_pred      , file = "Output/E_004_Best_Model_Ranger_pred.rda")
-#save(rf_mod_ranger_reduced      , file = "Output/E_004_Best_Model_Ranger_reduced.rda")
+save(rf_mod_ranger_species_pred, file = "Output/E_003_Pred_Model_RandomForest_species_1000trees.rda")
+save(rf_mod_ranger_FncGrp1_pred, file = "Output/E_003_Pred_Model_RandomForest_FncGrp1_1000trees.rda")
+save(rf_mod_ranger_FncGrp2_pred, file = "Output/E_003_Pred_Model_RandomForest_FncGrp2_1000trees.rda")
 
 #------------------------------ Select Important varibles -----------------------------------
 # Creates a dataframe with all varibles and their imoportance

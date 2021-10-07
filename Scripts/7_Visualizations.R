@@ -10,11 +10,25 @@ require(leaflet)
 require(sf)
 require(htmlwidgets)
 
-list.files("./Output/Prediction/")
+#list.files("./Output/Prediction/")
 
 source("./Functions/PFT_mapper.R")
 
 SpecLib_derivs<-read.csv("./Output/D_002_SpecLib_Derivs.csv")
+
+#Fnc Grp 2 colors
+coarse_colors = createPalette(length(unique(SpecLib_derivs$Functional_group2)),  c("#ff0000", "#00ff00", "#0000ff")) %>%
+  as.data.frame() %>%
+  dplyr::rename(Color = ".") %>%
+  mutate(FNC_grp1 = unique(SpecLib_derivs$Functional_group2)) %>%
+  mutate(ColorNum = seq(1:length(unique(SpecLib_derivs$Functional_group2))));
+
+coarse_color_list<-SpecLib_derivs %>% dplyr::select(Functional_group2) %>% inner_join(coarse_colors, by=c("Functional_group2"="FNC_grp1"), keep=FALSE)
+
+
+
+
+
 
 
 ##Plot data cubes predicted at the species level.
@@ -24,6 +38,7 @@ species_colors = createPalette(length(unique(SpecLib_derivs$Species_name)),  c("
   dplyr::rename(Color = ".") %>%
   mutate(FNC_grp1 = unique(SpecLib_derivs$Species_name)) %>%
   mutate(ColorNum = seq(1:length(unique(SpecLib_derivs$Species_name))));
+species_color_list<-SpecLib_derivs %>% dplyr::select(Species_name) %>% inner_join(species_colors, by=c("Species_name"="FNC_grp1"), keep=FALSE)
 
 ##Reclass class raster based on histogram of most common targets and creat an "other"
 ##class to reduce the number of elements the legend that are trace or not present
@@ -47,8 +62,30 @@ AK_genus_map<- function(map) {leaflet() %>%
     leaflet::addLegend("bottomleft", colors = genera_colors$Color, labels = genera_colors$FNC_grp1, opacity = 0) %>%
     addOpacitySlider(layerId = "layer")}
 
+AK_coarse_map<- function(map) {leaflet(map) %>%
+    leaflet::addTiles("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+                      options = providerTileOptions(minZoom = 8, maxZoom = 100)) %>%
+    leaflet::addRasterImage(map, layerId = "layer", colors = coarse_colors$Color) %>%
+    leaflet::addLegend("bottomleft", colors = coarse_colors$Color, labels = coarse_colors$FNC_grp1, opacity = 0) %>%
+    addOpacitySlider(layerId = "layer")}
+
+
+#Read in TIF and predicted output
+TwelveMileRGB_hires<-raster("F:/TwelveMile/12mile.tif")
+TwelveMileTestOut_FncGrp2<-raster("Output/Prediction/Genera/TwelveMileTestOut_FncGrp2.tif")
+
+maprint<-AK_coarse_map(TwelveMileTestOut_FncGrp2)
+maprint<-leaflet(TwelveMileTestOut_FncGrp2) %>%
+  leaflet::addTiles("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+                    options = providerTileOptions(minZoom = 3, maxZoom = 100)) %>%
+  #leaflet::addRasterImage(TwelveMileRGB_hires) %>%
+  leaflet::addRasterImage(TwelveMileTestOut_FncGrp2, layerId = "layer", colors = coarse_colors$Color) %>%
+  leaflet::addLegend("bottomleft", colors = coarse_colors$Color, labels = coarse_colors$FNC_grp1) %>% #, opacity = 0) %>%
+  addOpacitySlider(layerId = "layer")
+#mapshot(maprint, file="Output/Prediction/Genera/TwelveMile2_FncGrp2_map.jpeg")
+saveWidget(maprint, file="Output/Prediction/Genera/TwelveMile2_FncGrp2_map.html")
+
 #fnc_grp1_color_list<-Veg_env %>% select(Functional_group2) %>% inner_join(fnc_grp1_colors, by=c("Functional_group2"="FNC_grp1"), keep=FALSE)
-species_color_list<-SpecLib_derivs %>% dplyr::select(Species_name) %>% inner_join(species_colors, by=c("Species_name"="FNC_grp1"), keep=FALSE)
 
 WickerTestOut<-raster("Output/Prediction/Species/WickerTestOut.tif")
 
@@ -140,7 +177,6 @@ genera_color_list<-SpecLib_derivs %>% dplyr::select(Functional_group1) %>% inner
 #pdf("./Output/Prediction/Genera/TwelveMileTestOut_Genera_ggplot.pdf") #, width= 10, height =20)
 #Genera_Mapper("./Output/Prediction/Genera/TwelveMileTestOut_Genera.tif")
 #dev.off()
-
 TwelveMileTestOut2<-raster("Output/Prediction/Genera/TwelveMileTestOut2_Genera.tif")
 #list.files("Output/Prediction/Genera/")
 TwelveMile2_Genera_map<-AK_genus_map(TwelveMileTestOut2)
@@ -166,6 +202,8 @@ mapshot(TwelveMile2_Genera_map,file= "Output/Prediction/Genera/TwelveMileTestOut
 #pdf("./Output/Prediction/Genera/TwelveMileTestOut2_Genera_ggplot.pdf") #, width= 10, height =20)
 #Genera_Mapper("./Output/Prediction/Genera/TwelveMileTestOut2_Genera.tif")
 #dev.off()
+
+
 
 
 
