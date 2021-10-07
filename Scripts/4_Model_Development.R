@@ -7,48 +7,36 @@ library(tidyverse)
 # Spectral Library
 SpecLib_derivs<-read.csv("Output/D_002_SpecLib_Derivs.csv")
 
-# Remove Unwanted columns
-# Creates a string of possible names that will be removed
-#remove_names<-c("ScanID","Class1","Class2","Class4","Area","Class2_Freq"
-#                ,"Class3_Freq","Class4_Freq","Tree_numbe","x","y","Species_name",
-#                "Functional_group1","Functional_group2","Species_name_Freq"  ,
-#                "Functional_group1_Freq","Functional_group2_Freq")
-# Remove Unwanted columns
-#SpecLib_derivs[remove_names] = NULL
+#Reorder columns, delete unneeded for species, FNC grp 1 and 2
+SpecLib_derivs_species<-
+  SpecLib_derivs %>%
+  dplyr::select(Species_name, everything()) %>% #colnames()
+  dplyr::select(-ScanID:-Functional_group2_Freq) %>% #colnames()
+  rename(Classes = Species_name) %>%
+  mutate(Classes = as.factor(Classes)) %>% as.data.frame()
 
-# Change column name with all the levels to "classes"
-#names(SpecLib_derivs)[1]<-"Classes"
-
-# Converts column to a fctor
-#SpecLib_derivs$Classes<-SpecLib_derivs$Classes%>%as.factor()
-SpecLib_derivs<-
-SpecLib_derivs %>%   
+SpecLib_derivs_Fnc1<-
+  SpecLib_derivs %>%
   dplyr::select(Functional_group1, everything()) %>% #colnames()
   dplyr::select(-ScanID:-Functional_group2_Freq) %>% #colnames()
   rename(Classes = Functional_group1) %>%
   mutate(Classes = as.factor(Classes)) %>% as.data.frame()
 
 
+SpecLib_derivs_Fnc2<-
+  SpecLib_derivs %>%
+  dplyr::select(Functional_group2, everything()) %>% #colnames()
+  dplyr::select(-ScanID:-Functional_group2_Freq) %>% #colnames()
+  rename(Classes = Functional_group2) %>%
+  mutate(Classes = as.factor(Classes)) %>% as.data.frame()
 
+#Set seed for stable output
 set.seed(123)
 # Build Model
-rf_mod_ranger<-ranger::ranger(Classes ~ .,data = SpecLib_derivs, num.trees = 1000,local.importance = "impurity_corrected" ) # OOB prediction error:             25.93 %
+rf_mod_ranger_species_pred<-ranger::ranger(Classes ~ .,data = SpecLib_derivs_species, num.trees = 1000) # OOB prediction error:             25.93 %
+rf_mod_ranger_FncGrp1_pred<-ranger::ranger(Classes ~ .,data = SpecLib_derivs_Fnc1, num.trees = 1000) # OOB prediction error:             25.93 %
+rf_mod_ranger_FncGrp2_pred<-ranger::ranger(Classes ~ .,data = SpecLib_derivs_Fnc2, num.trees = 1000) # OOB prediction error:             25.93 %
 
-rf_mod_ranger
-
-#rf_mod_randomforest<-randomForest(Classes ~ .,data = SpecLib_derivs,ntree=1000,importance=TRUE) # OOB prediction error 26.18%
-
-#Make models with all predictors for prediction
-rf_mod_ranger_pred<- ranger::ranger(Classes ~ .,data = SpecLib_derivs, num.trees = 1000) # OOB prediction error:10.42 %   
-
-rf_mod_ranger_pred
-
-#rf_mod_randomforest_pred<-randomForest(Classes ~ .,data = SpecLib_derivs, ntree=1000) # OOB prediction error 10.42 % 
-
-#rf_mod_randomforest
- # Build models using 0.99 percent cutoff for corelated varibles
- # Creates corelation matrix
- 
 CorelationMatrix<-cor(SpecLib_derivs[-1])
  
  # Select most correlated varibles 
@@ -80,12 +68,9 @@ rf_mod_ranger_reduced<-ranger(Classes ~ .,data = predictor_df_reduced,
 
 
 # saves the model with the lowest error
-#save(rf_mod_randomforest, file = "Output/E_003_Best_Model_RandomForest.rda")
-
-# saves the model with the lowest error
-save(rf_mod_ranger      , file = "Output/E_004_Best_Model_Ranger.rda")
-save(rf_mod_ranger_pred      , file = "Output/E_004_Best_Model_Ranger_pred.rda")
-save(rf_mod_ranger_reduced      , file = "Output/E_004_Best_Model_Ranger_reduced.rda")
+save(rf_mod_ranger_species_pred, file = "Output/E_003_Pred_Model_RandomForest_species_1000trees.rda")
+save(rf_mod_ranger_FncGrp1_pred, file = "Output/E_003_Pred_Model_RandomForest_FncGrp1_1000trees.rda")
+save(rf_mod_ranger_FncGrp2_pred, file = "Output/E_003_Pred_Model_RandomForest_FncGrp2_1000trees.rda")
 
 #------------------------------ Select Important varibles -----------------------------------
 # Creates a dataframe with all varibles and their imoportance
