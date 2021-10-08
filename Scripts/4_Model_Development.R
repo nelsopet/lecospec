@@ -32,39 +32,52 @@ SpecLib_derivs_Fnc2<-
 
 #Set seed for stable output
 set.seed(123)
-# Build Model
-rf_mod_ranger_species_pred<-ranger::ranger(Classes ~ .,data = SpecLib_derivs_species, num.trees = 1000) # OOB prediction error:             25.93 %
-rf_mod_ranger_FncGrp1_pred<-ranger::ranger(Classes ~ .,data = SpecLib_derivs_Fnc1, num.trees = 1000) # OOB prediction error:             25.93 %
-rf_mod_ranger_FncGrp2_pred<-ranger::ranger(Classes ~ .,data = SpecLib_derivs_Fnc2, num.trees = 1000) # OOB prediction error:             25.93 %
 
-CorelationMatrix<-cor(SpecLib_derivs[-1])
- 
- # Select most correlated varibles 
- caret_findCorr<-findCorrelation(CorelationMatrix, cutoff = 0.99, names = T)
- 
- # Remove corelated vars
- predictor_df_reduced<-SpecLib_derivs %>%
-   dplyr::select(-caret_findCorr)
- 
- # Rebuild models after intercorelated vars are removed
-# rf_mod_randomforest<-randomForest(Classes ~ .,data = predictor_df_reduced
-#                                   ,ntree=1000,importance=TRUE) # OOB prediction error 23.28%
-# # Saves confusion matrix rf
-# RandomForest_confusionmatrix<-rf_mod_randomforest$confusion%>%as.data.frame()
-# write.csv(RandomForest_confusionmatrix,"Output/E_001_RandomForest_confusionmatrix.csv")
+# Build Models
+rf_mod_ranger_species_pred<-ranger::ranger(Classes ~ .,data = SpecLib_derivs_species, num.trees = 10000,local.importance = "impurity_corrected" ) # OOB prediction error:             25.93 %
+rf_mod_ranger_FncGrp1_pred<-ranger::ranger(Classes ~ .,data = SpecLib_derivs_Fnc1, num.trees = 10000,local.importance = "impurity_corrected" ) # OOB prediction error:             25.93 %
+rf_mod_ranger_FncGrp2_pred<-ranger::ranger(Classes ~ .,data = SpecLib_derivs_Fnc2, num.trees = 10000,local.importance = "impurity_corrected" ) # OOB prediction error:             25.93 %
+
+rf_mod_ranger_species_pred
+rf_mod_ranger_FncGrp1_pred
+rf_mod_ranger_FncGrp2_pred
+
+#rf_mod_randomforest
+ # Build models using 0.99 percent cutoff for corelated varibles
+
+
+
+##Model refinement: Removing intercorrelated predictors. Revisit this .
+# Creates corelation matrix by which to filter predictors
 # 
-# # Saves confuison Matrix Ranger
-rf_mod_ranger_reduced<-ranger(Classes ~ .,data = predictor_df_reduced,
-                      num.trees = 1000,
-                      local.importance = TRUE) # OOB prediction error:             23.76 %
-#
-# rf_mod_ranger_IMP<-ranger(Classes ~ .,data = predictor_df_reduced,
-#                       num.trees = 1000,
-#                       importance = "impurity_corrected",
-#                       local.importance = TRUE) # OOB prediction error:             23.76 %  
+#CorelationMatrix<-cor(SpecLib_derivs[-1])
 # 
- Ranger_confusionmatrix<-rf_mod_ranger_reduce$confusion.matrix%>%as.data.frame.matrix()
- write.csv(Ranger_confusionmatrix,"Output/E_002_Ranger_confusionmatrix.csv")
+# # Select most correlated varibles 
+# caret_findCorr<-findCorrelation(CorelationMatrix, cutoff = 0.99, names = T)
+# 
+# # Remove corelated vars
+# predictor_df_reduced<-SpecLib_derivs %>%
+#   dplyr::select(-caret_findCorr)
+# 
+# # Rebuild models after intercorelated vars are removed
+## rf_mod_randomforest<-randomForest(Classes ~ .,data = predictor_df_reduced
+##                                   ,ntree=1000,importance=TRUE) # OOB prediction error 23.28%
+## # Saves confusion matrix rf
+## RandomForest_confusionmatrix<-rf_mod_randomforest$confusion%>%as.data.frame()
+## write.csv(RandomForest_confusionmatrix,"Output/E_001_RandomForest_confusionmatrix.csv")
+## 
+## # Saves confuison Matrix Ranger
+#rf_mod_ranger_reduced<-ranger(Classes ~ .,data = predictor_df_reduced,
+#                      num.trees = 1000,
+#                      local.importance = TRUE) # OOB prediction error:             23.76 %
+##
+## rf_mod_ranger_IMP<-ranger(Classes ~ .,data = predictor_df_reduced,
+##                       num.trees = 1000,
+##                       importance = "impurity_corrected",
+##                       local.importance = TRUE) # OOB prediction error:             23.76 %  
+## 
+# Ranger_confusionmatrix<-rf_mod_ranger_reduce$confusion.matrix%>%as.data.frame.matrix()
+# write.csv(Ranger_confusionmatrix,"Output/E_002_Ranger_confusionmatrix.csv")
 
 
 # saves the model with the lowest error
