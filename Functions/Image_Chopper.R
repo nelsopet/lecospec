@@ -14,4 +14,4 @@ return(tst_out)
 tst_out<-ImgChopper(tst_path, tst_seg_path)
 
 plot(tst_out[[2]])
-writeRaster(tst_out[[2]], "./Output/BisonGulchQuads")
+writeRaster(tst_out[[2]], "./Output/BisonGulchQuads", format = "ENVI")

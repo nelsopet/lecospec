@@ -45,7 +45,7 @@ species_color_list<-SpecLib_derivs %>% dplyr::select(Species_name) %>% inner_joi
 
 
 ##Basic species and genus maps
-AK_sp_map<- function(map) {leaflet() %>%
+AK_sp_map<- function(map) {leaflet(map) %>%
     leaflet::addTiles("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
              options = providerTileOptions(minZoom = 8, maxZoom = 100)) %>%
     leaflet::addRasterImage(map, layerId = "layer", colors = species_colors$Color) %>%
@@ -205,12 +205,6 @@ mapshot(TwelveMile2_Genera_map,file= "Output/Prediction/Genera/TwelveMileTestOut
 #pdf("./Output/Prediction/Genera/TwelveMileTestOut2_Genera_ggplot.pdf") #, width= 10, height =20)
 #Genera_Mapper("./Output/Prediction/Genera/TwelveMileTestOut2_Genera.tif")
 #dev.off()
-
-
-
-<<<<<<< HEAD
-=======
-
 
 
 ##Cluster of all functional groups
@@ -438,4 +432,3 @@ dev.off()
 
 
 
->>>>>>> 2c8ca40ca2afef9e80db5eb3a1a4f2ceda4f92fe
