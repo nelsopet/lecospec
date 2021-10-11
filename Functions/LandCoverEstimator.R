@@ -283,7 +283,7 @@ LandCoverEstimator<-function(filename, out_file, Classif_Model, datatype = "rast
     print("Importing Datacube")
     
     # Reads in the Hyperspectral datacubes as a Rasterstack raster
-    Converted_Dcube <- raster::brick(filename)
+    Converted_Dcube <- raster::brick(filenameq  )
     
     print("Splitting raster into 30 tiles")
     
@@ -331,7 +331,6 @@ LandCoverEstimator<-function(filename, out_file, Classif_Model, datatype = "rast
         # parallel infrastructure
 
         # Get amount of cores to use
-    cores <- parallel::detectCores()-1
     
     # prepare for parallel process
     c1 <- parallel::makeCluster(cores, setup_timeout = 0.5)
