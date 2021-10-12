@@ -37,3 +37,4 @@ scale_shape_manual(values = 1:8) +
 
 #ordiplot(spectra.pca, display = "sites")
 dev.off()
+
