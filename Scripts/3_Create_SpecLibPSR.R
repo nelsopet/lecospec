@@ -774,9 +774,9 @@ dev.off()
 ######## Functional group 2 spectral profiles
 jpeg("Output/Fnc_grp2_spectral_profiles.jpg", height = 5000, width = 7000, res = 350)
 ggplot(Cleaned_Speclib_tall_Fnc_grp2, aes(Wavelength, Median_Reflectance, group = Functional_group2), scales = "fixed")+
-  geom_ribbon(aes(Wavelength, ymin = Pct_12_5_Reflectance, ymax = Pct_87_5_Reflectance, alpha = 0.3))+
-  geom_ribbon(aes(Wavelength, ymin = Lower_Reflectance, ymax = Upper_Reflectance, alpha = 0.2))+
-  labs(title = c("Reflectance by plant functional group and sample size with median (red), 75% (dark) and \n 90% (grey) quantiles based on 1302 scans"), y="Reflectance")+
+  geom_ribbon(aes(Wavelength, ymin = Pct_12_5_Reflectance, ymax = Pct_87_5_Reflectance), alpha = 0.3)+
+  geom_ribbon(aes(Wavelength, ymin = Lower_Reflectance, ymax = Upper_Reflectance), alpha = 0.2)+
+  labs(title = c("Reflectance by plant functional group and sample size with median (black), 75% (dark) and \n 90% (grey) quantiles based on 1302 scans with vertical grey bars showing Landsat 8 bandpasses "), y="Reflectance")+
   theme(panel.background = element_rect(fill = "white", colour = "grey50"), 
         #legend.key.size = unit(0.5, "cm"),legend.text = element_text(size=25),
         legend.position = "none",
@@ -784,8 +784,21 @@ ggplot(Cleaned_Speclib_tall_Fnc_grp2, aes(Wavelength, Median_Reflectance, group 
         strip.text = element_text(size = 25),
         axis.text = element_text(size = 20),
         axis.text.x = element_text(angle = 90)) +
-  geom_line(aes(color = "red"), size = 1.5)+
-  
+  geom_line(aes(color = "black"), size = 1.5)+ scale_color_grey()+
+  annotate("rect", xmin = 430, xmax = 450, ymin = 0, ymax = 1.00, alpha = .2)+
+  #Band2<-c(450,510)#Band 2 - Blue	0.45-0.51	30
+  annotate("rect", xmin = 450, xmax = 510, ymin = 0, ymax = 1.00, alpha = .2)+
+  #Band3<-c(530,590)#Band 3 - Green	0.53-0.59	30
+  annotate("rect", xmin = 530, xmax = 590, ymin = 0, ymax = 1.00, alpha = .2)+
+  #Band4<-c(640,670)#Band 4 - Red	0.64-0.67	30
+  annotate("rect", xmin = 640, xmax = 670, ymin = 0, ymax = 1.00, alpha = .2)+
+  #Band5<-c(850-880)#Band 5 - Near Infrared (NIR)	0.85-0.88	30
+  annotate("rect", xmin = 850, xmax = 880, ymin = 0, ymax = 1.00, alpha = .2)+
+  #Band6<-c(1157,1650)#Band 6 - SWIR 1	1.57-1.65	30
+  annotate("rect", xmin = 1157, xmax = 1650, ymin = 0, ymax = 1.00, alpha = .2)+
+  #Band7<-c(2110,2290)#Band 7 - SWIR 2	2.11-2.29	30
+  annotate("rect", xmin = 2110, xmax = 2290, ymin = 0, ymax = 1.00, alpha = .2) + 
+  #scale_color_manual(values = rev(cols))+
   #annotate("text", label = n) +
   #labs(title = paste(names_of_classes[[x]]," Median, Upper (97%) and Lower (2.5%) Reflectance Profiles", sep = ""))+
   #facet_wrap(vars(Species_name), scales = "fixed")
