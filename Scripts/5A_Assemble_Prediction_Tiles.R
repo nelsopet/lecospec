@@ -3,6 +3,7 @@ require(mapview)
 require(rgdal)
 wickersham_path="./Output/TwelveMile_2019_08_09_21_10_22_2000_rd_rf_or" 
 bison_path="./Output/B_001_BisonGulch_2019_08_12_01_07_28_1511_rd_rf_or_Tile6_PredLayer" 
+bison_quad_path="./Output/BisonGulchQuads.envi"
 murph1_path="./Output/B_001_MurphyDome_2018_07_31_19_47_11_24967_rd_rf_or_Tile60_PredLayer"
 littlelake_path="./Output/B_001_LittleLake_2018_07_31_01_09_59_132_rd_rf_or_Tile1_PredLayer"
 chatanika_path ="./Output/B_001_Chatnika_2018_07_29_20_32_59_0_rd_rf_or_Tile1_PredLayer"
@@ -26,6 +27,13 @@ writeRaster(
   BisonTestOut,
   filename = "Output/Prediction/BisonTestOut.tif",
   overwrite = TRUE)
+
+BisonQuadOut<-TileAssembler(bison_quad_path)
+writeRaster(
+  BisonQuadOut,
+  filename = "Output/Prediction/BisonQuadOut.tif",
+  overwrite = TRUE)
+
 
 Murph1TestOut<-TileAssembler(murph1_path)
 writeRaster(

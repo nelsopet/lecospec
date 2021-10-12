@@ -288,7 +288,7 @@ LandCoverEstimator<-function(filename, out_file, Classif_Model, datatype, extens
     print("Splitting raster into 30 tiles")
     
     # Creates 30 tiles 
-    num_tiles <- 5# make 30 for production; reduced for faster testing
+    num_tiles <- 2# make 30 for production; reduced for faster testing
     Tiles <- SpaDES.tools::splitRaster(Converted_Dcube[[1]], num_tiles)
     
 
