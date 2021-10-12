@@ -45,7 +45,7 @@ species_color_list<-SpecLib_derivs %>% dplyr::select(Species_name) %>% inner_joi
 
 
 ##Basic species and genus maps
-AK_sp_map<- function(map) {leaflet() %>%
+AK_sp_map<- function(map) {leaflet(map) %>%
     leaflet::addTiles("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
              options = providerTileOptions(minZoom = 8, maxZoom = 100)) %>%
     leaflet::addRasterImage(map, layerId = "layer", colors = species_colors$Color) %>%
@@ -71,17 +71,20 @@ AK_coarse_map<- function(map) {leaflet(map) %>%
 
 
 #Read in TIF and predicted output
-TwelveMileRGB_hires<-raster("F:/TwelveMile/12mile.tif")
+TwelveMileRGB_hires<-raster("F:/TwelveMile/_12mile_tif_Area0.dat")
 TwelveMileTestOut_FncGrp2<-raster("Output/Prediction/Genera/TwelveMileTestOut_FncGrp2.tif")
+TwelveMileQuads<-read_sf("F:/TwelveMile/TwelveMileQ0_40_70m.shp")
+Mile12Quads<-read_csv("F:/TwelveMile/TwelveMileQ0_40_70m.csv")
 
 maprint<-AK_coarse_map(TwelveMileTestOut_FncGrp2)
 maprint<-leaflet(TwelveMileTestOut_FncGrp2) %>%
   leaflet::addTiles("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
                     options = providerTileOptions(minZoom = 3, maxZoom = 100)) %>%
-  #leaflet::addRasterImage(TwelveMileRGB_hires) %>%
+ # leaflet::addRasterImage(TwelveMileRGB_hires) %>%
   leaflet::addRasterImage(TwelveMileTestOut_FncGrp2, layerId = "layer", colors = coarse_colors$Color) %>%
   leaflet::addLegend("bottomleft", colors = coarse_colors$Color, labels = coarse_colors$FNC_grp1) %>% #, opacity = 0) %>%
-  addOpacitySlider(layerId = "layer")
+  addOpacitySlider(layerId = "layer") %>%
+  addMarkers(y)
 #mapshot(maprint, file="Output/Prediction/Genera/TwelveMile2_FncGrp2_map.jpeg")
 saveWidget(maprint, file="Output/Prediction/Genera/TwelveMile2_FncGrp2_map.html")
 
@@ -202,10 +205,6 @@ mapshot(TwelveMile2_Genera_map,file= "Output/Prediction/Genera/TwelveMileTestOut
 #pdf("./Output/Prediction/Genera/TwelveMileTestOut2_Genera_ggplot.pdf") #, width= 10, height =20)
 #Genera_Mapper("./Output/Prediction/Genera/TwelveMileTestOut2_Genera.tif")
 #dev.off()
-
-
-
-
 
 
 ##Cluster of all functional groups

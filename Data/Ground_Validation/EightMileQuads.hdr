@@ -1,0 +1,16 @@
+ENVI
+description = {
+C:\Users\Nelson Lab\Documents\lecospec\lecospec\Data\Ground_Validation\EightMileQuads.envi}
+samples = 2662
+lines   = 2076
+bands   = 1
+header offset = 0
+file type = ENVI Standard
+data type = 4
+interleave = bsq
+byte order = 0
+map info = {Geographic Lat/Lon, 1, 1, -149.264751583, 63.883446874, 8.14065740039754e-007, 3.58823217725761e-007,WGS-84}
+coordinate system string = {GEOGCS["GCS_WGS_84_with_axis_order_normalized_for_visualization",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137.0,298.257223563]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]]}
+band names = {
+Band 1}
+data ignore value = -3.4e+038
