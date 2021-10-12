@@ -1,5 +1,3 @@
-tst_path = "F:/BisonGulch/raw_1511_rd_rf_or"
-tst_seg_path = "F:/BisonGulch/Bisoon_Quadrats.shp"
 
 ImgChopper<-
 function(img,quad) {
@@ -11,7 +9,4 @@ tst_out<-c(tst_crop,tst_mask)
 return(tst_out)
 }
 
-tst_out<-ImgChopper(tst_path, tst_seg_path)
 
-plot(tst_out[[2]])
-writeRaster(tst_out[[2]], "./Output/BisonGulchQuads", format = "ENVI")
