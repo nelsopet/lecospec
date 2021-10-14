@@ -149,7 +149,26 @@ SpecLib_groups<-data.frame("Code_name"= c("abibal"
                                          ,"CAAQ"
                                          ,"ARLA2"
                                          ,"ERAN6"
-                                         ,"VAVI"))
+                                         ,"VAVI"
+                                         ,"ALVI5"       
+                                         ,"ARALA7"        
+                                         ,"BEGL"      
+                                         ,"BENA"      
+                                         ,"BEPU4"        
+                                         ,"DAFRF"        
+                                         ,"DOFR"      
+                                         ,"DROCA2"        
+                                         ,"EMNI"      
+                                         ,"EQAR"      
+                                         ,"ERVA4"        
+                                         ,"HIERA"        
+                                         ,"KAPR"      
+                                         ,"LEDUM"        
+                                         ,"RUCH"      
+                                         ,"SAG"      
+                                         ,"SAPH"      
+                                         ,"SARI4"        
+                                         ,"VAUL"      ))
 
 # Add column Species_name (SPECIES) to spectral library
 # PRN This is also hard coded. How to automate from user input?
@@ -158,7 +177,7 @@ SpecLib_groups$Species_name[SpecLib_groups$Code_name=="acerub"]<-"Acer rubrum"
 SpecLib_groups$Species_name[SpecLib_groups$Code_name=="acepen"]<-"Acer pensylvanicum"
 SpecLib_groups$Species_name[SpecLib_groups$Code_name=="aleoch"]<-"Alectoria ochroleuca"
 SpecLib_groups$Species_name[SpecLib_groups$Code_name=="alnfru"]<-"Alnus sp."
-SpecLib_groups$Species_name[SpecLib_groups$Code_name=="alninc"]<-"Alnus Incana"
+SpecLib_groups$Species_name[SpecLib_groups$Code_name=="alninc"]<-"Alnus sp."
 SpecLib_groups$Species_name[SpecLib_groups$Code_name=="arccen"]<-"Arctocetraria centrifuga"
 SpecLib_groups$Species_name[SpecLib_groups$Code_name=="arcnig"]<-"Arctostaphyllos"
 SpecLib_groups$Species_name[SpecLib_groups$Code_name=="arcrub"]<-"Arctostaphyllos"
@@ -196,9 +215,9 @@ SpecLib_groups$Species_name[SpecLib_groups$Code_name=="claunc"]<-"Cladonia uncia
 SpecLib_groups$Species_name[SpecLib_groups$Code_name=="dacarc"]<-"Dactylina arctica"
 SpecLib_groups$Species_name[SpecLib_groups$Code_name=="dead salix"]<-"Dead Salix"
 SpecLib_groups$Species_name[SpecLib_groups$Code_name=="dicranum"]<-"Dicranum sp."
-SpecLib_groups$Species_name[SpecLib_groups$Code_name=="dryala"]<-"Dryas alleghenies"
+SpecLib_groups$Species_name[SpecLib_groups$Code_name=="dryala"]<-"Dryas sp."
 SpecLib_groups$Species_name[SpecLib_groups$Code_name=="dryhyb"]<-"Dryas sp."
-SpecLib_groups$Species_name[SpecLib_groups$Code_name=="dryoct"]<-"Dryas octopetala"
+SpecLib_groups$Species_name[SpecLib_groups$Code_name=="dryoct"]<-"Dryas sp."
 SpecLib_groups$Species_name[SpecLib_groups$Code_name=="empnig"]<-"Empetrum nigrum"
 SpecLib_groups$Species_name[SpecLib_groups$Code_name=="equarv"]<-"Equisetum arvense"
 SpecLib_groups$Species_name[SpecLib_groups$Code_name=="equsyl"]<-"Equisetum sylvaticum"
@@ -216,7 +235,7 @@ SpecLib_groups$Species_name[SpecLib_groups$Code_name=="hypaus"]<-"Hypogymnia aus
 SpecLib_groups$Species_name[SpecLib_groups$Code_name=="hypspl"]<-"Hylocomium splendens"
 SpecLib_groups$Species_name[SpecLib_groups$Code_name=="icmeri"]<-"Icmadophila ericetorum"
 SpecLib_groups$Species_name[SpecLib_groups$Code_name=="irisit"]<-"Iris sp."
-SpecLib_groups$Species_name[SpecLib_groups$Code_name=="larlar"]<-"Larix Larcina"
+SpecLib_groups$Species_name[SpecLib_groups$Code_name=="larlar"]<-"Larix larcina"
 SpecLib_groups$Species_name[SpecLib_groups$Code_name=="leddec"]<-"Ledum decumbens"
 SpecLib_groups$Species_name[SpecLib_groups$Code_name=="loipro"]<-"Loisleuria procumbens"
 SpecLib_groups$Species_name[SpecLib_groups$Code_name=="luparc"]<-"Lupinus sp."
@@ -294,6 +313,30 @@ SpecLib_groups$Species_name[SpecLib_groups$Code_name=="CAAQ"]<-"Carex aquatilis"
 SpecLib_groups$Species_name[SpecLib_groups$Code_name=="ARLA2"]<-"Arctagrostis latifolia"
 SpecLib_groups$Species_name[SpecLib_groups$Code_name=="ERAN6"]<-"Eriophorum angustifolium"
 SpecLib_groups$Species_name[SpecLib_groups$Code_name=="VAVI"]<-"Vaccinium vitis-idea"
+
+
+SpecLib_groups$Species_name[SpecLib_groups$Code_name=="ALVI5" ]<-"Alnus sp."
+SpecLib_groups$Species_name[SpecLib_groups$Code_name=="ARALA7"]<-"Arctostaphyllos"
+SpecLib_groups$Species_name[SpecLib_groups$Code_name=="BEGL"  ]<-"Betula nana"
+SpecLib_groups$Species_name[SpecLib_groups$Code_name=="BENA"  ]<-"Betula nana"
+SpecLib_groups$Species_name[SpecLib_groups$Code_name=="BEPU4" ]<-"Betula nana"
+SpecLib_groups$Species_name[SpecLib_groups$Code_name=="DAFRF" ]<-"Unknown"
+SpecLib_groups$Species_name[SpecLib_groups$Code_name=="DOFR"  ]<-"Arenaria pseudofrigida"
+SpecLib_groups$Species_name[SpecLib_groups$Code_name=="DROCA2"]<-"Dryas sp."
+SpecLib_groups$Species_name[SpecLib_groups$Code_name=="EMNI"  ]<-"Empetrum nigrum"
+SpecLib_groups$Species_name[SpecLib_groups$Code_name=="EQAR"  ]<-"Equisetum arvense"
+SpecLib_groups$Species_name[SpecLib_groups$Code_name=="ERVA4" ]<-"Eriophorum vaginatum"
+SpecLib_groups$Species_name[SpecLib_groups$Code_name=="HIERA" ]<-"Hieracium sp."
+SpecLib_groups$Species_name[SpecLib_groups$Code_name=="KAPR"  ]<-"Loisleuria procumbens"
+SpecLib_groups$Species_name[SpecLib_groups$Code_name=="LEDUM" ]<-"Ledum decumbens"
+SpecLib_groups$Species_name[SpecLib_groups$Code_name=="RUCH"  ]<-"Rubus sp."
+SpecLib_groups$Species_name[SpecLib_groups$Code_name=="SAG"   ]<-"Unknown"
+SpecLib_groups$Species_name[SpecLib_groups$Code_name=="SAPH"  ]<-"Salix phlebophylla"
+SpecLib_groups$Species_name[SpecLib_groups$Code_name=="SARI4" ]<-"Salix richardsonii"
+SpecLib_groups$Species_name[SpecLib_groups$Code_name=="VAUL"  ]<-"Vaccinium uliginosum"
+
+
+
 
 ###Add column Functional_group1 (Courser response variables)
 # PRN This is hard coded. We should be using a look up table for functional group (Class 3) each plant species (Class 2) is.
@@ -440,6 +483,31 @@ SpecLib_groups$Functional_group1[SpecLib_groups$Code_name=="ARLA2"]<-"Graminoid_
 SpecLib_groups$Functional_group1[SpecLib_groups$Code_name=="ERAN6"]<-"Graminoid_Sedge"
 SpecLib_groups$Functional_group1[SpecLib_groups$Code_name=="VAVI"]<-"Shrub_Evergreen"
 
+SpecLib_groups$Functional_group1[SpecLib_groups$Code_name=="ALVI5" ]<-"Shrub_Alder"
+SpecLib_groups$Functional_group1[SpecLib_groups$Code_name=="ARALA7"]<-"Dwarf_Shrub_Decid"
+SpecLib_groups$Functional_group1[SpecLib_groups$Code_name=="BEGL"  ]<-"Shrub_Betula"
+SpecLib_groups$Functional_group1[SpecLib_groups$Code_name=="BENA"  ]<-"Shrub_Betula"
+SpecLib_groups$Functional_group1[SpecLib_groups$Code_name=="BEPU4" ]<-"Shrub_Betula"
+SpecLib_groups$Functional_group1[SpecLib_groups$Code_name=="DAFRF" ]<-"Unknown"
+SpecLib_groups$Functional_group1[SpecLib_groups$Code_name=="DOFR"  ]<-"Forb"
+SpecLib_groups$Functional_group1[SpecLib_groups$Code_name=="DROCA2"]<-"Dwarf_Shrub_Decid"
+SpecLib_groups$Functional_group1[SpecLib_groups$Code_name=="EMNI"  ]<-"Shrub_Evergreen"
+SpecLib_groups$Functional_group1[SpecLib_groups$Code_name=="EQAR"  ]<-"Forb"
+SpecLib_groups$Functional_group1[SpecLib_groups$Code_name=="ERVA4" ]<-"Graminoid_Sedge"
+SpecLib_groups$Functional_group1[SpecLib_groups$Code_name=="HIERA" ]<-"Forb"
+SpecLib_groups$Functional_group1[SpecLib_groups$Code_name=="KAPR"  ]<-"Shrub_Evergreen"
+SpecLib_groups$Functional_group1[SpecLib_groups$Code_name=="LEDUM" ]<-"Shrub_Evergreen"
+SpecLib_groups$Functional_group1[SpecLib_groups$Code_name=="RUCH"  ]<-"Dwarf_Shrub_Decid"
+SpecLib_groups$Functional_group1[SpecLib_groups$Code_name=="SAG"   ]<-"Unknown"
+SpecLib_groups$Functional_group1[SpecLib_groups$Code_name=="SAPH"  ]<-"Dwarf_Shrub_Decid"
+SpecLib_groups$Functional_group1[SpecLib_groups$Code_name=="SARI4" ]<-"Shrub_Salix"
+SpecLib_groups$Functional_group1[SpecLib_groups$Code_name=="VAUL"  ]<-"Dwarf_Shrub_Decid"
+
+
+
+
+
+
 ###Add column Functional_group2 (Courser than Code_name3 response variables)
 SpecLib_groups$Functional_group2[SpecLib_groups$Code_name=="abibal"]<-"Tree"
 SpecLib_groups$Functional_group2[SpecLib_groups$Code_name=="acerub"]<-"Tree"
@@ -583,6 +651,27 @@ SpecLib_groups$Functional_group2[SpecLib_groups$Code_name=="CAAQ"]<-"Graminoid"
 SpecLib_groups$Functional_group2[SpecLib_groups$Code_name=="ARLA2"]<-"Graminoid"
 SpecLib_groups$Functional_group2[SpecLib_groups$Code_name=="ERAN6"]<-"Graminoid"
 SpecLib_groups$Functional_group2[SpecLib_groups$Code_name=="VAVI"]<-"Shrub"
+
+SpecLib_groups$Functional_group2[SpecLib_groups$Code_name=="ALVI5" ]<-"Shrub"
+SpecLib_groups$Functional_group2[SpecLib_groups$Code_name=="ARALA7"]<-"Dwarf Shrub"
+SpecLib_groups$Functional_group2[SpecLib_groups$Code_name=="BEGL"  ]<-"Shrub"
+SpecLib_groups$Functional_group2[SpecLib_groups$Code_name=="BENA"  ]<-"Shrub"
+SpecLib_groups$Functional_group2[SpecLib_groups$Code_name=="BEPU4" ]<-"Shrub"
+SpecLib_groups$Functional_group2[SpecLib_groups$Code_name=="DAFRF" ]<-"Unknown"
+SpecLib_groups$Functional_group2[SpecLib_groups$Code_name=="DOFR"  ]<-"Forb"
+SpecLib_groups$Functional_group2[SpecLib_groups$Code_name=="DROCA2"]<-"Dwarf Shrub"
+SpecLib_groups$Functional_group2[SpecLib_groups$Code_name=="EMNI"  ]<-"Shrub"
+SpecLib_groups$Functional_group2[SpecLib_groups$Code_name=="EQAR"  ]<-"Forb"
+SpecLib_groups$Functional_group2[SpecLib_groups$Code_name=="ERVA4" ]<-"Graminoid"
+SpecLib_groups$Functional_group2[SpecLib_groups$Code_name=="HIERA" ]<-"Forb"
+SpecLib_groups$Functional_group2[SpecLib_groups$Code_name=="KAPR"  ]<-"Shrub"
+SpecLib_groups$Functional_group2[SpecLib_groups$Code_name=="LEDUM" ]<-"Shrub"
+SpecLib_groups$Functional_group2[SpecLib_groups$Code_name=="RUCH"  ]<-"Dwarf Shrub"
+SpecLib_groups$Functional_group2[SpecLib_groups$Code_name=="SAG"   ]<-"Unknown"
+SpecLib_groups$Functional_group2[SpecLib_groups$Code_name=="SAPH"  ]<-"Dwarf Shrub"
+SpecLib_groups$Functional_group2[SpecLib_groups$Code_name=="SARI4" ]<-"Shrub"
+SpecLib_groups$Functional_group2[SpecLib_groups$Code_name=="VAUL"  ]<-"Dwarf Shrub"
+
 
 write.csv(SpecLib_groups,"Output/B_001_SC1_SpeciesTable.csv",row.names = F)
 

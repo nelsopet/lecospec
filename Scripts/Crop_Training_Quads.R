@@ -2,6 +2,7 @@ source("Functions/Image_Chopper.R")
 require(terra)
 require(raster)
 require(rgdal)
+
 Bison_path = "F:/BisonGulch/raw_1511_rd_rf_or"
 Bison_img = brick(Bison_path)
 #plot(Bison_img)

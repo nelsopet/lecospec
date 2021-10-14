@@ -33,8 +33,12 @@ source("Functions/LandCoverEstimator.R")
 
 #list.files("F:/TwelveMile")
 #Check input exist
-filename = "Data/Ground_Validation/BisonGulchQuads.envi"
-raster(filename)
+filename = "Data/Ground_Validation/BisonGulchQuads.envi" #Bison Quads
+#filename = "Data/Ground_Validation/EightMileQuads.envi"
+
+file_map<-raster(filename) #%>% leaflet()
+leaflet(file_map) %>% addRasterImage(file_map)
+
 
 system.time(PredLayer <- LandCoverEstimator(
   filename = filename,  
@@ -44,10 +48,14 @@ system.time(PredLayer <- LandCoverEstimator(
 #    filename = "M:/Alaska_Datacubes/Raw_files/WickershamDome_2019_08_08_19_31_51_2000_rd_rf_or",
 #    filename = "Data/SubsetDatacube",
     #filename = "E:/Lecospec/Data/SubsetDatacube",
-    out_file = "Output/",
+    #out_file = "Output/Prediction/V2/FncGrp2/",
+    out_file = "Output/Prediction/resampled/FncGrp1/",
     #Classif_Model = "Output/E_003_Best_Model_RandomForest_86vars.rda",
     #Classif_Model = "Output/E_004_Best_Model_Ranger_86vars.rda",
-    Classif_Model = "Output/E_003_Pred_Model_RandomForest_species_1000trees.rda",
+    #Classif_Model = "Output/E_003_Pred_Model_RandomForest_species_1000trees.rda",
+    Classif_Model = "Output/E_003_Pred_Model_RandomForest_FncGrp1_resamp4_1000trees.rda",
+    #Classif_Model = "Output/E_003_Pred_Model_RandomForest_FncGrp2_resamp4_1000trees.rda",
+
     datatype = "raster",
     extension = FALSE))
 

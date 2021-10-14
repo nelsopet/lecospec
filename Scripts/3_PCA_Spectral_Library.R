@@ -1,4 +1,5 @@
 require(tidyverse)
+require(factoextra)
 #Define groups based on spectra
 tst<-Cleaned_Speclib %>% 
 #  dplyr::select(Species_name, everything()) %>% #colnames()
@@ -38,3 +39,8 @@ scale_shape_manual(values = 1:8) +
 #ordiplot(spectra.pca, display = "sites")
 dev.off()
 
+#K means
+TenGrp<-kmeans(tst, centers = 20)
+plot(TenGrp)
+fviz_cluster(TenGrp, data=tst)
+fviz_nbclust(tst, kmeans, method = "silhouette")

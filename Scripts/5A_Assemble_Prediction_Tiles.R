@@ -1,9 +1,22 @@
 source("./Functions/Tile_Assembler.R")
 require(mapview)
 require(rgdal)
+
 wickersham_path="./Output/TwelveMile_2019_08_09_21_10_22_2000_rd_rf_or" 
 bison_path="./Output/B_001_BisonGulch_2019_08_12_01_07_28_1511_rd_rf_or_Tile6_PredLayer" 
-bison_quad_path="./Output/BisonGulchQuads.envi"
+
+bison_quad_path_FncGrp2="./Output/Prediction/V2/FncGrp2/BisonGulchQuads.envi"
+bison_quad_path_FncGrp2_resamp4="./Output/Prediction/resampled/FncGrp2/BisonGulchQuads.envi"
+bison_quad_path_FncGrp1="./Output/Prediction/V2/FncGrp1/BisonGulchQuads.envi"
+bison_quad_path_FncGrp1_resamp4="./Output/Prediction/resampled/FncGrp1/BisonGulchQuads.envi"
+
+bison_quad_path_species="./Output/Prediction/species/BisonGulchQuads.envi"
+
+eightmile_quad_path_FncGrp2="./Output/Prediction/FncGrp2/EightMileQuads.envi"
+eightmile_quad_path_FncGrp1="./Output/Prediction/FncGrp1/EightMileQuads.envi"
+eightmile_quad_path_species="./Output/Prediction/species/EightMileQuads.envi"
+
+
 murph1_path="./Output/B_001_MurphyDome_2018_07_31_19_47_11_24967_rd_rf_or_Tile60_PredLayer"
 littlelake_path="./Output/B_001_LittleLake_2018_07_31_01_09_59_132_rd_rf_or_Tile1_PredLayer"
 chatanika_path ="./Output/B_001_Chatnika_2018_07_29_20_32_59_0_rd_rf_or_Tile1_PredLayer"
@@ -16,11 +29,6 @@ twelvemile_path_FncGrp2 = "./Output/TwelveMile_2019_08_09_21_28_52_0_rd_rf_or"
 
 
 ##Assemble species level maps
-WickerTestOut<-TileAssembler(wickersham_path)
-writeRaster(
-  WickerTestOut,
-  filename = "Output/Prediction/WickerTestOut.tif",
-  overwrite = TRUE)
 
 BisonTestOut<-TileAssembler(bison_path)
 writeRaster(
@@ -28,12 +36,47 @@ writeRaster(
   filename = "Output/Prediction/BisonTestOut.tif",
   overwrite = TRUE)
 
-BisonQuadOut<-TileAssembler(bison_quad_path)
+BisonQuadOut_FncGrp2<-TileAssembler(bison_quad_path_FncGrp2)
 writeRaster(
-  BisonQuadOut,
-  filename = "Output/Prediction/BisonQuadOut.tif",
+  BisonQuadOut_FncGrp2,
+  filename = "Output/Prediction/V2/FncGrp2/BisonGulchQuads.envi/BisonQuadOut.tif",
   overwrite = TRUE)
 
+BisonQuadOut_FncGrp2_resamp4<-TileAssembler(bison_quad_path_FncGrp2_resamp4)
+writeRaster(
+  BisonQuadOut_FncGrp2_resamp4,
+  filename = "Output/Prediction/resampled/FncGrp2/BisonGulchQuads.envi/BisonQuadOut.tif",
+  overwrite = TRUE)
+
+
+BisonQuadOut_FncGrp1<-TileAssembler(bison_quad_path_FncGrp1)
+writeRaster(
+  BisonQuadOut_FncGrp1,
+  filename = "Output/Prediction/V2/FncGrp1/BisonGulchQuads.envi/BisonQuadOut.tif",
+  overwrite = TRUE)
+
+BisonQuadOut_FncGrp1_resamp4<-TileAssembler(bison_quad_path_FncGrp1_resamp4)
+writeRaster(
+  BisonQuadOut_FncGrp1_resamp4,
+  filename = "Output/Prediction/resampled/FncGrp1/BisonGulchQuads.envi/BisonQuadOut.tif",
+  overwrite = TRUE)
+
+
+EightmileQuadOut_FncGrp2<-TileAssembler(eightmile_quad_path_FncGrp2)
+writeRaster(
+  EightmileQuadOut_FncGrp2,
+  filename = "Output/Prediction/FncGrp2/EightmileQuads.envi/EighmileQuadOut.tif",
+  overwrite = TRUE)
+
+
+
+
+
+WickerTestOut<-TileAssembler(wickersham_path)
+writeRaster(
+  WickerTestOut,
+  filename = "Output/Prediction/WickerTestOut.tif",
+  overwrite = TRUE)
 
 Murph1TestOut<-TileAssembler(murph1_path)
 writeRaster(
