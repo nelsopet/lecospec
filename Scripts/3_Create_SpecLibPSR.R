@@ -188,7 +188,7 @@ SpecLib<-Reduce(spectrolab::combine,list_of_SpecLib) %>% # dim(n_samples=1989, n
 SpecLib_out<-bind_rows(SpecLib,Ecosis_data)
 
 ## Please note: these are the number of samples we have for each functional group
- table(SpecLib_out$Functional_group1)%>%as.data.frame()
+# table(SpecLib_out$Functional_group1)%>%as.data.frame()
 #                         Var1  Freq
 #            Dwarf_Shrub_Decid  968
 #                         Forb   80
@@ -276,7 +276,7 @@ for(i in 1:length(Target_names)){
   
   # Convert to a spectral object
   each_target[[i]] <- as_spectra(each_target[[i]][-1:-9])
-  
+  #each_target[[i]] <-normalize(each_target[[i]])
   # Add metadata
   meta(each_target[[i]])<-data.frame(metadata[,c(1:9)], stringsAsFactors = FALSE)
   
@@ -291,7 +291,7 @@ each_target<-each_target%>%setNames(Target_names)
 #plot_interactive(each_target[["Arctagrostis latifolia"]])#3     Arctagrostis latifolia    5
 #plot_interactive(each_target[["Arctocetraria centrifuga"]])#4   Arctocetraria centrifuga    4
 #plot_interactive(each_target[["Arctophila fulva"]])#5           Arctophila fulva   12
-#plot_interactive(each_target[["Arctostaphyllos"]])#6            Arctostaphyllos   25 #Mixed of two things
+#plot_interactive(each_target[["Arctostaphyllos"]])#6            Arctostaphyllos   25 #Mixed of two things, Remove scans 20:25 based on SWIR detector edge artifact
 #plot_interactive(each_target[["Arenaria pseudofrigida"]])#7     Arenaria pseudofrigida    1
 #plot_interactive(each_target[["Asahinea chrysantha"]])#8        Asahinea chrysantha   19
 #plot_interactive(each_target[["Aulacomnium palustre"]])#9       Aulacomnium palustre    6
@@ -312,7 +312,7 @@ each_target<-each_target%>%setNames(Target_names)
 #plot_interactive(each_target[["Cladonia cornuta"]])#24          Cladonia cornuta    3
 #plot_interactive(each_target[["Cladonia gracilis"]])#25         Cladonia gracilis   18 #Remove scans 13-18
 #plot_interactive(each_target[["Cladonia mitis"]])#26            Cladonia mitis   17
-#plot_interactive(each_target[["Cladonia rangiferina"]])#27      Cladonia rangiferina   20 #Two groups, esp 350-400n
+#plot_interactive(each_target[["Cladonia rangiferina"]])#27      Cladonia rangiferina   20 #Two groups, esp 350-400n, remove scans 1:4
 #plot_interactive(each_target[["Cladonia stellaris"]])#28       Cladonia stellaris   20
 #plot_interactive(each_target[["Cladonia stygia"]])#29           Cladonia stygia   18 #Remove scan 13
 #plot_interactive(each_target[["Cladonia sulphurina"]])#30       Cladonia sulphurina    3
@@ -375,7 +375,7 @@ each_target<-each_target%>%setNames(Target_names)
 #plot_interactive(each_target[["Salix lanata"]])#88              Salix lanata    4
 #plot_interactive(each_target[["Salix ovalifolia"]])#89          Salix ovalifolia    6
 #plot_interactive(each_target[["Salix phlebophylla"]])#90        Salix phlebophylla    3
-#plot_interactive(each_target[["Salix pulchra"]])#91             Salix pulchra   40 #Two distinct groups of scans
+#plot_interactive(each_target[["Salix pulchra"]])#91             Salix pulchra   40 #Two distinct groups of scans, remove 21:40
 #plot_interactive(each_target[["Salix richardsonii"]])#92        Salix richardsonii    9
 #plot_interactive(each_target[["Saxifraga punctata"]])#93        Saxifraga punctata   16
 #plot_interactive(each_target[["Sphagnum fuscum"]])#94           Sphagnum fuscum    4
@@ -396,7 +396,7 @@ each_target<-each_target%>%setNames(Target_names)
 
 # Hard code removes bad spectra taken for each species
 each_target[["Alectoria ochroleuca"    ]]<-each_target[["Alectoria ochroleuca"    ]][-c(2),                                ]
-#each_target[["Arctostaphyllos"         ]]<-each_target[["Arctostaphyllos"         ]][-c(20:25)]#OLD[-c(19,13,10,11,16,17)                 ]
+each_target[["Arctostaphyllos"         ]]<-each_target[["Arctostaphyllos"         ]][-c(20:25)]#OLD[-c(19,13,10,11,16,17)                 ]
 #each_target[["Asahinea chrysantha"     ]]<-each_target[["Asahinea chrysantha"     ]][-c(3),                                ]
 #each_target[["Aulacomnium turgidum"    ]]<-each_target[["Aulacomnium turgidum"    ]][-c(3,4),                              ]
 #each_target[["Bare Soil"               ]]<-each_target[["Bare Soil"               ]][-c(1,3,7),                            ]
@@ -407,7 +407,7 @@ each_target[["Cetraria islandica"      ]]<-each_target[["Cetraria islandica"    
 each_target[["Cladonia gracilis"       ]]<-each_target[["Cladonia gracilis"       ]][-c(13,14,15,16,17,18),                ]
 #each_target[["Cladonia mitis"          ]]<-each_target[["Cladonia mitis"          ]][-c(8,12,13,14,15,16,17),              ]
 #each_target[["Cladonia rangiferina"    ]]<-each_target[["Cladonia rangiferina"    ]][-c(1,2,3,4,17,18),                    ]
-#each_target[["Cladonia stellaris"     ]]<-each_target[["Cladonia stellaris"     ]][-c(13,14,16,2),                       ]
+each_target[["Cladonia stellaris"     ]]<-each_target[["Cladonia stellaris"     ]][-c(1,2,3,4),                       ]
 each_target[["Cladonia stygia"         ]]<-each_target[["Cladonia stygia"         ]][-c(13),                               ]
 each_target[["Cladonia uncialis"       ]]<-each_target[["Cladonia uncialis"       ]][-c(6),                                ]
 #each_target[["Dactylina arctica"       ]]<-each_target[["Dactylina arctica"       ]][-c(3,7),                              ]
@@ -439,6 +439,8 @@ each_target[["Quartz"                  ]]<-each_target[["Quartz"                
 #each_target[["Rhizocarpon geographicum"]]<-each_target[["Rhizocarpon geographicum"]][-c(8,18),                             ]
 #each_target[["Rosa acicularis"         ]]<-each_target[["Rosa acicularis"         ]][-c(19),                               ]
 #each_target[["Rubus sp."               ]]<-each_target[["Rubus sp."               ]][-c(8,6),                              ]
+each_target[["Salix pulchra"               ]]<-each_target[["Salix pulchra"               ]][-c(21:40),                              ]
+
 #each_target[["Toefeldia sp."           ]]<-each_target[["Toefeldia sp."           ]][-c(5),                                ]
 each_target[["Trapelopsis granulosa"   ]]<-each_target[["Trapelopsis granulosa"   ]][-c(1),                                ]
 each_target[["Vaccinium vitis+--idea"  ]]<-each_target[["Vaccinium vitis-idea"    ]][-c(1,2,3,4,5,6,7,8),                  ]
@@ -467,8 +469,9 @@ Cleaned_Speclib<-Reduce(spectrolab::combine,New_targets)%>%
 Cleaned_Speclib_rds<-Reduce(spectrolab::combine,New_targets)
 
 table(Cleaned_Speclib$Functional_group1)%>%as.data.frame()
+
 #Var1 Freq
-#1              Dwarf_Shrub_Decid  113
+#1              Dwarf_Shrub_Decid  107
 #2                           Forb  139
 #3                Graminoid_Grass   31
 #4                Graminoid_Sedge   97
@@ -480,7 +483,7 @@ table(Cleaned_Speclib$Functional_group1)%>%as.data.frame()
 #10         Lichen_Foliose_Yellow   39
 #11         Lichen_Fruticose_Dark   29
 #12        Lichen_Fruticose_Light   45
-#13       Lichen_Fruticose_Yellow   85
+#13       Lichen_Fruticose_Yellow   81
 #14                        Litter    8
 #15              Moss_Aulacomnium   12
 #16                Moss_Ceratadon    5
@@ -499,7 +502,7 @@ table(Cleaned_Speclib$Functional_group1)%>%as.data.frame()
 #29                  Shrub_Betula   64
 #30               Shrub_Evergreen   89
 #31                    Shrub_Rosa   19
-#32                   Shrub_Salix  136
+#32                   Shrub_Salix  116
 #33                          Soil   13
 #34                    Tree_Decid   12
 #35                Tree_Evergreen   17
@@ -512,7 +515,7 @@ saveRDS(Cleaned_Speclib_rds,"Output/C_002_SC3_Cleaned_Speclib.rds")
 # ------------------------------------------ Step 3: Create Plots showing spectral profiles ------------------------------------------------- #
 
 # Creates a vector with the name of all the categories of interest
-names_of_classes<-c(as.character(unique(Cleaned_Speclib[,"Functional_group1"])))
+#names_of_classes<-c(as.character(unique(Cleaned_Speclib[,"Functional_group1"])))
 #
 ## Creates an empty list
 #FunctionalGroupDf<-list()
@@ -555,14 +558,30 @@ names_of_classes<-c(as.character(unique(Cleaned_Speclib[,"Functional_group1"])))
 #  
 #}
 
+
+set.seed(123)
+##Make a balanced sample
+FncGrp2_scan_cnt<-Cleaned_Speclib %>% group_by(Functional_group2) %>% tally() 
+#FncGrp2_scan_cnt<-FncGrp2_scan_cnt %>% dplyr::filter(n<)
+#range(FncGrp2_scan_cnt$n) #[1]  29 328
+
+Cleaned_Speclib_resamp29<-Cleaned_Speclib %>% 
+  #anti_join(FncGrp1_scan_cnt, by="Functional_group1") %>%
+  group_by(Functional_group2) %>% 
+  sample_n(29)
+
+Cleaned_Speclib_resamp29 %>% group_by(Functional_group2) %>% tally()
+write.csv(Cleaned_Speclib_resamp29, "Output/C_001_SC3_Cleaned_SpectralLib29.csv")
+
+
 ##Make a balanced sample
 FncGrp1_scan_cnt<-Cleaned_Speclib %>% group_by(Functional_group1) %>% tally() 
-FncGrp1_scan_cnt<-FncGrp1_scan_cnt %>% dplyr::filter(n<4)
+FncGrp1_scan_cnt<-FncGrp1_scan_cnt %>% dplyr::filter(n<7)
 range(FncGrp1_scan_cnt$n)
 Cleaned_Speclib_resamp4<-Cleaned_Speclib %>% 
   anti_join(FncGrp1_scan_cnt, by="Functional_group1") %>%
   group_by(Functional_group1) %>% 
-  sample_n(4)
+  sample_n(6)
 
 Cleaned_Speclib_resamp4 %>% group_by(Functional_group1) %>% tally()
 write.csv(Cleaned_Speclib_resamp4, "Output/C_001_SC3_Cleaned_SpectralLib4.csv")
@@ -596,6 +615,7 @@ Cleaned_Speclib_tall_Fnc_grp2<-Cleaned_Speclib %>%
                    Lower_Reflectance = quantile(Reflectance, probs = 0.05))%>%
   mutate(Wavelength = as.numeric(Wavelength)
          ) %>%
+  dplyr::filter(Wavelength>=450) %>%
   as.data.frame() #%>%
 #group_by(Species_name, Wavelength)
 
@@ -726,7 +746,11 @@ Abiotic_Cleaned_Speclib_tall <-
   mutate(Wavelength = as.numeric(Wavelength))  %>%
   as.data.frame() #%>%
 
-######## Lichen species spectral profiles
+######## PFT species spectral profiles
+#Sentinel-2 colors
+color<-grDevices::hcl.colors(6, palette = "Spectral", rev= TRUE)
+
+
 jpeg("Output/Lichen_species_no_crusts_spectral_profiles.jpg", height = 5000, width = 7000, res = 350)
 ggplot(Lichen_noCrusts_Cleaned_Speclib_all, aes(Wavelength, Median_Reflectance, group = Functional_group1_wN))+
   geom_ribbon(aes(Wavelength, ymin = Pct_12_5_Reflectance, ymax = Pct_87_5_Reflectance), alpha = 0.3)+
@@ -752,37 +776,45 @@ dev.off()
 #my_grob<-tableGrob(Cleaned_Speclib_Fnc_grp2_cnt)
 
 ######## Functional group 2 spectral profiles
-jpeg("Output/Fnc_grp2_spectral_profiles.jpg", height = 5000, width = 7000, res = 350)
-ggplot(Cleaned_Speclib_tall_Fnc_grp2, aes(Wavelength, Median_Reflectance, group = Functional_group2), scales = "fixed")+
-  geom_ribbon(aes(Wavelength, ymin = Pct_12_5_Reflectance, ymax = Pct_87_5_Reflectance), alpha = 0.3)+
-  geom_ribbon(aes(Wavelength, ymin = Lower_Reflectance, ymax = Upper_Reflectance), alpha = 0.2)+
-  labs(title = c("Reflectance by plant functional group and sample size with median (black), 75% (dark) and \n 90% (grey) quantiles based on 1302 scans with vertical grey bars showing Landsat 8 bandpasses "), y="Reflectance")+
+jpeg("Output/Fnc_grp2_spectral_profiles.jpg", height = 9000, width = 6000, res = 350)
+ggplot(Cleaned_Speclib_tall_Fnc_grp2, aes(Wavelength, Median_Reflectance), scales = "fixed")+
+  
+  labs(title = c("Reflectance by plant functional group and sample \n size with median (black), 75% (dark) and 90% (grey) \n quantiles based on 1302 scans  with vertical bars \n showing Sentinel-2 bandpasses "), y="Reflectance")+
   theme(panel.background = element_rect(fill = "white", colour = "grey50"), 
         #legend.key.size = unit(0.5, "cm"),legend.text = element_text(size=25),
         legend.position = "none",
-        title = element_text(size=25),
-        strip.text = element_text(size = 25),
-        axis.text = element_text(size = 20),
+        title = element_text(size=40),
+        strip.text = element_text(size = 30),
+        axis.text = element_text(size = 30),
         axis.text.x = element_text(angle = 90)) +
-  geom_line(aes(color = "black"), size = 1.5)+ scale_color_grey()+
-  annotate("rect", xmin = 430, xmax = 450, ymin = 0, ymax = 1.00, alpha = .2)+
-  #Band2<-c(450,510)#Band 2 - Blue	0.45-0.51	30
-  annotate("rect", xmin = 450, xmax = 510, ymin = 0, ymax = 1.00, alpha = .2)+
-  #Band3<-c(530,590)#Band 3 - Green	0.53-0.59	30
-  annotate("rect", xmin = 530, xmax = 590, ymin = 0, ymax = 1.00, alpha = .2)+
-  #Band4<-c(640,670)#Band 4 - Red	0.64-0.67	30
-  annotate("rect", xmin = 640, xmax = 670, ymin = 0, ymax = 1.00, alpha = .2)+
-  #Band5<-c(850-880)#Band 5 - Near Infrared (NIR)	0.85-0.88	30
-  annotate("rect", xmin = 850, xmax = 880, ymin = 0, ymax = 1.00, alpha = .2)+
-  #Band6<-c(1157,1650)#Band 6 - SWIR 1	1.57-1.65	30
-  annotate("rect", xmin = 1157, xmax = 1650, ymin = 0, ymax = 1.00, alpha = .2)+
-  #Band7<-c(2110,2290)#Band 7 - SWIR 2	2.11-2.29	30
-  annotate("rect", xmin = 2110, xmax = 2290, ymin = 0, ymax = 1.00, alpha = .2) + 
-  #scale_color_manual(values = rev(cols))+
-  #annotate("text", label = n) +
-  #labs(title = paste(names_of_classes[[x]]," Median, Upper (97%) and Lower (2.5%) Reflectance Profiles", sep = ""))+
-  #facet_wrap(vars(Species_name), scales = "fixed")
-  facet_wrap(vars(Functional_group2_wN), scales = "fixed", ncol = 3) 
+  #Band 1
+  #annotate("rect", xmin = 442.7-(21/2), xmax = 442.7+(21/2), ymin = 0, ymax = 1, alpha = .2, color=color[1], fill =color[1])+
+  #Band2, fill =
+  annotate("rect", xmin = 492.4-(66/2), xmax = 492.4+(66/2), ymin = 0, ymax = 1, alpha = .2, color=color[2], fill =color[2])+
+  #Band3 559.8 36, fill =
+  annotate("rect", xmin = 559.8-(36/2), xmax = 559.8+(36/2), ymin = 0, ymax = 1, alpha = .2,color=color[3], fill =color[3])+
+  #Band4 664.6 31, fill =
+  annotate("rect", xmin = 664.6-(31/2), xmax = 664.6+(31/2), ymin = 0, ymax = 1, alpha = .2,color=color[4], fill =color[4])+
+  #Band5 704.1 15, fill =
+  annotate("rect", xmin = 704.1-(15/2), xmax = 704.1+(15/2), ymin = 0, ymax = 1, alpha = .2,color=color[5], fill =color[5])+
+  #Band6<-740.5 15, fill =
+  annotate("rect", xmin = 740.5-(15/2), xmax = 740.5+(15/2), ymin = 0, ymax = 1, alpha = .2,color=color[6], fill = color[6])+
+  #Band7<-782.8 20
+  annotate("rect", xmin = 782.8-(20/2), xmax = 782.8+(20/2), ymin = 0, ymax = 1, alpha = .2)+
+  #Band8<- 864 21
+  annotate("rect", xmin = 864-(21/2), xmax = 864+(21/2), ymin = 0, ymax = 1, alpha = .2)+
+  #Band9<-945.1 20
+  annotate("rect", xmin = 945.1-(20/2), xmax = 945.1+(20/2), ymin = 0, ymax = 1, alpha = .2)+
+  #Band10<-1373.5 31
+  annotate("rect", xmin = 1373.5-(31/2), xmax = 1373.5+(31/2), ymin = 0, ymax = 1, alpha = .2)+
+  #Band11<-1613.7 91
+  annotate("rect", xmin = 1613.7-(91/2), xmax = 1613.7+(91/2), ymin = 0, ymax = 1, alpha = .2)+
+  #Band12<-2202.4 175
+  annotate("rect", xmin = 2202.4-(175/2), xmax = 2202.4+(175), ymin = 0, ymax = 1, alpha = .2)+
+  geom_line(aes(Wavelength, Median_Reflectance,color = "black"), size = 1.5)+ scale_color_grey()+
+  geom_ribbon(aes(Wavelength, ymin = Pct_12_5_Reflectance, ymax = Pct_87_5_Reflectance), alpha = 0.3)+
+  geom_ribbon(aes(Wavelength, ymin = Lower_Reflectance, ymax = Upper_Reflectance), alpha = 0.2)+
+  facet_wrap(vars(Functional_group2_wN), scales = "fixed", ncol = 2) 
 dev.off()
 
 
@@ -906,3 +938,4 @@ dev.off()
 source("Functions/2_LCE_veg_index.R")
 Make_Speclib_Derivs("Output/C_001_SC3_Cleaned_SpectralLib.csv",out_file="Output/")
 Make_Speclib_Derivs("Output/C_001_SC3_Cleaned_SpectralLib4.csv", out_file = "Output/resampled/")
+Make_Speclib_Derivs("Output/C_001_SC3_Cleaned_SpectralLib29.csv", out_file = "Output/resampled/FncGrp2/")

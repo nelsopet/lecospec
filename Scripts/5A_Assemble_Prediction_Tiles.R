@@ -7,6 +7,8 @@ bison_path="./Output/B_001_BisonGulch_2019_08_12_01_07_28_1511_rd_rf_or_Tile6_Pr
 
 bison_quad_path_FncGrp2="./Output/Prediction/V2/FncGrp2/BisonGulchQuads.envi"
 bison_quad_path_FncGrp2_resamp4="./Output/Prediction/resampled/FncGrp2/BisonGulchQuads.envi"
+bison_quad_path_FncGrp2_resamp29="./Output/Prediction/resampled/FncGrp2/resamp29/BisonGulchQuads.envi"
+
 bison_quad_path_FncGrp1="./Output/Prediction/V2/FncGrp1/BisonGulchQuads.envi"
 bison_quad_path_FncGrp1_resamp4="./Output/Prediction/resampled/FncGrp1/BisonGulchQuads.envi"
 
@@ -46,6 +48,12 @@ BisonQuadOut_FncGrp2_resamp4<-TileAssembler(bison_quad_path_FncGrp2_resamp4)
 writeRaster(
   BisonQuadOut_FncGrp2_resamp4,
   filename = "Output/Prediction/resampled/FncGrp2/BisonGulchQuads.envi/BisonQuadOut.tif",
+  overwrite = TRUE)
+
+BisonQuadOut_FncGrp2_resamp29<-TileAssembler(bison_quad_path_FncGrp2_resamp29)
+writeRaster(
+  BisonQuadOut_FncGrp2_resamp29,
+  filename = "Output/Prediction/resampled/FncGrp2/resamp29/BisonGulchQuads.envi/BisonQuadOut.tif",
   overwrite = TRUE)
 
 

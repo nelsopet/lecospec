@@ -3,15 +3,45 @@ library(tidyverse)
 library(raster)
 library(hsdar)
 library(sf)
+require(readxl)
+AKValid2019<-read_xlsx(path = "Data/Ground_Validation/Quadrat_2019_AK.xlsx", sheet ="Raw")
+AKValid2019_flat <- AKValid2019 %>%
+  group_by(Plot, meters, UID, PFT) %>%
+  summarise(TotCov = sum(cover)) %>%
+  mutate(PFT = ifelse(PFT=="Litter", "Abiotic", ifelse(PFT=="Dwarf shrub", "Dwarf Shrub", PFT)))
 
+unique(AKValid2019_flat$PFT) %>% as.data.frame() %>% rename(FNC_grp1 = ".") %>% anti_join(fnc_grp2_colors, by = "FNC_grp1")
+fnc_grp2_colors$FNC_grp1
+
+Bison_seg_path = "Data/Ground_Validation/Bison_Quadrats/Bison_Quadrats.shp"
+BisonQuads<-readOGR(dsn = Bison_seg_path)
+BisonGulchQuads_FncGrp2_out<-raster("Output/Prediction/V2/FncGrp2/BisonGulchQuads.envi/BisonQuadOut.tif")
+BisonExtract<-raster::extract(BisonGulchQuads_FncGrp2_out, BisonQuads)
+
+hist(BisonExtract[[2]])
+
+Bison_q8<-BisonExtract[[7]] %>% 
+as.data.frame() %>% 
+  rename(PFT_num = ".") %>% 
+  mutate(Pix_cnt = n()) %>% 
+  group_by(PFT_num) %>% 
+  mutate(PFT_pct = n()/Pix_cnt) %>% 
+  unique() %>%
+  left_join(fnc_grp2_colors, by = c("PFT_num" = "ColorNum")) %>%
+  mutate(UID = "BisongulchQ8") %>%
+  left_join(AKValid2019_flat, by = c("UID"="UID","FNC_grp1"="PFT"), keep=FALSE)
+  
+
+
+###OLD
 # Reads in raster
-Predlayer<-raster("Output/FullDatacube/FullDatacube_PredLayer.tif")
-
+Predlayer<-raster("Output/Prediction/V2/FncGrp2/BisonGulchQuads.envi/BisonQuadOut.tif")
+projection(Predlayer)
 # Plots Predicted layer
 # plot(Predlayer)
 
 # Grabs attribute table from image
-AttributeTab<-Predlayer@data@attributes%>%as.data.frame()
+#AttributeTab<-Predlayer@data@values @data@attributes%>%as.data.frame()
 
 # Change column name so we can join later
 names(AttributeTab)[1]<-"Class"

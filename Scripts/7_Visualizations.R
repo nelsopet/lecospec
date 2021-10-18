@@ -17,6 +17,10 @@ source("./Functions/PFT_mapper.R")
 SpecLib_derivs<-read.csv("./Output/D_002_SpecLib_Derivs.csv")
 
 #Fnc Grp 2 colors
+colorBin(coarse_pal)
+coarse_pal<-createPalette(length(unique(SpecLib_derivs$Functional_group2)),  c("#00FF00"))
+coarse_pal2 <- colorNumeric(c("#0C2C84", "#41B6C4", "#FFFFCC"), values(BisonGulchQuads_FncGrp2_out),na.color = "transparent")
+
 coarse_colors = createPalette(length(unique(SpecLib_derivs$Functional_group2)),  c("#ff0000", "#00ff00", "#0000ff")) %>%
   as.data.frame() %>%
   dplyr::rename(Color = ".") %>%
@@ -28,6 +32,8 @@ coarse_color_list<-SpecLib_derivs %>% dplyr::select(Functional_group2) %>% inner
 #Read in TIF and predicted output
 BisonGulchQuads_FncGrp2_out<-raster("Output/Prediction/V2/FncGrp2/BisonGulchQuads.envi/BisonQuadOut.tif")
 BisonGulchQuads_FncGrp2_resamp4_out<-raster("Output/Prediction/resampled/FncGrp2/BisonGulchQuads.envi/BisonQuadOut.tif")
+BisonGulchQuads_FncGrp2_resamp29_out<-raster("Output/Prediction/resampled/FncGrp2/resamp29/BisonGulchQuads.envi/BisonQuadOut.tif")
+
 BisonGulchQuads_FncGrp1_out<-raster("Output/Prediction/V2/FncGrp1/BisonGulchQuads.envi/BisonQuadOut.tif")
 BisonGulchQuads_FncGrp1_resamp4_out<-raster("Output/Prediction/resampled/FncGrp1/BisonGulchQuads.envi/BisonQuadOut.tif")
 
@@ -50,9 +56,20 @@ maprint<-leaflet(BisonGulchQuads_FncGrp2_out) %>%
   leaflet::addTiles("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
                     options = providerTileOptions(minZoom = 0.1, maxZoom = 1000)) %>%
   # leaflet::addRasterImage(BisonGulchQuadsRGB_hires) %>%
-  leaflet::addRasterImage(BisonGulchQuads_FncGrp2_out, layerId = "layer", colors = coarse_colors$Color) %>%
-  leaflet::addLegend("bottomleft", colors = coarse_colors$Color, labels = coarse_colors$FNC_grp1) %>% #, opacity = 0) %>%
-  addOpacitySlider(layerId = "layer") #%>%
+  leaflet::addRasterImage(BisonGulchQuads_FncGrp2_out, 
+                          layerId = "Plant Functional Type", 
+                          colors = coarse_colors$Color,
+                          project = TRUE
+                          #colors = coarse_pal2
+                          ) %>%
+  leaflet::addLegend("bottomleft", 
+                     colors = coarse_colors$Color, 
+                     #colors = coarse_pal2, 
+                     #pal = coarse_pal2,
+                     #values = BisonGulchQuads_FncGrp2_out, 
+                     labels = coarse_colors$FNC_grp1, 
+                     opacity = 1 ) %>%
+  addOpacitySlider(layerId = "Plant Functional Type") #%>%
   #addMarkers(y)
 #mapshot(maprint, file="Output/Prediction/Genera/BisonGulchQuads2_FncGrp2_map.jpeg")
 saveWidget(maprint, file="Output/Prediction/V2/FncGrp2/BisonGulchQuads.envi/BisonGulchQuads2_FncGrp2_map.html")
@@ -67,6 +84,17 @@ maprint<-leaflet(BisonGulchQuads_FncGrp2_resamp4_out) %>%
 #addMarkers(y)
 #mapshot(maprint, file="Output/Prediction/Genera/BisonGulchQuads2_FncGrp2_map.jpeg")
 saveWidget(maprint, file="Output/Prediction/resampled/FncGrp2/BisonGulchQuads.envi/BisonGulchQuads2_FncGrp2_map.html")
+
+maprint<-leaflet(BisonGulchQuads_FncGrp2_resamp29_out) %>%
+  leaflet::addTiles("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+                    options = providerTileOptions(minZoom = 0.1, maxZoom = 1000)) %>%
+  # leaflet::addRasterImage(BisonGulchQuadsRGB_hires) %>%
+  leaflet::addRasterImage(BisonGulchQuads_FncGrp2_resamp29_out, layerId = "layer", colors = coarse_colors$Color) %>%
+  leaflet::addLegend("bottomleft", colors = coarse_colors$Color, labels = coarse_colors$FNC_grp1, opacity = 100) %>% #, opacity = 0) %>%
+  addOpacitySlider(layerId = "layer") #%>%
+#addMarkers(y)
+#mapshot(maprint, file="Output/Prediction/Genera/BisonGulchQuads2_FncGrp2_map.jpeg")
+saveWidget(maprint, file="Output/Prediction/resampled/FncGrp2/resamp29/BisonGulchQuads.envi/BisonGulchQuads2_FncGrp2_map.html")
 
 
 

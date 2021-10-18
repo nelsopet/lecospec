@@ -15,7 +15,7 @@ library(randomForest)
 
 # increase allocated memory to approx to appropriate amount 
 # (leaving 2GB reserved for OS)
-system_ram_gb <- 24
+system_ram_gb <- 16
 malloc_size <- (system_ram_gb - 2) * 8000
 
 memory.limit(size = malloc_size)
@@ -48,13 +48,13 @@ system.time(PredLayer <- LandCoverEstimator(
 #    filename = "M:/Alaska_Datacubes/Raw_files/WickershamDome_2019_08_08_19_31_51_2000_rd_rf_or",
 #    filename = "Data/SubsetDatacube",
     #filename = "E:/Lecospec/Data/SubsetDatacube",
-    #out_file = "Output/Prediction/V2/FncGrp2/",
-    out_file = "Output/Prediction/resampled/FncGrp1/",
+    out_file = "Output/Prediction/V2/FncGrp2/",
+    #out_file = "Output/Prediction/resampled/FncGrp2/resamp29/",
     #Classif_Model = "Output/E_003_Best_Model_RandomForest_86vars.rda",
     #Classif_Model = "Output/E_004_Best_Model_Ranger_86vars.rda",
     #Classif_Model = "Output/E_003_Pred_Model_RandomForest_species_1000trees.rda",
-    Classif_Model = "Output/E_003_Pred_Model_RandomForest_FncGrp1_resamp4_1000trees.rda",
-    #Classif_Model = "Output/E_003_Pred_Model_RandomForest_FncGrp2_resamp4_1000trees.rda",
+    #Classif_Model = "Output/E_003_Pred_Model_RandomForest_FncGrp1_resamp4_1000trees.rda",
+    Classif_Model = "Output/E_003_Pred_Model_RandomForest_FncGrp2_1000trees.rda",
 
     datatype = "raster",
     extension = FALSE))

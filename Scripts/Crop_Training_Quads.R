@@ -7,11 +7,13 @@ Bison_path = "F:/BisonGulch/raw_1511_rd_rf_or"
 Bison_img = brick(Bison_path)
 #plot(Bison_img)
 #hsdar::bandnames(Bison_img)
-Bison_seg_path = "F:/BisonGulch/Bisoon_Quadrats.shp"
+Bison_seg_path = "Data/Ground_Validation/Bison_Quadrats/Bison_Quadrats.shp"
 Bison_out<-ImgChopper(Bison_path, Bison_seg_path)
 #str(Bison_out[[2]])
 #plot(Bison_out[[2]])
 writeRaster(Bison_out[[2]], "./Data/Ground_Validation/BisonGulchQuads", format = "ENVI", overwrite = TRUE)
+
+
 
 EightMile_path = "F:/EightMile/raw_2374_rd_or"
 EighMile_seg_path = "F:/EightMile/EightMile_Quadrats_ALL.shp"
