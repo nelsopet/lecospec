@@ -133,6 +133,9 @@ Ecosis_data<-Ecosis_data_all %>%
                Area,
                everything())
 
+Ecosis_data %>% group_by(Functional_group1) %>% tally(
+  
+)
 #Check EcoSIS data
 
 
@@ -287,7 +290,7 @@ each_target<-each_target%>%setNames(Target_names)
 
 #Var1 Freq
 #plot_interactive(each_target[["Alectoria ochroleuca"]])#1       Alectoria ochroleuca    6 #Remove scan 2
-#plot_interactive(each_target[["Alnus sp."]])#2                  Alnus sp.   80
+plot_interactive(each_target[["Alnus sp."]])#2                  Alnus sp.   80 # Need to clean out half of these because there are two groups.
 #plot_interactive(each_target[["Arctagrostis latifolia"]])#3     Arctagrostis latifolia    5
 #plot_interactive(each_target[["Arctocetraria centrifuga"]])#4   Arctocetraria centrifuga    4
 #plot_interactive(each_target[["Arctophila fulva"]])#5           Arctophila fulva   12
@@ -599,10 +602,19 @@ Cleaned_Speclib_tall_sp<-Cleaned_Speclib %>%
   as.data.frame() #%>%
   #group_by(Species_name, Wavelength)
 
-Cleaned_Speclib_tall_Fnc_grp2<-Cleaned_Speclib %>% 
+Cleaned_Speclib_tall_Fnc_grp2<-Cleaned_Speclib%>% 
   group_by(Functional_group2) %>%
   mutate(Functional_group2 = ifelse(Functional_group2=="Abiotic","Non-vegetated surface", Functional_group2),
-         Functional_group2_wN = glue('{Functional_group2}  {"(n="} {n()})')) %>%
+         Functional_group2_wN = glue('{Functional_group2}  {"(n="} {n()})') %>% as.factor(),
+         Functional_group2_wN = factor(Functional_group2_wN,
+                              levels = c("Lichen  (n= 328)",
+                                         "Moss  (n= 86)",
+                                         "Graminoid  (n= 128)",
+                                         "Forb  (n= 158)",
+                                         "Dwarf Shrub  (n= 130)",
+                                         "Shrub  (n= 326)",
+                                         "Tree  (n= 29)",
+                                         "Non-vegetated surface  (n= 57)"))) %>%
   ungroup() %>%
   pivot_longer(cols = `350`:`2500`,  names_to  = "Wavelength", values_to = "Reflectance") %>%
   group_by(Functional_group2_wN, Functional_group2,Wavelength) %>%  
@@ -779,7 +791,9 @@ dev.off()
 jpeg("Output/Fnc_grp2_spectral_profiles.jpg", height = 9000, width = 6000, res = 350)
 ggplot(Cleaned_Speclib_tall_Fnc_grp2, aes(Wavelength, Median_Reflectance), scales = "fixed")+
   
-  labs(title = c("Reflectance by plant functional group and sample \n size with median (black), 75% (dark) and 90% (grey) \n quantiles based on 1302 scans  with vertical bars \n showing Sentinel-2 bandpasses "), y="Reflectance")+
+  #labs(title = c("Reflectance by plant functional group and sample \n size with median (black), 75% (dark) and 90% (grey) \n quantiles based on 1302 scans  with vertical bars \n showing Sentinel-2 bandpasses "), y="Reflectance")+
+  labs(x= "Wavelength (nm)", y="Reflectance")+
+  
   theme(panel.background = element_rect(fill = "white", colour = "grey50"), 
         #legend.key.size = unit(0.5, "cm"),legend.text = element_text(size=25),
         legend.position = "none",
@@ -790,15 +804,15 @@ ggplot(Cleaned_Speclib_tall_Fnc_grp2, aes(Wavelength, Median_Reflectance), scale
   #Band 1
   #annotate("rect", xmin = 442.7-(21/2), xmax = 442.7+(21/2), ymin = 0, ymax = 1, alpha = .2, color=color[1], fill =color[1])+
   #Band2, fill =
-  annotate("rect", xmin = 492.4-(66/2), xmax = 492.4+(66/2), ymin = 0, ymax = 1, alpha = .2, color=color[2], fill =color[2])+
+  annotate("rect", xmin = 492.4-(66/2), xmax = 492.4+(66/2), ymin = 0, ymax = 1, alpha = .7, color=color[2], fill =color[2])+
   #Band3 559.8 36, fill =
-  annotate("rect", xmin = 559.8-(36/2), xmax = 559.8+(36/2), ymin = 0, ymax = 1, alpha = .2,color=color[3], fill =color[3])+
+  annotate("rect", xmin = 559.8-(36/2), xmax = 559.8+(36/2), ymin = 0, ymax = 1, alpha = .7,color=color[3], fill =color[3])+
   #Band4 664.6 31, fill =
-  annotate("rect", xmin = 664.6-(31/2), xmax = 664.6+(31/2), ymin = 0, ymax = 1, alpha = .2,color=color[4], fill =color[4])+
+  annotate("rect", xmin = 664.6-(31/2), xmax = 664.6+(31/2), ymin = 0, ymax = 1, alpha = .7,color=color[4], fill =color[4])+
   #Band5 704.1 15, fill =
-  annotate("rect", xmin = 704.1-(15/2), xmax = 704.1+(15/2), ymin = 0, ymax = 1, alpha = .2,color=color[5], fill =color[5])+
+  annotate("rect", xmin = 704.1-(15/2), xmax = 704.1+(15/2), ymin = 0, ymax = 1, alpha = .7,color=color[5], fill =color[5])+
   #Band6<-740.5 15, fill =
-  annotate("rect", xmin = 740.5-(15/2), xmax = 740.5+(15/2), ymin = 0, ymax = 1, alpha = .2,color=color[6], fill = color[6])+
+  annotate("rect", xmin = 740.5-(15/2), xmax = 740.5+(15/2), ymin = 0, ymax = 1, alpha = .7,color=color[6], fill = color[6])+
   #Band7<-782.8 20
   annotate("rect", xmin = 782.8-(20/2), xmax = 782.8+(20/2), ymin = 0, ymax = 1, alpha = .2)+
   #Band8<- 864 21
@@ -815,7 +829,16 @@ ggplot(Cleaned_Speclib_tall_Fnc_grp2, aes(Wavelength, Median_Reflectance), scale
   geom_ribbon(aes(Wavelength, ymin = Pct_12_5_Reflectance, ymax = Pct_87_5_Reflectance), alpha = 0.3)+
   geom_ribbon(aes(Wavelength, ymin = Lower_Reflectance, ymax = Upper_Reflectance), alpha = 0.2)+
   facet_wrap(vars(Functional_group2_wN), scales = "fixed", ncol = 2) 
-dev.off()
+  #facet_wrap(vars(forcats::fct_relevel(Functional_group2_wN,
+  #                          levels = c("Lichen  (n= 328)",
+  #                                     "Moss  (n= 86)",
+  #                                     "Graminoid  (n= 128)",
+  #                                     "Forb  (n= 158)",
+  #                                     "Dwarf Shrub  (n= 130)",
+  #                                     "Shrub  (n= 326)",
+  #                                     "Tree  (n= 29)",
+  #                                     "Non-vegetated surface  (n= 57)"))))
+ dev.off()
 
 
 ######## Functional group 1 spectral profiles

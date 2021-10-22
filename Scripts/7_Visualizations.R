@@ -25,7 +25,8 @@ coarse_colors = createPalette(length(unique(SpecLib_derivs$Functional_group2)), 
   as.data.frame() %>%
   dplyr::rename(Color = ".") %>%
   mutate(FNC_grp1 = unique(SpecLib_derivs$Functional_group2)) %>%
-  mutate(ColorNum = seq(1:length(unique(SpecLib_derivs$Functional_group2))));
+  mutate(ColorNum = seq(1:length(unique(SpecLib_derivs$Functional_group2)))) %>%
+  arrange(FNC_grp1);
 
 coarse_color_list<-SpecLib_derivs %>% dplyr::select(Functional_group2) %>% inner_join(coarse_colors, by=c("Functional_group2"="FNC_grp1"), keep=FALSE)
 
@@ -51,21 +52,22 @@ genera_colors = createPalette(length(unique(SpecLib_derivs$Functional_group1)), 
 
 #fnc_grp1_color_list<-Veg_env %>% select(Functional_group2) %>% inner_join(fnc_grp1_colors, by=c("Functional_group2"="FNC_grp1"), keep=FALSE)
 genera_color_list<-SpecLib_derivs %>% dplyr::select(Functional_group1) %>% inner_join(genera_colors, by=c("Functional_group1"="FNC_grp1"), keep=FALSE)
-
+pal <- colorBin("Spectral", domain = 0:8)
 maprint<-leaflet(BisonGulchQuads_FncGrp2_out) %>%
   leaflet::addTiles("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
                     options = providerTileOptions(minZoom = 0.1, maxZoom = 1000)) %>%
   # leaflet::addRasterImage(BisonGulchQuadsRGB_hires) %>%
   leaflet::addRasterImage(BisonGulchQuads_FncGrp2_out, 
                           layerId = "Plant Functional Type", 
-                          colors = coarse_colors$Color,
+                          #colors = coarse_colors$Color,
+                          colors = "Spectral",
+                          
                           project = TRUE
-                          #colors = coarse_pal2
                           ) %>%
   leaflet::addLegend("bottomleft", 
-                     colors = coarse_colors$Color, 
-                     #colors = coarse_pal2, 
-                     #pal = coarse_pal2,
+                     #colors = coarse_colors$FNC_grp1, 
+                     #colors = "Spectral", 
+                     pal = "Spectral",
                      #values = BisonGulchQuads_FncGrp2_out, 
                      labels = coarse_colors$FNC_grp1, 
                      opacity = 1 ) %>%

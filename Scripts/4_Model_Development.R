@@ -9,6 +9,10 @@ SpecLib_derivs<-read.csv("Output/D_002_SpecLib_Derivs.csv")
 #SpecLib_derivs<-read.csv("Output/resampled/D_002_SpecLib_Derivs.csv")
 #SpecLib_derivs<-read.csv("Output/resampled/FncGrp2/D_002_SpecLib_Derivs.csv")
 
+BadAlder<- SpecLib_derivs %>% colnames()
+  dplyr::filter(Functional_group1 == "Shrub_Alder" & `1890`<0.15) %>% dim()
+
+
 #Reorder columns, delete unneeded for species, FNC grp 1 and 2
 SpecLib_derivs_species<-
   SpecLib_derivs %>%
@@ -42,7 +46,7 @@ rf_mod_ranger_FncGrp2_pred<-ranger::ranger(Classes ~ .,data = SpecLib_derivs_Fnc
 
 #rf_mod_ranger_species_pred
 #rf_mod_ranger_FncGrp1_pred
-rf_mod_ranger_FncGrp2_pred
+rf_mod_ranger_FncGrp2_pred$confusion.matrix
 
 #rf_mod_randomforest
  # Build models using 0.99 percent cutoff for corelated varibles
