@@ -396,6 +396,121 @@ get_vegetation_indices <- function(
     return(veg_indices)
 }
 
+attach_veg_indices <- function(df) {
+
+    ndvi = hsdar::vegindex(., "ndvi", weighted = FALSE)
+    OSAVI = hsdar::vegindex(., "OSAVI", weighted = FALSE)
+    SAVI = hsdar::vegindex(., "SAVI", weighted = FALSE)
+    MTVI = hsdar::vegindex(., "MTVI", weighted = FALSE)
+    NDWI = hsdar::vegindex(., "NDWI", weighted = FALSE)
+    PWI = hsdar::vegindex(., "PWI", weighted = FALSE)
+    MSI = hsdar::vegindex(., "MSI", weighted = FALSE)
+    SRWI = hsdar::vegindex(., "SRWI", weighted = FALSE)
+    GMI1 = hsdar::vegindex(., "GMI1", weighted = FALSE)
+    GMI2 = hsdar::vegindex(., "GMI2", weighted = FALSE)
+    MCARI = hsdar::vegindex(., "MCARI", weighted = FALSE)
+    TVI = hsdar::vegindex(., "TVI", weighted = FALSE)
+    Vogelmann4 = hsdar::vegindex(., "Vogelmann4", weighted = FALSE)
+    Boochs = hsdar::vegindex(., "Boochs", weighted = FALSE)
+    Boochs2 = hsdar::vegindex(., "Boochs2", weighted = FALSE)
+    CARI = hsdar::vegindex(., "CARI", weighted = FALSE)
+    CI = hsdar::vegindex(., "CI", weighted = FALSE)
+    Carter = hsdar::vegindex(., "Carter", weighted = FALSE)
+    Carter2 = hsdar::vegindex(., "Carter2", weighted = FALSE)
+    Carter3 = hsdar::vegindex(., "Carter3", weighted = FALSE)
+    Carter4 = hsdar::vegindex(., "Carter4", weighted = FALSE)
+    Carter5 = hsdar::vegindex(., "Carter5", weighted = FALSE)
+    Carter6 = hsdar::vegindex(., "Carter6", weighted = FALSE)
+    Datt = hsdar::vegindex(., "Datt", weighted = FALSE)
+    Datt2 = hsdar::vegindex(., "Datt2", weighted = FALSE)
+    Datt3 = hsdar::vegindex(., "Datt3", weighted = FALSE)
+    Datt4 = hsdar::vegindex(., "Datt4", weighted = FALSE)
+    Datt5 = hsdar::vegindex(., "Datt5", weighted = FALSE)
+    Datt6 = hsdar::vegindex(., "Datt6", weighted = FALSE)
+    Datt7 = hsdar::vegindex(., "Datt7", weighted = FALSE)
+    Datt8 = hsdar::vegindex(., "Datt8", weighted = FALSE)
+    DD = hsdar::vegindex(., "DD", weighted = FALSE)
+    DDn = hsdar::vegindex(., "DDn", weighted = FALSE)
+    D1 = hsdar::vegindex(., "D1", weighted = FALSE)
+    D2 = hsdar::vegindex(., "D2", weighted = FALSE)
+    EVI = hsdar::vegindex(., "EVI", weighted = FALSE)
+    EGFR = hsdar::vegindex(., "EGFR", weighted = FALSE)
+    EGFN = hsdar::vegindex(., "EGFN", weighted = FALSE)
+    GI = hsdar::vegindex(., "GI", weighted = FALSE)
+    Gitelson = hsdar::vegindex(., "Gitelson", weighted = FALSE)
+    Gitelson2 = hsdar::vegindex(., "Gitelson2", weighted = FALSE)
+    Green_NDVI = hsdar::vegindex(., "Green NDVI", weighted = FALSE)
+    MCARI_OSAVI = hsdar::vegindex(., "MCARI/OSAVI", weighted = FALSE)
+    MCARI2 = hsdar::vegindex(., "MCARI2", weighted = FALSE)
+    MCARI2_OSAVI2 = hsdar::vegindex(., "MCARI2/OSAVI2", weighted = FALSE)
+    mNDVI = hsdar::vegindex(., "mNDVI", weighted = FALSE)
+    mND705 = hsdar::vegindex(., "mND705", weighted = FALSE)
+    Maccioni = hsdar::vegindex(., "Maccioni", weighted = FALSE)
+    mREIP = hsdar::vegindex(., "mREIP", weighted = FALSE)
+    MSAVI = hsdar::vegindex(., "MSAVI", weighted = FALSE)
+    mSR = hsdar::vegindex(., "mSR", weighted = FALSE)
+    mSR705 = hsdar::vegindex(., "mSR705", weighted = FALSE)
+    mSR2 = hsdar::vegindex(., "mSR2", weighted = FALSE)
+    MCTI = hsdar::vegindex(., "MCTI", weighted = FALSE)
+    NDVI2 = hsdar::vegindex(., "NDVI2", weighted = FALSE)
+    NDVI3 = hsdar::vegindex(., "NDVI3", weighted = FALSE)
+    NPCI = hsdar::vegindex(., "NPCI", weighted = FALSE)
+    OSAVI2 = hsdar::vegindex(., "OSAVI2", weighted = FALSE)
+    RDVI = hsdar::vegindex(., "RDVI", weighted = FALSE)
+    REP_LE = hsdar::vegindex(., "REP_LE", weighted = FALSE)
+    REP_Li = hsdar::vegindex(., "REP_Li", weighted = FALSE)
+    SIPI = hsdar::vegindex(., "SIPI", weighted = FALSE)
+    SPVI = hsdar::vegindex(., "SPVI", weighted = FALSE)
+    SR = hsdar::vegindex(., "SR", weighted = FALSE)
+    SR2 = hsdar::vegindex(., "SR2", weighted = FALSE)
+    SR3 = hsdar::vegindex(., "SR3", weighted = FALSE)
+    SR4 = hsdar::vegindex(., "SR4", weighted = FALSE)
+    SR5 = hsdar::vegindex(., "SR5", weighted = FALSE)
+    SR6 = hsdar::vegindex(., "SR6", weighted = FALSE)
+    SR7 = hsdar::vegindex(., "SR7", weighted = FALSE)
+    SR8 = hsdar::vegindex(., "SR8", weighted = FALSE)
+    Vogelmann = hsdar::vegindex(., "Vogelmann", weighted = FALSE)
+    Vogelmann = hsdar::vegindex(., "Vogelmann2", weighted = FALSE)
+    Vogelmann = hsdar::vegindex(., "Vogelmann3", weighted = FALSE)
+    NDLI = hsdar::vegindex(., "NDLI", weighted = FALSE)
+    SRPI = hsdar::vegindex(., "SRPI", weighted = FALSE)
+    Sum_Dr1 = hsdar::vegindex(., "Sum_Dr1", weighted = FALSE)
+    Sum_Dr2 = hsdar::vegindex(., "Sum_Dr2", weighted = FALSE)
+    TCARI = hsdar::vegindex(., "TCARI", weighted = FALSE)
+    TCARI2 = hsdar::vegindex(., "TCARI2", weighted = FALSE)
+    TCARI_OSAVI = hsdar::vegindex(., "TCARI/OSAVI", weighted = FALSE)
+    TCARI2_OSAVI2 = hsdar::vegindex(., "TCARI2/OSAVI2", weighted = FALSE)
+    PSSR = hsdar::vegindex(., "PSSR", weighted = FALSE)
+    PSND = hsdar::vegindex(., "PSND", weighted = FALSE)
+    CRI1 = hsdar::vegindex(., "CRI1", weighted = FALSE)
+    CRI2 = hsdar::vegindex(., "CRI2", weighted = FALSE)
+    CRI3 = hsdar::vegindex(., "CRI3", weighted = FALSE)
+    CRI4 = hsdar::vegindex(., "CRI4", weighted = FALSE)
+    MPRI = hsdar::vegindex(., "MPRI", weighted = FALSE)
+    PRI_CI2 = hsdar::vegindex(., "PRI*CI2", weighted = FALSE)
+    CI2 = hsdar::vegindex(., "CI2", weighted = FALSE)
+    PSRI = hsdar::vegindex(., "PSRI", weighted = FALSE)
+    ClAInt = hsdar::vegindex(., "ClAInt", weighted = FALSE)
+    TGI = hsdar::vegindex(., "TGI", weighted = FALSE)
+    PRI_norm = hsdar::vegindex(., "PRI_norm", weighted = FALSE)
+    PARS = hsdar::vegindex(., "PARS", weighted = FALSE)
+    DPI = hsdar::vegindex(., "DPI", weighted = FALSE)
+    GDVI_2 = hsdar::vegindex(., "GDVI_2", weighted = FALSE)
+    GDVI_3 = hsdar::vegindex(., "GDVI_3", weighted = FALSE)
+    GDVI_4 = hsdar::vegindex(., "GDVI_4", weighted = FALSE)
+    LWVI1 = hsdar::vegindex(., "LWVI1", weighted = FALSE)
+    LWVI2 = hsdar::vegindex(., "LWVI2", weighted = FALSE)
+    DWSI1 = hsdar::vegindex(., "DWSI1", weighted = FALSE)
+    DWSI2 = hsdar::vegindex(., "DWSI2", weighted = FALSE)
+    DWSI3 = hsdar::vegindex(., "DWSI3", weighted = FALSE)
+    DWSI4 = hsdar::vegindex(., "DWSI4", weighted = FALSE)
+    DWSI5 = hsdar::vegindex(., "DWSI5", weighted = FALSE)
+    SWIR_FI = hsdar::vegindex(., "SWIR FI", weighted = FALSE)
+    SWIR_LI = hsdar::vegindex(., "SWIR LI", weighted = FALSE)
+    SWIR_SI = hsdar::vegindex(., "SWIR SI", weighted = FALSE)
+    SWIR_VI = hsdar::vegindex(., "SWIR VI", weighted = FALSE)
+}
+
 
 
 #' Resample the data frame/spectra every distance=5 units
@@ -583,8 +698,8 @@ aggregate_results_df <- function(predictions, x, y) {
         print("Number of pixels in prediction")
         print(num_pixels)
         for (iter_idx in seq_len(num_pixels)) {
-        if (!is.na(prediction_df[iter_idx, 2])) {
-            z <- append(z, prediction_df[iter_idx, 2])
+            if (!is.na(prediction_df[iter_idx, 2])) {
+                z <- append(z, prediction_df[iter_idx, 2])
             }
         }
     }
@@ -785,7 +900,7 @@ preprocess_raster_to_df <- function(raster_obj, model) {
     df <- clean_df_colnames(df)
     df <- df %>% dplyr::select(x, y, dplyr::all_of(target_model_cols))
     gc()
-    df <- impute_spectra(df)
+    #df <- impute_spectra(df)
     return(df)
 }
 
@@ -798,4 +913,33 @@ datacube_to_csv <- function(raster_path, save_path) {
     df <- raster::rasterToPoints(datacube)
     write.csv(df, save_path)
 }
+
+
+# converts raster to CSV file on disk
+preprocess_raster_to_csv <- function(
+    raster_filepath,
+    model,
+    output_filepath = "./converted_data.csv") {
+
+        raster_brick <- raster::brick(raster_filepath)
+        df <- preprocess_raster_to_df(raster_brick)
+        rm(raster_brick)
+        gc()
+    write.csv(
+        df,
+        output_filepath
+    )
+}
+
+preprocess_raster_to_parquet <- function(
+    raster_filepath,
+    model_obj,
+    output_filepath = "./converted_data.parquet") {
+        raster_brick <- raster::brick(raster_filepath)
+        df <- preprocess_raster_to_df(raster_brick)
+        rm(raster_brick)
+        gc()
+        arrow::write_parquet(df, output_filepath)
+}
+
 

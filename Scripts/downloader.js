@@ -1,5 +1,6 @@
 const fs = require('fs');
 const https = require('https');
+const md5 = require("md5")
 
 // File URL
 const url = `https://acquirebase.com/img/logo.png`;
