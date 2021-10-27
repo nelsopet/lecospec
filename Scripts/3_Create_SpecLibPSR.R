@@ -617,6 +617,7 @@ Cleaned_Speclib_tall_Fnc_grp2<-Cleaned_Speclib%>%
                                          "Non-vegetated surface  (n= 57)"))) %>%
   ungroup() %>%
   pivot_longer(cols = `350`:`2500`,  names_to  = "Wavelength", values_to = "Reflectance") %>%
+  mutate(Reflectance = round(Reflectance*100,2)) %>%
   group_by(Functional_group2_wN, Functional_group2,Wavelength) %>%  
   dplyr::summarise(Median_Reflectance = median(Reflectance),
                    Max_Reflectance = max(Reflectance),
@@ -625,8 +626,7 @@ Cleaned_Speclib_tall_Fnc_grp2<-Cleaned_Speclib%>%
                    Pct_12_5_Reflectance = quantile(Reflectance, probs = 0.125),
                    Upper_Reflectance = quantile(Reflectance, probs = 0.95),
                    Lower_Reflectance = quantile(Reflectance, probs = 0.05))%>%
-  mutate(Wavelength = as.numeric(Wavelength)
-         ) %>%
+  mutate(Wavelength = as.numeric(Wavelength)) %>%
   dplyr::filter(Wavelength>=450) %>%
   as.data.frame() #%>%
 #group_by(Species_name, Wavelength)
@@ -804,27 +804,27 @@ ggplot(Cleaned_Speclib_tall_Fnc_grp2, aes(Wavelength, Median_Reflectance), scale
   #Band 1
   #annotate("rect", xmin = 442.7-(21/2), xmax = 442.7+(21/2), ymin = 0, ymax = 1, alpha = .2, color=color[1], fill =color[1])+
   #Band2, fill =
-  annotate("rect", xmin = 492.4-(66/2), xmax = 492.4+(66/2), ymin = 0, ymax = 1, alpha = .7, color=color[2], fill =color[2])+
+  annotate("rect", xmin = 492.4-(66/2), xmax = 492.4+(66/2), ymin = 0, ymax = 100, alpha = .7, color=color[2], fill =color[2])+
   #Band3 559.8 36, fill =
-  annotate("rect", xmin = 559.8-(36/2), xmax = 559.8+(36/2), ymin = 0, ymax = 1, alpha = .7,color=color[3], fill =color[3])+
+  annotate("rect", xmin = 559.8-(36/2), xmax = 559.8+(36/2), ymin = 0, ymax = 100, alpha = .7,color=color[3], fill =color[3])+
   #Band4 664.6 31, fill =
-  annotate("rect", xmin = 664.6-(31/2), xmax = 664.6+(31/2), ymin = 0, ymax = 1, alpha = .7,color=color[4], fill =color[4])+
+  annotate("rect", xmin = 664.6-(31/2), xmax = 664.6+(31/2), ymin = 0, ymax = 100, alpha = .7,color=color[4], fill =color[4])+
   #Band5 704.1 15, fill =
-  annotate("rect", xmin = 704.1-(15/2), xmax = 704.1+(15/2), ymin = 0, ymax = 1, alpha = .7,color=color[5], fill =color[5])+
+  annotate("rect", xmin = 704.1-(15/2), xmax = 704.1+(15/2), ymin = 0, ymax = 100, alpha = .7,color=color[5], fill =color[5])+
   #Band6<-740.5 15, fill =
-  annotate("rect", xmin = 740.5-(15/2), xmax = 740.5+(15/2), ymin = 0, ymax = 1, alpha = .7,color=color[6], fill = color[6])+
+  annotate("rect", xmin = 740.5-(15/2), xmax = 740.5+(15/2), ymin = 0, ymax = 100, alpha = .7,color=color[6], fill = color[6])+
   #Band7<-782.8 20
-  annotate("rect", xmin = 782.8-(20/2), xmax = 782.8+(20/2), ymin = 0, ymax = 1, alpha = .2)+
+  annotate("rect", xmin = 782.8-(20/2), xmax = 782.8+(20/2), ymin = 0, ymax = 100, alpha = .2)+
   #Band8<- 864 21
-  annotate("rect", xmin = 864-(21/2), xmax = 864+(21/2), ymin = 0, ymax = 1, alpha = .2)+
+  annotate("rect", xmin = 864-(21/2), xmax = 864+(21/2), ymin = 0, ymax = 100, alpha = .2)+
   #Band9<-945.1 20
-  annotate("rect", xmin = 945.1-(20/2), xmax = 945.1+(20/2), ymin = 0, ymax = 1, alpha = .2)+
+  annotate("rect", xmin = 945.1-(20/2), xmax = 945.1+(20/2), ymin = 0, ymax = 100, alpha = .2)+
   #Band10<-1373.5 31
-  annotate("rect", xmin = 1373.5-(31/2), xmax = 1373.5+(31/2), ymin = 0, ymax = 1, alpha = .2)+
+  annotate("rect", xmin = 1373.5-(31/2), xmax = 1373.5+(31/2), ymin = 0, ymax = 100, alpha = .2)+
   #Band11<-1613.7 91
-  annotate("rect", xmin = 1613.7-(91/2), xmax = 1613.7+(91/2), ymin = 0, ymax = 1, alpha = .2)+
+  annotate("rect", xmin = 1613.7-(91/2), xmax = 1613.7+(91/2), ymin = 0, ymax = 100, alpha = .2)+
   #Band12<-2202.4 175
-  annotate("rect", xmin = 2202.4-(175/2), xmax = 2202.4+(175), ymin = 0, ymax = 1, alpha = .2)+
+  annotate("rect", xmin = 2202.4-(175/2), xmax = 2202.4+(175), ymin = 0, ymax = 100, alpha = .2)+
   geom_line(aes(Wavelength, Median_Reflectance,color = "black"), size = 1.5)+ scale_color_grey()+
   geom_ribbon(aes(Wavelength, ymin = Pct_12_5_Reflectance, ymax = Pct_87_5_Reflectance), alpha = 0.3)+
   geom_ribbon(aes(Wavelength, ymin = Lower_Reflectance, ymax = Upper_Reflectance), alpha = 0.2)+
