@@ -606,7 +606,7 @@ load_csv <- function(filepath, output_type = "df") {
 #' @export 
 #' @examples Not Yet Implmented
 #'
-impute_spectra <- function(x, parallelize = NULL) {
+impute_spectra <- function(x, parallelize = NULL, method = "missForest") {
 
     df <- x
 
