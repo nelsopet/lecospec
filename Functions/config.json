@@ -1,0 +1,11 @@
+{
+    "x_tiles": 10,
+    "y_tiles": 10,
+    "tile_path": "./tiles/",
+    "model_path": "../Output/E_003_Pred_Model_RandomForest_FncGrp2_1000trees.rda",
+    "clusterCores": null,
+    "parallelize_by_tiles": false,
+    "application": "Not yet implemented",
+    "cache_path": "not yet implemented", 
+    "output_path": "./"
+}

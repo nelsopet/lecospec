@@ -1,5 +1,8 @@
-require(dplyr)
+require(tidyverse)
 require(compiler)
+require(raster)
+require(parallel)
+require(doParallel)
 
 #' Functions returns columns that are bandpasses
 #' 
@@ -363,7 +366,7 @@ get_required_veg_indices <- function(ml_model) {
 #'
 #' Long Description here
 #'
-#' @return 
+#' @return vegetation indices for supplied 
 #' @param cluster (optional): A parallel computing framework  
 #' @param base_index (optional): vegetation indices for computations.  
 #' @seealso None
@@ -373,30 +376,54 @@ get_required_veg_indices <- function(ml_model) {
 get_vegetation_indices <- function(
     df,
     ml_model,
-    cluster = parallel::makeCluster()) {
+    cluster = NULL) {
 
-    target_model_vars <- get_var_names(ml_model)
+    target_indices <- get_required_veg_indices(ml_model)
     # Creates a new model built on important variables
-    new_df <- df %>%
-        dplyr::select(x,y,all_of(target_model_vars))
+    # Initialize variable
+    veg_indices <- NULL
 
+    spec_library <- spectrolab::as_spectra(df)
 
-    doParallel::registerDoParallel(cluster)
-
-    veg_indices <- foreach(
-        i = seq_along(target_model_vars),
-        .combine = cbind,
-        .packages = "hsdar") %dopar% {
-            a <- hsdar::vegindex(
-                spec_library,
-                index = AVIRIS_VI[[i]],
-                weighted = FALSE)
+    if(!is.null(cluster)){
+        # cluster supplied, so use parallel execution
+        doParallel::registerDoParallel(cluster)
+        veg_indices <- foreach(
+            i = seq_along(target_indices),
+            .combine = cbind,
+            .packages = "hsdar") %dopar% {
+                a <- hsdar::vegindex(
+                    spec_library,
+                    index = target_indices[[i]],
+                    weighted = FALSE)
             }
+    } else {
+        # sequential calculation
+        veg_indices <- foreach(
+            i = seq_along(target_indices),
+            .combine = cbind,
+            .packages = "hsdar") %do% {
+                a <- hsdar::vegindex(
+                    spec_library,
+                    index = target_indices[[i]],
+                    weighted = FALSE)
+            }
+
+    }
+    
+
+
+    
 
     return(veg_indices)
 }
 
 attach_veg_indices <- function(df) {
+
+    # saving this for later.
+        new_df <- df %>%
+        dplyr::select(x,y,all_of(target_model_vars))
+
 
     ndvi = hsdar::vegindex(., "ndvi", weighted = FALSE)
     OSAVI = hsdar::vegindex(., "OSAVI", weighted = FALSE)
@@ -635,13 +662,17 @@ impute_spectra <- function(x, parallelize = NULL, method = "missForest") {
     return(output_data)
 }#end impute_spectra
 
-#' creates tiles from raster brick
+#' creates tiles from raster brick and returns the locations on disk
 #'
 #' Long Description here
 #'
 #' @return 
-#' @param data: 
-#' @param num_tiles (default 100): 
+#' @param raster_obj: a rasterBrick object (RasterLayer and RasterStack should also work but are not tested) 
+#' @param num_x: number of tiles in x direction
+#' @param num_y: number of tiles in y direction
+#' @param save_path: folder to save the tiles
+#' @param cluster: parallel compute cluster (e.g. from parallel::beginCluster()), or NULL
+#' @param verbose: (boolean, default: false) determines whether details are printed during evaluation 
 #' @seealso None
 #' @export 
 #' @examples Not Yet Implmented
@@ -881,52 +912,103 @@ estimate_land_cover <- function(
     output_filename = "predictions"
 ) {
 
-    num_cores <- parallel::detectCores()
-    print(paste0(num_cores, " Cores Detected for processing..."))
-    ls_cluster <- parallel::makeCluster(num_cores)
+
     # Read in the configuration file
     config <- rjson::fromJSON(file = config_path)
 
-    # Load the model and extract the relevant information
+    # determine the number of cores to use
+    num_cores <- parallel::detectCores() #detect cores on system
+    # see if the number of cores to use is specified in the config
+    if(is.integer(config$clusterCores)){
+        num_cores <- config$clusterCores
+    }
+    # set up the parallel cluster
+    cl <- raster::beginCluster(num_cores)
+    
+    print(paste0(num_cores, " Cores Detected for processing..."))
+
+
+    # Load the model
     model <- load_model(config$model_path)
-    model_indices <- get_required_veg_indices(model)
 
-    
-    # load the data and convert to file.
-    input_raster <- raster::brick(input_filepath)
-    df <- preprocess_raster_to_df(input_raster)
 
-    # get the vegetation indices
-    vegetation_indices <- get_vegetation_indices(df, model)
-
-    write.csv(df, cache_filepath)
-
-    
-
-    parallel::parApply(
-        cl = ls_cluster,
-        X = input_df,
-        FUN = process_pixel,
-        MARGIN = 1
-    )
     # load the input datacube and split into tiles
-    
-    
+    input_raster <- raster::brick(input_filepath)
+    tile_filenames <- make_tiles(
+        input_raster,
+        num_x = config$x_tiles,
+        num_y = config$y_tiles,
+        save_path = config$tile_path,
+        cluster = cl,
+        verbose = FALSE
+    )
+
+    rm(input_raster)
+    gc()
+
+    # initialize the variable for the tilewise results
+    tile_results <- NULL
     #edge artifacts?
+    if(config$parallelize_by_tiles){
+        doParallel::registerDoParallel()
+        tile_results <- foreach(tile_filename=tile_filenames) %dopar% {
+            process_tile(
+                tile_filename = tile_filename,
+                ml_model = model, 
+                cluster = NULL)
+            gc()#garbage collect between iterations
+        }
+    } else {
+        tile_results <- foreach(tile_filename=tile_filenames) %do% {
+            process_tile(
+                tile_filename = tile_filename,
+                ml_model = model, 
+                cluster = cl)
+            gc()
+        }
 
-    tile_results <- parallel::parLapply(tile=tiles) %dopar% { process_tile(tile)}
+    }
+    gc() #clean up
 
-    results <- merge_results(tile_results)
+    parallel::endCluster()
+
+    results <- aggregate_results_df(tile_results)
 
     return(results)
 }
 
-process_tile <- function(tile) {
+
+#' equivalent to the old LandCoverEstimator()
+#'
+#' Long Description here
+#'
+#' @return 
+#' @param x
+#' @seealso None
+#' @export 
+#' @examples Not Yet Implmented
+#'
+process_tile <- function(tile_filename, ml_model, cluster = NULL) {
+    raster_obj <- raster::brick(tile_filename)
+    base_df <- preprocess_raster_to_df(raster_obj)
+    rm(raster_obj)
+    gc()
+
+    imputed_df <- impute_spectra(df)
+    rm(df)
+    gc()
+
+    veg_indices <- get_vegetation_indices(imputed_df, ml_model, cluster = cluster)
+
+    df <- add_derivatives(base_df)
+    rm(base_df)
+    gc()
     
-}
+    predictions <- apply_model(df, model)
+    rm(df)
+    gc()
 
-clean_tile_df <- function(tile) {
-
+    return(predictions)
 }
 
 # a quick function based on the original code
@@ -957,7 +1039,6 @@ preprocess_raster_to_df <- function(raster_obj, model) {
 }
 
 add_derivatives <- function(df, target_indices) {
-
 }
 
 datacube_to_csv <- function(raster_path, save_path) {
