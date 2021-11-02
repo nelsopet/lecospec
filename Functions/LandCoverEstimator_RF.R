@@ -635,7 +635,7 @@ impute_spectra <- function(x, parallelize = NULL, method = "missForest") {
     return(output_data)
 }#end impute_spectra
 
-#' creates tiles from 
+#' creates tiles from raster brick
 #'
 #' Long Description here
 #'
@@ -646,16 +646,68 @@ impute_spectra <- function(x, parallelize = NULL, method = "missForest") {
 #' @export 
 #' @examples Not Yet Implmented
 #'
-make_tiles <- function(data, num_tiles = 100) {
-    if (is.data.frame(data)) {
-        raster <- df_to_speclib(data)
-        tiles <- SpaDES.tools::splitRaster(raster, num_tiles)
-        return(tiles)
-    } else {
-        tiles <- SpaDES.tools::splitRaster(, num_tiles)
-        return(tiles)
+make_tiles <- function(
+    raster_obj,
+    num_x = 10,
+    num_y = 10,
+    save_path = "./", 
+    cluster = NULL,
+    verbose = FALSE) {
+
+    if(verbose){
+        print("Creating tile templates")
+    }
+    tiles <- SpaDES.tools::splitRaster(
+        raster_obj[[1]], 
+        nx=num_x,
+        ny = num_y, 
+        path = save_path)
+
+    gc()
+
+    if(verbose){
+        print("Templates created, cropping raster")
     }
 
+
+    get_random_filename <- function() {
+        random_tile_id <- stringi::stri_rand_strings(1,16)
+        random_filename <- paste0("tile_", random_tile_id, ".grd")
+        return(random_filename)
+    }
+
+
+    crop_and_save_raster <- function(tile) {
+        tile_filename <- file.path(save_path, get_random_filename())
+            raster::crop(
+                raster_obj, 
+                tile,
+                filename=tile_filename
+            )
+            gc()
+            return(tile_filename)
+    }
+
+    tile_filenames <- list()
+
+    if(!is.null(cluster)){
+        if(verbose){
+            print("Processing using supplied cluster")
+        }
+        tile_filenames <- parallel::parLapply(cluster, tiles, crop_and_save_raster)
+    } else {
+        if(verbose){
+            print("Processing sequentially")
+        }
+        tile_filenames <- lapply(tiles, crop_and_save_raster)
+    }
+
+    if(verbose){
+        print("complete")
+    }
+    gc()
+
+    return(tile_filenames)
 }
 
 #' Lone line explanation

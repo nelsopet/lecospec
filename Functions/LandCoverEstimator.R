@@ -347,10 +347,10 @@ LandCoverEstimator<-function(filename, out_file, Classif_Model, datatype = "rast
       # Statement checks if file already exist
       if(!file.exists(Out_tif)) {
 
-        # Crops raster based on the extent of the 24 tiles that we created
+        # Crops raster based on the extent of the tiles that we created
         raster::crop(Converted_Dcube,extent(Tiles[[x]]),
                      filename = Out_tif,
-                     dataType = "INT4S",format="GTiff",overwrite = T)
+                     dataType = "FLT4S",format="GTiff",overwrite = T)
         
       }
       print("30 Tiles were sucessfully created")
