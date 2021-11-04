@@ -15,13 +15,14 @@ library(glue)
 # In this step we will combine all our spectral profiles to form one spectral library
 
 # Creates a file path to where our spectral libraries for each site is loacated
-mypath_atkin = "Output/"
+mypath_atkin = "./Output/"
 
 # Reads in species and functional level groups dataframe creatd in script 1
-Species_groups<-read.csv("Output/B_001_SC1_SpeciesTable.csv")
+Species_groups<-read.csv("./Output/B_001_SC1_SpeciesTable.csv")
 
 # Reads in scans from ecosis website
 # Additional spectral profiles that will be combined to the ones collected in Alaska
+
 Spectra_Ecosis_1<-read.csv("Data/leaf_spectra_barrow_2013_20180824_ecosis.csv", check.names = F)
 Metadata_Ecosis_1<-read.csv("Data/ngeearctic_bnl_2013_leaf_spectra_traits_metadata.csv", check.names = F)
 
@@ -177,7 +178,7 @@ SpecLib_by_location = list.files(mypath_atkin, pattern="A_0",full.names = T)
 
 # Reads in the spectral libraries for each location in a list...List of 13 spectral objects
 list_of_SpecLib<-lapply(SpecLib_by_location,readRDS)%>% # Reads in the spectral library for each site 
-  setNames(gsub("Output/","",SpecLib_by_location)) # Removes dir path from the name
+  setNames(gsub("./Output/","",SpecLib_by_location)) # Removes dir path from the name
 
 # Combines specral libraries from all locations
 SpecLib<-Reduce(spectrolab::combine,list_of_SpecLib) %>% # dim(n_samples=1989, n_wavelegths=2151)
@@ -511,8 +512,8 @@ table(Cleaned_Speclib$Functional_group1)%>%as.data.frame()
 #35                Tree_Evergreen   17
 #36                   Wood_Coarse    5
 
-write.csv(Cleaned_Speclib, "Output/C_001_SC3_Cleaned_SpectralLib.csv")
-saveRDS(Cleaned_Speclib_rds,"Output/C_002_SC3_Cleaned_Speclib.rds")
+write.csv(Cleaned_Speclib, "./Output/C_001_SC3_Cleaned_SpectralLib.csv")
+saveRDS(Cleaned_Speclib_rds,"./Output/C_002_SC3_Cleaned_Speclib.rds")
 
 
 # ------------------------------------------ Step 3: Create Plots showing spectral profiles ------------------------------------------------- #
@@ -907,6 +908,7 @@ ggplot(Abiotic_Cleaned_Speclib_tall, aes(Wavelength, Median_Reflectance, group =
 dev.off()
 
   
+
 ######## Tree species spectral profiles
 jpeg("Output/Tree_species_spectral_profiles.jpg", height = 3500, width = 9000, res = 350)
 ggplot(Tree_Cleaned_Speclib_tall, aes(Wavelength, Median_Reflectance, group = Functional_group1_wN))+
@@ -955,10 +957,12 @@ ggplot(Forb_Cleaned_Speclib_tall, aes(Wavelength, Median_Reflectance, group = Fu
   geom_line(aes(color = "red"), size = 1.5)+
   facet_wrap(vars(Functional_group1_wN), scales = "fixed", ncol = 2) 
 dev.off()
+
 ###Run LandCoverEstimator to generate Spectral Derivatives.
 #source("Functions/1_Simple_LandCoverEstimator.R")
 #source("Functions/2_Simple_LandCoverEstimator.R")
 source("Functions/2_LCE_veg_index.R")
+
 Make_Speclib_Derivs("Output/C_001_SC3_Cleaned_SpectralLib.csv",out_file="Output/")
 Make_Speclib_Derivs("Output/C_001_SC3_Cleaned_SpectralLib4.csv", out_file = "Output/resampled/")
 Make_Speclib_Derivs("Output/C_001_SC3_Cleaned_SpectralLib29.csv", out_file = "Output/resampled/FncGrp2/")

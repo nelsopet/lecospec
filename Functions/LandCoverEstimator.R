@@ -6,7 +6,7 @@
 ## Classif_Model = dir.path to where the model to be used for classification is located
 ## A subfolder will be created in you out_file path for aving all the output files
 
-LandCoverEstimator<-function(filename, out_file, Classif_Model, datatype, extension) {
+LandCoverEstimator<-function(filename, out_file, Classif_Model, datatype = "raster", extension, output_filename = "full_model_results") {
 
   
   
@@ -283,7 +283,7 @@ LandCoverEstimator<-function(filename, out_file, Classif_Model, datatype, extens
     print("Importing Datacube")
     
     # Reads in the Hyperspectral datacubes as a Rasterstack raster
-    Converted_Dcube <- raster::brick(filename)
+    Converted_Dcube <- raster::brick(filenameq  )
     
     print("Splitting raster into 30 tiles")
     
@@ -331,7 +331,6 @@ LandCoverEstimator<-function(filename, out_file, Classif_Model, datatype, extens
         # parallel infrastructure
 
         # Get amount of cores to use
-    cores <- parallel::detectCores()-1
     
     # prepare for parallel process
     c1 <- parallel::makeCluster(cores, setup_timeout = 0.5)
@@ -348,10 +347,10 @@ LandCoverEstimator<-function(filename, out_file, Classif_Model, datatype, extens
       # Statement checks if file already exist
       if(!file.exists(Out_tif)) {
 
-        # Crops raster based on the extent of the 24 tiles that we created
+        # Crops raster based on the extent of the tiles that we created
         raster::crop(Converted_Dcube,extent(Tiles[[x]]),
                      filename = Out_tif,
-                     dataType = "INT4S",format="GTiff",overwrite = T)
+                     dataType = "FLT4S",format="GTiff",overwrite = T)
         
       }
       print("30 Tiles were sucessfully created")
@@ -404,7 +403,7 @@ LandCoverEstimator<-function(filename, out_file, Classif_Model, datatype, extens
           
           print("Masking negative values and values greater than 2 percent reflectance")
           
-          # Removes noisey bands
+          # Removes noisey bands 
           # Find out a way to Automatically remove bands based on the variance
           # remove hard coding 
           DfofRas<-DfofRas[1:274]
@@ -711,20 +710,9 @@ LandCoverEstimator<-function(filename, out_file, Classif_Model, datatype, extens
 
 
       plot_agg_results <- function(df, save_file = "Output/results.jpeg") {
-
-#    create_raster_image <- function(df, base_image = NULL) {
-#      speclib <- raster(df)
-#      #speclib@data@attributes <- base_image@data@attributes
-#      png("model_output.png")
-#      raster::image(speclib)
-#      dev.off()
-#    }
-#
-#      plot_agg_results <- function(df, save_file = "Output/results.jpeg") {
         my_plot <- ggplot2::ggplot(data = df) +
           geom_point(aes(df$x, df$y, color=df$z))
         print(my_plot)
-        #ggplot2::ggsave(save_file)
         return(my_plot)
       }
 
@@ -732,10 +720,10 @@ LandCoverEstimator<-function(filename, out_file, Classif_Model, datatype, extens
       
       plot_agg_results(output_df)
       print("Done")
-      write.table(output_df, file = "Output/full_model_results.csv")
-
+      write.table(output_df, file = paste0("Output/", output_filename, ".csv"))
+      
       output_raster <- raster::rasterFromXYZ(output_df)
-      raster::writeRaster(output_raster, "Output/full_model_results.tif")
+      raster::writeRaster(output_raster, paste0("./", output_filename, ".tif"))
 
     return(output_raster)
   }
@@ -754,4 +742,3 @@ write.csv(Spectral_lib,paste(out_file,"D_002_SpecLib_Derivs",".csv", sep=""),row
 # Normalize Values here
 return(Spectral_lib)
 }
-

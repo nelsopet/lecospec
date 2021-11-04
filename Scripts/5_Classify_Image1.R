@@ -15,7 +15,9 @@ library(randomForest)
 
 # increase allocated memory to approx to appropriate amount 
 # (leaving 2GB reserved for OS)
+
 system_ram_gb <- 16
+
 malloc_size <- (system_ram_gb - 2) * 8000
 
 memory.limit(size = malloc_size)
@@ -47,6 +49,7 @@ system.time(PredLayer <- LandCoverEstimator(
     #filename = "Data/TwelveMile_2019_08_09_21_28_52_0_rd_rf_or",
 #    filename = "M:/Alaska_Datacubes/Raw_files/WickershamDome_2019_08_08_19_31_51_2000_rd_rf_or",
 #    filename = "Data/SubsetDatacube",
+
     #filename = "E:/Lecospec/Data/SubsetDatacube",
     out_file = "Output/Prediction/V2/FncGrp2/",
     #out_file = "Output/Prediction/resampled/FncGrp2/resamp29/",
@@ -57,7 +60,8 @@ system.time(PredLayer <- LandCoverEstimator(
     Classif_Model = "Output/E_003_Pred_Model_RandomForest_FncGrp2_1000trees.rda",
 
     datatype = "raster",
-    extension = FALSE))
+    extension = FALSE,
+    output_filename = "MergeTestOutput"))
 
 #write.csv(PredLayer, "predicted_layer.csv")
 raster::writeRaster(PredLayer, "predlayer.tif")

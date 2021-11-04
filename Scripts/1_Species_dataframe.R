@@ -652,6 +652,7 @@ SpecLib_groups$Functional_group2[SpecLib_groups$Code_name=="ARLA2"]<-"Graminoid"
 SpecLib_groups$Functional_group2[SpecLib_groups$Code_name=="ERAN6"]<-"Graminoid"
 SpecLib_groups$Functional_group2[SpecLib_groups$Code_name=="VAVI"]<-"Shrub"
 
+
 SpecLib_groups$Functional_group2[SpecLib_groups$Code_name=="ALVI5" ]<-"Shrub"
 SpecLib_groups$Functional_group2[SpecLib_groups$Code_name=="ARALA7"]<-"Dwarf Shrub"
 SpecLib_groups$Functional_group2[SpecLib_groups$Code_name=="BEGL"  ]<-"Shrub"
@@ -674,4 +675,3 @@ SpecLib_groups$Functional_group2[SpecLib_groups$Code_name=="VAUL"  ]<-"Dwarf Shr
 
 
 write.csv(SpecLib_groups,"Output/B_001_SC1_SpeciesTable.csv",row.names = F)
-

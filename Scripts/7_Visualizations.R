@@ -3,6 +3,7 @@ require(gplots)
 require(mapview)
 require(tidyverse)
 require(rasterVis)
+
 require(leaflet.opacity)
 require(leaflegend)
 require(vegan)
@@ -15,6 +16,9 @@ require(htmlwidgets)
 source("./Functions/PFT_mapper.R")
 
 SpecLib_derivs<-read.csv("./Output/D_002_SpecLib_Derivs.csv")
+
+summary(SpecLib_derivs)
+colnames(SpecLib_derivs)
 
 #Fnc Grp 2 colors
 colorBin(coarse_pal)
@@ -128,8 +132,6 @@ maprint<-leaflet(EightmileQuads_FncGrp2_out) %>%
   addOpacitySlider(layerId = "layer") #%>%
 saveWidget(maprint, file="Output/Prediction/FncGrp2/EightMileQuads.envi/EightmileQuads_FncGrp2_map.html")
 
-
-
 ##Plot data cubes predicted at the species level.
 unique(SpecLib_derivs$Species_name)
 species_colors = createPalette(length(unique(SpecLib_derivs$Species_name)),  c("#ff0000", "#00ff00", "#0000ff")) %>%
@@ -137,6 +139,7 @@ species_colors = createPalette(length(unique(SpecLib_derivs$Species_name)),  c("
   dplyr::rename(Color = ".") %>%
   mutate(FNC_grp1 = unique(SpecLib_derivs$Species_name)) %>%
   mutate(ColorNum = seq(1:length(unique(SpecLib_derivs$Species_name))));
+
 species_color_list<-SpecLib_derivs %>% dplyr::select(Species_name) %>% inner_join(species_colors, by=c("Species_name"="FNC_grp1"), keep=FALSE)
 
 ##Reclass class raster based on histogram of most common targets and creat an "other"
@@ -193,6 +196,7 @@ WickerTestOut<-raster("Output/Prediction/Species/WickerTestOut.tif")
 
 Wicker_map<-AK_sp_map(WickerTestOut)
 mapshot(Wicker_map,file="Output/Prediction/WickerTestOut.jpeg")
+
 
 LittleLakeTestOut<-raster("Output/Prediction/Species/LittleLakeTestOut.tif")
 LittleLake_map<-AK_sp_map(LittleLakeTestOut)

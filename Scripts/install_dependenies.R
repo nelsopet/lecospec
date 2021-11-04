@@ -27,3 +27,4 @@ lecospec_depenencies <- c(
 install.packages(lecospec_depenencies, repos = "http://cran.rstudio.com/")
 update.packages(repos = "http://cran.rstudio.com/", ask=FALSE)
 
+webshot::install_phantomjs()

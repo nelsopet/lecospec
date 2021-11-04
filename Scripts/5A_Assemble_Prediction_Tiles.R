@@ -20,6 +20,7 @@ eightmile_quad_path_species="./Output/Prediction/species/EightMileQuads.envi"
 
 
 murph1_path="./Output/B_001_MurphyDome_2018_07_31_19_47_11_24967_rd_rf_or_Tile60_PredLayer"
+murph2_path <- "E:/Lecospec/Outputs/MurphyTiles/"
 littlelake_path="./Output/B_001_LittleLake_2018_07_31_01_09_59_132_rd_rf_or_Tile1_PredLayer"
 chatanika_path ="./Output/B_001_Chatnika_2018_07_29_20_32_59_0_rd_rf_or_Tile1_PredLayer"
 eagle_path = "./Output/B_001_EagleSummit_2019_08_06_00_57_02_2546_rd_rf_or_Tile40_PredLayer"
@@ -89,7 +90,7 @@ writeRaster(
 Murph1TestOut<-TileAssembler(murph1_path)
 writeRaster(
   Murph1TestOut,
-  filename = "Output/Prediction/Murph1TestOut.tif",
+  filename = "E:/Lecospec/Outputs/MurphyDomeSpecies.tif",
   overwrite = TRUE)
 
 LittleLakeTestOut<-TileAssembler(littlelake_path)

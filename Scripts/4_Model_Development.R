@@ -9,6 +9,7 @@ SpecLib_derivs<-read.csv("Output/D_002_SpecLib_Derivs.csv")
 #SpecLib_derivs<-read.csv("Output/resampled/D_002_SpecLib_Derivs.csv")
 #SpecLib_derivs<-read.csv("Output/resampled/FncGrp2/D_002_SpecLib_Derivs.csv")
 
+
 BadAlder<- SpecLib_derivs %>% colnames()
   dplyr::filter(Functional_group1 == "Shrub_Alder" & `1890`<0.15) %>% dim()
 
@@ -53,6 +54,7 @@ rf_mod_ranger_FncGrp2_pred$confusion.matrix
 
 
 
+
 ##Model refinement: Removing intercorrelated predictors. Revisit this .
 # Creates corelation matrix by which to filter predictors
 # 
@@ -87,6 +89,7 @@ rf_mod_ranger_FncGrp2_pred$confusion.matrix
 
 
 # saves the model with the lowest error
+
 #save(rf_mod_ranger_species_pred, file = "Output/E_003_Pred_Model_RandomForest_species_resamp29_1000trees.rda")
 #save(rf_mod_ranger_FncGrp1_pred, file = "Output/E_003_Pred_Model_RandomForest_FncGrp1_resamp29_1000trees.rda")
 save(rf_mod_ranger_FncGrp2_pred, file = "Output/E_003_Pred_Model_RandomForest_FncGrp2_resamp29_1000trees.rda")
@@ -115,12 +118,4 @@ save(rf_mod_ranger_FncGrp2_pred, file = "Output/E_003_Pred_Model_RandomForest_Fn
 # 
 # ggsave("Output/E_009_Class_3_VarImp.jpg")
  
-
-
-
-
-
-
-
-
 
