@@ -3,26 +3,62 @@ require(gplots)
 require(mapview)
 require(tidyverse)
 require(rasterVis)
+require(leaflet)
+require(RColorBrewer)
 
-list.files("./Output/Prediction/")
+
+prediection_filepath <- "E:/Lecospec/Outputs/Prediction/"#"Output/Prediction/"
+
+list.files(prediection_filepath)
 
 source("./Functions/PFT_mapper.R")
 
 SpecLib_derivs<-read.csv("./Output/D_002_SpecLib_Derivs.csv")
-
+summary(SpecLib_derivs)
+colnames(SpecLib_derivs)
 ##Plot data cubes predicted at the species level.
-unique(SpecLib_derivs$Classes)
-species_colors = createPalette(length(unique(SpecLib_derivs$Classes)),  c("#ff0000", "#00ff00", "#0000ff")) %>%
+unique(SpecLib_derivs$Species_name)
+species_colors = createPalette(length(unique(SpecLib_derivs$Species_name)),  c("#ff0000", "#00ff00", "#0000ff")) %>%
   as.data.frame() %>%
   dplyr::rename(Color = ".") %>%
-  mutate(FNC_grp1 = unique(SpecLib_derivs$Classes)) %>%
-  mutate(ColorNum = seq(1:length(unique(SpecLib_derivs$Classes))));
+  mutate(FNC_grp1 = unique(SpecLib_derivs$Species_name)) %>%
+  mutate(ColorNum = seq(1:length(unique(SpecLib_derivs$Species_name))));
+
+
+map_output <- function(filename, num_levels = 11) {
+  map_raster <- raster::raster(filename)
+  map_colors <- brewer.pal(
+    num_levels,"Spectral"
+  )
+  
+  map <- leaflet(
+    options = leafletOptions(
+      minZoom = 0,
+      maxZoom = 25)) %>%
+  addTiles() %>%
+  addRasterImage(map_raster, colors = map_colors) %>%
+  addLegend(
+    position = "topright",
+    pal = map_colors,
+    values = unique(raster::values(map_raster)))
+
+  return(map)
+}
+
+TwelveMileTestOut <- paste0(prediection_filepath, "TwelveMileTestOut.tif")
+
+twelve_mile_map <- map_output(TwelveMileTestOut)
+twelve_mile_map
+mapshot(twelve_mile_map,file="Output/Prediction/TwelveMileTestOut_leaflet.jpeg")
+
 
 #fnc_grp1_color_list<-Veg_env %>% select(Functional_group2) %>% inner_join(fnc_grp1_colors, by=c("Functional_group2"="FNC_grp1"), keep=FALSE)
-species_color_list<-SpecLib_derivs %>% dplyr::select(Classes) %>% inner_join(species_colors, by=c("Classes"="FNC_grp1"), keep=FALSE)
+species_color_list<-SpecLib_derivs %>% 
+  dplyr::select(Species_name) %>% 
+  inner_join(species_colors, by=c("Species_name"="FNC_grp1"), keep=FALSE)
 
 Wicker_map<-mapview(WickerTestOut, map.types = 'Esri.WorldImagery',na.color="NA", col.regions=species_colors$Color)
-mapshot(Wicker_map,file="Output/Prediction/WickerTestOut.jpeg")
+mapshot(Wicker_map,file="./Output/Prediction/WickerTestOut.jpeg")
 
 LittleLake_map<-mapview(LittleLakeTestOut, map.types = 'Esri.WorldImagery',na.color="NA", col.regions=species_colors$Color)
 mapshot(LittleLake_map,file="Output/Prediction/LittleLakeTestOut.jpeg")
@@ -39,8 +75,18 @@ mapshot(ChatanikaTestOut_map,file="Output/Prediction/ChatanikaTestOut.jpeg")
 EagleTestOut_map<-mapview(EagleTestOut, map.types = 'Esri.WorldImagery',na.color="NA", col.regions=species_colors$Color)
 mapshot(EagleTestOut_map,file="Output/Prediction/EagleTestOut.jpeg")
 
-TwelveMile_map<-mapview(TwelveMileTestOut, map.types = 'Esri.WorldImagery',na.color="NA", col.regions=species_colors$Color)
-mapshot(TwelveMile_map,file="Output/Prediction/TwelveMileTestOut.jpeg")
+
+TwelveMile_map <- mapView(
+  TwelveMileTestOut,
+  map.types = 'Esri.WorldImagery',
+  na.color="NA",
+  col.regions=species_colors$Color)
+TwelveMile_map
+
+
+
+
+
 
 
 pdf("./Output/Prediction/WickerTestOut_ggplot.pdf") #, width= 10, height =20)

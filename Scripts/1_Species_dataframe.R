@@ -584,5 +584,5 @@ SpecLib_groups$Functional_group2[SpecLib_groups$Code_name=="ARLA2"]<-"Graminoid"
 SpecLib_groups$Functional_group2[SpecLib_groups$Code_name=="ERAN6"]<-"Graminoid"
 SpecLib_groups$Functional_group2[SpecLib_groups$Code_name=="VAVI"]<-"Shrub"
 
-write.csv(SpecLib_groups,"Output/B_001_SC1_SpeciesTable.csv",row.names = F)
+write.csv(SpecLib_groups,"./Output/B_001_SC1_SpeciesTable.csv",row.names = F)
 
