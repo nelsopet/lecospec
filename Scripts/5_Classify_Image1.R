@@ -15,7 +15,7 @@ library(randomForest)
 
 # increase allocated memory to approx to appropriate amount 
 # (leaving 2GB reserved for OS)
-system_ram_gb <- 32
+system_ram_gb <- 12
 malloc_size <- (system_ram_gb - 2) * 8000
 
 memory.limit(size = malloc_size)
@@ -37,12 +37,15 @@ system.time(PredLayer <- LandCoverEstimator(
 
 #    filename = "M:/Alaska_Datacubes/Raw_files/WickershamDome_2019_08_08_19_31_51_2000_rd_rf_or",
 #    filename = "Data/SubsetDatacube",
-    filename = "Data/Datacube",
+    filename = "./Data/SubsetDatacube",
     out_file = "Output/",
     #Classif_Model = "Output/E_003_Best_Model_RandomForest_86vars.rda",
     #Classif_Model = "Output/E_004_Best_Model_Ranger_86vars.rda",
     Classif_Model = "Output/E_004_Best_Model_Ranger.rda",
     datatype = "raster",
-    extension = FALSE))
+    extension = FALSE,
+    output_filename = "MergeTestOutput"))
 
-write.csv(PredLayer, "predicted_layer.csv")
+#write.csv(PredLayer, "predicted_layer.csv")
+raster::writeRaster(PredLayer, "predlayer.tif")
+plot(PredLayer)

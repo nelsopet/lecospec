@@ -7,20 +7,22 @@ library(dplyr)
 library(ggplot2)
 library(spectrolab)
 library(tidyverse)
+library(parallel)
+library(doParallel)
 
 # ------------------------------------------------ Step1: Data Munging Step ------------------------------------------------- # 
 # In this step we will combine all our spectral profiles to form one spectral library
 
 # Creates a file path to where our spectral libraries for each site is loacated
-mypath_atkin = "Output/"
+mypath_atkin = "./Output/"
 
 # Reads in species and functional level groups dataframe creatd in script 1
-Species_groups<-read.csv("Output/B_001_SC1_SpeciesTable.csv")
+Species_groups<-read.csv("./Output/B_001_SC1_SpeciesTable.csv")
 
 # Reads in scans from ecosis website
 # Additional spectral profiles that will be combined to the ones collected in Alaska
-Spectra_Ecosis<-read.csv("Data/leaf_spectra_barrow_2013_20180824_ecosis.csv", check.names = F)
-Metadata_Ecosis<-read.csv("Data/ngeearctic_bnl_2013_leaf_spectra_traits_metadata.csv", check.names = F)
+Spectra_Ecosis<-read.csv("./Data/leaf_spectra_barrow_2013_20180824_ecosis.csv", check.names = F)
+Metadata_Ecosis<-read.csv("./Data/ngeearctic_bnl_2013_leaf_spectra_traits_metadata.csv", check.names = F)
 
 # Merges meta and spectra
 Ecosis_data<-cbind(Metadata_Ecosis[,-3],Spectra_Ecosis[,-1])
@@ -48,7 +50,7 @@ SpecLib_by_location = list.files(mypath_atkin, pattern="A_0",full.names = T)
 
 # Reads in the spectral libraries for each location in a list...List of 13 spectral objects
 list_of_SpecLib<-lapply(SpecLib_by_location,readRDS)%>% # Reads in the spectral library for each site 
-  setNames(gsub("Output/","",SpecLib_by_location)) # Removes dir path from the name
+  setNames(gsub("./Output/","",SpecLib_by_location)) # Removes dir path from the name
 
 # Combines specral libraries from all locations
 SpecLib<-Reduce(spectrolab::combine,list_of_SpecLib) %>% # dim(n_samples=1989, n_wavelegths=2151)
@@ -103,10 +105,13 @@ SpecLib<-rbind(SpecLib,Ecosis_data)
 #               Tree_Evergreen   17
 #                  Wood_Coarse    5
 
+
+
 # Removes all the rows with negative values or Values >2
-SpecLib_new<-SpecLib%>% 
-  dplyr::filter_at(vars(-(ScanID:Area)), all_vars((.) < 1)) %>% # Removes rows with values greater than 2
-  dplyr::filter_at(vars(-(ScanID:Area)), all_vars((.) >=0)) # Removes row with values less than 0, # dim (nrows = 1984 ncol = 2157)
+SpecLib_new <-  SpecLib %>% 
+  dplyr::filter(if_all(7:ncol(SpecLib), ~between(., 0, 1)))
+
+print(paste0("Filtered data from  ", nrow(SpecLib), " rows to ", nrow(SpecLib_new), " rows."))
 
 # table(SpecLib_new$Functional_group1)%>%as.data.frame()
 
@@ -474,8 +479,8 @@ Cleaned_Speclib_rds<-Reduce(spectrolab::combine,New_targets)
 # 35                Tree_Evergreen   17
 # 36                   Wood_Coarse    5
 
-write.csv(Cleaned_Speclib, "Output/C_001_SC3_Cleaned_SpectralLib.csv")
-saveRDS(Cleaned_Speclib_rds,"Output/C_002_SC3_Cleaned_Speclib.rds")
+write.csv(Cleaned_Speclib, "./Output/C_001_SC3_Cleaned_SpectralLib.csv")
+saveRDS(Cleaned_Speclib_rds,"./Output/C_002_SC3_Cleaned_Speclib.rds")
 
 
 # ------------------------------------------ Step 3: Create Plots showing spectral profiles ------------------------------------------------- #
@@ -516,7 +521,7 @@ for(i in 1:length(FunctionalGroupDf)){
     labs(title = paste(names_of_classes[[i]]," Spectral Signatures", sep = ""))
   
   # Saves the plots
-  ggsave(paste("Output/","C_003_SC3","_",names_of_classes[[i]],".jpg",sep =""))
+  ggsave(paste("./Output/","C_003_SC3","_",names_of_classes[[i]],".jpg",sep =""))
   
 }
 
@@ -524,4 +529,4 @@ for(i in 1:length(FunctionalGroupDf)){
 #source("Functions/1_Simple_LandCoverEstimator.R")
 #source("Functions/2_Simple_LandCoverEstimator.R")
 source("Functions/2_LCE_veg_index.R")
-Make_Speclib_Derivs("Output/C_001_SC3_Cleaned_SpectralLib.csv",out_file="Output/")
+Make_Speclib_Derivs("./Output/C_001_SC3_Cleaned_SpectralLib.csv",out_file="./Output/")

@@ -6,7 +6,7 @@ library(tidyverse)
 
 # ------------------------------------------- 12mile ---------------------------------------------------------------- #
 ####Read in data as spectra (all scans collected at this location)
-TwelveMile_spectra<-read_spectra("./Data/SpectraByLocation/12_mile/original_samples", format="sed")
+TwelveMile_spectra<-read_spectra("./Data/SpectraByLocation/12_Mile/original_samples", format="sed")
 
 ##Plots all spectral objects withing this location (scans of individuals)
 ##plot_interactive(TwelveMile_spectra)
@@ -26,12 +26,12 @@ TwelveMile_metadata$Area<- "12mile"
 meta(TwelveMile_spectra) = data.frame(TwelveMile_metadata, stringsAsFactors = FALSE)
 
 ##save spectra (Raw)
-saveRDS(TwelveMile_spectra      ,"Output/A_001_SC2_TwelveMile_spectra.rds")
+saveRDS(TwelveMile_spectra      ,"./Output/A_001_SC2_TwelveMile_spectra.rds")
 
 # ------------------------------------------- AK2018 ---------------------------------------------------------------- #
 
 ####Read in data as spectra
-AK2018_spectra<-read_spectra("Data/SpectraByLocation/20180729/AK2018",
+AK2018_spectra<-read_spectra("./Data/SpectraByLocation/20180729/AK2018",
                              format="sed")
 
 ##Fix Names by removing file extensions
@@ -78,10 +78,10 @@ AK2018_metadata$Area<-"AK2018"
 meta(AK2018_spectra) = data.frame(AK2018_metadata, stringsAsFactors = FALSE)
 
 ##save spectran(raw)
-saveRDS(AK2018_spectra      ,"Output/A_002_SC2_AK2018_spectra.rds"      )
+saveRDS(AK2018_spectra      ,"./Output/A_002_SC2_AK2018_spectra.rds"      )
 # ------------------------------------------- Bethel ----------------------------------------------------- #
 ####Read in data as spectra
-bethelLib_spectra<-read_spectra("Data/SpectraByLocation/BethelLib",
+bethelLib_spectra<-read_spectra("./Data/SpectraByLocation/BethelLib",
                                 format="sed")
 ##Remove salex scans
 bethelLib_spectra<-bethelLib_spectra[grep("salex",invert=TRUE,names(bethelLib_spectra))]
@@ -117,12 +117,12 @@ bethelLib_metadata<-bethelLib_metadata %>%
 meta(bethelLib_spectra) = data.frame(bethelLib_metadata, stringsAsFactors = FALSE)
 
 ##save spectra (Raw)
-saveRDS(bethelLib_spectra      ,"Output/A_003_SC2_bethelLib_spectra.rds")
+saveRDS(bethelLib_spectra      ,"./Output/A_003_SC2_bethelLib_spectra.rds")
 # ------------------------------------------- BigTrail --------------------------------------------------- #
 
 
 ####Read in data as spectra
-Big_Trail_Lake_spectra<-read_spectra("Data/SpectraByLocation/Big_Trail_Lake/original_samples",
+Big_Trail_Lake_spectra<-read_spectra("./Data/SpectraByLocation/Big_Trail_Lake/original_samples",
                                      format="sed")
 
 ##Fix Names 
@@ -140,10 +140,10 @@ Big_Trail_Lake_metadata$Area<- "Big Trail"
 meta(Big_Trail_Lake_spectra) = data.frame(Big_Trail_Lake_metadata, stringsAsFactors = FALSE)
 
 ##save spectra (Raw)
-saveRDS(Big_Trail_Lake_spectra      ,"Output/A_004_SC2_Big_Trail_Lake_spectra.rds"      )
+saveRDS(Big_Trail_Lake_spectra      ,"./Output/A_004_SC2_Big_Trail_Lake_spectra.rds"      )
 # ------------------------------------------- Brooks ----------------------------------------------------- #
 ####Read in data as spectra
-brooksLib_spectra<-read_spectra("Data/SpectraByLocation/BrooksLib",
+brooksLib_spectra<-read_spectra("./Data/SpectraByLocation/BrooksLib",
                                 format="sed")
 
 ##Remove eightmileflight1 scans
@@ -175,10 +175,10 @@ brooksLib_metadata<-brooksLib_metadata %>%
 meta(brooksLib_spectra) = data.frame(brooksLib_metadata, stringsAsFactors = FALSE)
 
 ##save spectra (Raw)
-saveRDS(brooksLib_spectra      ,"Output/A_005_SC2_brooksLib_spectra.rds")
+saveRDS(brooksLib_spectra      ,"./Output/A_005_SC2_brooksLib_spectra.rds")
 # ------------------------------------------- EagleSummit ------------------------------------------------ #
 ####Read in data as spectra
-Eagle_summit_spectra<-read_spectra("Data/SpectraByLocation/Eagle_summit/original_samples",
+Eagle_summit_spectra<-read_spectra("./Data/SpectraByLocation/Eagle_summit/original_samples",
                                    format="sed")
 
 ##Fix Names 
@@ -196,10 +196,10 @@ Eagle_summit_metadata$Area<- "Big Trail"
 meta(Eagle_summit_spectra) = data.frame(Eagle_summit_metadata, stringsAsFactors = FALSE)
 
 ##save spectra (Raw)
-saveRDS(Eagle_summit_spectra      ,"Output/A_006_SC2_Eagle_summit_spectra.rds"      )
+saveRDS(Eagle_summit_spectra      ,"./Output/A_006_SC2_Eagle_summit_spectra.rds"      )
 # ------------------------------------------- MurphyDome1 ------------------------------------------------ #
 ####Read in data as spectra
-Murph_lib_spectra<-read_spectra("Data/SpectraByLocation/20180729/M_Dome",
+Murph_lib_spectra<-read_spectra("./Data/SpectraByLocation/20180729/M_Dome",
                                 format="sed")
 
 ##Remove eightmileflight1 scans
@@ -245,9 +245,9 @@ Murph_lib_metadata$Area<- "Murphy"
 meta(Murph_lib_spectra) = data.frame(Murph_lib_metadata, stringsAsFactors = FALSE)
 
 ###save spectra (Raw)
-saveRDS(Murph_lib_spectra      ,"Output/A_007_SC2_Murph_lib_spectra.rds")
+saveRDS(Murph_lib_spectra      ,"./Output/A_007_SC2_Murph_lib_spectra.rds")
 # ------------------------------------------- Murphydome2 ------------------------------------------------ #
-Murph2_spectra<-read_spectra("Data/SpectraByLocation/20180729/murphydomeday2",
+Murph2_spectra<-read_spectra("./Data/SpectraByLocation/20180729/murphydomeday2",
                              format="sed")
 
 ##Remove polstricum scans
@@ -276,11 +276,11 @@ Murph2_spectra_metadata$Area<- "Murphy"
 meta(Murph2_spectra) = data.frame(Murph2_spectra_metadata, stringsAsFactors = FALSE)
 
 ###save spectra (Raw)
-saveRDS(Murph2_spectra      ,"Output/A_008_SC2_Murph2_spectra.rds")
+saveRDS(Murph2_spectra      ,"./Output/A_008_SC2_Murph2_spectra.rds")
 # ------------------------------------------- MurphydomeA ------------------------------------------------ #
 
 ####Read in data as spectra
-Murphy_domeA_spectra<-read_spectra("Data/SpectraByLocation/Murphy_domeA/original_samples",
+Murphy_domeA_spectra<-read_spectra("./Data/SpectraByLocation/Murphy_domeA/original_samples",
                                    format="sed")
 
 ##Fix Names 
@@ -299,10 +299,10 @@ Murphy_domeA_metadata$Area<- "Murphy A"
 meta(Murphy_domeA_spectra) = data.frame(Murphy_domeA_metadata, stringsAsFactors = FALSE)
 
 ##save spectra (Raw)
-saveRDS(Murphy_domeA_spectra      ,"Output/A_009_SC2_Murphy_domeA_spectra.rds")
+saveRDS(Murphy_domeA_spectra      ,"./Output/A_009_SC2_Murphy_domeA_spectra.rds")
 # ------------------------------------------- MurphyDomeB ------------------------------------------------ #
 ####Read in data as spectra
-Murphy_domeB_spectra<-read_spectra("Data/SpectraByLocation/Murphy_domeB/original_samples",
+Murphy_domeB_spectra<-read_spectra("./Data/SpectraByLocation/Murphy_domeB/original_samples",
                                    format="sed")
 
 ##Fix Names 
@@ -320,10 +320,10 @@ Murphy_domeB_metadata$Area<- "Murphy B"
 meta(Murphy_domeB_spectra) = data.frame(Murphy_domeB_metadata, stringsAsFactors = FALSE)
 
 ##save spectra (Raw)
-saveRDS(Murphy_domeB_spectra, "Output/A_010_SC2_Murphy_domeB_spectra.rds")
+saveRDS(Murphy_domeB_spectra, "./Output/A_010_SC2_Murphy_domeB_spectra.rds")
 # ------------------------------------------- WickershamDomeB -------------------------------------------- #
 ####Read in data as spectra
-Wickersham_domeA_spectra <- read_spectra("Data/SpectraByLocation/Wickersham_domeA/original_samples",
+Wickersham_domeA_spectra <- read_spectra("./Data/SpectraByLocation/Wickersham_domeA/original_samples",
                                        format="sed")
 
 ##Fix Names 
@@ -341,10 +341,10 @@ Wickersham_domeA_metadata$Area<- "Wickersham B"
 meta(Wickersham_domeA_spectra) = data.frame(Wickersham_domeA_metadata, stringsAsFactors = FALSE)
 
 ##save spectra (Raw)
-saveRDS(Wickersham_domeA_spectra      ,"Output/A_011_SC2_Wickersham_domeA_spectra.rds")
+saveRDS(Wickersham_domeA_spectra      ,"./Output/A_011_SC2_Wickersham_domeA_spectra.rds")
 # ------------------------------------------- WickershamDomeB -------------------------------------------- #
 ####Read in data as spectra
-Wickersham_domeB_spectra<-read_spectra("Data/SpectraByLocation/Wickersham_domeB/original_samples",
+Wickersham_domeB_spectra<-read_spectra("./Data/SpectraByLocation/Wickersham_domeB/original_samples",
                                        format="sed")
 
 ##Fix Names 
@@ -362,10 +362,10 @@ Wickersham_domeB_metadata$Area<- "Wickersham B"
 meta(Wickersham_domeB_spectra) = data.frame(Wickersham_domeB_metadata, stringsAsFactors = FALSE)
 
 ##save spectra (Raw)
-saveRDS(Wickersham_domeB_spectra      ,"Output/A_012_SC2_Wickersham_domeB_spectra.rds")
+saveRDS(Wickersham_domeB_spectra      ,"./Output/A_012_SC2_Wickersham_domeB_spectra.rds")
 # ------------------------------------------- Yukon ----------------------------------------------------- #
 ####Read in data as spectra
-yKDeltLib_spectra<-read_spectra("Data/SpectraByLocation/YKDeltLib",
+yKDeltLib_spectra<-read_spectra("./Data/SpectraByLocation/YKDeltLib",
                                 format="sed")
 
 ##Remove eightmileflight1 scans
@@ -403,6 +403,6 @@ yKDeltLib_metadata<-yKDeltLib_metadata %>%
 meta(yKDeltLib_spectra) = data.frame(yKDeltLib_metadata, stringsAsFactors = FALSE)
 
 ###save spectra (Raw)
-saveRDS(yKDeltLib_spectra      ,"Output/A_013_SC2_yKDeltLib_spectra.rds")
+saveRDS(yKDeltLib_spectra      ,"./Output/A_013_SC2_yKDeltLib_spectra.rds")
 
 
