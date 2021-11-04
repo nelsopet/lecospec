@@ -6,20 +6,27 @@ library(tidyverse)
 #------------------Building Model without identifying important varibles --------------
 # Spectral Library
 SpecLib_derivs<-read.csv("Output/D_002_SpecLib_Derivs.csv")
+#SpecLib_derivs<-read.csv("Output/resampled/D_002_SpecLib_Derivs.csv")
+#SpecLib_derivs<-read.csv("Output/resampled/FncGrp2/D_002_SpecLib_Derivs.csv")
+
+
+BadAlder<- SpecLib_derivs %>% colnames()
+  dplyr::filter(Functional_group1 == "Shrub_Alder" & `1890`<0.15) %>% dim()
+
 
 #Reorder columns, delete unneeded for species, FNC grp 1 and 2
 SpecLib_derivs_species<-
   SpecLib_derivs %>%
   dplyr::select(Species_name, everything()) %>% #colnames()
   dplyr::select(-ScanID:-Functional_group2_Freq) %>% #colnames()
-  rename(Classes = Species_name) %>%
+  dplyr::rename(Classes = Species_name) %>%
   mutate(Classes = as.factor(Classes)) %>% as.data.frame()
 
 SpecLib_derivs_Fnc1<-
   SpecLib_derivs %>%
   dplyr::select(Functional_group1, everything()) %>% #colnames()
   dplyr::select(-ScanID:-Functional_group2_Freq) %>% #colnames()
-  rename(Classes = Functional_group1) %>%
+  dplyr::rename(Classes = Functional_group1) %>%
   mutate(Classes = as.factor(Classes)) %>% as.data.frame()
 
 
@@ -27,23 +34,24 @@ SpecLib_derivs_Fnc2<-
   SpecLib_derivs %>%
   dplyr::select(Functional_group2, everything()) %>% #colnames()
   dplyr::select(-ScanID:-Functional_group2_Freq) %>% #colnames()
-  rename(Classes = Functional_group2) %>%
+  dplyr::rename(Classes = Functional_group2) %>%
   mutate(Classes = as.factor(Classes)) %>% as.data.frame()
 
 #Set seed for stable output
 set.seed(123)
 
 # Build Models
-rf_mod_ranger_species_pred<-ranger::ranger(Classes ~ .,data = SpecLib_derivs_species, num.trees = 10000,local.importance = "impurity_corrected" ) # OOB prediction error:             25.93 %
-rf_mod_ranger_FncGrp1_pred<-ranger::ranger(Classes ~ .,data = SpecLib_derivs_Fnc1, num.trees = 10000,local.importance = "impurity_corrected" ) # OOB prediction error:             25.93 %
-rf_mod_ranger_FncGrp2_pred<-ranger::ranger(Classes ~ .,data = SpecLib_derivs_Fnc2, num.trees = 10000,local.importance = "impurity_corrected" ) # OOB prediction error:             25.93 %
+#rf_mod_ranger_species_pred<-ranger::ranger(Classes ~ .,data = SpecLib_derivs_species, num.trees = 1000)#,local.importance = "impurity_corrected" ) # OOB prediction error:             25.93 %
+#rf_mod_ranger_FncGrp1_pred<-ranger::ranger(Classes ~ .,data = SpecLib_derivs_Fnc1, num.trees = 1000)#,local.importance = "impurity_corrected" ) # OOB prediction error:             25.93 %
+rf_mod_ranger_FncGrp2_pred<-ranger::ranger(Classes ~ .,data = SpecLib_derivs_Fnc2, num.trees = 1000)#,local.importance = "impurity_corrected" ) # OOB prediction error:             25.93 %
 
-rf_mod_ranger_species_pred
-rf_mod_ranger_FncGrp1_pred
-rf_mod_ranger_FncGrp2_pred
+#rf_mod_ranger_species_pred
+#rf_mod_ranger_FncGrp1_pred
+rf_mod_ranger_FncGrp2_pred$confusion.matrix
 
 #rf_mod_randomforest
  # Build models using 0.99 percent cutoff for corelated varibles
+
 
 
 
@@ -81,8 +89,10 @@ rf_mod_ranger_FncGrp2_pred
 
 
 # saves the model with the lowest error
-save(rf_mod_ranger_species_pred, file = "Output/E_003_Pred_Model_RandomForest_species_1000trees.rda")
-save(rf_mod_ranger_FncGrp1_pred, file = "Output/E_003_Pred_Model_RandomForest_FncGrp1_1000trees.rda")
+
+#save(rf_mod_ranger_species_pred, file = "Output/E_003_Pred_Model_RandomForest_species_resamp29_1000trees.rda")
+#save(rf_mod_ranger_FncGrp1_pred, file = "Output/E_003_Pred_Model_RandomForest_FncGrp1_resamp29_1000trees.rda")
+save(rf_mod_ranger_FncGrp2_pred, file = "Output/E_003_Pred_Model_RandomForest_FncGrp2_resamp29_1000trees.rda")
 save(rf_mod_ranger_FncGrp2_pred, file = "Output/E_003_Pred_Model_RandomForest_FncGrp2_1000trees.rda")
 
 #------------------------------ Select Important varibles -----------------------------------
