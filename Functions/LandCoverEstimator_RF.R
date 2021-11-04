@@ -929,7 +929,7 @@ estimate_land_cover <- function(
 
 
     # Load the model
-    model <- load_model(config$model_path)
+    model <- load(config$model_path)
 
 
     # load the input datacube and split into tiles
