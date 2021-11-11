@@ -18,6 +18,9 @@ eightmile_quad_path_FncGrp2="./Output/Prediction/FncGrp2/EightMileQuads.envi"
 eightmile_quad_path_FncGrp1="./Output/Prediction/FncGrp1/EightMileQuads.envi"
 eightmile_quad_path_species="./Output/Prediction/species/EightMileQuads.envi"
 
+twelvemile1_quad_path_FncGrp2="./Output/Prediction/V2/FncGrp2/TwelveMileGulchQuads1.envi"
+twelvemile2_quad_path_FncGrp2="./Output/Prediction/V2/FncGrp2/TwelveMileGulchQuads2.envi"
+
 
 murph1_path="./Output/B_001_MurphyDome_2018_07_31_19_47_11_24967_rd_rf_or_Tile60_PredLayer"
 murph2_path <- "E:/Lecospec/Outputs/MurphyTiles/"
@@ -122,6 +125,19 @@ writeRaster(
   TwelveMileTestOut_l2000,
   filename = "Output/Prediction/TwelveMileTestOut_l2000.tif",
   overwrite = TRUE)
+
+TwelveMile1TestOut<-TileAssembler(twelvemile1_quad_path_FncGrp2)
+writeRaster(
+  TwelveMile1TestOut,
+  filename = "./Output/Prediction/V2/FncGrp2/TwelveMileGulchQuads1.envi/TwelveMile1TestOut.tif",
+  overwrite = TRUE)
+
+TwelveMile2TestOut<-TileAssembler(twelvemile2_quad_path_FncGrp2)
+writeRaster(
+  TwelveMile2TestOut,
+  filename = "./Output/Prediction/V2/FncGrp2/TwelveMileGulchQuads2.envi/TwelveMile2TestOut.tif",
+  overwrite = TRUE)
+
 ##Assemble genera level maps
 twelvemile_genera_path = "./Output/B_001_TwelveMile_2019_08_09_21_28_52_0_rd_rf_or_Tile1_PredLayer_Genera"
 twelvemile_genera_path2 = "./Output/B_001_TwelveMile_2019_08_09_21_10_22_2000_rd_rf_or_Tile1_PredLayer_Genera"

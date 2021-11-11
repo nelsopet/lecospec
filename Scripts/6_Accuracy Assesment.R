@@ -16,30 +16,9 @@ fnc_grp2_colors$FNC_grp1
 
 Bison_seg_path = "Data/Ground_Validation/Bison_Quadrats/Bison_Quadrats.shp"
 BisonQuads<-readOGR(dsn = Bison_seg_path)
-
-#> as(BisonQuads, "data.frame")
-#CLASS_ID CLASS_NAME AREA
-#0        1    Bison0m  612
-#1        7   Bison70m  649
-#2        8   Bison80m  661
-#3        2   Bison10m  649
-#4        9   Bison90m  648
-#5        3   Bison20m  574
-#6        6   Bison50m  673
-#7        4   Bison30m  673
-#8        5   Bison40m  674
-
 BisonGulchQuads_FncGrp2_out<-raster("Output/Prediction/V2/FncGrp2/BisonGulchQuads.envi/BisonQuadOut.tif")
-#Check to see why the tabular output of the extraction doesn't match the visual estimate of cover by class in the map
-#Maybe the order of the extracion scrambles which quadrat is which
 BisonExtract<-raster::extract(BisonGulchQuads_FncGrp2_out, BisonQuads)
-
-##Cast to df BisonQuads
-BisonQuadNames<-as(BisonQuads, "data.frame") %>% mutate()
-##match order to BisonExtract
-
-hist(BisonExtract[[2]])
-
+BisonQuadNames<-as(BisonQuads, "data.frame")
 
 BisonAccuracy<-
 lapply(1:length(BisonExtract), function(x)
@@ -59,6 +38,32 @@ as.data.frame() %>%
   dplyr::rename(PFT_Pct_Human = TotCov) %>%
  dplyr::select(PFT, Pix_cnt, PFT_pct_ML, PFT_Pct_Human))
 
+TwelveMile1_seg_path = "Data/Vectors/TwelveMileQ0_10_20_30_40m.shp"
+TwelveMile1Quads<-readOGR(dsn = TwelveMile1_seg_path)
+#plot(TwelveMile1Quads)
+TwelveMile1Quads_FncGrp2_out<-raster("Output/Prediction/V2/FncGrp2/TwelveMileGulchQuads1.envi/TwelveMile1TestOut.tif")
+#plot(TwelveMile1Quads_FncGrp2_out)
+TwelveMile1Extract<-raster::extract(TwelveMile1Quads_FncGrp2_out, TwelveMile1Quads)
+TwelveMile1Names<-as(TwelveMile1Quads, "data.frame")
+
+
+TwelveMile1Accuracy<-
+  lapply(1:length(TwelveMile1Extract), function(x)
+    TwelveMile1Extract[[x]] %>% 
+      as.data.frame() %>% 
+      dplyr::rename(PFT_num = ".") %>% 
+      dplyr::mutate(Pix_cnt = n()) %>% 
+      group_by(PFT_num) %>% 
+      dplyr::mutate(PFT_pct_ML = 100*(n()/Pix_cnt), Plot = "Twelvemile") %>% 
+      unique() %>%
+      left_join(fnc_grp2_colors, by = c("PFT_num" = "ColorNum")) %>%
+      mutate(UID = paste("Q",(as.numeric(TwelveMile1Names$CLASS_ID[x])-1), sep="")) %>%
+      dplyr::rename(PFT = FNC_grp1) %>% 
+      ungroup() %>%
+      #dplyr::select()
+      left_join(AKValid2019_flat, by = c("UID"="meters","PFT"="PFT", "Plot"="Plot"), keep=FALSE) %>%
+      dplyr::rename(PFT_Pct_Human = TotCov) %>%
+      dplyr::select(PFT, Pix_cnt, PFT_pct_ML, PFT_Pct_Human))
 
 
 ###OLD
