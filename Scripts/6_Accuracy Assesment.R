@@ -34,24 +34,30 @@ BisonGulchQuads_FncGrp2_out<-raster("Output/Prediction/V2/FncGrp2/BisonGulchQuad
 #Maybe the order of the extracion scrambles which quadrat is which
 BisonExtract<-raster::extract(BisonGulchQuads_FncGrp2_out, BisonQuads)
 
+##Cast to df BisonQuads
+BisonQuadNames<-as(BisonQuads, "data.frame") %>% mutate()
+##match order to BisonExtract
 
 hist(BisonExtract[[2]])
 
-Bison_q8<-BisonExtract[[3]] %>% 
+
+BisonAccuracy<-
+lapply(1:length(BisonExtract), function(x)
+  BisonExtract[[x]] %>% 
 as.data.frame() %>% 
   dplyr::rename(PFT_num = ".") %>% 
   dplyr::mutate(Pix_cnt = n()) %>% 
   group_by(PFT_num) %>% 
-  dplyr::mutate(PFT_pct_ML = 100*(n()/Pix_cnt)) %>% 
+  dplyr::mutate(PFT_pct_ML = 100*(n()/Pix_cnt), Plot = "Bisongulch") %>% 
   unique() %>%
   left_join(fnc_grp2_colors, by = c("PFT_num" = "ColorNum")) %>%
-  mutate(UID = "BisongulchQ8") %>%
-  dplyr::rename(Plant_Functional_Type = FNC_grp1) %>% 
+  mutate(UID = paste("Q",(as.numeric(BisonQuadNames$CLASS_ID[x])-1), sep="")) %>%
+  dplyr::rename(PFT = FNC_grp1) %>% 
   ungroup() %>%
   #dplyr::select()
-  left_join(AKValid2019_flat, by = c("UID"="UID","Plant_Functional_Type"="PFT"), keep=FALSE) %>%
+  left_join(AKValid2019_flat, by = c("UID"="meters","PFT"="PFT", "Plot"="Plot"), keep=FALSE) %>%
   dplyr::rename(PFT_Pct_Human = TotCov) %>%
- dplyr::select(Plant_Functional_Type, Pix_cnt, PFT_pct_ML, PFT_Pct_Human)
+ dplyr::select(PFT, Pix_cnt, PFT_pct_ML, PFT_Pct_Human))
 
 
 
