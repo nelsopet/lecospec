@@ -283,7 +283,7 @@ LandCoverEstimator<-function(filename, out_file, Classif_Model, datatype = "rast
     print("Importing Datacube")
     
     # Reads in the Hyperspectral datacubes as a Rasterstack raster
-    Converted_Dcube <- raster::brick(filenameq  )
+    Converted_Dcube <- raster::brick(filename)
     
     print("Splitting raster into 30 tiles")
     
