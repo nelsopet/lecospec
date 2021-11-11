@@ -12,6 +12,7 @@ library(caret)
 library(ranger)
 library(tools)
 library(randomForest)
+library(leaflet)
 
 # increase allocated memory to approx to appropriate amount 
 # (leaving 2GB reserved for OS)
@@ -35,13 +36,18 @@ source("Functions/LandCoverEstimator.R")
 
 #list.files("F:/TwelveMile")
 #Check input exist
-filename = "Data/Ground_Validation/BisonGulchQuads.envi" #Bison Quads
+
+list.files("Data/Ground_Validation")
+
+#filename = "Data/Ground_Validation/BisonGulchQuads.envi" #Bison Quads
 #filename = "Data/Ground_Validation/EightMileQuads.envi"
+#filename = "Data/Ground_Validation/TwelveMileGulchQuads1.envi"
+filename = "Data/Ground_Validation/TwelveMileGulchQuads2.envi"
 
 file_map<-raster(filename) #%>% leaflet()
 leaflet(file_map) %>% addRasterImage(file_map)
 
-
+Sys.time()
 system.time(PredLayer <- LandCoverEstimator(
   filename = filename,  
   #filename = "Data/TwelveMile_2019_08_09_21_28_52_0_rd_rf_or",
@@ -66,3 +72,5 @@ system.time(PredLayer <- LandCoverEstimator(
 #write.csv(PredLayer, "predicted_layer.csv")
 raster::writeRaster(PredLayer, "predlayer.tif")
 plot(PredLayer)
+Sys.time()
+
