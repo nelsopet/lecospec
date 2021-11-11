@@ -35,7 +35,7 @@ TwelveMile_out2<-ImgChopper(TwelveMile_path2, TwelveMile_seg_path2)
 #TwelveMile_out<-do.call(merge, TwelveMile_list)
 
 #plot(TwelveMile_out[[2]])
-writeRaster(TwelveMile_out1[[2]], "./Data/Ground_Validation/TwelveMileGulchQuads1", format = "ENVI", overwrite = TRUE)
-writeRaster(TwelveMile_out2[[2]], "./Data/Ground_Validation/TwelveMileGulchQuads2", format = "ENVI", overwrite = TRUE)
+writeRaster(TwelveMile_out1, "./Data/Ground_Validation/TwelveMileGulchQuads1", format = "ENVI", overwrite = TRUE)
+writeRaster(TwelveMile_out2, "./Data/Ground_Validation/TwelveMileGulchQuads2", format = "ENVI", overwrite = TRUE)
 
 
