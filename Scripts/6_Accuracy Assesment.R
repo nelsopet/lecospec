@@ -47,7 +47,7 @@ TwelveMile1Extract<-raster::extract(TwelveMile1Quads_FncGrp2_out, TwelveMile1Qua
 TwelveMile1Names<-as(TwelveMile1Quads, "data.frame")
 
 
-TwelveMile1Accuracy<-
+#TwelveMile1Accuracy<-
   lapply(1:length(TwelveMile1Extract), function(x)
     TwelveMile1Extract[[x]] %>% 
       as.data.frame() %>% 
@@ -61,9 +61,9 @@ TwelveMile1Accuracy<-
       dplyr::rename(PFT = FNC_grp1) %>% 
       ungroup() %>%
       #dplyr::select()
-      left_join(AKValid2019_flat, by = c("UID"="meters","PFT"="PFT", "Plot"="Plot"), keep=FALSE) %>%
+      left_join(AKValid2019_flat, by = c("meters"="UID","PFT"="PFT", "Plot"="Plot"), keep=TRUE) %>%
       dplyr::rename(PFT_Pct_Human = TotCov) %>%
-      dplyr::select(PFT, Pix_cnt, PFT_pct_ML, PFT_Pct_Human))
+      dplyr::select(PFT.x, Pix_cnt, PFT_pct_ML, PFT_Pct_Human, meters, Plot.x))
 
 
 ###OLD
