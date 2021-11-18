@@ -39,7 +39,7 @@ source("Functions/LandCoverEstimator.R")
 
 list.files("Data/Ground_Validation")
 
-#filename = "Data/Ground_Validation/BisonGulchQuads.envi" #Bison Quads
+#filename = "./Data/Ground_Validation/EightMileQuads" #Bison Quads
 #filename = "Data/Ground_Validation/EightMileQuads.envi"
 #filename = "Data/Ground_Validation/TwelveMileGulchQuads1.envi"
 filename = "Data/Ground_Validation/TwelveMileGulchQuads2.envi"
