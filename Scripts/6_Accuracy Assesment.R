@@ -5,6 +5,8 @@ library(hsdar)
 library(sf)
 require(readxl)
 
+#test change
+
 AKValid2019<-read_xlsx(path = "Data/Ground_Validation/Quadrat_2019_AK.xlsx", sheet ="Raw")
 AKValid2019_flat <- AKValid2019 %>%
   group_by(Plot, meters, UID, PFT) %>%
