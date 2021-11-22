@@ -990,7 +990,15 @@ estimate_land_cover <- function(
 #'
 process_tile <- function(tile_filename, ml_model, cluster = NULL) {
     raster_obj <- raster::brick(tile_filename)
+<<<<<<< Updated upstream
     base_df <- preprocess_raster_to_df(raster_obj)
+=======
+    print(paste0("preprocessing raster at ", tile_filename))
+    base_df <- preprocess_raster_to_df(raster_obj, ml_model)
+    if(nrow(base_df) == 0){
+        return(base_df)
+    }
+>>>>>>> Stashed changes
     rm(raster_obj)
     gc()
 
