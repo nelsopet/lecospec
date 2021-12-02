@@ -3,6 +3,10 @@ require(compiler)
 require(raster)
 require(parallel)
 require(doParallel)
+require(hsdar)
+require(spectrolab)
+require(ranger)
+require(stringr)
 
 #' Functions returns columns that are bandpasses
 #' 
@@ -13,7 +17,11 @@ require(doParallel)
 #' @export 
 #' @examples Not Yet Implmented
 remove_meta_column <- function(x) {
-    meta <- c(grep("^[0-9][0-9][0-9]", colnames(x)))
+    meta <- c(grep(
+        "[0-9][0-9][0-9]",
+        colnames(x),
+        value = FALSE,
+        invert = FALSE))
     colremove <- x[, meta]
     return(colremove)
 }
@@ -58,7 +66,8 @@ resample_spectral_dataframe <- function(df, wavelength=5) {
         dplyr::select(-sample_name)
 
     # rename columns and add metadata
-    colnames(resampleddf_no_metadata) <- paste(
+    colnames(resampleddf_no_metadata) <- paste0(
+        "X",
         colnames(resampled_df_no_metadata),
         "5nm",
         sep = "_")
@@ -78,9 +87,12 @@ resample_spectral_dataframe <- function(df, wavelength=5) {
 #' @export 
 #' @examples Not Yet Implmented
 extract_bands <- function(df){
-    bands <- remove_band_column(df) %>%
-        colnames() %>%
-        as.numeric()
+    bands <- remove_meta_column(df) %>% colnames()
+    bands <- gsub(".nm", "", bands)
+    bands <- gsub("_5", "", bands)
+    bands <- gsub("_", "", bands)
+    bands <- gsub("X","", bands) %>% convert_wavelength_strings()
+    bands <- bands[!is.na(bands)]#remove NAs
     return(bands)
 }
 
@@ -92,13 +104,25 @@ extract_bands <- function(df){
 #' @param df: A dataframe to convert
 #' @export
 #'
-df_to_speclib <- function(df) {
+df_to_speclib <- function(df, type="hsdar") {
     # Convert to a spectral library
-    print(colnames(df))
+    #print(colnames(df))
     df_no_metadata <- remove_meta_column(df)
-    spectral_matrix <- as.matrix(df_no_metadata)
+
+    
     bands <- extract_bands(df)
-    spectral_lib <- hsdar::speclib(spectral_matrix, bands)
+    spectral_lib <- NULL
+    if (type=="hsdar"){
+        spectral_matrix <- as.matrix(df_no_metadata)
+
+        spectral_lib <- hsdar::speclib(spectral_matrix, wavelength = bands)
+    } else if (type == "spectrolab") {
+
+
+        colnames(df_no_metadata) <- bands
+        spectral_lib <- spectrolab::as_spectra(df_no_metadata)
+    }
+    
     return(spectral_lib)
 }
 
@@ -111,7 +135,6 @@ df_to_speclib <- function(df) {
 #' 
 speclib_to_df <- function(speclib) {
     df <- speclib %>%
-        rasterToPoints() %>%
         as.data.frame()
 
         return(df)
@@ -179,6 +202,8 @@ calc_veg_index <- function(spec_library, subset = NA, use_nearest = TRUE) {
                 )
             )
 
+
+
             if(is.na(subset)) {
                 # if no indeices are specified, return all of them.
                 all_indices_from_lib <- hsdar::vegindex(spec_library, av, weighted = (! use_nearest))
@@ -214,24 +239,20 @@ calculate_aviris_veg_index <- function(spec_library) {
 }
 
 resample_df <- function(df) {
-   df_no_metadata <- extract_bands(df)
-   print("DF after removing metadata")
-   print(summary(df_no_metadata))
-    spec_library <- spectrolab::as_spectra(df)
-    df_resampled <- spectrolab::resample(
+    spec_library <- df_to_speclib(df, type="spectrolab")
+    speclib_resampled <- spectrolab::resample(
         spec_library,
         seq(397.593,899.424,5)
-    ) %>%
-        as.data.frame() %>%
-        dplyr::select(-sample_name)
+    ) 
+    
+    df_resampled <- speclib_to_df(speclib_resampled) %>% dplyr::select(-sample_name)
 
-    colnames(df_resampled) <- paste(
+    colnames(df_resampled) <- paste0(
+        "X",
         colnames(df_resampled),
-        "5nm", 
-        sep="_"
+        "_5nm"
     )
     combined_df <- cbind(remove_band_column(df), df_resampled)
-
     return(combined_df)
 }
 
@@ -358,9 +379,31 @@ get_required_veg_indices <- function(ml_model) {
             )
         # get the items in both vectors 
         # (i.e. veg indeices used by the classifier)
+    var_names <- gsub("MCARI2OSAVI2", "MCARI2/OSAVI2", var_names)
+    var_names <- gsub("MCARIOSAVI", "MCARI/OSAVI", var_names)
+    var_names <- gsub("TCARIOSAVI", "TCARI/OSAVI", var_names)
+    var_names <- gsub("TCARI2OSAVI2", "TCARI2/OSAVI2", var_names)
+    var_names <- gsub("PRICI2", "PRI*CI2", var_names)
+    var_names <- gsub("SWIRFI", "SWIR FI", var_names)
+    var_names <- gsub("SWIRLI", "SWIR LI", var_names)
+    var_names <- gsub("SWIRSI", "SWIR SI", var_names)
+    var_names <- gsub("SWIRVI", "SWIR VI", var_names)
+    var_names <- gsub("GDVI2", "GDVI_2", var_names)
+    var_names <- gsub("GDVI3", "GDVI_3", var_names)
+    var_names <- gsub("GDVI4", "GDVI_4", var_names)
+    var_names <- gsub("GreenNDVI", "Green NDVI", var_names)
+    var_names <- gsub("PRInorm", "PRI_norm", var_names)
+    var_names <- gsub("REPLE", "REP_LE", var_names)
+    var_names <- gsub("REPLi", "REP_Li", var_names)
+    var_names <- gsub("SumDr1", "Sum_Dr1", var_names)
+    var_names <- gsub("SumDr2", "Sum_Dr2", var_names)
+
+
+
     veg_indices <- intersect(av, var_names)
     return(veg_indices)
 }
+
 
 #' Calculates AVIRIS Vegetation Indices
 #'
@@ -383,7 +426,7 @@ get_vegetation_indices <- function(
     # Initialize variable
     veg_indices <- NULL
 
-    spec_library <- spectrolab::as_spectra(df)
+    spec_library <- df_to_speclib(df)
 
     if(!is.null(cluster)){
         # cluster supplied, so use parallel execution
@@ -391,7 +434,7 @@ get_vegetation_indices <- function(
         veg_indices <- foreach(
             i = seq_along(target_indices),
             .combine = cbind,
-            .packages = "hsdar") %dopar% {
+            .packages = c("hsdar", "spectrolab")) %dopar% {
                 a <- hsdar::vegindex(
                     spec_library,
                     index = target_indices[[i]],
@@ -402,7 +445,7 @@ get_vegetation_indices <- function(
         veg_indices <- foreach(
             i = seq_along(target_indices),
             .combine = cbind,
-            .packages = "hsdar") %do% {
+            .packages = c("hsdar","spectrolab")) %do% {
                 a <- hsdar::vegindex(
                     spec_library,
                     index = target_indices[[i]],
@@ -410,12 +453,13 @@ get_vegetation_indices <- function(
             }
 
     }
+    #colnames(veg_indices) <- target_indices
+    index_df <- veg_indices %>% as.data.frame()
+
+    #print(veg_indices)
+    colnames(index_df) <- clean_colnames(target_indices)
     
-
-
-    
-
-    return(veg_indices)
+    return(index_df)
 }
 
 attach_veg_indices <- function(df) {
@@ -597,6 +641,15 @@ clean_df_colnames <- function(df) {
     return(new_names)
 }
 
+clean_colnames <- function(x_strs){
+    return(
+        stringr::str_remove_all(
+            x_strs, 
+            "[[:punct:]]| "
+        )
+    )
+}
+
 #' Lone line explanation
 #'
 #' Long Description here
@@ -633,7 +686,7 @@ load_csv <- function(filepath, output_type = "df") {
 #' @export 
 #' @examples Not Yet Implmented
 #'
-impute_spectra <- function(x, parallelize = NULL, method = "missForest") {
+impute_spectra <- function(x, cluster = NULL, method = "missForest") {
 
     df <- x
 
@@ -644,21 +697,21 @@ impute_spectra <- function(x, parallelize = NULL, method = "missForest") {
     }
 
     print("Imputing...")
-    if (is.null(cluster)) {
+    if (method == "missForest") {
         missForest::missForest(df, maxiter = 3)
+        output_data <- df
     } else {
-        missForest::missForest(df, maxiter = 3, parallelize = "forests")
+        output_data <- useful::simple.impute(df )
     }
         
     if (! is.data.frame(x)) {
-        print("Converting to Matrix")
         spectral_matrix <- as.matrix(df)
-        print("Converting to Spectral Library")
         output_data <- raster::rasterFromXYZ(
             spectral_matrix,
             crs = "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0")
         raster::extent(output_data) <- raster::extent(x)
     }
+    gc()
     return(output_data)
 }#end impute_spectra
 
@@ -778,8 +831,6 @@ aggregate_results_df <- function(predictions, x, y) {
         prediction_df <- as.data.frame(
         raster::levels(my_prediction)[[1]], xy = TRUE)
         num_pixels <- nrow(prediction_df)
-        print("Number of pixels in prediction")
-        print(num_pixels)
         for (iter_idx in seq_len(num_pixels)) {
             if (!is.na(prediction_df[iter_idx, 2])) {
                 z <- append(z, prediction_df[iter_idx, 2])
@@ -877,6 +928,7 @@ make_speclib_derivs<- function(filename)  {
 #' @examples Not Yet Implmented
 #'
 load_model <- function(filepath) {
+    return(eval(parse(text = load(filepath))))
 
 }
 
@@ -909,7 +961,8 @@ estimate_land_cover <- function(
     config_path = "./config.json",
     output_filepath = "./",
     cache_filepath = "./",
-    output_filename = "predictions"
+    output_filename = "predictions",
+    use_external_bands = FALSE
 ) {
 
 
@@ -923,17 +976,25 @@ estimate_land_cover <- function(
         num_cores <- config$clusterCores
     }
     # set up the parallel cluster
-    cl <- raster::beginCluster(num_cores)
-    
+    raster::beginCluster(num_cores)
+    cl <- raster::getCluster()
+
+
     print(paste0(num_cores, " Cores Detected for processing..."))
 
 
     # Load the model
-    model <- load(config$model_path)
+    model <- load_model(config$model_path)
 
 
     # load the input datacube and split into tiles
     input_raster <- raster::brick(input_filepath)
+    if(use_external_bands){
+        band_count <- raster::nlayers(input_raster)
+        bandnames <- read.csv(config$external_bands)$x[1:band_count]
+        names(input_raster) <- bandnames
+    }
+
     tile_filenames <- make_tiles(
         input_raster,
         num_x = config$x_tiles,
@@ -950,8 +1011,11 @@ estimate_land_cover <- function(
     tile_results <- NULL
     #edge artifacts?
     if(config$parallelize_by_tiles){
-        doParallel::registerDoParallel()
-        tile_results <- foreach(tile_filename=tile_filenames) %dopar% {
+        doParallel::registerDoParallel(cl)
+        tile_results <- foreach(
+            tile_filename=tile_filenames,
+            .export = c("model")
+        ) %dopar% {
             process_tile(
                 tile_filename = tile_filename,
                 ml_model = model, 
@@ -959,7 +1023,10 @@ estimate_land_cover <- function(
             gc()#garbage collect between iterations
         }
     } else {
-        tile_results <- foreach(tile_filename=tile_filenames) %do% {
+        tile_results <- foreach(
+            tile_filename=tile_filenames, 
+            .export = c("model", "cl")
+        ) %do% {
             process_tile(
                 tile_filename = tile_filename,
                 ml_model = model, 
@@ -970,7 +1037,9 @@ estimate_land_cover <- function(
     }
     gc() #clean up
 
-    parallel::endCluster()
+    raster::endCluster()
+
+    print("Tile based processing complete")
 
     results <- aggregate_results_df(tile_results)
 
@@ -988,34 +1057,58 @@ estimate_land_cover <- function(
 #' @export 
 #' @examples Not Yet Implmented
 #'
-process_tile <- function(tile_filename, ml_model, cluster = NULL) {
+process_tile <- function(tile_filename, ml_model, cluster = NULL, return_raster = TRUE) {
     raster_obj <- raster::brick(tile_filename)
-<<<<<<< Updated upstream
-    base_df <- preprocess_raster_to_df(raster_obj)
-=======
     print(paste0("preprocessing raster at ", tile_filename))
     base_df <- preprocess_raster_to_df(raster_obj, ml_model)
     if(nrow(base_df) == 0){
-        return(base_df)
+        #if there is no data, return the empty tile in the specified format
+        if(return_raster){
+            return(raster_obj)
+        } else {
+            return(base_df)
+        }
+        
     }
->>>>>>> Stashed changes
+
     rm(raster_obj)
     gc()
 
-    imputed_df <- impute_spectra(df)
-    rm(df)
-    gc()
+    target_indices <- get_required_veg_indices(ml_model)
 
-    veg_indices <- get_vegetation_indices(imputed_df, ml_model, cluster = cluster)
-
-    df <- add_derivatives(base_df)
+    imputed_df <- impute_spectra(base_df)
     rm(base_df)
     gc()
+
+    resampled_df <- resample_df(imputed_df)
+    gc()
+    print(summary(imputed_df))
+
+    veg_indices <- get_vegetation_indices(resampled_df, ml_model, cluster = cluster)
+
+    df <- cbind(resampled_df, veg_indices)
+    #df <- df %>% dplyr::select(x, y, dplyr::all_of(target_model_cols)) 
+    # above line should not be needed, testing then deleting
+    rm(veg_indices)
+    gc()
+
     
-    predictions <- apply_model(df, model)
+    predictions <- apply_model(df, ml_model) %>% as.data.frame()
     rm(df)
     gc()
 
+    print(paste0("Completed Processing tile at ", tile_filename))
+
+    predictions$x <- imputed_df$x
+    predictions$y <- imputed_df$y
+    gc()
+
+    if(return_raster){
+        print(colnames(predictions))
+        return(raster::rasterFromXYZ(predictions))
+
+        
+    }
     return(predictions)
 }
 
@@ -1034,20 +1127,20 @@ filter_bands <- function(df) {
 }
 
 preprocess_raster_to_df <- function(raster_obj, model) {
-    df <- raster::rasterToPoints(raster_obj)
+    df <- raster::rasterToPoints(raster_obj) %>% as.data.frame()
     df <- remove_noisy_cols(df)
     df <- filter_bands(df)
     gc()
     target_model_cols <- get_var_names(model)
-    df <- clean_df_colnames(df)
-    df <- df %>% dplyr::select(x, y, dplyr::all_of(target_model_cols))
+    #new_names <- clean_df_colnames(df)
+    #colnames(df) <- new_names
+    
     gc()
     #df <- impute_spectra(df)
     return(df)
 }
 
-add_derivatives <- function(df, target_indices) {
-}
+
 
 datacube_to_csv <- function(raster_path, save_path) {
     datacube <- raster::brick(raster_path)
@@ -1082,5 +1175,46 @@ preprocess_raster_to_parquet <- function(
         gc()
         arrow::write_parquet(df, output_filepath)
 }
+
+convert_wavelength_strings <- function(wavelengths) {
+    ncharacters <- nchar(wavelengths)
+    corrected_values <- numeric(length = length(wavelengths))
+    for (w in seq_along(wavelengths)){
+        decimal_digits <- ncharacters[w] - 3
+        int_conversion <- NULL
+        result <- tryCatch({
+            int_conversion <- as.numeric(wavelengths[w])
+        }, 
+        warning = function(w){
+            stop()
+        })
+        
+        corrected_value <- int_conversion 
+        corrected_values[[w]] <- corrected_value
+    }
+    return(corrected_values)
+}
+
+clean_names <- function(variables){
+    return(
+        stringr::str_remove_all(
+            variables,
+            "[[:punct:]]| "
+            )
+        )
+}
+
+apply_model <- function(df, model, threads = 1, clean_names = TRUE){
+
+    prediction <-predict(
+        model,
+        data = df,
+        type='response',
+        num.threads = threads
+    ) #(Ranger model)
+    return(prediction$predictions)
+}
+
+
 
 

@@ -291,7 +291,7 @@ each_target<-each_target%>%setNames(Target_names)
 
 #Var1 Freq
 #plot_interactive(each_target[["Alectoria ochroleuca"]])#1       Alectoria ochroleuca    6 #Remove scan 2
-plot_interactive(each_target[["Alnus sp."]])#2                  Alnus sp.   80 # Need to clean out half of these because there are two groups.
+#plot_interactive(each_target[["Alnus sp."]])#2                  Alnus sp.   80 # Need to clean out half of these because there are two groups.
 #plot_interactive(each_target[["Arctagrostis latifolia"]])#3     Arctagrostis latifolia    5
 #plot_interactive(each_target[["Arctocetraria centrifuga"]])#4   Arctocetraria centrifuga    4
 #plot_interactive(each_target[["Arctophila fulva"]])#5           Arctophila fulva   12
