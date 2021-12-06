@@ -11,7 +11,7 @@ big_results <- estimate_land_cover(
 
 quad_results <- estimate_land_cover(
     test_path_2, 
-    output_filepath = "./Output/bison_gulch_outputs.grd",
+    output_filepath = "./Output/bison_gulch_outputs_par.grd",
     use_external_bands = TRUE)
 
 ml_model <- load_model(model_path)

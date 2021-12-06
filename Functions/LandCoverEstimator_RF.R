@@ -1029,7 +1029,7 @@ estimate_land_cover <- function(
         doParallel::registerDoParallel(cl)
         tile_results <- foreach(
             i=seq_along(tile_filenames),
-            .export = c("model")
+            .export = ls(.GlobalEnv)
         ) %dopar% {
             process_tile(
                 tile_filename = tile_filenames[[i]],
