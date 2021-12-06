@@ -7,7 +7,11 @@ require(hsdar)
 require(spectrolab)
 require(ranger)
 require(stringr)
+require(stringi)
 require(rjson)
+require(rgdal)
+require(gdalUtils)
+
 
 #' Functions returns columns that are bandpasses
 #' 
@@ -958,9 +962,8 @@ load_config <- function(filename) {
 estimate_land_cover <- function(
     input_filepath,
     config_path = "./config.json",
-    output_filepath = "./",
     cache_filepath = "./",
-    output_filename = "predictions",
+    output_filepath = "./predictions.grd",
     use_external_bands = FALSE
 ) {
 
@@ -993,6 +996,14 @@ estimate_land_cover <- function(
         names(input_raster) <- bandnames
     }
 
+    num_tiles_x <- config$x_tiles
+    num_tiles_y <- config$y_tiles
+
+    if(config$automatic_tiling){
+        num_tiles_x <- calc_num_tiles(input_filepath)
+        num_tiles_y <- calc_num_tiles(input_filepath)
+    }
+
     tile_filenames <- make_tiles(
         input_raster,
         num_x = config$x_tiles,
@@ -1005,70 +1016,111 @@ estimate_land_cover <- function(
     rm(input_raster)
     gc()
 
+    prediction_filenames <- lapply(
+        tile_filenames,
+        function(tile_filename){
+            return(.convert_tile_filename(tile_filename, config = config))
+    })
+
     # initialize the variable for the tilewise results
     tile_results <- NULL
     #edge artifacts?
     if(config$parallelize_by_tiles){
         doParallel::registerDoParallel(cl)
         tile_results <- foreach(
-            tile_filename=tile_filenames,
+            i=seq_along(tile_filenames),
             .export = c("model")
         ) %dopar% {
             process_tile(
-                tile_filename = tile_filename,
+                tile_filename = tile_filenames[[i]],
                 ml_model = model, 
-                key = key,
-                cluster = NULL)
+                cluster = NULL,
+                return_raster = TRUE,
+                return_filename = TRUE,
+                save_path = prediction_filenames[[i]],
+                suppress_output = TRUE)
             gc()#garbage collect between iterations
         }
     } else {
         tile_results <- foreach(
-            tile_filename=tile_filenames, 
+            i=seq_along(tile_filenames), 
             .export = c("model", "cl")
         ) %do% {
             process_tile(
-                tile_filename = tile_filename,
+                tile_filename = tile_filenames[[i]],
                 ml_model = model, 
-                key = key,
-                cluster = cl)
+                cluster = cl,
+                return_raster = TRUE,
+                return_filename = TRUE,
+                save_path = prediction_filenames[[i]],
+                suppress_output = TRUE)
             gc()
         }
     }
     gc() #clean up
 
-    raster::endCluster()
+    
 
     print("Tile based processing complete")
+     print(tile_results)
 
-    results <- aggregate_results_df(tile_results)
+    results <- merge_tiles(prediction_filenames, output_path = output_filepath)
+
+   
+
+    raster::endCluster()
 
     return(results)
 }
 
 
 
-#' equivalent to the old LandCoverEstimator()
+#' processes a small raster imarge
 #'
-#' Long Description here
+#' processes the given image in-memory.  This assumes that the image is small enough that tiling is not required.  
+#' Functions include data munging, imputation, automated vegetation index calculation, model inference, and data type conversion. 
+#' The outputs are optionally saved to disk as well.  
+#' Parallization is used if a connection to a parallel (or raster) package cluster is provided
 #'
 #' @return 
-#' @param x
+#' @param tile_filename: A string specifying the location of the target raster on the disk
+#' @param ml_model: the machine learning model for prediction.  
+#' @param cluster: a cluster, from the raster::beginCluster(); raster::getCluster() or parallel::makeCluster().  Default is NULL (no parallelism).
+#' @param return_raster: (default: TRUE) returns a rasterLayer object if true, or a data.frame if FALSE.
+#' @param save_path: the path to save the output.  If NULL (default) no file is saved.  Otherwise it attempts to save the file to the location specified.
+#' @param suppress_output: if TRUE, returns the save location of the output, rather than the output itself.  
+#' If FALSE (default), the function returns a raster::rasterLayer or base::data.frame as determined by return_raster parameter.
 #' @seealso None
 #' @export 
 #' @examples Not Yet Implmented
 #'
-process_tile <- function(tile_filename, ml_model, key = NULL, cluster = NULL, return_raster = TRUE) {
+process_tile <- function(
+    tile_filename,
+    ml_model, 
+    cluster = NULL,
+    return_raster = TRUE,
+    return_filename = FALSE,
+    save_path = NULL,
+    suppress_output = FALSE
+    ) {
     raster_obj <- raster::brick(tile_filename)
+    input_crs <- raster::crs(raster_obj)
     print(paste0("preprocessing raster at ", tile_filename))
     base_df <- preprocess_raster_to_df(raster_obj, ml_model)
+    
     if(nrow(base_df) == 0){
-        #if there is no data, return the empty tile in the specified format
-        if(return_raster){
-            return(raster_obj)
+        if(!suppress_output){
+            if(return_raster){
+                return(raster_obj)
+            } else {
+                return(base_df)
+            } 
         } else {
-            return(base_df)
+            return(save_path)
         }
     }
+
+        #if there is no data, return the empty tile in the specified format
 
     rm(raster_obj)
     gc()
@@ -1096,29 +1148,42 @@ process_tile <- function(tile_filename, ml_model, key = NULL, cluster = NULL, re
     rm(df)
     gc()
 
-    print(paste0("Completed Processing tile at ", tile_filename))
+    predictions <- postprocess_predictions(predictions, imputed_df)
+    
+    predictions <- convert_and_save_output(
+        predictions,
+        save_path = save_path,
+        return_raster = return_raster)
 
-    print(summary(predictions))
-    colnames(predictions) <- c("z")
-    predictions$x <- imputed_df$x
-    predictions$y <- imputed_df$y
-    gc()
-
-    predictions <- predictions %>% dplyr::select(x, y, z)
-
-    if(return_raster){
-        predictions <- convert_fg2_strings(predictions)
-        return(raster::rasterFromXYZ(predictions))   
+    if(suppress_output){
+        return(save_path)
+    } else {
+        return(predictions)
     }
-
-    return(predictions)
 }
 
-# a quick function based on the original code
+#' removes columns outside the min and max indicies
+#'
+#' Long Description here
+#'
+#' @return 
+#' @param df: A data.frame
+#' @seealso None
+#' @export 
+#' @examples Not Yet Implmented
 remove_noisy_cols <- function(df, min_index = 1, max_index = 274) {
     return(df[min_index:max_index])
 }
 
+#' a quick function based on the original code
+#'
+#' Long Description here
+#'
+#' @return 
+#' @param df: A data.frame
+#' @seealso None
+#' @export 
+#' @examples Not Yet Implmented
 filter_bands <- function(df) {
     # from original code, but sets the values to NA instead of -999 
     df[-1:-2][df[-1:-2] > 1.5] <- NA
@@ -1128,16 +1193,34 @@ filter_bands <- function(df) {
     return(df)
 }
 
+#' a quick function based on the original code
+#'
+#' Long Description here
+#'
+#' @return 
+#' @param df: A data.frame
+#' @seealso None
+#' @export 
+#' @examples Not Yet Implmented
 preprocess_raster_to_df <- function(raster_obj, model) {
     df <- raster::rasterToPoints(raster_obj) %>% as.data.frame()
     df <- remove_noisy_cols(df)
-    df <- filter_bands(df)  
+    df <- filter_bands(df)
+    df <- filter_empty_points(df) 
     gc()
     return(df)
 }
 
 
-
+#' a quick function based on the original code
+#'
+#' Long Description here
+#'
+#' @return 
+#' @param df: A data.frame
+#' @seealso None
+#' @export 
+#' @examples Not Yet Implmented
 datacube_to_csv <- function(raster_path, save_path) {
     datacube <- raster::brick(raster_path)
     df <- raster::rasterToPoints(datacube)
@@ -1172,6 +1255,15 @@ preprocess_raster_to_parquet <- function(
         arrow::write_parquet(df, output_filepath)
 }
 
+#' a quick function based on the original code
+#'
+#' Long Description here
+#'
+#' @return 
+#' @param df: A data.frame
+#' @seealso None
+#' @export 
+#' @examples Not Yet Implmented
 convert_wavelength_strings <- function(wavelengths) {
     ncharacters <- nchar(wavelengths)
     corrected_values <- numeric(length = length(wavelengths))
@@ -1183,7 +1275,8 @@ convert_wavelength_strings <- function(wavelengths) {
         }, 
         warning = function(w){
             # should use external bands names instead
-            stop("Band Names cannot be converted to numeric")
+            stop("Band Names cannot be converted to numeric.  
+            If using estimate_land_cover(), try again with use_external_bands = TRUE")
         })
         
         corrected_value <- int_conversion 
@@ -1192,6 +1285,15 @@ convert_wavelength_strings <- function(wavelengths) {
     return(corrected_values)
 }
 
+#' a quick function based on the original code
+#'
+#' Long Description here
+#'
+#' @return 
+#' @param df: A data.frame
+#' @seealso None
+#' @export 
+#' @examples Not Yet Implmented
 clean_names <- function(variables){
     return(
         stringr::str_remove_all(
@@ -1201,6 +1303,15 @@ clean_names <- function(variables){
         )
 }
 
+#' a quick function based on the original code
+#'
+#' Long Description here
+#'
+#' @return 
+#' @param df: A data.frame
+#' @seealso None
+#' @export 
+#' @examples Not Yet Implmented
 apply_model <- function(df, model, threads = 1, clean_names = TRUE){
 
     prediction <-predict(
@@ -1212,8 +1323,17 @@ apply_model <- function(df, model, threads = 1, clean_names = TRUE){
     return(prediction$predictions)
 }
 
+#' a quick function based on the original code
+#'
+#' Long Description here
+#'
+#' @return 
+#' @param df: A data.frame
+#' @seealso None
+#' @export 
+#' @examples Not Yet Implmented
 convert_fg2_strings <- function(df) {
-    df_convert_results <- df %>% mutate(z = case_when(
+    df_convert_results <- df %>% dplyr::mutate(z = case_when(
         z == "Abiotic" ~ 1,
         z == "Dwarf Shrub" ~ 2,
         z == "Forb" ~ 3,
@@ -1223,15 +1343,291 @@ convert_fg2_strings <- function(df) {
         z == "Shrub" ~ 7,
         z == "Tree" ~ 8
     ), .keep = "unused") %>%
-    select(x,y,z)
+    dplyr::select(x,y,z)
 return(df_convert_results)
 }
 
-assemble_tiles <- function(filenames,out){
-    tiles = list.files(dir)
-    tiles = grep("Pred",tiles, value = TRUE)
-    chunks<-lapply(1:length(tiles),function(x) {raster(paste(dir,"/",tiles[x], sep=""))})
-    pred_merged<-Reduce(merge,chunks)
+#' a quick function based on the original code
+#'
+#' Long Description here
+#'
+#' @return 
+#' @param df: A data.frame
+#' @seealso None
+#' @export 
+#' @examples Not Yet Implmented
+assemble_tiles_from_disk <- function(tiles, output_path){
+    tiles = grep("Pred", tiles, value = TRUE)
+    chunks<-lapply(
+        tiles,
+        function(x) {
+            raster::raster(x)
+        })
+    pred_merged<-Reduce(raster::merge, chunks)
     #writeRaster(pred_merged, filename = "Output/Predictions/")
     return(pred_merged)
 }
+
+merge_tiles <- function(input_files, output_path = NULL, target_layer = 1) {
+
+    master_raster <- as(raster::brick(input_files[[1]])[[target_layer]], "RasterLayer")
+
+    for (input_file in tail(input_files, -1)) {
+        new_raster <- as(raster::brick(input_file)[[target_layer]], "RasterLayer")
+        # above is robust against multi-layer images
+        master_raster <- raster::merge(
+            master_raster,
+            new_raster,
+            tolerance = 0.5)
+        
+    }
+    if(!is.null(output_path)) {
+        raster::writeRaster(master_raster, output_path)
+    }
+
+    return(master_raster)
+}
+
+#' a quick function based on the original code
+#'
+#' Long Description here
+#'
+#' @return 
+#' @param df: A data.frame
+#' @seealso None
+#' @export 
+#' @examples Not Yet Implmented
+.convert_tile_filename <- function(tile_path, config) {
+    path <- gsub(config$tile_path, config$output_path, c(tile_path))
+    return(gsub("tile", "prediction", path)[[1]])
+}
+
+#' aconverts functional group 2 codes from integers to Strings
+#'
+#' Long Description here
+#'
+#' @return 
+#' @param df: A data.frame.  Assumes that the target data is in column 'z'
+#' @seealso None
+#' @export 
+#' @examples Not Yet Implmented
+convert_fg2_int <- function(df) {
+    converted_df <- df %>% dplyr::mutate(
+        z = dplyr::case_when(
+            z == 1 ~ "Abiotic",
+            z == 2 ~ "Dwarf Shrub",
+            z == 3 ~ "Forb",
+            z == 4 ~ "Graminoid",
+            z == 5 ~ "Lichen",
+            z == 6 ~ "Moss",
+            z == 7 ~ "Shrub",
+            z == 8 ~ "Tree"
+        ), .keep = "unused"
+    ) %>% 
+    dplyr::select(x,y,z)
+
+    return(converted_df)
+}
+
+#' a quick function based on the original code
+#'
+#' Long Description here
+#'
+#' @return 
+#' @param df: A data.frame
+#' @seealso None
+#' @export 
+#' @examples Not Yet Implmented
+convert_fg1_string <- function(df) {
+    converted_df <- df %>% dplyr::mutate(z = case_when(
+        z == "Abiotic" ~ 1
+    )) %>%
+    dplyr::select(x,y,z)
+
+    return(converted_df)
+}
+
+#' a quick function based on the original code
+#'
+#' Long Description here
+#'
+#' @return 
+#' @param df: A data.frame
+#' @seealso None
+#' @export 
+#' @examples Not Yet Implmented
+convert_fg1_int <- function(df) {
+    converted_df <- df %>% dplyr::mutate(
+        z = case_when(
+            z == 1 ~ "Abiotic"
+    ))
+}
+
+#' converts the species names on the 
+#'
+#' Long Description here
+#'
+#' @return 
+#' @param df: A data.frame
+#' @seealso None
+#' @export 
+#' @examples Not Yet Implmented
+convert_species_string <- function(df){
+
+}
+
+#' converts the species integer codes to the species name (strings)
+#'
+#' Long Description here
+#'
+#' @return 
+#' @param df: A data.frame
+#' @seealso None
+#' @export 
+#' @examples Not Yet Implmented
+convert_species_int <- function(df){
+
+}
+
+#' aconverts the output to the correct data type (base::data.frame or raster::rasterLayer) and save it to disk
+#'
+#' In addition to converting the file, it saves the file to disk.  
+#' In order to avoid issues with overwriting files, the function will 
+#' adjoin 16 random characters to the filename to avoid collision.
+#'
+#' @return 
+#' @param df: A data.frame
+#' @param save_path: the file path for saving the converted file.  If NULL (default), no file is saved.  
+#' @param return_raster: If TRUE, the function converts 'df' to a raster before saving and returning the converted data. 
+#' If FALSE, the data.frame is saved to disk, but no coversion is made.
+#' @seealso None
+#' @export 
+#' @examples Not Yet Implmented
+convert_and_save_output <- function(df, save_path = NULL, return_raster = TRUE ){
+        if(return_raster){
+        predictions <- convert_fg2_strings(df)
+        predictions <- raster::rasterFromXYZ(predictions)
+        if(!is.null(save_path)){
+            if(file.exists(save_path)){
+                random_string <- paste0("_", stringi::stri_rand_strings(1,4), ".")
+                new_save_path <- gsub(".", random_string, c(save_path))[[1]]
+                raster::writeRaster(predictions, filename = new_save_path)
+            } else {
+                raster::writeRaster(predictions, filename = save_path)
+            }
+        }
+        return(predictions)
+    } else {
+        if(!is.null(save_path)){
+            if(file.exists(save_path)){
+                random_string <- paste0("_", stringi::stri_rand_strings(1,4), ".")
+                new_save_path <- gsub(".", random_string, c(save_path))[[1]]
+                write.csv(predictions, new_save_path)
+            } else {
+                write.csv(df, save_path)
+            }
+        }
+            return(df)
+    }
+}
+
+#' Performs post-processing for the process_tile function
+#'
+#' Renames columns and adds the spatial information that is lost at model inference time.
+#'
+#' @return 
+#' @param predictions_df: A data.frame of predictions from the model.  It should have a single column of data.
+#' @param base_df: the base data.frame for creating the predictions; 
+#' it should have columns x and y specifying the spatial coordinates for that row.
+#' @return a data.frame with three columns: 'x', 'y', and 'z'.  'x' and 'y' are the spatial location of the 
+#' prediction in the original CRS, and the 'z' column is predictions. 
+#' @seealso None
+#' @export 
+#' @examples Not Yet Implmented
+postprocess_predictions <- function(predictions_df, base_df){
+    colnames(predictions_df) <- c("z")
+    predictions_df$x <- base_df$x
+    predictions_df$y <- base_df$y
+    gc()
+
+    predictions_df <- predictions_df %>% dplyr::select(x, y, z)
+
+    return(predictions_df)
+}
+
+#' visualizes the output of the pipeline based on a specified colormap.
+#'
+#' Long Description here
+#'
+#' @return 
+#' @param df: A data.frame
+#' @seealso None
+#' @export 
+#' @examples Not Yet Implmented
+visualize_predictions <- function(filepath, colormap){
+
+}
+
+#' removes empty rows from the data.frame
+#'
+#' Long Description here
+#'
+#' @return 
+#' @param df: A data.frame
+#' @seealso None
+#' @export 
+#' @examples Not Yet Implmented
+filter_empty_points <- function(df){
+    drop_cols <- c("x","y")
+    columns_to_check <- setdiff(colnames(df), drop_cols) 
+    df_no_empty_rows <- df %>% 
+        dplyr::filter_at(
+            .vars = vars(one_of(columns_to_check)),
+            ~ !is.na(.)
+        )
+    return(df_no_empty_rows)
+}
+
+#' removes empty rows from the data.frame
+#'
+#' Long Description here
+#'
+#' @return 
+#' @param df: A data.frame
+#' @seealso None
+#' @export 
+#' @examples Not Yet Implmented
+merge_tiles_gdal <- function(
+    target_files,
+    output_filename,
+    cache_vrt = "./temp_cache.vrt",
+    return_raster
+    ){
+        vrt <- gdalUtils::gdalbuildvrt(target_files, cache_vrt, overwrite=TRUE)
+        output <- gdalUtils::gdal_translate(
+            cache_vrt,
+            output_filename,
+            ot = "UInt16",
+            output_raster = return_raster)
+    return(output)
+
+}
+
+
+#' removes empty rows from the data.frame
+#'
+#' Long Description here
+#'
+#' @return 
+#' @param file_path: a string
+#' @seealso None
+#' @export 
+#' @examples Not Yet Implmented
+calc_num_tiles <- function(file_path, max_size = 128){
+    file_size <- file.info(file_path)$size
+    tile_size <- file_size / max_size
+    num_xy <- ceiling(sqrt(tile_size))
+    return(num_xy)
+}
+
+# talk to NASA spectral imaging working group r/e gaps

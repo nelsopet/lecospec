@@ -1,5 +1,6 @@
 lecospec_depenencies <- c(
     "rgdal",
+    "gdalUtils",
     "rgeos",
     "sf",
     "sp",

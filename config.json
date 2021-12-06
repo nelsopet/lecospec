@@ -1,6 +1,8 @@
 {
-    "x_tiles": 10,
-    "y_tiles": 10,
+    "automatic_tiling": false,
+    "max_size": 1024,
+    "x_tiles": 2,
+    "y_tiles": 2,
     "tile_path": "F:/Lecospec/tiles/",
     "model_path": "C:/Users/kenne/Documents/GitHub/lecospec/Output/E_003_Pred_Model_RandomForest_FncGrp2_1000trees.rda",
     "clusterCores": null,
@@ -10,5 +12,6 @@
     "key_path": "./fg2key.json",
     "output_path": "./",
     "install_path": "./",
-    "external_bands": "./Data/bands.csv"
+    "external_bands": "./Data/bands.csv",
+    "output_format": "grd"
 }
