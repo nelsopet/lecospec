@@ -6,7 +6,6 @@ Data/
 Output/
 Output/*
 Data/leaf_spectra_barrow_2013_20180824_ecosis.csv
-*.csv
 *.rds
 *.jpg
 *.pdf
@@ -26,3 +25,9 @@ raw_1511_rd_rf_or.hdr
 Functions/tiles/
 Functions/tiles/*
 predictions_*
+mle/validation.csv
+mle/trainingData.csv
+levels.csv
+mle/colnames.csv
+mle/datacube_conversion_9105.csv
+tiles/*

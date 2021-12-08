@@ -992,7 +992,7 @@ estimate_land_cover <- function(
     input_raster <- raster::brick(input_filepath)
     if(use_external_bands){
         band_count <- raster::nlayers(input_raster)
-        bandnames <- read.csv(config$external_bands)$x[1:band_count]
+        bandnames <- read.csv(config$external_bands)$x[1:band_count] %>% as.vector()
         names(input_raster) <- bandnames
     }
 
@@ -1020,40 +1020,40 @@ estimate_land_cover <- function(
         tile_filenames,
         function(tile_filename){
             return(.convert_tile_filename(tile_filename, config = config))
-    })
+    }) %>% as.vector()
 
     # initialize the variable for the tilewise results
     tile_results <- NULL
     #edge artifacts?
     if(config$parallelize_by_tiles){
         doParallel::registerDoParallel(cl)
-        tile_results <- foreach(
-            i=seq_along(tile_filenames),
-            .export = ls(.GlobalEnv)
+        tile_results <- foreach::foreach(
+            i = seq_along(tile_filenames),
+            .export = as.vector(ls(.GlobalEnv))
         ) %dopar% {
-            process_tile(
+            tile_results = unlist(process_tile(
                 tile_filename = tile_filenames[[i]],
                 ml_model = model, 
                 cluster = NULL,
                 return_raster = TRUE,
                 return_filename = TRUE,
                 save_path = prediction_filenames[[i]],
-                suppress_output = TRUE)
+                suppress_output = TRUE))
             gc()#garbage collect between iterations
         }
     } else {
-        tile_results <- foreach(
+        tile_results <- foreach::foreach(
             i=seq_along(tile_filenames), 
             .export = c("model", "cl")
         ) %do% {
-            process_tile(
+           tile_results = unlist(process_tile(
                 tile_filename = tile_filenames[[i]],
                 ml_model = model, 
                 cluster = cl,
                 return_raster = TRUE,
                 return_filename = TRUE,
                 save_path = prediction_filenames[[i]],
-                suppress_output = TRUE)
+                suppress_output = TRUE))
             gc()
         }
     }
@@ -1062,9 +1062,9 @@ estimate_land_cover <- function(
     
 
     print("Tile based processing complete")
-     print(tile_results)
+    print(tile_results)
 
-    results <- merge_tiles(prediction_filenames, output_path = output_filepath)
+    results <- merge_tiles_gdal(prediction_filenames, output_filepath)
 
    
 
@@ -1320,7 +1320,8 @@ apply_model <- function(df, model, threads = 1, clean_names = TRUE){
         type='response',
         num.threads = threads
     ) #(Ranger model)
-    return(prediction$predictions)
+    #print(predictions$prediction)
+    return(prediction$predictions %>% as.data.frame())
 }
 
 #' a quick function based on the original code
@@ -1382,7 +1383,7 @@ merge_tiles <- function(input_files, output_path = NULL, target_layer = 1) {
         
     }
     if(!is.null(output_path)) {
-        raster::writeRaster(master_raster, output_path)
+        raster::writeRaster(master_raster, output_path, overwrite = TRUE)
     }
 
     return(master_raster)
@@ -1509,7 +1510,7 @@ convert_and_save_output <- function(df, save_path = NULL, return_raster = TRUE )
         predictions <- raster::rasterFromXYZ(predictions)
         if(!is.null(save_path)){
             if(file.exists(save_path)){
-                random_string <- paste0("_", stringi::stri_rand_strings(1,4), ".")
+                random_string <- paste0("_", stringi::stri_rand_strings(1,4), ".")[[1]]
                 new_save_path <- gsub(".", random_string, c(save_path))[[1]]
                 raster::writeRaster(predictions, filename = new_save_path)
             } else {
@@ -1520,7 +1521,7 @@ convert_and_save_output <- function(df, save_path = NULL, return_raster = TRUE )
     } else {
         if(!is.null(save_path)){
             if(file.exists(save_path)){
-                random_string <- paste0("_", stringi::stri_rand_strings(1,4), ".")
+                random_string <- paste0("_", stringi::stri_rand_strings(1,4), ".")[[1]]
                 new_save_path <- gsub(".", random_string, c(save_path))[[1]]
                 write.csv(predictions, new_save_path)
             } else {
