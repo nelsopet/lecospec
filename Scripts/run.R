@@ -1,4 +1,4 @@
-source("./Functions/LandCoverEstimator_RF.R")
+source("./Functions/lecospectR.R")
 
 test_path <- "F:/Lecospec/Ground_Validation/BisonGulchQuads.envi"
 test_path_2 <- "F:/Lecospec/tiles/tile_0bYSfUorxlbPTIkA.grd"
@@ -10,7 +10,7 @@ big_results <- estimate_land_cover(
     output_filepath = "./Outputs/raw_1511_PREDICTIONS.grd")
 
 quad_results <- estimate_land_cover(
-    test_path_2, 
+    test_path, 
     output_filepath = "./Output/bison_gulch_outputs_par.grd",
     use_external_bands = TRUE)
 
@@ -22,12 +22,15 @@ key_df <- read.csv("./levels.csv")
 cl <- raster::beginCluster()#this is actually quite slow, believe it or not
 
 tile_results <- process_tile(
-    test_path, 
+    test_path_2, 
     ml_model, 
     cluster = cl, 
     return_raster = TRUE, 
     save_path = "./test_raster_save.grd", 
     suppress_output = TRUE)
-plot(tile_results)
+print(tile_results)
 
 raster::endCluster()
+
+tiles <- list.files("./", pattern = "prediction_*")
+result <- merge_tiles_gdal(tiles, "./gdal_merged_predictions.grd")
