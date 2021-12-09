@@ -1064,7 +1064,7 @@ estimate_land_cover <- function(
     print("Tile based processing complete")
     print(tile_results)
 
-    results <- merge_tiles_gdal(prediction_filenames, output_filepath)
+    results <- merge_tiles(prediction_filenames, output_path = output_filepath)
 
    
 
