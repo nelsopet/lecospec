@@ -11,7 +11,8 @@ require(stringi)
 require(rjson)
 require(rgdal)
 require(gdalUtils)
-
+require(magrittr)
+require()
 
 #' Functions returns columns that are bandpasses
 #' 
@@ -990,6 +991,7 @@ estimate_land_cover <- function(
 
     # load the input datacube and split into tiles
     input_raster <- raster::brick(input_filepath)
+    crs_cache <- raster::crs(input_raster)
     if(use_external_bands){
         band_count <- raster::nlayers(input_raster)
         bandnames <- read.csv(config$external_bands)$x[1:band_count] %>% as.vector()
@@ -1064,9 +1066,10 @@ estimate_land_cover <- function(
     print("Tile based processing complete")
     print(tile_results)
 
-    results <- merge_tiles(prediction_filenames, output_path = output_filepath)
-
-   
+    results <- merge_tiles(
+        prediction_filenames, 
+        output_path = output_filepath,
+        set_crs = crs_cache)
 
     raster::endCluster()
 
@@ -1369,7 +1372,7 @@ assemble_tiles_from_disk <- function(tiles, output_path){
     return(pred_merged)
 }
 
-merge_tiles <- function(input_files, output_path = NULL, target_layer = 1) {
+merge_tiles <- function(input_files, output_path = NULL, target_layer = 1, set_crs = NULL) {
 
     master_raster <- as(raster::brick(input_files[[1]])[[target_layer]], "RasterLayer")
 
@@ -1382,9 +1385,16 @@ merge_tiles <- function(input_files, output_path = NULL, target_layer = 1) {
             tolerance = 0.5)
         
     }
+
+    if(!is.null(set_crs)){
+        raster::crs(master_raster) <- set_crs
+    }
+
     if(!is.null(output_path)) {
         raster::writeRaster(master_raster, output_path, overwrite = TRUE)
     }
+
+
 
     return(master_raster)
 }
