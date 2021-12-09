@@ -8,15 +8,15 @@
     
     # Creates numeric vector of wavelengths
     namescolumn<-metaRemove(VI)%>%
-      colnames()%>%
+      colnames() %>%
       as.numeric()
     
     # Creates a spectralib object
     spec_library<-hsdar::speclib(matrix_a,namescolumn)
     
     # creates a vectror of names of all the vegitation indices
-    AVIRIS_VI  <-hsdar::vegindex()[-58]
-    Headwall_VI<-hsdar::vegindex()[-c(3,26,27,31,32,33,35,48,49,58,60,66,67,71,82,99,102,103,104,105)]
+    AVIRIS_VI  <- hsdar::vegindex()[-58]
+    Headwall_VI <- hsdar::vegindex()[-c(3,26,27,31,32,33,35,48,49,58,60,66,67,71,82,99,102,103,104,105)]
     
     # Get amount of cores to use
     cores <- parallel::detectCores()-1
