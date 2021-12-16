@@ -1,8 +1,8 @@
-base_path <- "C:/Users/kenne/Documents/GitHub/lecospec/Functions/"
+base_path <- "./Functions/"
 
 code_path <- paste0(base_path, "lecospectR.R")
 export_path <- base_path
-package_path <- paste0(base_path, "lecospectR/")
+package_path <- paste0(export_path, "lecospectR/")
 
 package.skeleton(
     name = "lecospectR",
@@ -29,4 +29,5 @@ roxygen2::roxygenise(
 devtools::load_all(
     package_path
 )
+
 
