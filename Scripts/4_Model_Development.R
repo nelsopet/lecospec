@@ -10,8 +10,8 @@ SpecLib_derivs<-read.csv("Output/D_002_SpecLib_Derivs.csv")
 #SpecLib_derivs<-read.csv("Output/resampled/FncGrp2/D_002_SpecLib_Derivs.csv")
 
 
-BadAlder<- SpecLib_derivs %>% colnames()
-  dplyr::filter(Functional_group1 == "Shrub_Alder" & `1890`<0.15) %>% dim()
+#BadAlder<- SpecLib_derivs %>% colnames()
+#  dplyr::filter(Functional_group1 == "Shrub_Alder" & `1890`<0.15) %>% dim()
 
 
 #Reorder columns, delete unneeded for species, FNC grp 1 and 2
@@ -92,13 +92,13 @@ rf_mod_ranger_FncGrp2_pred$confusion.matrix
 
 #save(rf_mod_ranger_species_pred, file = "Output/E_003_Pred_Model_RandomForest_species_resamp29_1000trees.rda")
 #save(rf_mod_ranger_FncGrp1_pred, file = "Output/E_003_Pred_Model_RandomForest_FncGrp1_resamp29_1000trees.rda")
-save(rf_mod_ranger_FncGrp2_pred, file = "Output/E_003_Pred_Model_RandomForest_FncGrp2_resamp29_1000trees.rda")
+#save(rf_mod_ranger_FncGrp2_pred, file = "Output/E_003_Pred_Model_RandomForest_FncGrp2_resamp29_1000trees.rda")
 save(rf_mod_ranger_FncGrp2_pred, file = "Output/E_003_Pred_Model_RandomForest_FncGrp2_1000trees.rda")
 
 #------------------------------ Select Important varibles -----------------------------------
 # Creates a dataframe with all varibles and their imoportance
- ImportantVarsFrame<-enframe(rf_mod_ranger_reduced$variable.importance, 
-                             name="predictor", value="importance")
+# ImportantVarsFrame<-enframe(rf_mod_ranger_reduced$variable.importance, 
+#                             name="predictor", value="importance")
 #   
 # # Function Creates a plot of the 30 most important vars
 # ImportantVarsFrame25<-ImportantVarsFrame[order(ImportantVarsFrame$importance,decreasing = TRUE),][1:25,]
