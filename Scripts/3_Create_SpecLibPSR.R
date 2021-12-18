@@ -472,7 +472,7 @@ Cleaned_Speclib<-Reduce(spectrolab::combine,New_targets)%>%
 # Creates .rds object
 Cleaned_Speclib_rds<-Reduce(spectrolab::combine,New_targets)
 
-table(Cleaned_Speclib$Functional_group1)%>%as.data.frame()
+table(Cleaned_Speclib$Functional_group2)%>%as.data.frame()
 
 #Var1 Freq
 #1              Dwarf_Shrub_Decid  107

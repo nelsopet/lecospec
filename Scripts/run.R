@@ -1,9 +1,11 @@
 source("./Functions/lecospectR.R")
 
-test_path <- "F:/Lecospec/Ground_Validation/BisonGulchQuads.envi"
-test_path_2 <- "F:/Lecospec/tiles/tile_0bYSfUorxlbPTIkA.grd"
-model_path <- "C:/Users/kenne/Documents/GitHub/lecospec/Output/E_003_Pred_Model_RandomForest_FncGrp2_1000trees.rda"
-big_test <- "F:/DataCubes/raw_1511_rd_rf_or"
+test_path <- "Data/Ground_Validation/Imagery/BisonGulchQuads.envi"
+
+raster(test_path) %>% plot()
+#test_path_2 <- "F:/Lecospec/tiles/tile_0bYSfUorxlbPTIkA.grd"
+#model_path <- "C:/Users/kenne/Documents/GitHub/lecospec/Output/E_003_Pred_Model_RandomForest_FncGrp2_1000trees.rda"
+#big_test <- "F:/DataCubes/raw_1511_rd_rf_or"
 
 big_results <- estimate_land_cover(
     big_test,
