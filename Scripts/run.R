@@ -10,7 +10,7 @@ big_results <- estimate_land_cover(
     output_filepath = "./Outputs/raw_1511_PREDICTIONS.grd")
 
 quad_results <- estimate_land_cover(
-    test_path, 
+    test_path,
     output_filepath = "./Output/bison_gulch_outputs_par.grd",
     use_external_bands = TRUE)
 

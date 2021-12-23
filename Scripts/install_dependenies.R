@@ -24,7 +24,10 @@ lecospec_depenencies <- c(
     "rasterVis",
     "RColorBrewer",
     "rjson",
-    "leaflet"
+    "leaflet",
+    "gtable",
+    "scales",
+    "Boruta"
 )
 
 install.packages(lecospec_depenencies, repos = "http://cran.rstudio.com/")
