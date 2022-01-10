@@ -990,6 +990,7 @@ estimate_land_cover <- function(
     # load the input datacube and split into tiles
     input_raster <- raster::brick(input_filepath)
     crs_cache <- raster::crs(input_raster)
+
     if(use_external_bands){
         band_count <- raster::nlayers(input_raster)
         bandnames <- read.csv(config$external_bands)$x[1:band_count] %>% as.vector()
@@ -1109,6 +1110,8 @@ process_tile <- function(
     ) {
     raster_obj <- raster::brick(tile_filename)
     input_crs <- raster::crs(raster_obj)
+    input_extent <- raster::extent(raster_obj)
+    input_res <- raster::res(raster_obj)
     print(paste0("preprocessing raster at ", tile_filename))
     base_df <- preprocess_raster_to_df(raster_obj, ml_model)
     
@@ -1158,7 +1161,10 @@ process_tile <- function(
         predictions,
         save_path = save_path,
         return_raster = return_raster,
-        aggregation = aggregation)
+        aggregation = aggregation,
+        target_extent = input_extent,
+        target_crs = input_crs,
+        target_res = input_res)
 
     if(suppress_output){
         return(save_path)
@@ -1341,13 +1347,17 @@ apply_model <- function(df, model, threads = 1, clean_names = TRUE){
 convert_fg2_strings <- function(df) {
     df_convert_results <- df %>% dplyr::mutate(z = case_when(
         z == "Abiotic" ~ 1,
-        z == "Dwarf Shrub" ~ 2,
-        z == "Forb" ~ 3,
-        z == "Graminoid" ~ 4,
-        z == "Lichen" ~ 5,
-        z == "Moss" ~ 6, 
-        z == "Shrub" ~ 7,
-        z == "Tree" ~ 8
+        z == "Forb" ~ 2,
+        z == "Graminoid" ~ 3,
+        z == "Lichen_Dark" ~ 4,
+        z == "Lichen_Light" ~ 5,
+        z == "Lichen_Yellow" ~ 6,
+        z == "Moss" ~ 7, 
+        z == "Shrub_Decid" ~ 8,
+        z == "Shrub_Evergreen" ~ 9,
+        z == "Tree_Decid" ~ 10,
+        z == "Tree_Evergreen" ~ 11,
+        z == "Unknown" ~ 12
     ), .keep = "unused") %>%
     dplyr::select(x,y,z)
 return(df_convert_results)
@@ -1396,8 +1406,6 @@ merge_tiles <- function(input_files, output_path = NULL, target_layer = 1, set_c
         raster::writeRaster(master_raster, output_path, overwrite = TRUE)
     }
 
-
-
     return(master_raster)
 }
 
@@ -1428,13 +1436,17 @@ convert_fg2_int <- function(df) {
     converted_df <- df %>% dplyr::mutate(
         z = dplyr::case_when(
             z == 1 ~ "Abiotic",
-            z == 2 ~ "Dwarf Shrub",
-            z == 3 ~ "Forb",
-            z == 4 ~ "Graminoid",
-            z == 5 ~ "Lichen",
-            z == 6 ~ "Moss",
-            z == 7 ~ "Shrub",
-            z == 8 ~ "Tree"
+            z == 2 ~ "Forb",
+            z == 3 ~ "Graminoid",
+            z == 4 ~ "Lichen_Dark",
+            z == 5 ~ "Lichen_Light",
+            z == 6 ~ "Lichen_Yellow",
+            z == 7 ~ "Moss",
+            z == 8 ~ "Shrub_Decid",
+            z == 9 ~ "Shrub_Evergreen",
+            z == 10 ~ "Tree_Decid",
+            z == 11 ~ "Tree_Evergreen",
+            z == 12 ~ "Unknown"
         ), .keep = "unused"
     ) %>% 
     dplyr::select(x,y,z)
@@ -1965,10 +1977,25 @@ convert_pft <- function(df_xyz, aggregation = 2, to_string = FALSE){
 #' @seealso None
 #' @export 
 #' @examples Not Yet Implmented
-convert_and_save_output <- function(df, save_path = NULL, return_raster = TRUE, aggregation = 2){
+convert_and_save_output <- function(df, save_path = NULL, return_raster = TRUE, aggregation = 2, target_extent = NULL, target_crs = NULL, target_res = NULL){
         if(return_raster){
         predictions <- convert_pft(df, aggregation = aggregation, to_string = FALSE)
+        print("Dimensions of Output dataframe:")
+        print(dim(df))
+        print("Dimensions of converted dataframe (string -> int):")
+        print(dim(predictions))
         predictions <- raster::rasterFromXYZ(predictions)
+
+        # set the exent and CRS if they are supplied by the user
+        if(!is.null(target_extent)){
+            raster::extent(predictions) <- target_extent
+        }
+        if(!is.null(target_crs)){
+            raster::crs(predictions) <- target_crs
+        }
+        if(!is.null(target_res)){
+            raster::res(predictions) <- target_res
+        }
         if(!is.null(save_path)){
             if(file.exists(save_path)){
                 random_string <- paste0("_", stringi::stri_rand_strings(1,4), ".")[[1]]
