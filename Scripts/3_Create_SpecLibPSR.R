@@ -15,7 +15,7 @@ library(glue)
 # In this step we will combine all our spectral profiles to form one spectral library
 
 # Creates a file path to where our spectral libraries for each site is loacated
-mypath_atkin = "./Output/"
+mypath = "./Output/"
 
 # Reads in species and functional level groups dataframe creatd in script 1
 Species_groups<-read.csv("./Output/B_001_SC1_SpeciesTable.csv")
@@ -167,21 +167,22 @@ Ecosis_data %>% group_by(Functional_group1) %>% tally(
 
 
 
-
-
-
-
-
 ###Read in our data by site
 # Import file path names of .rds files into character list (Spectral libraries based on each location in alaska) 
-SpecLib_by_location = list.files(mypath_atkin, pattern="A_0",full.names = T) 
+SpecLib_by_location = list.files(mypath, pattern="A_0",full.names = T) 
 
 # Reads in the spectral libraries for each location in a list...List of 13 spectral objects
 list_of_SpecLib<-lapply(SpecLib_by_location,readRDS)%>% # Reads in the spectral library for each site 
   setNames(gsub("./Output/","",SpecLib_by_location)) # Removes dir path from the name
 
 # Combines specral libraries from all locations
-SpecLib<-Reduce(spectrolab::combine,list_of_SpecLib) %>% # dim(n_samples=1989, n_wavelegths=2151)
+SpecLib_raw<-Reduce(spectrolab::combine,list_of_SpecLib) #%>% # dim(n_samples=1989, n_wavelegths=2151)
+
+Speclib_metadata<-meta(SpecLib_raw)
+
+write_csv(Speclib_metadata,"./Output/C_000_Speclib_raw_metadata.csv")
+
+SpecLib<- SpecLib_raw %>%
   as.data.frame() %>% # Converts Spectral Object to a dataframe
   dplyr::select(-sample_name) %>% # Removes unwanted column ~ should remove this later instead
   left_join(Species_groups,by="Code_name") %>% #Joins dataframe with all the species info to our spectral library
@@ -526,3 +527,4 @@ source("Functions/2_LCE_veg_index.R")
 Make_Speclib_Derivs("Output/C_001_SC3_Cleaned_SpectralLib.csv",out_file="Output/")
 #Make_Speclib_Derivs("Output/C_001_SC3_Cleaned_SpectralLib4.csv", out_file = "Output/resampled/")
 #Make_Speclib_Derivs("Output/C_001_SC3_Cleaned_SpectralLib29.csv", out_file = "Output/resampled/FncGrp2/")
+
