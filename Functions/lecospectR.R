@@ -1438,7 +1438,7 @@ convert_fg2_int <- function(df) {
             z == 1 ~ "Abiotic",
             z == 2 ~ "Forb",
             z == 3 ~ "Graminoid",
-            z == 4 ~ "Lichen_Dark",
+            z == 4 ~ "Lichen",
             z == 5 ~ "Lichen_Light",
             z == 6 ~ "Lichen_Yellow",
             z == 7 ~ "Moss",

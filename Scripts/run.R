@@ -5,6 +5,21 @@ test_path_2 <- "F:/Lecospec/tiles/tile_0bYSfUorxlbPTIkA.grd"
 model_path <- "C:/Users/kenne/Documents/GitHub/lecospec/Output/E_003_Pred_Model_RandomForest_FncGrp2_1000trees.rda"
 big_test <- "F:/DataCubes/raw_1511_rd_rf_or"
 
+eight_mile_quads <- "F:/Lecospec/Ground_Validation/EightMileQuads.envi"
+twelve_mile_quads <- "F:/Lecospec/Ground_Validation/TwelveMileGulchQuads1.envi"
+
+
+results_8m <- estimate_land_cover(
+    eight_mile_quads, 
+    output_filepath="./8mtest.grd", 
+    use_external_bands=TRUE)
+
+results_12m <- estimate_land_cover(
+    twelve_mile_quads,
+    output_filepath = "./12mtest.grd",
+    use_external_bands = TRUE
+)
+
 big_results <- estimate_land_cover(
     big_test,
     output_filepath = "./Outputs/raw_1511_PREDICTIONS.grd")
