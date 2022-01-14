@@ -14,6 +14,7 @@ results_8m <- estimate_land_cover(
     output_filepath="./8mtest.grd", 
     use_external_bands=TRUE)
 
+
 results_12m <- estimate_land_cover(
     twelve_mile_quads,
     output_filepath = "./12mtest.grd",
@@ -37,12 +38,13 @@ key_df <- read.csv("./levels.csv")
 cl <- raster::beginCluster()#this is actually quite slow, believe it or not
 
 tile_results <- process_tile(
-    test_path_2, 
+    eight_mile_quads, 
     ml_model, 
     cluster = cl, 
     return_raster = TRUE, 
     save_path = "./test_raster_save.grd", 
-    suppress_output = TRUE)
+    suppress_output = TRUE,
+    use_external_bands = TRUE)
 print(tile_results)
 
 raster::endCluster()
