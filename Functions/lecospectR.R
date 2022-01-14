@@ -1032,7 +1032,7 @@ estimate_land_cover <- function(
             i = seq_along(tile_filenames),
             .export = as.vector(ls(.GlobalEnv))
         ) %dopar% {
-            tile_results = unlist(process_tile(
+            tile_results = unlist(process_file(
                 tile_filename = tile_filenames[[i]],
                 ml_model = model, 
                 cluster = NULL,
@@ -1048,7 +1048,7 @@ estimate_land_cover <- function(
             i=seq_along(tile_filenames), 
             .export = c("model", "cl")
         ) %do% {
-           tile_results = unlist(process_tile(
+           tile_results = unlist(process_file(
                 tile_filename = tile_filenames[[i]],
                 ml_model = model, 
                 cluster = cl,
@@ -1098,7 +1098,7 @@ estimate_land_cover <- function(
 #' @export 
 #' @examples Not Yet Implmented
 #'
-process_tile <- function(
+process_file <- function(
     tile_filename,
     ml_model, 
     cluster = NULL,
@@ -1150,7 +1150,7 @@ process_tile <- function(
     rm(resampled_df)
     gc()
 
-    
+    print(summary(df))
     predictions <- apply_model(df, ml_model) %>% as.data.frame()
     rm(df)
     gc()
@@ -2020,7 +2020,7 @@ convert_and_save_output <- function(df, save_path = NULL, return_raster = TRUE, 
     }
 }
 
-#' Performs post-processing for the process_tile function
+#' Performs post-processing for the process_file function
 #'
 #' Renames columns and adds the spatial information that is lost at model inference time.
 #'
