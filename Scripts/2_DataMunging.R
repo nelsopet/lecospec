@@ -6,7 +6,7 @@ library(tidyverse)
 
 # ------------------------------------------- 12mile ---------------------------------------------------------------- #
 ####Read in data as spectra (all scans collected at this location)
-TwelveMile_spectra<-read_spectra("./Data/SpectraByLocation/12_Mile/original_samples", format="sed")
+TwelveMile_spectra<-read_spectra("./Data/SpectraByLocation/12_Mile/original_samples", format="sed", extract_metadata = TRUE)
 
 ##Plots all spectral objects withing this location (scans of individuals)
 ##plot_interactive(TwelveMile_spectra)
@@ -22,6 +22,12 @@ names(TwelveMile_metadata)[1]<-"ScanID"
 TwelveMile_metadata<-TwelveMile_metadata%>%mutate(Code_name=substr(TwelveMile_metadata$ScanID,start = 1,stop = 6))
 TwelveMile_metadata$Area<- "12mile"
 
+#Grab metadata from instrument
+TwelveMile_metadata_instrument<-meta(TwelveMile_spectra)
+
+#Combine metadata generated in this script with instrument metadata
+TwelveMile_metadata<-cbind(TwelveMile_metadata,TwelveMile_metadata_instrument)
+
 ##Set metadata
 meta(TwelveMile_spectra) = data.frame(TwelveMile_metadata, stringsAsFactors = FALSE)
 
@@ -31,8 +37,7 @@ saveRDS(TwelveMile_spectra      ,"./Output/A_001_SC2_TwelveMile_spectra.rds")
 # ------------------------------------------- AK2018 ---------------------------------------------------------------- #
 
 ####Read in data as spectra
-AK2018_spectra<-read_spectra("./Data/SpectraByLocation/20180729/AK2018",
-                             format="sed")
+AK2018_spectra<-read_spectra("./Data/SpectraByLocation/20180729/AK2018", format="sed", extract_metadata = TRUE)
 
 ##Fix Names by removing file extensions
 names(AK2018_spectra)<-gsub(".sed","",names(AK2018_spectra))
@@ -73,6 +78,13 @@ AK2018_metadata<-AK2018_metadata%>%
   unite_("ScanID",c("species","year","sample"),sep="_")
 
 AK2018_metadata$Area<-"AK2018"
+#meta(AK2018_spectra)[,"Area"]<-"AK2018" 
+
+#Grab metadata from instrument
+AK2018_metadata_instrument<-meta(AK2018_spectra)
+
+#Combine metadata generated in this script with instrument metadata
+AK2018_metadata<-cbind(AK2018_metadata,AK2018_metadata_instrument)
 
 ##Set Metadata
 meta(AK2018_spectra) = data.frame(AK2018_metadata, stringsAsFactors = FALSE)
@@ -81,8 +93,7 @@ meta(AK2018_spectra) = data.frame(AK2018_metadata, stringsAsFactors = FALSE)
 saveRDS(AK2018_spectra      ,"./Output/A_002_SC2_AK2018_spectra.rds"      )
 # ------------------------------------------- Bethel ----------------------------------------------------- #
 ####Read in data as spectra
-bethelLib_spectra<-read_spectra("./Data/SpectraByLocation/BethelLib",
-                                format="sed")
+bethelLib_spectra<-read_spectra("./Data/SpectraByLocation/BethelLib", format="sed", extract_metadata = TRUE)
 ##Remove salex scans
 bethelLib_spectra<-bethelLib_spectra[grep("salex",invert=TRUE,names(bethelLib_spectra))]
 
@@ -113,6 +124,12 @@ bethelLib_metadata<-bethelLib_metadata %>%
     ScanID = as.character(ScanID),
     ScanID = as.character(paste0(substr(ScanID, 1, nchar(ScanID) - 1), row_number())))
 
+#Grab metadata from instrument
+bethelLib_metadata_instrument<-meta(bethelLib_spectra)
+
+#Combine metadata generated in this script with instrument metadata
+bethelLib_metadata<-cbind(bethelLib_metadata,bethelLib_metadata_instrument)
+
 ##Set metadata
 meta(bethelLib_spectra) = data.frame(bethelLib_metadata, stringsAsFactors = FALSE)
 
@@ -122,8 +139,7 @@ saveRDS(bethelLib_spectra      ,"./Output/A_003_SC2_bethelLib_spectra.rds")
 
 
 ####Read in data as spectra
-Big_Trail_Lake_spectra<-read_spectra("./Data/SpectraByLocation/Big_Trail_Lake/original_samples",
-                                     format="sed")
+Big_Trail_Lake_spectra<-read_spectra("./Data/SpectraByLocation/Big_Trail_Lake/original_samples", format="sed", extract_metadata = TRUE)
 
 ##Fix Names 
 names(Big_Trail_Lake_spectra)<-gsub(".sed","",names(Big_Trail_Lake_spectra))
@@ -136,6 +152,12 @@ names(Big_Trail_Lake_metadata)[1]<-"ScanID"
 Big_Trail_Lake_metadata<-Big_Trail_Lake_metadata%>%mutate(Code_name=substr(Big_Trail_Lake_metadata$ScanID,start = 1,stop = 6))
 Big_Trail_Lake_metadata$Area<- "Big Trail"
 
+#Grab metadata from instrument
+Big_Trail_Lake_metadata_instrument<-meta(Big_Trail_Lake_spectra)
+
+#Combine metadata generated in this script with instrument metadata
+Big_Trail_Lake_metadata<-cbind(Big_Trail_Lake_metadata,Big_Trail_Lake_metadata_instrument)
+
 ##Set metadata
 meta(Big_Trail_Lake_spectra) = data.frame(Big_Trail_Lake_metadata, stringsAsFactors = FALSE)
 
@@ -143,8 +165,7 @@ meta(Big_Trail_Lake_spectra) = data.frame(Big_Trail_Lake_metadata, stringsAsFact
 saveRDS(Big_Trail_Lake_spectra      ,"./Output/A_004_SC2_Big_Trail_Lake_spectra.rds"      )
 # ------------------------------------------- Brooks ----------------------------------------------------- #
 ####Read in data as spectra
-brooksLib_spectra<-read_spectra("./Data/SpectraByLocation/BrooksLib",
-                                format="sed")
+brooksLib_spectra<-read_spectra("./Data/SpectraByLocation/BrooksLib", format="sed", extract_metadata = TRUE)
 
 ##Remove eightmileflight1 scans
 brooksLib_spectra<-brooksLib_spectra[grep("orangeporpidia",invert=TRUE,names(brooksLib_spectra))]
@@ -171,6 +192,12 @@ brooksLib_metadata<-brooksLib_metadata %>%
     ScanID = as.character(ScanID),
     ScanID = as.character(paste0(substr(ScanID, 1, nchar(ScanID) - 1), row_number())))
 
+#Grab metadata from instrument
+brooksLib_metadata_instrument<-meta(brooksLib_spectra)
+
+#Combine metadata generated in this script with instrument metadata
+brooksLib_metadata<-cbind(brooksLib_metadata,brooksLib_metadata_instrument)
+
 ##Set metadata
 meta(brooksLib_spectra) = data.frame(brooksLib_metadata, stringsAsFactors = FALSE)
 
@@ -178,8 +205,7 @@ meta(brooksLib_spectra) = data.frame(brooksLib_metadata, stringsAsFactors = FALS
 saveRDS(brooksLib_spectra      ,"./Output/A_005_SC2_brooksLib_spectra.rds")
 # ------------------------------------------- EagleSummit ------------------------------------------------ #
 ####Read in data as spectra
-Eagle_summit_spectra<-read_spectra("./Data/SpectraByLocation/Eagle_summit/original_samples",
-                                   format="sed")
+Eagle_summit_spectra<-read_spectra("./Data/SpectraByLocation/Eagle_summit/original_samples", format="sed", extract_metadata = TRUE)
 
 ##Fix Names 
 names(Eagle_summit_spectra)<-gsub(".sed","",names(Eagle_summit_spectra))
@@ -192,6 +218,12 @@ names(Eagle_summit_metadata)[1]<-"ScanID"
 Eagle_summit_metadata<-Eagle_summit_metadata%>%mutate(Code_name=substr(Eagle_summit_metadata$ScanID,start = 1,stop = 6))
 Eagle_summit_metadata$Area<- "Big Trail"
 
+#Grab metadata from instrument
+Eagle_summit_metadata_instrument<-meta(Eagle_summit_spectra)
+
+#Combine metadata generated in this script with instrument metadata
+Eagle_summit_metadata<-cbind(Eagle_summit_metadata,Eagle_summit_metadata_instrument)
+
 ##Set metadata
 meta(Eagle_summit_spectra) = data.frame(Eagle_summit_metadata, stringsAsFactors = FALSE)
 
@@ -199,8 +231,7 @@ meta(Eagle_summit_spectra) = data.frame(Eagle_summit_metadata, stringsAsFactors 
 saveRDS(Eagle_summit_spectra      ,"./Output/A_006_SC2_Eagle_summit_spectra.rds"      )
 # ------------------------------------------- MurphyDome1 ------------------------------------------------ #
 ####Read in data as spectra
-Murph_lib_spectra<-read_spectra("./Data/SpectraByLocation/20180729/M_Dome",
-                                format="sed")
+Murph_lib_spectra<-read_spectra("./Data/SpectraByLocation/20180729/M_Dome", format="sed", extract_metadata = TRUE)
 
 ##Remove eightmileflight1 scans
 Murph_lib_spectra<-Murph_lib_spectra[grep("M_Dome_T1",invert=TRUE,names(Murph_lib_spectra))]
@@ -241,14 +272,19 @@ Murph_lib_metadata$Code_name[Murph_lib_metadata$Code_name=="perdac"] <-"pedrac"
 Murph_lib_metadata$Code_name[Murph_lib_metadata$Code_name=="petfer"] <-"petfri"
 Murph_lib_metadata$Area<- "Murphy"
 
+#Grab metadata from instrument
+Murph_lib_metadata_instrument<-meta(Murph_lib_spectra)
+
+#Combine metadata generated in this script with instrument metadata
+Murph_lib_metadata<-cbind(Murph_lib_metadata,Murph_lib_metadata_instrument)
+
 ###Set metadata
 meta(Murph_lib_spectra) = data.frame(Murph_lib_metadata, stringsAsFactors = FALSE)
 
 ###save spectra (Raw)
 saveRDS(Murph_lib_spectra      ,"./Output/A_007_SC2_Murph_lib_spectra.rds")
 # ------------------------------------------- Murphydome2 ------------------------------------------------ #
-Murph2_spectra<-read_spectra("./Data/SpectraByLocation/20180729/murphydomeday2",
-                             format="sed")
+Murph2_spectra<-read_spectra("./Data/SpectraByLocation/20180729/murphydomeday2", format="sed", extract_metadata = TRUE)
 
 ##Remove polstricum scans
 Murph2_spectra<-Murph2_spectra[grep("polstricum",invert=TRUE,names(Murph2_spectra))]
@@ -272,6 +308,12 @@ Murph2_spectra_metadata$Code_name[Murph2_spectra_metadata$Code_name=="dicran"] <
 Murph2_spectra_metadata$Code_name[Murph2_spectra_metadata$Code_name=="melane"] <- "melanelia"
 Murph2_spectra_metadata$Area<- "Murphy"
 
+#Grab metadata from instrument
+Murph2_metadata_instrument<-meta(Murph2_spectra)
+
+#Combine metadata generated in this script with instrument metadata
+Murph2_metadata<-cbind(Murph2_metadata,Murph2_metadata_instrument)
+
 ###Set metadata
 meta(Murph2_spectra) = data.frame(Murph2_spectra_metadata, stringsAsFactors = FALSE)
 
@@ -280,12 +322,10 @@ saveRDS(Murph2_spectra      ,"./Output/A_008_SC2_Murph2_spectra.rds")
 # ------------------------------------------- MurphydomeA ------------------------------------------------ #
 
 ####Read in data as spectra
-Murphy_domeA_spectra<-read_spectra("./Data/SpectraByLocation/Murphy_domeA/original_samples",
-                                   format="sed")
+Murphy_domeA_spectra<-read_spectra("./Data/SpectraByLocation/Murphy_domeA/original_samples", format="sed", extract_metadata = TRUE)
 
 ##Fix Names 
 names(Murphy_domeA_spectra)<-gsub(".sed","",names(Murphy_domeA_spectra))
-
 
 ###Create Metadata
 Murphy_domeA_metadata<-as.data.frame(names(Murphy_domeA_spectra))
@@ -295,6 +335,12 @@ names(Murphy_domeA_metadata)[1]<-"ScanID"
 Murphy_domeA_metadata<-Murphy_domeA_metadata%>%mutate(Code_name=substr(Murphy_domeA_metadata$ScanID,start = 1,stop = 6))
 Murphy_domeA_metadata$Area<- "Murphy A"
 
+#Grab metadata from instrument
+Murphy_domeA_metadata_instrument<-meta(Murphy_domeA_spectra)
+
+#Combine metadata generated in this script with instrument metadata
+Murphy_domeA_metadata<-cbind(Murphy_domeA_metadata,Murphy_domeA_metadata_instrument)
+
 ##Set metadata
 meta(Murphy_domeA_spectra) = data.frame(Murphy_domeA_metadata, stringsAsFactors = FALSE)
 
@@ -302,8 +348,7 @@ meta(Murphy_domeA_spectra) = data.frame(Murphy_domeA_metadata, stringsAsFactors 
 saveRDS(Murphy_domeA_spectra      ,"./Output/A_009_SC2_Murphy_domeA_spectra.rds")
 # ------------------------------------------- MurphyDomeB ------------------------------------------------ #
 ####Read in data as spectra
-Murphy_domeB_spectra<-read_spectra("./Data/SpectraByLocation/Murphy_domeB/original_samples",
-                                   format="sed")
+Murphy_domeB_spectra<-read_spectra("./Data/SpectraByLocation/Murphy_domeB/original_samples", format="sed", extract_metadata = TRUE)
 
 ##Fix Names 
 names(Murphy_domeB_spectra)<-gsub(".sed","",names(Murphy_domeB_spectra))
@@ -316,6 +361,12 @@ names(Murphy_domeB_metadata)[1]<-"ScanID"
 Murphy_domeB_metadata<-Murphy_domeB_metadata%>%mutate(Code_name=substr(Murphy_domeB_metadata$ScanID,start = 1,stop = 6))
 Murphy_domeB_metadata$Area<- "Murphy B"
 
+#Grab metadata from instrument
+Murphy_domeB_metadata_instrument<-meta(Murphy_domeB_spectra)
+
+#Combine metadata generated in this script with instrument metadata
+Murphy_domeB_metadata<-cbind(Murphy_domeB_metadata,Murphy_domeB_metadata_instrument)
+
 ##Set metadata
 meta(Murphy_domeB_spectra) = data.frame(Murphy_domeB_metadata, stringsAsFactors = FALSE)
 
@@ -323,8 +374,7 @@ meta(Murphy_domeB_spectra) = data.frame(Murphy_domeB_metadata, stringsAsFactors 
 saveRDS(Murphy_domeB_spectra, "./Output/A_010_SC2_Murphy_domeB_spectra.rds")
 # ------------------------------------------- WickershamDomeB -------------------------------------------- #
 ####Read in data as spectra
-Wickersham_domeA_spectra <- read_spectra("./Data/SpectraByLocation/Wickersham_domeA/original_samples",
-                                       format="sed")
+Wickersham_domeA_spectra <- read_spectra("./Data/SpectraByLocation/Wickersham_domeA/original_samples", format="sed", extract_metadata = TRUE)
 
 ##Fix Names 
 names(Wickersham_domeA_spectra)<-gsub(".sed","",names(Wickersham_domeA_spectra))
@@ -337,6 +387,12 @@ names(Wickersham_domeA_metadata)[1]<-"ScanID"
 Wickersham_domeA_metadata<-Wickersham_domeA_metadata%>%mutate(Code_name=substr(Wickersham_domeA_metadata$ScanID,start = 1,stop = 6))
 Wickersham_domeA_metadata$Area<- "Wickersham B"
 
+#Grab metadata from instrument
+Wickersham_domeA_metadata_instrument<-meta(Wickersham_domeA_spectra)
+
+#Combine metadata generated in this script with instrument metadata
+Wickersham_domeA_metadata<-cbind(Wickersham_domeA_metadata,Wickersham_domeA_metadata_instrument)
+
 ##Set metadata
 meta(Wickersham_domeA_spectra) = data.frame(Wickersham_domeA_metadata, stringsAsFactors = FALSE)
 
@@ -344,8 +400,7 @@ meta(Wickersham_domeA_spectra) = data.frame(Wickersham_domeA_metadata, stringsAs
 saveRDS(Wickersham_domeA_spectra      ,"./Output/A_011_SC2_Wickersham_domeA_spectra.rds")
 # ------------------------------------------- WickershamDomeB -------------------------------------------- #
 ####Read in data as spectra
-Wickersham_domeB_spectra<-read_spectra("./Data/SpectraByLocation/Wickersham_domeB/original_samples",
-                                       format="sed")
+Wickersham_domeB_spectra<-read_spectra("./Data/SpectraByLocation/Wickersham_domeB/original_samples", format="sed", extract_metadata = TRUE)
 
 ##Fix Names 
 names(Wickersham_domeB_spectra)<-gsub(".sed","",names(Wickersham_domeB_spectra))
@@ -358,6 +413,12 @@ names(Wickersham_domeB_metadata)[1]<-"ScanID"
 Wickersham_domeB_metadata<-Wickersham_domeB_metadata%>%mutate(Code_name=substr(Wickersham_domeB_metadata$ScanID,start = 1,stop = 6))
 Wickersham_domeB_metadata$Area<- "Wickersham B"
 
+#Grab metadata from instrument
+Wickersham_domeB_metadata_instrument<-meta(Wickersham_domeB_spectra)
+
+#Combine metadata generated in this script with instrument metadata
+Wickersham_domeB_metadata<-cbind(Wickersham_domeB_metadata,Wickersham_domeB_metadata_instrument)
+
 ##Set metadata
 meta(Wickersham_domeB_spectra) = data.frame(Wickersham_domeB_metadata, stringsAsFactors = FALSE)
 
@@ -365,8 +426,7 @@ meta(Wickersham_domeB_spectra) = data.frame(Wickersham_domeB_metadata, stringsAs
 saveRDS(Wickersham_domeB_spectra      ,"./Output/A_012_SC2_Wickersham_domeB_spectra.rds")
 # ------------------------------------------- Yukon ----------------------------------------------------- #
 ####Read in data as spectra
-yKDeltLib_spectra<-read_spectra("./Data/SpectraByLocation/YKDeltLib",
-                                format="sed")
+yKDeltLib_spectra<-read_spectra("./Data/SpectraByLocation/YKDeltLib", format="sed", extract_metadata = TRUE)
 
 ##Remove eightmileflight1 scans
 yKDeltLib_spectra<-yKDeltLib_spectra[grep("site21clasticprobe",invert=TRUE,names(yKDeltLib_spectra))]
@@ -398,6 +458,14 @@ yKDeltLib_metadata<-yKDeltLib_metadata %>%
   mutate(
     ScanID = as.character(ScanID),
     ScanID = as.character(paste0(substr(ScanID, 1, nchar(ScanID) - 1), row_number())))
+
+
+#Grab metadata from instrument
+yKDeltLib_metadata_instrument<-meta(yKDeltLib_spectra)
+
+#Combine metadata generated in this script with instrument metadata
+yKDeltLib_metadata<-cbind(yKDeltLib_metadata,yKDeltLib_metadata_instrument)
+
 
 ###Set metadata
 meta(yKDeltLib_spectra) = data.frame(yKDeltLib_metadata, stringsAsFactors = FALSE)
