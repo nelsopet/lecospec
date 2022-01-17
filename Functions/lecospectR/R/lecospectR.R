@@ -12,6 +12,8 @@ require(rjson)
 require(rgdal)
 require(gdalUtils)
 require(magrittr)
+require()
+
 #' Functions returns columns that are bandpasses
 #' 
 #' @inheritParams None
@@ -990,7 +992,6 @@ estimate_land_cover <- function(
     # load the input datacube and split into tiles
     input_raster <- raster::brick(input_filepath)
     crs_cache <- raster::crs(input_raster)
-
     if(use_external_bands){
         band_count <- raster::nlayers(input_raster)
         bandnames <- read.csv(config$external_bands)$x[1:band_count] %>% as.vector()
@@ -1032,15 +1033,14 @@ estimate_land_cover <- function(
             i = seq_along(tile_filenames),
             .export = as.vector(ls(.GlobalEnv))
         ) %dopar% {
-            tile_results = unlist(process_file(
+            tile_results = unlist(process_tile(
                 tile_filename = tile_filenames[[i]],
                 ml_model = model, 
                 cluster = NULL,
                 return_raster = TRUE,
                 return_filename = TRUE,
                 save_path = prediction_filenames[[i]],
-                suppress_output = TRUE,
-                aggregation = config$aggregation))
+                suppress_output = TRUE))
             gc()#garbage collect between iterations
         }
     } else {
@@ -1048,15 +1048,14 @@ estimate_land_cover <- function(
             i=seq_along(tile_filenames), 
             .export = c("model", "cl")
         ) %do% {
-           tile_results = unlist(process_file(
+           tile_results = unlist(process_tile(
                 tile_filename = tile_filenames[[i]],
                 ml_model = model, 
                 cluster = cl,
                 return_raster = TRUE,
                 return_filename = TRUE,
                 save_path = prediction_filenames[[i]],
-                suppress_output = TRUE,
-                aggregation = config$aggregation))
+                suppress_output = TRUE))
             gc()
         }
     }
@@ -1098,20 +1097,17 @@ estimate_land_cover <- function(
 #' @export 
 #' @examples Not Yet Implmented
 #'
-process_file <- function(
+process_tile <- function(
     tile_filename,
     ml_model, 
     cluster = NULL,
     return_raster = TRUE,
     return_filename = FALSE,
     save_path = NULL,
-    suppress_output = FALSE,
-    aggregation = 2
+    suppress_output = FALSE
     ) {
     raster_obj <- raster::brick(tile_filename)
     input_crs <- raster::crs(raster_obj)
-    input_extent <- raster::extent(raster_obj)
-    input_res <- raster::res(raster_obj)
     print(paste0("preprocessing raster at ", tile_filename))
     base_df <- preprocess_raster_to_df(raster_obj, ml_model)
     
@@ -1150,7 +1146,7 @@ process_file <- function(
     rm(resampled_df)
     gc()
 
-    print(summary(df))
+    
     predictions <- apply_model(df, ml_model) %>% as.data.frame()
     rm(df)
     gc()
@@ -1160,11 +1156,7 @@ process_file <- function(
     predictions <- convert_and_save_output(
         predictions,
         save_path = save_path,
-        return_raster = return_raster,
-        aggregation = aggregation,
-        target_extent = input_extent,
-        target_crs = input_crs,
-        target_res = input_res)
+        return_raster = return_raster)
 
     if(suppress_output){
         return(save_path)
@@ -1325,13 +1317,6 @@ clean_names <- function(variables){
 #' @examples Not Yet Implmented
 apply_model <- function(df, model, threads = 1, clean_names = TRUE){
 
- #(Ranger model)
-    #print(predictions$prediction)
-    return(UseMethod("apply_model", model))
-}
-
-apply_model.ranger <- function(df, model, threads = 1, clean_names = TRUE){
-
     prediction <-predict(
         model,
         data = df,
@@ -1340,23 +1325,6 @@ apply_model.ranger <- function(df, model, threads = 1, clean_names = TRUE){
     ) #(Ranger model)
     #print(predictions$prediction)
     return(prediction$predictions %>% as.data.frame())
-}
-
-apply_model.keras_model <- function(df, model, threads = 1, clean_names = TRUE){
-
-    # code to run model prediction from tensorflow
-    print("Not yet implemented")
-    return(df)
-}
-
-apply_model.randomForest <- function(df, model, threads = 1, clean_names = TRUE){
-    print("Not yet implemented")
-    return(df)
-}
-
-apply_model.caret <- function(df, model, threads=1, clean_names = TRUE){
-    print("Not yet implemented")
-    return(df)
 }
 
 #' a quick function based on the original code
@@ -1371,17 +1339,13 @@ apply_model.caret <- function(df, model, threads=1, clean_names = TRUE){
 convert_fg2_strings <- function(df) {
     df_convert_results <- df %>% dplyr::mutate(z = case_when(
         z == "Abiotic" ~ 1,
-        z == "Forb" ~ 2,
-        z == "Graminoid" ~ 3,
-        z == "Lichen_Dark" ~ 4,
-        z == "Lichen_Light" ~ 5,
-        z == "Lichen_Yellow" ~ 6,
-        z == "Moss" ~ 7, 
-        z == "Shrub_Decid" ~ 8,
-        z == "Shrub_Evergreen" ~ 9,
-        z == "Tree_Decid" ~ 10,
-        z == "Tree_Evergreen" ~ 11,
-        z == "Unknown" ~ 12
+        z == "Dwarf Shrub" ~ 2,
+        z == "Forb" ~ 3,
+        z == "Graminoid" ~ 4,
+        z == "Lichen" ~ 5,
+        z == "Moss" ~ 6, 
+        z == "Shrub" ~ 7,
+        z == "Tree" ~ 8
     ), .keep = "unused") %>%
     dplyr::select(x,y,z)
 return(df_convert_results)
@@ -1430,6 +1394,8 @@ merge_tiles <- function(input_files, output_path = NULL, target_layer = 1, set_c
         raster::writeRaster(master_raster, output_path, overwrite = TRUE)
     }
 
+
+
     return(master_raster)
 }
 
@@ -1460,17 +1426,13 @@ convert_fg2_int <- function(df) {
     converted_df <- df %>% dplyr::mutate(
         z = dplyr::case_when(
             z == 1 ~ "Abiotic",
-            z == 2 ~ "Forb",
-            z == 3 ~ "Graminoid",
-            z == 4 ~ "Lichen",
-            z == 5 ~ "Lichen_Light",
-            z == 6 ~ "Lichen_Yellow",
-            z == 7 ~ "Moss",
-            z == 8 ~ "Shrub_Decid",
-            z == 9 ~ "Shrub_Evergreen",
-            z == 10 ~ "Tree_Decid",
-            z == 11 ~ "Tree_Evergreen",
-            z == 12 ~ "Unknown"
+            z == 2 ~ "Dwarf Shrub",
+            z == 3 ~ "Forb",
+            z == 4 ~ "Graminoid",
+            z == 5 ~ "Lichen",
+            z == 6 ~ "Moss",
+            z == 7 ~ "Shrub",
+            z == 8 ~ "Tree"
         ), .keep = "unused"
     ) %>% 
     dplyr::select(x,y,z)
@@ -1488,48 +1450,8 @@ convert_fg2_int <- function(df) {
 #' @export 
 #' @examples Not Yet Implmented
 convert_fg1_string <- function(df) {
-    converted_df <- df %>% dplyr::mutate(
-        z = case_when(
-            z == "Dwarf_Shrub_Decid" ~ 1,
-			z == "Forb" ~ 2,
-			z == "Graminoid_Grass" ~ 3,
-			z == "Graminoid_Sedge" ~ 4,
-			z == "Lichen_Crustose_Dark" ~ 5,
-			z == "Lichen_Crustose_Light" ~ 6,
-			z == "Lichen_Epiphyte_Dark" ~ 7,
-			z == "Lichen_Epiphyte_Yellow" ~ 8,
-			z == "Lichen_Foliose_Dark" ~ 9,
-			z == "Lichen_Foliose_Dark_Peltigera" ~ 10,
-			z == "Lichen_Foliose_Light" ~ 11,
-			z == "Lichen_Foliose_Yellow" ~ 12,
-			z == "Lichen_Fruticose_Dark" ~ 13,
-			z == "Lichen_Fruticose_Light" ~ 14,
-			z == "Lichen_Fruticose_Yellow" ~ 15,
-			z == "Litter" ~ 16,
-			z == "Moss_Aulacomnium" ~ 17,
-			z == "Moss_Ceratadon" ~ 18,
-			z == "Moss_Dicranum" ~ 19,
-			z == "Moss_Hylocomnium" ~ 20,
-			z == "Moss_Plagiomnium" ~ 21,
-			z == "Moss_Pleurozium" ~ 22,
-			z == "Moss_Polytrichum" ~ 23,
-			z == "Moss_Racomitrium" ~ 24,
-			z == "Moss_Rhytidium" ~ 25,
-			z == "Moss_Sphagnum_fuscum" ~ 26,
-			z == "Moss_Sphagnum_other" ~ 27,
-			z == "Moss_Tomenthypnum" ~ 28,
-			z == "Rock" ~ 29,
-			z == "Shrub_Alder" ~ 30,
-			z == "Shrub_Betula" ~ 31,
-			z == "Shrub_Evergreen" ~ 32,
-			z == "Shrub_Rosa" ~ 33,
-			z == "Shrub_Salix" ~ 34,
-			z == "Soil" ~ 35,
-			z == "Tree_Decid" ~ 36,
-			z == "Tree_Evergreen" ~ 37,
-			z == "Unknown" ~ 38,
-			z == "Wood_Coarse" ~ 39
-
+    converted_df <- df %>% dplyr::mutate(z = case_when(
+        z == "Abiotic" ~ 1
     )) %>%
     dplyr::select(x,y,z)
 
@@ -1548,46 +1470,7 @@ convert_fg1_string <- function(df) {
 convert_fg1_int <- function(df) {
     converted_df <- df %>% dplyr::mutate(
         z = case_when(
-            z == 1 ~ "Dwarf_Shrub_Decid",
-			z == 2 ~ "Forb",
-			z == 3 ~ "Graminoid_Grass",
-			z == 4 ~ "Graminoid_Sedge",
-			z == 5 ~ "Lichen_Crustose_Dark",
-			z == 6 ~ "Lichen_Crustose_Light",
-			z == 7 ~ "Lichen_Epiphyte_Dark",
-			z == 8 ~ "Lichen_Epiphyte_Yellow",
-			z == 9 ~ "Lichen_Foliose_Dark",
-			z == 10 ~ "Lichen_Foliose_Dark_Peltigera",
-			z == 11 ~ "Lichen_Foliose_Light",
-			z == 12 ~ "Lichen_Foliose_Yellow",
-			z == 13 ~ "Lichen_Fruticose_Dark",
-			z == 14 ~ "Lichen_Fruticose_Light",
-			z == 15 ~ "Lichen_Fruticose_Yellow",
-			z == 16 ~ "Litter",
-			z == 17 ~ "Moss_Aulacomnium",
-			z == 18 ~ "Moss_Ceratadon",
-			z == 19 ~ "Moss_Dicranum",
-			z == 20 ~ "Moss_Hylocomnium",
-			z == 21 ~ "Moss_Plagiomnium",
-			z == 22 ~ "Moss_Pleurozium",
-			z == 23 ~ "Moss_Polytrichum",
-            z == 24 ~ "Moss_Racomitrium",
-			z == 25 ~ "Moss_Rhytidium",
-			z == 26 ~ "Moss_Sphagnum_fuscum",
-			z == 27 ~ "Moss_Sphagnum_other",
-			z == 28 ~ "Moss_Tomenthypnum",
-			z == 29 ~ "Rock",
-			z == 30 ~ "Shrub_Alder",
-			z == 31 ~ "Shrub_Betula",
-			z == 32 ~ "Shrub_Evergreen",
-			z == 33 ~ "Shrub_Rosa",
-			z == 34 ~ "Shrub_Salix",
-			z == 35 ~ "Soil",
-			z == 36 ~ "Tree_Decid",
-			z == 37 ~ "Tree_Evergreen",
-			z == 38 ~ "Unknown",
-			z == 39 ~ "Wood_Coarse"
-
+            z == 1 ~ "Abiotic"
     ))
 }
 
@@ -1601,172 +1484,7 @@ convert_fg1_int <- function(df) {
 #' @export 
 #' @examples Not Yet Implmented
 convert_species_string <- function(df){
-    converted_df <- df %>% dplyr::mutate(
-        z = case_when(
-            z == "abibal"	 ~ 1,
-			z == "acepen" ~ 2,
-			z == "acerub" ~ 3,
-			z == "aleoch" ~ 4,
-			z == "alnfru" ~ 5,
-			z == "alninc" ~ 6,
-			z == "ALVI5" ~ 7,
-			z == "ARALA7" ~ 8,
-			z == "arccen" ~ 9,
-			z == "arcnig" ~ 10,
-			z == "arcrub" ~ 11,
-			z == "arcsta" ~ 12,
-			z == "arctop" ~ 13,
-			z == "ARFU2" ~ 14,
-			z == "ARLA2" ~ 15,
-			z == "asachr" ~ 16,
-			z == "aulpal" ~ 17,
-			z == "aultur" ~ 18,
-			z == "bare rock" ~ 19,
-			z == "bare_soil" ~ 20,
-			z == "BEGL" ~ 21,
-			z == "BENA" ~ 22,
-			z == "BEPU4" ~ 23,
-			z == "betall" ~ 24,
-			z == "betnan" ~ 25,
-			z == "betneo" ~ 26,
-			z == "betpap" ~ 27,
-			z == "betpop" ~ 28,
-			z == "bryoria" ~ 29,
-			z == "CAAQ" ~ 30,
-			z == "calcan" ~ 31,
-			z == "carlin" ~ 32,
-			z == "carlyn" ~ 33,
-			z == "carram" ~ 34,
-			z == "castet" ~ 35,
-			z == "cerpur" ~ 36,
-			z == "cetisl" ~ 37,
-			z == "cetlae" ~ 38,
-			z == "claama" ~ 39,
-			z == "clacor" ~ 40,
-			z == "clacuc" ~ 41,
-			z == "clagra" ~ 42,
-			z == "clamit" ~ 43,
-			z == "claran" ~ 44,
-			z == "claste" ~ 45,
-			z == "clasty" ~ 46,
-			z == "clasul" ~ 47,
-			z == "claunc" ~ 48,
-			z == "dacarc" ~ 49,
-			z == "DAFRF" ~ 50,
-			z == "dead salix" ~ 51,
-			z == "dicranum" ~ 52,
-			z == "DOFR" ~ 53,
-			z == "DROCA2" ~ 54,
-			z == "dryala" ~ 55,
-			z == "dryhyb" ~ 56,
-			z == "dryoct" ~ 57,
-			z == "DUFI" ~ 58,
-			z == "EMNI" ~ 59,
-			z == "empnig" ~ 60,
-			z == "EQAR" ~ 61,
-			z == "equarv" ~ 62,
-			z == "equsyl" ~ 63,
-			z == "ERAN6" ~ 64,
-			z == "erivag" ~ 65,
-			z == "ERVA4" ~ 66,
-			z == "evemes" ~ 67,
-			z == "faggra" ~ 68,
-			z == "flacuc" ~ 69,
-			z == "flaniv" ~ 70,
-			z == "fraame" ~ 71,
-			z == "gravel" ~ 72,
-			z == "grey_rhizocarpon" ~ 73,
-			z == "herlan" ~ 74,
-			z == "HIERA" ~ 75,
-			z == "hylspl" ~ 76,
-			z == "hypaus" ~ 77,
-			z == "hypspl" ~ 78,
-			z == "icmeri" ~ 79,
-			z == "irisit" ~ 80,
-			z == "KAPR" ~ 81,
-			z == "larlar" ~ 82,
-			z == "leddec" ~ 83,
-			z == "LEDUM" ~ 84,
-			z == "loipro" ~ 85,
-			z == "luparc" ~ 86,
-			z == "masric" ~ 87,
-			z == "melanelia" ~ 88,
-			z == "melhep" ~ 89,
-			z == "naparc" ~ 90,
-			z == "neparc" ~ 91,
-			z == "orange_Porpidia" ~ 92,
-			z == "paramb" ~ 93,
-			z == "paromp" ~ 94,
-			z == "parsul" ~ 95,
-			z == "pedrac" ~ 96,
-			z == "pedsud" ~ 97,
-			z == "PEFR5" ~ 98,
-			z == "pelapt" ~ 99,
-			z == "pelleu" ~ 100,
-			z == "pelmal" ~ 101,
-			z == "pelsca" ~ 102,
-			z == "petfri" ~ 103,
-			z == "picmar" ~ 104,
-			z == "picrub" ~ 105,
-			z == "pilaci" ~ 106,
-			z == "pinstr" ~ 107,
-			z == "plagiomnium" ~ 108,
-			z == "plesch" ~ 109,
-			z == "poljen" ~ 110,
-			z == "poljun" ~ 111,
-			z == "polstr" ~ 112,
-			z == "polytrichum" ~ 113,
-			z == "popbal" ~ 114,
-			z == "popbal" ~ 115,
-			z == "popgra" ~ 116,
-			z == "prupen" ~ 117,
-			z == "quartz" ~ 118,
-			z == "querub" ~ 119,
-			z == "raclan" ~ 120,
-			z == "rhigeo" ~ 121,
-			z == "rhutyp" ~ 122,
-			z == "rhyrug" ~ 123,
-			z == "rosaci" ~ 124,
-			z == "rosasc" ~ 125,
-			z == "rubcam" ~ 126,
-			z == "rubcha" ~ 127,
-			z == "RUCH" ~ 128,
-			z == "SAG" ~ 129,
-			z == "salala" ~ 130,
-			z == "salarb" ~ 131,
-			z == "salgla" ~ 132,
-			z == "sallan" ~ 133,
-			z == "salova" ~ 134,
-			z == "Salova" ~ 135,
-			z == "salpul" ~ 136,
-			z == "salric" ~ 137,
-			z == "SAPH" ~ 138,
-			z == "SAPU15" ~ 139,
-			z == "SAPU6" ~ 140,
-			z == "SARI4" ~ 141,
-			z == "sphagn" ~ 142,
-			z == "sphfus" ~ 143,
-			z == "spruce bark" ~ 144,
-			z == "stepas" ~ 145,
-			z == "stetas" ~ 146,
-			z == "thuocc" ~ 147,
-			z == "toefeldia" ~ 148,
-			z == "tomnit" ~ 149,
-			z == "tragra" ~ 150,
-			z == "tsucan" ~ 151,
-			z == "umbarc" ~ 152,
-			z == "umbhyp" ~ 153,
-			z == "usnlap" ~ 154,
-			z == "usnsca" ~ 155,
-			z == "vaculi" ~ 156,
-			z == "vacvit" ~ 157,
-			z == "VAUL" ~ 158,
-			z == "VAVI" ~ 159,
-			z == "vulpin" ~ 160,
-			z == "wooly_salix" ~ 161
-        )
-    )
-    return(converted_df)
+
 }
 
 #' converts the species integer codes to the species name (strings)
@@ -1779,215 +1497,10 @@ convert_species_string <- function(df){
 #' @export 
 #' @examples Not Yet Implmented
 convert_species_int <- function(df){
-    converted_df <- df %>% mutate(
-        case_when(
-            z == 1 ~ "abibal",
-			z == 2 ~ "acepen",
-			z == 3 ~ "acerub",
-			z == 4 ~ "aleoch",
-			z == 5 ~ "alnfru",
-			z == 6 ~ "alninc",
-			z == 7 ~ "ALVI5",
-			z == 8 ~ "ARALA7",
-			z == 9 ~ "arccen",
-			z == 10 ~ "arcnig",
-			z == 11 ~ "arcrub",
-			z == 12 ~ "arcsta",
-			z == 13 ~ "arctop",
-			z == 14 ~ "ARFU2",
-			z == 15 ~ "ARLA2",
-			z == 16 ~ "asachr",
-			z == 17 ~ "aulpal",
-			z == 18 ~ "aultur",
-			z == 19 ~ "bare rock",
-			z == 20 ~ "bare_soil",
-			z == 21 ~ "BEGL",
-			z == 22 ~ "BENA",
-			z == 23 ~ "BEPU4",
-			z == 24 ~ "betall",
-			z == 25 ~ "betnan",
-			z == 26 ~ "betneo",
-			z == 27 ~ "betpap",
-			z == 28 ~ "betpop",
-			z == 29 ~ "bryoria",
-			z == 30 ~ "CAAQ",
-			z == 31 ~ "calcan",
-			z == 32 ~ "carlin",
-			z == 33 ~ "carlyn",
-			z == 34 ~ "carram",
-			z == 35 ~ "castet",
-			z == 36 ~ "cerpur",
-			z == 37 ~ "cetisl",
-			z == 38 ~ "cetlae",
-			z == 39 ~ "claama",
-			z == 40 ~ "clacor",
-			z == 41 ~ "clacuc",
-			z == 42 ~ "clagra",
-			z == 43 ~ "clamit",
-			z == 44 ~ "claran",
-			z == 45 ~ "claste",
-			z == 46 ~ "clasty",
-			z == 47 ~ "clasul",
-			z == 48 ~ "claunc",
-			z == 49 ~ "dacarc",
-			z == 50 ~ "DAFRF",
-			z == 51 ~ "dead salix",
-			z == 52 ~ "dicranum",
-			z == 53 ~ "DOFR",
-			z == 54 ~ "DROCA2",
-			z == 55 ~ "dryala",
-			z == 56 ~ "dryhyb",
-			z == 57 ~ "dryoct",
-			z == 58 ~ "DUFI",
-			z == 59 ~ "EMNI",
-			z == 60 ~ "empnig",
-			z == 61 ~ "EQAR",
-			z == 62 ~ "equarv",
-			z == 63 ~ "equsyl",
-			z == 64 ~ "ERAN6",
-			z == 65 ~ "erivag",
-			z == 66 ~ "ERVA4",
-			z == 67 ~ "evemes",
-			z == 68 ~ "faggra",
-			z == 69 ~ "flacuc",
-			z == 70 ~ "flaniv",
-			z == 71 ~ "fraame",
-			z == 72 ~ "gravel",
-			z == 73 ~ "grey_rhizocarpon",
-			z == 74 ~ "herlan",
-			z == 75 ~ "HIERA",
-			z == 76 ~ "hylspl",
-			z == 77 ~ "hypaus",
-			z == 78 ~ "hypspl",
-			z == 79 ~ "icmeri",
-			z == 80 ~ "irisit",
-			z == 81 ~ "KAPR",
-			z == 82 ~ "larlar",
-			z == 83 ~ "leddec",
-			z == 84 ~ "LEDUM",
-			z == 85 ~ "loipro",
-			z == 86 ~ "luparc",
-			z == 87 ~ "masric",
-			z == 88 ~ "melanelia",
-			z == 89 ~ "melhep",
-			z == 90 ~ "naparc",
-			z == 91 ~ "neparc",
-			z == 92 ~ "orange_Porpidia",
-			z == 93 ~ "paramb",
-			z == 94 ~ "paromp",
-			z == 95 ~ "parsul",
-			z == 96 ~ "pedrac",
-			z == 97 ~ "pedsud",
-			z == 98 ~ "PEFR5",
-			z == 99 ~ "pelapt",
-			z == 100 ~ "pelleu",
-			z == 101 ~ "pelmal",
-			z == 102 ~ "pelsca",
-			z == 103 ~ "petfri",
-			z == 104 ~ "picmar",
-			z == 105 ~ "picrub",
-			z == 106 ~ "pilaci",
-			z == 107 ~ "pinstr",
-			z == 108 ~ "plagiomnium",
-			z == 109 ~ "plesch",
-			z == 110 ~ "poljen",
-			z == 111 ~ "poljun",
-			z == 112 ~ "polstr",
-			z == 113 ~ "polytrichum",
-			z == 114 ~ "popbal",
-			z == 115 ~ "popbal",
-			z == 116 ~ "popgra",
-			z == 117 ~ "prupen",
-			z == 118 ~ "quartz",
-			z == 119 ~ "querub",
-			z == 120 ~ "raclan",
-			z == 121 ~ "rhigeo",
-			z == 122 ~ "rhutyp",
-			z == 123 ~ "rhyrug",
-			z == 124 ~ "rosaci",
-			z == 125 ~ "rosasc",
-			z == 126 ~ "rubcam",
-			z == 127 ~ "rubcha",
-			z == 128 ~ "RUCH",
-			z == 129 ~ "SAG",
-			z == 130 ~ "salala",
-			z == 131 ~ "salarb",
-			z == 132 ~ "salgla",
-			z == 133 ~ "sallan",
-			z == 134 ~ "salova",
-			z == 135 ~ "Salova",
-			z == 136 ~ "salpul",
-			z == 137 ~ "salric",
-			z == 138 ~ "SAPH",
-			z == 139 ~ "SAPU15",
-			z == 140 ~ "SAPU6",
-			z == 141 ~ "SARI4",
-			z == 142 ~ "sphagn",
-			z == 143 ~ "sphfus",
-			z == 144 ~ "spruce bark",
-			z == 145 ~ "stepas",
-			z == 146 ~ "stetas",
-			z == 147 ~ "thuocc",
-			z == 148 ~ "toefeldia",
-			z == 149 ~ "tomnit",
-			z == 150 ~ "tragra",
-			z == 151 ~ "tsucan",
-			z == 152 ~ "umbarc",
-			z == 153 ~ "umbhyp",
-			z == 154 ~ "usnlap",
-			z == 155 ~ "usnsca",
-			z == 156 ~ "vaculi",
-			z == 157 ~ "vacvit",
-			z == 158 ~ "VAUL",
-			z == 159 ~ "VAVI",
-			z == 160 ~ "vulpin",
-			z == 161 ~ "wooly_salix"
-        )
-    )
+
 }
 
-
-convert_pft_string <- function(df, key_path){
-    key_df <- read.csv(key_path)
-    saved_names <- colnames(df)
-    mergded_df <- merge(df, key_df, by.x=z, by.y=names) %>% 
-    select(x,y,id)
-    colnames(merged_df) <- saved_names
-
-    return(merged_df)
-}
-
-convert_pft <- function(df_xyz, aggregation = 2, to_string = FALSE){
-    if(aggregation == 0){
-        if(to_string){
-            return(convert_species_string(df_xyz))
-        } else {
-            return(convert_species_int(df_xyz))
-        }
-    } else if (aggregation == 1) {
-        if(to_string){
-            return(convert_fg1_string(df_xyz))
-        } else {
-            return(convert_fg1_int(df_xyz))
-        }
-    } else if (aggregation == 2) {
-        if(to_string){
-            return(convert_fg2_string(df_xyz))
-        } else {
-            return(convert_fg2_int(df_xyz))
-        } 
-    } else {
-           if(file.exists(aggregation)){
-               return(convert_pft_string(df_xyz, aggregation))
-           } else {
-               # invalid key file and not a prespecified aggregation
-              stop("Invalid aggregation specified: parameter must be 0,1,2 or a valid filepath.")
-           }
-    }
-}
-
-
-#' Converts the output to the correct data type (base::data.frame or raster::rasterLayer) and save it to disk
+#' aconverts the output to the correct data type (base::data.frame or raster::rasterLayer) and save it to disk
 #'
 #' In addition to converting the file, it saves the file to disk.  
 #' In order to avoid issues with overwriting files, the function will 
@@ -2001,25 +1514,10 @@ convert_pft <- function(df_xyz, aggregation = 2, to_string = FALSE){
 #' @seealso None
 #' @export 
 #' @examples Not Yet Implmented
-convert_and_save_output <- function(df, save_path = NULL, return_raster = TRUE, aggregation = 2, target_extent = NULL, target_crs = NULL, target_res = NULL){
+convert_and_save_output <- function(df, save_path = NULL, return_raster = TRUE ){
         if(return_raster){
-        predictions <- convert_pft(df, aggregation = aggregation, to_string = FALSE)
-        print("Dimensions of Output dataframe:")
-        print(dim(df))
-        print("Dimensions of converted dataframe (string -> int):")
-        print(dim(predictions))
+        predictions <- convert_fg2_strings(df)
         predictions <- raster::rasterFromXYZ(predictions)
-
-        # set the exent and CRS if they are supplied by the user
-        if(!is.null(target_extent)){
-            raster::extent(predictions) <- target_extent
-        }
-        if(!is.null(target_crs)){
-            raster::crs(predictions) <- target_crs
-        }
-        if(!is.null(target_res)){
-            raster::res(predictions) <- target_res
-        }
         if(!is.null(save_path)){
             if(file.exists(save_path)){
                 random_string <- paste0("_", stringi::stri_rand_strings(1,4), ".")[[1]]
@@ -2044,7 +1542,7 @@ convert_and_save_output <- function(df, save_path = NULL, return_raster = TRUE, 
     }
 }
 
-#' Performs post-processing for the process_file function
+#' Performs post-processing for the process_tile function
 #'
 #' Renames columns and adds the spatial information that is lost at model inference time.
 #'
@@ -2144,20 +1642,3 @@ calc_num_tiles <- function(file_path, max_size = 128){
 }
 
 # talk to NASA spectral imaging working group r/e gaps
-
-
-correct_band_names <- function(raster_filepath, band_filepath, output_filepath) {
-    input_raster <- raster::brick(raster_filepath)
-    band_count <- raster::nlayers(input_raster)
-    bandnames <- read.csv(band_filepath)$x[1:band_count] %>% as.vector()
-    names(input_raster) <- bandnames
-    # If no output file path is provided, save in place
-    if(is.null(output_filepath)){
-        raster::writeRaster(input_raster, raster_filepath, overwrite=TRUE)
-    } else {
-        # otherwise save to the path provided
-        raster::writeRaster(input_raster, output_filepath)
-    }
-
-}
-
