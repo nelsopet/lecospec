@@ -1325,6 +1325,13 @@ clean_names <- function(variables){
 #' @examples Not Yet Implmented
 apply_model <- function(df, model, threads = 1, clean_names = TRUE){
 
+ #(Ranger model)
+    #print(predictions$prediction)
+    return(UseMethod("apply_model", model))
+}
+
+apply_model.ranger <- function(df, model, threads = 1, clean_names = TRUE){
+
     prediction <-predict(
         model,
         data = df,
@@ -1333,6 +1340,23 @@ apply_model <- function(df, model, threads = 1, clean_names = TRUE){
     ) #(Ranger model)
     #print(predictions$prediction)
     return(prediction$predictions %>% as.data.frame())
+}
+
+apply_model.keras_model <- function(df, model, threads = 1, clean_names = TRUE){
+
+    # code to run model prediction from tensorflow
+    print("Not yet implemented")
+    return(df)
+}
+
+apply_model.randomForest <- function(df, model, threads = 1, clean_names = TRUE){
+    print("Not yet implemented")
+    return(df)
+}
+
+apply_model.caret <- function(df, model, threads=1, clean_names = TRUE){
+    print("Not yet implemented")
+    return(df)
 }
 
 #' a quick function based on the original code
@@ -2120,3 +2144,20 @@ calc_num_tiles <- function(file_path, max_size = 128){
 }
 
 # talk to NASA spectral imaging working group r/e gaps
+
+
+correct_band_names <- function(raster_filepath, band_filepath, output_filepath) {
+    input_raster <- raster::brick(raster_filepath)
+    band_count <- raster::nlayers(input_raster)
+    bandnames <- read.csv(band_filepath)$x[1:band_count] %>% as.vector()
+    names(input_raster) <- bandnames
+    # If no output file path is provided, save in place
+    if(is.null(output_filepath)){
+        raster::writeRaster(input_raster, raster_filepath, overwrite=TRUE)
+    } else {
+        # otherwise save to the path provided
+        raster::writeRaster(input_raster, output_filepath)
+    }
+
+}
+

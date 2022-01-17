@@ -7,7 +7,10 @@ big_test <- "F:/DataCubes/raw_1511_rd_rf_or"
 
 eight_mile_quads_bad_bands <- "F:/Lecospec/Ground_Validation/EightMileQuads.envi"
 eight_mile_quads <- "F:/Lecospec/Ground_Validation/EightMileQuads.grd"
-twelve_mile_quads <- "F:/Lecospec/Ground_Validation/TwelveMileGulchQuads1.envi"
+twelve_mile_quads_raw <- "F:/Lecospec/Ground_Validation/TwelveMileGulchQuads1.envi"
+twelve_mile_quads <-"F:/Lecospec/Ground_Validation/TwelveMileGulchQuads1.grd"
+
+correct_band_names(twelve_mile_quads_raw, "./bands.csv", twelve_mile_quads)
 
 
 results_8m <- estimate_land_cover(
@@ -39,7 +42,7 @@ key_df <- read.csv("./levels.csv")
 cl <- raster::beginCluster()#this is actually quite slow, believe it or not
 
 tile_results <- process_file(
-    eight_mile_quads, 
+    twelve_mile_quads, 
     ml_model, 
     cluster = cl, 
     return_raster = TRUE, 
@@ -51,7 +54,7 @@ raster::endCluster()
 tiles <- list.files("./", pattern = "prediction_*")
 result <- merge_tiles_gdal(tiles, "./gdal_merged_predictions.grd")
 
-correct_band_names <- function(raster_filepath, band_filepath, inplace = TRUE, output_filepath = NULL) {
+correct_band_names <- function(raster_filepath, band_filepath, output_filepath) {
     input_raster <- raster::brick(raster_filepath)
     band_count <- raster::nlayers(input_raster)
     bandnames <- read.csv(band_filepath)$x[1:band_count] %>% as.vector()
