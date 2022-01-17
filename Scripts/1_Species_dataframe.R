@@ -340,7 +340,7 @@ SpecLib_groups$Species_name[SpecLib_groups$Code_name=="VAUL"  ]<-"Vaccinium ulig
 
 ###Add column Functional_group1 (Courser response variables)
 # PRN This is hard coded. We should be using a look up table for functional group (Class 3) each plant species (Class 2) is.
-SpecLib_groups$Functional_group1[SpecLib_groups$Code_name=="abibal"]<-"Tree_Evergreen"
+SpecLib_groups$Functional_group1[SpecLib_groups$Code_name=="abibal"]<-"Tree_Decid"
 SpecLib_groups$Functional_group1[SpecLib_groups$Code_name=="acerub"]<-"Tree_Decid"
 SpecLib_groups$Functional_group1[SpecLib_groups$Code_name=="acepen"]<-"Tree_Decid"
 SpecLib_groups$Functional_group1[SpecLib_groups$Code_name=="aleoch"]<-"Lichen_Fruticose_Yellow"
@@ -674,31 +674,4 @@ SpecLib_groups$Functional_group2[SpecLib_groups$Code_name=="SARI4" ]<-"Shrub"
 SpecLib_groups$Functional_group2[SpecLib_groups$Code_name=="VAUL"  ]<-"Dwarf Shrub"
 
 
-##Refine Fnc group 2 to collapse dwarf and shrub but separate evergreen from deciduos
-SpecLib_groups<-SpecLib_groups %>%
-mutate(
-  Functional_group2 = ifelse(Functional_group1=="Tree_Decid", "Tree_Decid", 
-                             ifelse(Functional_group1=="Tree_Evergreen", "Tree_Evergreen", 
-                                    ifelse(Functional_group1=="Dwarf_Shrub_Decid", "Shrub_Decid",
-                                           ifelse(Functional_group1=="Shrub_Betula","Shrub_Decid",
-                                                  ifelse(Functional_group1=="Shrub_Alder","Shrub_Decid",
-                                                         ifelse(Functional_group1=="Shrub_Evergreen","Shrub_Evergreen",
-                                                                ifelse(Functional_group1=="Shrub_Rosa","Shrub_Decid",
-                                                                       ifelse(Functional_group1=="Shrub_Salix","Shrub_Decid",
-                                                                              ifelse(Functional_group1=="Lichen_Fruticose_Yellow","Lichen_Yellow",
-                                                                                     ifelse(Functional_group1=="Lichen_Foliose_Yellow","Lichen_Yellow",
-                                                                                            ifelse(Functional_group1=="Lichen_Epiphyte_Dark","Lichen_Dark",
-                                                                                                   ifelse(Functional_group1=="Lichen_Fruticose_Dark","Lichen_Dark",
-                                                                                                          ifelse(Functional_group1=="Lichen_Fruticose_Light","Lichen_Light",
-                                                                                                                 ifelse(Functional_group1=="Lichen_Epiphyte_Yellow","Lichen_Yellow",
-                                                                                                                        ifelse(Functional_group1=="Lichen_Crustose_Dark","Lichen_Dark",
-                                                                                                                               ifelse(Functional_group1=="Lichen_Crustose_Light","Lichen_Light",
-                                                                                                                                      ifelse(Functional_group1=="Lichen_Foliose_Dark","Lichen_Dark",
-                                                                                                                                             ifelse(Functional_group1=="Lichen_Foliose_Light","Lichen_Light",
-                                                                                                                                                    ifelse(Functional_group1=="Lichen_Foliose_Dark_Peltigera","Lichen_Dark", Functional_group2)))))))))))))))))))) #%>% dplyr::select(Functional_group2)
-
 write.csv(SpecLib_groups,"Output/B_001_SC1_SpeciesTable.csv",row.names = F)
-
-functional_group_2_key <- as.data.frame(sort(unique(SpecLib_groups$Functional_group2)))
-
-write.csv(functional_group_2_key, "./Output/fg2Key.csv")

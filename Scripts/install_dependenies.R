@@ -22,15 +22,10 @@ lecospec_depenencies <- c(
     "Polychrome",
     "gplots",
     "rasterVis",
-    "RColorBrewer",
-    "rjson",
-    "leaflet",
-    "gtable",
-    "scales",
-    "Boruta"
+    "RColorBrewer"
 )
 
 install.packages(lecospec_depenencies, repos = "http://cran.rstudio.com/")
-update.packages(repos = "http://cran.rstudio.com/", ask = FALSE)
+update.packages(repos = "http://cran.rstudio.com/", ask=FALSE)
 
 webshot::install_phantomjs()
