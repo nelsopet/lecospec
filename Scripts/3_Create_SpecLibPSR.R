@@ -18,7 +18,7 @@ library(glue)
 mypath = "./Output/"
 
 # Reads in species and functional level groups dataframe creatd in script 1
-Species_groups<-read.csv("./Output/B_001_SC1_SpeciesTable.csv")
+Species_groups<-read.csv("./Data/SpeciesTable_20220113.csv")
 
 # Reads in scans from ecosis website
 # Additional spectral profiles that will be combined to the ones collected in Alaska
@@ -122,7 +122,7 @@ Ecosis_data_3 %>%
 Ecosis_data_all<-bind_rows(Ecosis_data_1,Ecosis_data_2,Ecosis_data_3)
 
 
-
+colnames(Ecosis_data_all)
 # Creates a spectral library from ecosis data
 Ecosis_data<-Ecosis_data_all %>% 
   inner_join(Species_groups,by="Code_name") %>% #head
@@ -130,13 +130,13 @@ Ecosis_data<-Ecosis_data_all %>%
                Code_name,
                Species_name,
                Functional_group1,
-               Functional_group2,
+               Functionalgroup2,
                Area,
-               everything())
+               everything()) %>%
+  rename(Functional_group2 = Functionalgroup2)
 
-Ecosis_data %>% group_by(Functional_group1) %>% tally(
-  
-)
+Ecosis_data$ %>% group_by(Functional_group1) %>% tally()
+
 #Check EcoSIS data
 
 
@@ -152,13 +152,13 @@ Ecosis_data %>% group_by(Functional_group1) %>% tally(
             each_target[[i]]<-subset(Ecosis_data,Species_name == Target_names[i])
             
             # saves metadata
-            metadata<-each_target[[i]][,c(1:9)]%>%as.data.frame()
+            metadata<-each_target[[i]][,c(1:6)]%>%as.data.frame()
             
             # Convert to a spectral object
-            each_target[[i]] <- as_spectra(each_target[[i]][-1:-9])
+            each_target[[i]] <- as_spectra(each_target[[i]][-1:-6])
             
             # Add metadata
-            meta(each_target[[i]])<-data.frame(metadata[,c(1:9)], stringsAsFactors = FALSE)
+            meta(each_target[[i]])<-data.frame(metadata[,c(1:6)], stringsAsFactors = FALSE)
             
           }
           
