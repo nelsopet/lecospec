@@ -313,8 +313,6 @@ SpecLib_groups$Species_name[SpecLib_groups$Code_name=="CAAQ"]<-"Carex aquatilis"
 SpecLib_groups$Species_name[SpecLib_groups$Code_name=="ARLA2"]<-"Arctagrostis latifolia"
 SpecLib_groups$Species_name[SpecLib_groups$Code_name=="ERAN6"]<-"Eriophorum angustifolium"
 SpecLib_groups$Species_name[SpecLib_groups$Code_name=="VAVI"]<-"Vaccinium vitis-idea"
-
-
 SpecLib_groups$Species_name[SpecLib_groups$Code_name=="ALVI5" ]<-"Alnus sp."
 SpecLib_groups$Species_name[SpecLib_groups$Code_name=="ARALA7"]<-"Arctostaphyllos"
 SpecLib_groups$Species_name[SpecLib_groups$Code_name=="BEGL"  ]<-"Betula nana"
@@ -482,7 +480,6 @@ SpecLib_groups$Functional_group1[SpecLib_groups$Code_name=="CAAQ"]<-"Graminoid_S
 SpecLib_groups$Functional_group1[SpecLib_groups$Code_name=="ARLA2"]<-"Graminoid_Grass"
 SpecLib_groups$Functional_group1[SpecLib_groups$Code_name=="ERAN6"]<-"Graminoid_Sedge"
 SpecLib_groups$Functional_group1[SpecLib_groups$Code_name=="VAVI"]<-"Shrub_Evergreen"
-
 SpecLib_groups$Functional_group1[SpecLib_groups$Code_name=="ALVI5" ]<-"Shrub_Alder"
 SpecLib_groups$Functional_group1[SpecLib_groups$Code_name=="ARALA7"]<-"Dwarf_Shrub_Decid"
 SpecLib_groups$Functional_group1[SpecLib_groups$Code_name=="BEGL"  ]<-"Shrub_Betula"

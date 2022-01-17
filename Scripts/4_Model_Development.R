@@ -13,19 +13,24 @@ SpecLib_derivs<-read.csv("Output/D_002_SpecLib_Derivs.csv")
 #BadAlder<- SpecLib_derivs %>% colnames()
 #  dplyr::filter(Functional_group1 == "Shrub_Alder" & `1890`<0.15) %>% dim()
 
+metadata_columns_dropped <- c(
+
+)
+
+print(colnames(SpecLib_derivs)[1:40])
 
 #Reorder columns, delete unneeded for species, FNC grp 1 and 2
-SpecLib_derivs_species<-
+SpecLib_derivs_species <-
   SpecLib_derivs %>%
   dplyr::select(Species_name, everything()) %>% #colnames()
-  dplyr::select(-ScanID:-Functional_group2_Freq) %>% #colnames()
+  dplyr::select(-ScanID:-Calibrated.Reference.Correction.File) %>% #colnames()
   dplyr::rename(Classes = Species_name) %>%
   mutate(Classes = as.factor(Classes)) %>% as.data.frame()
 
 SpecLib_derivs_Fnc1<-
   SpecLib_derivs %>%
   dplyr::select(Functional_group1, everything()) %>% #colnames()
-  dplyr::select(-ScanID:-Functional_group2_Freq) %>% #colnames()
+  dplyr::select(-ScanID:-Calibrated.Reference.Correction.File) %>% #colnames()
   dplyr::rename(Classes = Functional_group1) %>%
   mutate(Classes = as.factor(Classes)) %>% as.data.frame()
 
@@ -33,7 +38,7 @@ SpecLib_derivs_Fnc1<-
 SpecLib_derivs_Fnc2<-
   SpecLib_derivs %>%
   dplyr::select(Functional_group2, everything()) %>% #colnames()
-  dplyr::select(-ScanID:-Functional_group2_Freq) %>% #colnames()
+  dplyr::select(-ScanID:-Calibrated.Reference.Correction.File) %>% #colnames()
   dplyr::rename(Classes = Functional_group2) %>%
   mutate(Classes = as.factor(Classes)) %>% as.data.frame()
 
@@ -42,7 +47,7 @@ set.seed(123)
 
 # Build Models
 #rf_mod_ranger_species_pred<-ranger::ranger(Classes ~ .,data = SpecLib_derivs_species, num.trees = 1000)#,local.importance = "impurity_corrected" ) # OOB prediction error:             25.93 %
-#rf_mod_ranger_FncGrp1_pred<-ranger::ranger(Classes ~ .,data = SpecLib_derivs_Fnc1, num.trees = 1000)#,local.importance = "impurity_corrected" ) # OOB prediction error:             25.93 %
+rf_mod_ranger_FncGrp1_pred<-ranger::ranger(Classes ~ .,data = SpecLib_derivs_Fnc1, num.trees = 1000)#,local.importance = "impurity_corrected" ) # OOB prediction error:             25.93 %
 rf_mod_ranger_FncGrp2_pred<-ranger::ranger(Classes ~ .,data = SpecLib_derivs_Fnc2, num.trees = 1000)#,local.importance = "impurity_corrected" ) # OOB prediction error:             25.93 %
 
 #rf_mod_ranger_species_pred

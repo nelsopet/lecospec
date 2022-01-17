@@ -18,7 +18,18 @@ library(glue)
 mypath = "./Output/"
 
 # Reads in species and functional level groups dataframe creatd in script 1
-Species_groups<-read.csv("./Data/SpeciesTable_20220113.csv")
+Species_groups<-read.csv("./Data/SpeciesTable_20220113_2.csv", encoding = 'UTF-8')
+
+print(colnames(Species_groups))
+
+
+colnames(Species_groups) <- c(
+  "Code_name",
+  "Species_name",
+  "Genus",
+  "Functional_group2",
+  "Functional_group1"
+  )
 
 # Reads in scans from ecosis website
 # Additional spectral profiles that will be combined to the ones collected in Alaska
@@ -129,41 +140,42 @@ Ecosis_data<-Ecosis_data_all %>%
   dplyr::select(ScanID,
                Code_name,
                Species_name,
+               Genus,
+               Functional_group2,
                Functional_group1,
-               Functionalgroup2,
                Area,
                everything()) %>%
-  rename(Functional_group2 = Functionalgroup2)
+  rename(Functional_group2 = Functional_group2)
 
-Ecosis_data$ %>% group_by(Functional_group1) %>% tally()
+Ecosis_data %>% group_by(Functional_group1) %>% tally()
 
 #Check EcoSIS data
+meta_columns <- 7
 
+Target_names<-unique(sort(Ecosis_data$Species_name))
 
-          Target_names<-unique(sort(Ecosis_data$Species_name))
-          
-          # Creates an empty list
-          each_target<-list()
-          
-          # Function splits the spectral library into spectral objects based on each target (105 Spectral Objects)
-          for(i in 1:length(Target_names)){
-            
-            # Subset a functional group
-            each_target[[i]]<-subset(Ecosis_data,Species_name == Target_names[i])
-            
-            # saves metadata
-            metadata<-each_target[[i]][,c(1:6)]%>%as.data.frame()
-            
-            # Convert to a spectral object
-            each_target[[i]] <- as_spectra(each_target[[i]][-1:-6])
-            
-            # Add metadata
-            meta(each_target[[i]])<-data.frame(metadata[,c(1:6)], stringsAsFactors = FALSE)
-            
-          }
-          
-          # Renames each target in list 
-          each_target<-each_target%>%setNames(Target_names)
+# Creates an empty list
+each_target<-list()
+
+# Function splits the spectral library into spectral objects based on each target (105 Spectral Objects)
+for(i in 1:length(Target_names)){
+  
+  # Subset a functional group
+  each_target[[i]]<-subset(Ecosis_data,Species_name == Target_names[i])
+  
+  # saves metadata
+  metadata<-each_target[[i]][,c(1:meta_columns)]%>%as.data.frame()
+  
+  # Convert to a spectral object
+  each_target[[i]] <- as_spectra(each_target[[i]][-1:-meta_columns])
+  
+  # Add metadata
+  meta(each_target[[i]])<-data.frame(metadata[,c(1:meta_columns)], stringsAsFactors = FALSE)
+  
+}
+
+# Renames each target in list 
+each_target<-each_target%>%setNames(Target_names)
 
 
 
@@ -182,11 +194,26 @@ Speclib_metadata<-meta(SpecLib_raw)
 
 write_csv(Speclib_metadata,"./Output/C_000_Speclib_raw_metadata.csv")
 
+speclib_conversion_test <- SpecLib_raw %>%
+  as.data.frame()
+
+print(colnames(speclib_conversion_test)[1:50])
+
+
+
 SpecLib<- SpecLib_raw %>%
   as.data.frame() %>% # Converts Spectral Object to a dataframe
   dplyr::select(-sample_name) %>% # Removes unwanted column ~ should remove this later instead
   left_join(Species_groups,by="Code_name") %>% #Joins dataframe with all the species info to our spectral library
-  dplyr::select(ScanID,Code_name,Species_name,Functional_group1,Functional_group2,Area,everything()) #Reorders columns 
+  dplyr::select(
+    ScanID,
+    Code_name,
+    Species_name,
+    Genus,
+    Functional_group2,
+    Functional_group1,
+    Area,
+    everything()) #Reorders columns 
 
 
 # Combines Ecosis data and spectral library
@@ -236,20 +263,48 @@ SpecLib_out<-bind_rows(SpecLib,Ecosis_data)
 
 
 # Removes all the rows with negative values or Values >2
+print(colnames(SpecLib_out)[1:40])
+meta_columns <- 37
 SpecLib_new <-  SpecLib_out %>% 
-  dplyr::filter(if_all(7:ncol(SpecLib_out), ~between(., 0, 1))) #%>% dim()
+  dplyr::filter(if_all(
+    (meta_columns+1):ncol(SpecLib_out),
+    ~between(., 0, 1)))
 
-print(paste0("Filtered data from  ", nrow(SpecLib_out), " rows to ", nrow(SpecLib_new), " rows."))
+print(paste0(
+  "Filtered data from  ",
+  nrow(SpecLib_out),
+  " rows to ",
+  nrow(SpecLib_new),
+  " rows."))
 
 # table(SpecLib_new$Functional_group1)%>%as.data.frame()
 
 # Adds more details to our spectral library (Freq columns = The count of each Species)
 # Frequency values represent the number of scans per species and the number of scans per functional group
 SpecLib_new_All<- SpecLib_new %>% #SpecLib_new%>%
-  plyr::ddply( .(Species_name), mutate, Species_name_Freq = length(Species_name))%>% # Add column to data frame that shows frequency of species
-  plyr::ddply( .(Functional_group1), mutate, Functional_group1_Freq = length(Functional_group1))%>% # Add column to data frame that shows frequency of functional group
-  plyr::ddply( .(Functional_group2), mutate, Functional_group2_Freq = length(Functional_group2))%>% # Add column to data frame that shows frequency of courser functional groups
-  dplyr::select(ScanID,Area,Code_name,Species_name,Functional_group1,Functional_group2,Area,Species_name_Freq,Functional_group1_Freq,Functional_group2_Freq,everything()) # Rearrange columns 
+  plyr::ddply(
+     .(Species_name),
+      mutate,
+      Species_name_Freq = length(Species_name)) %>% # Add column to data frame that shows frequency of species
+  plyr::ddply(
+    .(Functional_group1),
+    mutate,
+    Functional_group1_Freq = length(Functional_group1)) %>% # Add column to data frame that shows frequency of functional group
+  plyr::ddply( .(Functional_group2),
+  mutate,
+  Functional_group2_Freq = length(Functional_group2)) %>% # Add column to data frame that shows frequency of courser functional groups
+  dplyr::select(
+    ScanID,
+    Area,
+    Code_name,
+    Species_name,
+    Functional_group1,
+    Functional_group2,
+    Area,
+    Species_name_Freq,
+    Functional_group1_Freq,
+    Functional_group2_Freq,
+    everything()) # Rearrange columns 
 
 # Removes all unknown scans
 SpecLib_new_All<-SpecLib_new_All[!(SpecLib_new_All$Species_name=="Unknown"),]
@@ -269,6 +324,7 @@ Target_names<-unique(sort(SpecLib_new_All$Species_name))
 
 # Creates an empty list
 each_target<-list()
+meta_columns <- 39
 
 # Function splits the spectral library into spectral objects based on each target (105 Spectral Objects)
 for(i in 1:length(Target_names)){
@@ -277,13 +333,13 @@ for(i in 1:length(Target_names)){
   each_target[[i]]<-subset(SpecLib_new_All,Species_name == Target_names[i])
   
   # saves metadata
-  metadata<-each_target[[i]][,c(1:9)]%>%as.data.frame()
-  
+  metadata<-each_target[[i]][,c(1:(meta_columns))]%>%as.data.frame()
+
   # Convert to a spectral object
-  each_target[[i]] <- as_spectra(each_target[[i]][-1:-9])
+  each_target[[i]] <- as_spectra(each_target[[i]][-1:-(meta_columns)])
   #each_target[[i]] <-normalize(each_target[[i]])
   # Add metadata
-  meta(each_target[[i]])<-data.frame(metadata[,c(1:9)], stringsAsFactors = FALSE)
+  meta(each_target[[i]])<-data.frame(metadata[,c(1:(meta_columns))], stringsAsFactors = FALSE)
   
 }
 
