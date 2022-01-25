@@ -71,10 +71,14 @@ for(raster_file in test_files){
                     "\nError: \n",
                     e
                 ))
+                traceback()
             }
         )
     }
 }
+
+# stop sening output to file
+sink(NULL)
 
 write.csv(
     output_files,
