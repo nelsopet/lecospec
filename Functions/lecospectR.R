@@ -1154,6 +1154,8 @@ process_tile <- function(
         predictions,
         save_path = save_path,
         return_raster = return_raster)
+    
+    raster::crs(predictions) <- input_crs
 
     if(suppress_output){
         return(save_path)
@@ -1383,7 +1385,7 @@ merge_tiles <- function(input_files, output_path = NULL, target_layer = 1) {
         
     }
     if(!is.null(output_path)) {
-        raster::writeRaster(master_raster, output_path, overwrite = TRUE)
+        raster::writeRaster(as(master_raster, "R asterLayer"), output_path, overwrite = TRUE)
     }
 
     return(master_raster)
@@ -1632,3 +1634,44 @@ calc_num_tiles <- function(file_path, max_size = 128){
 }
 
 # talk to NASA spectral imaging working group r/e gaps
+
+visualize_predictions <- function(filepath, key_file, column){
+    require(leaflet)
+    color_map <- create_color_map(key_file, column)
+    labels <- create_labels(key_file, column)
+    layer <- raster::raster(filepath)
+    epsg_code <- 3857
+    layer_projected <- project_to_epsg(layer, epsg_code, categorical_raster = TRUE)
+    map <- leaflet::leaflet() %>%
+        leaflet::addTiles("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+             options = providerTileOptions(minZoom = 8, maxZoom = 100)) %>%
+        leaflet::addRasterImage(layer, layerId = "layer", colors = color_map) %>%
+        leaflet::addLegend("bottomleft", colors = color_map(labels), labels = labels, opacity = 1) %>%
+        leaflet.opacity::addOpacitySlider(layerId = "layer")
+    return(map)
+}
+
+create_color_map <- function(filepath, column){
+    levels <- unlist(read.csv(filepath, header = TRUE)[column])
+    num_levels <- length(unique(levels))
+    palette <- leaflet::colorFactor(grDevices::topo.colors(num_levels), sort(levels))
+    return(palette)
+}
+
+create_labels <- function(filepath, column){
+    return( sort(unique(unlist(read.csv(filepath, header = TRUE)[column]))))
+}
+
+
+project_to_epsg <- function(raster_obj, epsg_code, categorical_raster = FALSE){
+    target_wkt <- sf::st_crs(epsg_code)[[2]]
+    target_crs <- sp::CRS(target_wkt)
+    if(categorical_raster){
+        return(raster::projectRaster(
+            raster_obj,
+            crs=target_crs,
+            method="ngb"
+        ))
+    }
+    return(raster::projectRaster(raster_obj, target_crs))
+}

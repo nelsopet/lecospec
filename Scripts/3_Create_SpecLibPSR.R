@@ -144,8 +144,7 @@ Ecosis_data<-Ecosis_data_all %>%
                Functional_group2,
                Functional_group1,
                Area,
-               everything()) %>%
-  rename(Functional_group2 = Functional_group2)
+               everything()) 
 
 Ecosis_data %>% group_by(Functional_group1) %>% tally()
 
@@ -521,9 +520,11 @@ New_targets[c("Vulpicida pinastri"
               ,"Bryoria sp." )]<-NULL
 
 # Combines all species into one spectral library if satisfied with our results
+
+
 # The result is a dataframe
 Cleaned_Speclib<-Reduce(spectrolab::combine,New_targets)%>% 
-  as.data.frame()%>% # Converts Spectral Object to a dataframe
+  as.data.frame() %>% # Converts Spectral Object to a dataframe
   dplyr::select(-sample_name)
 
 # Creates .rds object
@@ -583,4 +584,3 @@ source("Functions/2_LCE_veg_index.R")
 Make_Speclib_Derivs("Output/C_001_SC3_Cleaned_SpectralLib.csv",out_file="Output/")
 #Make_Speclib_Derivs("Output/C_001_SC3_Cleaned_SpectralLib4.csv", out_file = "Output/resampled/")
 #Make_Speclib_Derivs("Output/C_001_SC3_Cleaned_SpectralLib29.csv", out_file = "Output/resampled/FncGrp2/")
-

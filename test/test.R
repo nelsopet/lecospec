@@ -5,6 +5,7 @@ sink(test_log, append = TRUE)
 print("test start")
 print(date())
 
+training_data_key <- "Data/SpeciesTable_20220113_2.csv"
 test_data <- "./test/test_data/"
 config_folder <- "./test/test_configs/"
 test_files <- list.files(
@@ -45,6 +46,8 @@ for(raster_file in test_files){
                     "and file: \n",
                     file
                 ))
+            
+                colors <- create_color_map()
             }, 
 
             warning = function(w) {
@@ -77,3 +80,4 @@ write.csv(
     output_files,
     "./test/last_test_files.txt"
 )
+
