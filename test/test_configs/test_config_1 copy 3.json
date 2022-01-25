@@ -13,5 +13,6 @@
     "output_path": "./",
     "install_path": "./",
     "external_bands": "./bands.csv",
-    "output_format": "grd"
+    "output_format": "grd",
+    "aggregation": 3
 }

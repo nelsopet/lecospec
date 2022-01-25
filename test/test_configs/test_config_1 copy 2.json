@@ -4,7 +4,7 @@
     "x_tiles": 2,
     "y_tiles": 2,
     "tile_path": "./tiles/",
-    "model_path": "./Output/E_003_Pred_Model_RandomForest_FncGrp2_1000trees.rda",
+    "model_path": "./Output/E_003_Pred_Model_RandomForest_species_1000trees.rda",
     "clusterCores": null,
     "parallelize_by_tiles": true,
     "application": "Not yet implemented",
@@ -13,5 +13,6 @@
     "output_path": "./",
     "install_path": "./",
     "external_bands": "./bands.csv",
-    "output_format": "grd"
+    "output_format": "grd",
+    "aggregation": 0
 }
