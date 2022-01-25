@@ -5,7 +5,9 @@ library(tidyverse)
 
 #------------------Building Model without identifying important varibles --------------
 # Spectral Library
-SpecLib_derivs<-read.csv("Output/D_002_SpecLib_Derivs.csv")
+# Output/C_001_SC3_Cleaned_SpectralLib.csv
+SpecLib_derivs<-read.csv("Output/C_001_SC3_Cleaned_SpectralLib.csv")
+#SpecLib_derivs<-read.csv("Output/D_002_SpecLib_Derivs.csv")
 #SpecLib_derivs<-read.csv("Output/resampled/D_002_SpecLib_Derivs.csv")
 #SpecLib_derivs<-read.csv("Output/resampled/FncGrp2/D_002_SpecLib_Derivs.csv")
 
@@ -46,9 +48,20 @@ SpecLib_derivs_Fnc2<-
 set.seed(123)
 
 # Build Models
-#rf_mod_ranger_species_pred<-ranger::ranger(Classes ~ .,data = SpecLib_derivs_species, num.trees = 1000)#,local.importance = "impurity_corrected" ) # OOB prediction error:             25.93 %
-rf_mod_ranger_FncGrp1_pred<-ranger::ranger(Classes ~ .,data = SpecLib_derivs_Fnc1, num.trees = 1000)#,local.importance = "impurity_corrected" ) # OOB prediction error:             25.93 %
-rf_mod_ranger_FncGrp2_pred<-ranger::ranger(Classes ~ .,data = SpecLib_derivs_Fnc2, num.trees = 1000)#,local.importance = "impurity_corrected" ) # OOB prediction error:             25.93 %
+rf_mod_ranger_species_pred<-ranger::ranger(
+  Classes ~ .,
+  data = SpecLib_derivs_species,
+  num.trees = 1000)#,local.importance = "impurity_corrected" ) # OOB prediction error:             25.93 %
+
+rf_mod_ranger_FncGrp1_pred<-ranger::ranger(
+  Classes ~ .,
+  data = SpecLib_derivs_Fnc1,
+  num.trees = 1000)#,local.importance = "impurity_corrected" ) # OOB prediction error:             25.93 %
+
+rf_mod_ranger_FncGrp2_pred<-ranger::ranger(
+  Classes ~ .,
+  data = SpecLib_derivs_Fnc2,
+  num.trees = 1000)#,local.importance = "impurity_corrected" ) # OOB prediction error:             25.93 %
 
 #rf_mod_ranger_species_pred
 #rf_mod_ranger_FncGrp1_pred
@@ -94,9 +107,8 @@ rf_mod_ranger_FncGrp2_pred$confusion.matrix
 
 
 # saves the model with the lowest error
-
-#save(rf_mod_ranger_species_pred, file = "Output/E_003_Pred_Model_RandomForest_species_resamp29_1000trees.rda")
-#save(rf_mod_ranger_FncGrp1_pred, file = "Output/E_003_Pred_Model_RandomForest_FncGrp1_resamp29_1000trees.rda")
+save(rf_mod_ranger_species_pred, file = "Output/E_003_Pred_Model_RandomForest_species_1000trees.rda")
+save(rf_mod_ranger_FncGrp1_pred, file = "Output/E_003_Pred_Model_RandomForest_FncGrp1_1000trees.rda")
 #save(rf_mod_ranger_FncGrp2_pred, file = "Output/E_003_Pred_Model_RandomForest_FncGrp2_resamp29_1000trees.rda")
 save(rf_mod_ranger_FncGrp2_pred, file = "Output/E_003_Pred_Model_RandomForest_FncGrp2_1000trees.rda")
 

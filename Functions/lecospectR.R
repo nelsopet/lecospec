@@ -58,7 +58,11 @@ remove_band_column <- function(x) {
 #' @seealso None
 #' @export
 #' @examples Not Yet Implmented
-resample_spectral_dataframe <- function(df, wavelength=5) {
+resample_spectral_dataframe <- function(
+    df, 
+    wavelength=5,
+    start = 397.593,
+    end = 899.424) {
     #Separate out data columns & convert to spectal object
     df_no_metadata <- remove_meta_column(df)
     speclib_df <- spectrolab::as_spectra(df_no_metadata)
@@ -66,7 +70,7 @@ resample_spectral_dataframe <- function(df, wavelength=5) {
     # resample to new data frame
     resampled_df_no_metadata <- spectrolab::resample(
         speclib_df, 
-        seq(397.593, 899.424, wavelength)) %>%
+        seq(start, end, wavelength)) %>%
         as.data.frame() %>%
         dplyr::select(-sample_name)
 
@@ -349,9 +353,8 @@ apply_pipeline <- function(data, pipeline_functions) {
 }
 
 get_var_names <- function(ml_model) {
-    Vars_names <- c(ml_model$forest$independent.variable.names) 
-    Vars_names2 <- gsub("^X", "", Vars_names[1:length(Vars_names)])
-    return(Vars_names2)
+    Vars_names <- c(ml_model$forest$independent.variable.names)
+    return( gsub("^X", "", Vars_names))
 }
 
 get_required_veg_indices <- function(ml_model) {
@@ -426,6 +429,8 @@ get_vegetation_indices <- function(
     cluster = NULL) {
 
     target_indices <- get_required_veg_indices(ml_model)
+    print("Calulating Vegetation Indices:")
+    print(target_indices)
     # Creates a new model built on important variables
     # Initialize variable
     veg_indices <- NULL
@@ -1136,6 +1141,11 @@ process_tile <- function(
 
     veg_indices <- get_vegetation_indices(resampled_df, ml_model, cluster = cluster)
 
+    print("Resampled Dataframe Dimensions:")
+    print(dim(resampled_df))
+    print("Index Dataframe Dimensions:")
+    print(dim(veg_indices))
+
     df <- cbind(resampled_df, veg_indices)
     #df <- df %>% dplyr::select(x, y, dplyr::all_of(target_model_cols)) 
     # above line should not be needed, testing then deleting
@@ -1144,7 +1154,7 @@ process_tile <- function(
     gc()
 
     
-    predictions <- apply_model(df, ml_model) %>% as.data.frame()
+    predictions <- apply_model(df, ml_model)
     rm(df)
     gc()
 
@@ -1154,6 +1164,8 @@ process_tile <- function(
         predictions,
         save_path = save_path,
         return_raster = return_raster)
+    
+    raster::crs(predictions) <- input_crs
 
     if(suppress_output){
         return(save_path)
@@ -1498,8 +1510,10 @@ convert_species_int <- function(df){
 #'
 #' @return 
 #' @param df: A data.frame
-#' @param save_path: the file path for saving the converted file.  If NULL (default), no file is saved.  
-#' @param return_raster: If TRUE, the function converts 'df' to a raster before saving and returning the converted data. 
+#' @param save_path: the file path for saving the converted file.  
+#' If NULL (default), no file is saved.  
+#' @param return_raster: If TRUE, the function converts 'df' to a
+#'  raster before saving and returning the converted data. 
 #' If FALSE, the data.frame is saved to disk, but no coversion is made.
 #' @seealso None
 #' @export 
@@ -1632,3 +1646,45 @@ calc_num_tiles <- function(file_path, max_size = 128){
 }
 
 # talk to NASA spectral imaging working group r/e gaps
+
+visualize_predictions <- function(filepath, key_file, column){
+    require(leaflet)
+    color_map <- create_color_map(key_file, column)
+    labels <- create_labels(key_file, column)
+    layer <- raster::raster(filepath)
+    epsg_code <- 3857
+    layer_projected <- project_to_epsg(layer, epsg_code, categorical_raster = TRUE)
+    map <- leaflet::leaflet() %>%
+        leaflet::addTiles("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+             options = providerTileOptions(minZoom = 8, maxZoom = 100)) %>%
+        leaflet::addRasterImage(layer, layerId = "layer", colors = color_map) %>%
+        leaflet::addLegend("bottomleft", colors = color_map(labels), labels = labels, opacity = 1) %>%
+        leaflet.opacity::addOpacitySlider(layerId = "layer")
+    return(map)
+}
+
+create_color_map <- function(filepath, column){
+    levels <- unlist(read.csv(filepath, header = TRUE)[column])
+    num_levels <- length(unique(levels))
+    palette <- leaflet::colorFactor(grDevices::topo.colors(num_levels), sort(levels))
+    return(palette)
+}
+
+create_labels <- function(filepath, column){
+    return( sort(unique(unlist(read.csv(filepath, header = TRUE)[column]))))
+}
+
+
+project_to_epsg <- function(raster_obj, epsg_code, categorical_raster = FALSE){
+    target_wkt <- sf::st_crs(epsg_code)[[2]]
+    target_crs <- sp::CRS(target_wkt)
+    if(categorical_raster){
+        return(raster::projectRaster(
+            raster_obj,
+            crs=target_crs,
+            method="ngb"
+        ))
+    }
+    return(raster::projectRaster(raster_obj, target_crs))
+}
+

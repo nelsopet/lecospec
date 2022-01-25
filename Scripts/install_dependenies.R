@@ -22,7 +22,10 @@ lecospec_depenencies <- c(
     "Polychrome",
     "gplots",
     "rasterVis",
-    "RColorBrewer"
+    "RColorBrewer",
+    "leaflet",
+    "leaflet.opacity",
+    "leaflegend"
 )
 
 install.packages(lecospec_depenencies, repos = "http://cran.rstudio.com/")
