@@ -7,12 +7,35 @@ require(readxl)
 
 #test change
 
-AKValid2019<-read_xlsx(path = "Data/Ground_Validation/Quadrat_2019_AK.xlsx", sheet ="Raw")
-AKValid2019_flat <- AKValid2019 %>%
-  group_by(Plot, meters, UID, PFT) %>%
-  summarise(TotCov = sum(cover)) %>%
-  mutate(PFT = ifelse(PFT=="Litter", "Abiotic", ifelse(PFT=="Dwarf shrub", "Dwarf Shrub", PFT)))
+AKValid2019<-read.csv("./Data/Ground_Validation/QuadratEstimates/Lab_quadrat_cover_2019_Raw.csv", header=TRUE)
+Species_groups<-read.csv("./Data/SpeciesTable_20220113.csv", encoding = 'UTF-8')
+core_names<-colnames(AKValid2019)
 
+#AKValid2019_flat <- 
+  AKValidSpecies<-AKValid2019 %>% #dim #[1] 400   7
+  dplyr::filter(is.na(cover_prn)==FALSE & PFT == "Species") %>% 
+  left_join(Species_groups, by=c("Plant"="Species_name")) #%>%  
+  
+  AKValidGenus<-AKValid2019 %>%
+    dplyr::filter(is.na(cover_prn)==FALSE & PFT == "Genus") %>% 
+    left_join(Species_groups, by=c("Plant"="Genus")) 
+  
+  AKValidFncGrp2<-AKValid2019 %>%
+    dplyr::filter(is.na(cover_prn)==FALSE & PFT == "FncGrp2") %>% 
+    dplyr::select(core_names) %>% #dim
+    left_join(Species_groups, by=c("Plant"="Functionalgroup2")) #%>% dim
+  
+  AKValidAbiotic<-AKValid2019 %>%
+    dplyr::filter(is.na(cover_prn)==FALSE & PFT == "Abiotic") %>% 
+    dplyr::select(core_names) %>% #dim
+    left_join(Species_groups, by=c("Plant"="Functional_group1")) #%>% dim
+
+  
+  AKValid2019_flat<-bind_rows(AKValidSpecies,AKValidGenus,AKValidFncGrp2,AKValidAbiotic)
+  
+
+  
+####LEFT OFF HERE 2022015 PRN  
 unique(AKValid2019_flat$PFT) %>% as.data.frame() %>% rename(FNC_grp1 = ".") %>% anti_join(fnc_grp2_colors, by = "FNC_grp1")
 fnc_grp2_colors$FNC_grp1
 
