@@ -1,11 +1,11 @@
 Plot,meters,Plant,cover,UID,PFT,cover_prn
 Bisongulch,0,Betula nana,20,Bisongulch0,Species,45
 Bisongulch,0,Vaccinium uliginosum,35,Bisongulch0,Species,15
-Bisongulch,0,Picea sp.,20,Bisongulch0,Genus,10
+Bisongulch,0,Picea,20,Bisongulch0,Genus,10
 Bisongulch,0,Hedysarum,10,Bisongulch0,Genus,5
 Bisongulch,0,Litter,n/a,Bisongulch0,Abiotic,5
-Bisongulch,0,Dryas sp.,n/a,Bisongulch0,Genus,10
-Bisongulch,0,Stereocaulon sp.,10,Bisongulch0,Genus,5
+Bisongulch,0,Dryas,n/a,Bisongulch0,Genus,10
+Bisongulch,0,Stereocaulon,10,Bisongulch0,Genus,5
 Bisongulch,0,MossPleurocarp,5,Bisongulch0,FncGrp2,5
 Bisongulch,10,Rock,30,Bisongulch10,Abiotic,10
 Bisongulch,10,Bare soil,10,Bisongulch10,Abiotic,10
@@ -14,7 +14,7 @@ Bisongulch,10,Asahinea chrysantha,1,Bisongulch10,Species,2
 Bisongulch,10,Flavocetraria nivalis,1,Bisongulch10,Species,2
 Bisongulch,10,Rhizocarpon geographicum,3,Bisongulch10,Species,6
 Bisongulch,10,Litter,n/a,Bisongulch10,Abiotic,10
-Bisongulch,10,Dryas sp.,35,Bisongulch10,Genus,20
+Bisongulch,10,Dryas,35,Bisongulch10,Genus,20
 Bisongulch,10,MossAcrocarp,n/a,Bisongulch10,FncGrp2,25
 Bisongulch,10,Rhizocarpon sp.,10,Bisongulch10,Species,5
 Bisongulch,10,Melanelia sp.,10,Bisongulch10,Species,5
@@ -23,17 +23,17 @@ Bisongulch,20,Rock,30,Bisongulch20,Abiotic,30
 Bisongulch,20,Litter,n/a,Bisongulch20,Abiotic,10
 Bisongulch,20,Melanelia sp.,30,Bisongulch20,Species,10
 Bisongulch,20,MossAcrocarp,n/a,Bisongulch20,FncGrp2,20
-Bisongulch,20,Dryas sp.,30,Bisongulch20,Genus,20
+Bisongulch,20,Dryas,30,Bisongulch20,Genus,20
 Bisongulch,30,Rock,75,Bisongulch30,Abiotic,75
 Bisongulch,30,Astragulus,25,Bisongulch30,Genus,25
 Bisongulch,40,Betula nana,80,Bisongulch40,Species,95
 Bisongulch,40,GraminoidGrass,20,Bisongulch40,FncGrp2,5
 Bisongulch,50,Arctostaphyllos,5,Bisongulch50,Genus,5
 Bisongulch,50,Rock,85,Bisongulch50,Abiotic,75
-Bisongulch,50,Phlox sp.,n/a,Bisongulch50,Genus,1
+Bisongulch,50,Phlox,n/a,Bisongulch50,Genus,1
 Bisongulch,50,Vaccinium uliginosum,n/a,Bisongulch50,Species,1
 Bisongulch,50,Litter,n/a,Bisongulch50,Abiotic,10
-Bisongulch,50,Dryas sp.,5,Bisongulch50,Genus,2
+Bisongulch,50,Dryas,5,Bisongulch50,Genus,2
 Bisongulch,50,Carex,n/a,Bisongulch50,Genus,1
 Bisongulch,50,Rhizocarpon geographicum,n/a,Bisongulch50,Species,2
 Bisongulch,50,Melanelia sp.,5,Bisongulch50,Species,3
@@ -41,8 +41,8 @@ Bisongulch,60,Rock,50,Bisongulch60,Abiotic,25
 Bisongulch,60,Bare soil,n/a,Bisongulch60,Abiotic,15
 Bisongulch,60,Litter,n/a,Bisongulch60,Abiotic,10
 Bisongulch,60,Vaccinium uliginosum,20,Bisongulch60,Species,5
-Bisongulch,60,Dryas sp.,n/a,Bisongulch60,Genus,25
-Bisongulch,60,Oxytropis sp.,n/a,Bisongulch60,Genus,1
+Bisongulch,60,Dryas,n/a,Bisongulch60,Genus,25
+Bisongulch,60,Oxytropis,n/a,Bisongulch60,Genus,1
 Bisongulch,60,Carex,n/a,Bisongulch60,Genus,1
 Bisongulch,60,Thamnolia,25,Bisongulch60,Species,10
 Bisongulch,60,Rhizocarpon geographicum,5,Bisongulch60,Species,1
@@ -50,18 +50,18 @@ Bisongulch,60,Arctocetraria centrifuga,5,Bisongulch60,Species,7
 Bisongulch,70,Bare soil,n/a,Bisongulch70,Abiotic,5
 Bisongulch,70,Rock,50,Bisongulch70,Abiotic,35
 Bisongulch,70,Litter,n/a,Bisongulch70,Abiotic,5
-Bisongulch,70,Oxytropis sp.,n/a,Bisongulch70,Genus,3
-Bisongulch,70,Anenome sp.,n/a,Bisongulch70,Genus,2
+Bisongulch,70,Oxytropis,n/a,Bisongulch70,Genus,3
+Bisongulch,70,Anenome,n/a,Bisongulch70,Genus,2
 Bisongulch,70,Vaccinium uliginosum,n/a,Bisongulch70,Species,10
-Bisongulch,70,Salix sp.,n/a,Bisongulch70,Genus,6
-Bisongulch,70,Dryas sp.,n/a,Bisongulch70,Genus,25
+Bisongulch,70,Salix,n/a,Bisongulch70,Genus,6
+Bisongulch,70,Dryas,n/a,Bisongulch70,Genus,25
 Bisongulch,70,Thamnolia,5,Bisongulch70,Species,5
 Bisongulch,70,GraminoidGrass,n/a,Bisongulch70,FncGrp2,1
 Bisongulch,70,Arctocetraria centrifuga,n/a,Bisongulch70,Species,2
 Bisongulch,70,Rhizocarpon geographicum,n/a,Bisongulch70,Species,1
 Bisongulch,80,Vaccinium uliginosum,30,Bisongulch80,Species,15
-Bisongulch,80,Dryas sp.,n/a,Bisongulch80,Genus,10
-Bisongulch,80,Picea sp.,20,Bisongulch80,Genus,30
+Bisongulch,80,Dryas,n/a,Bisongulch80,Genus,10
+Bisongulch,80,Picea,20,Bisongulch80,Genus,30
 Bisongulch,80,Litter,30,Bisongulch80,Abiotic,30
 Bisongulch,80,Potentilla fruticosa,n/a,Bisongulch80,Species,2
 Bisongulch,80,Stereocaulon sp.,5,Bisongulch80,Species,1
@@ -71,7 +71,7 @@ Bisongulch,80,Empetrum nigrum,15,Bisongulch80,Species,9
 Bisongulch,90,Litter,n/a,Bisongulch90,Abiotic,10
 Bisongulch,90,Betula nana,100,Bisongulch90,Species,90
 Bisongulch,100,Bare soil,30,Bisongulch100,Abiotic,20
-Bisongulch,100,Dryas sp.,n/a,Bisongulch100,Genus,50
+Bisongulch,100,Dryas,n/a,Bisongulch100,Genus,50
 Bisongulch,100,Potentilla fruticosa,n/a,Bisongulch100,Species,6
 Bisongulch,100,Carex,n/a,Bisongulch100,Genus,6
 Bisongulch,100,Vaccinium uliginosum,n/a,Bisongulch100,Species,3
@@ -254,7 +254,7 @@ Murphydome,Q84,Acrocarp ,10,MurphydomeQ84,Moss,
 Murphydome,Q84,Rock,30,MurphydomeQ84,Abiotic,
 Twelvemile,40,MossPleurocarp,30,Twelvemile40,FncGrp2,20
 Twelvemile,40,MossAcrocarp,15,Twelvemile40,FncGrp2,7
-Twelvemile,40,Dryas sp.,25,Twelvemile40,Genus,35
+Twelvemile,40,Dryas,25,Twelvemile40,Genus,35
 Twelvemile,40,Empetrum nigrum,n/a,Twelvemile40,Species,11
 Twelvemile,40,GraminoidGrass,10,Twelvemile40,FncGrp2,10
 Twelvemile,40,Litter,n/a,Twelvemile40,Abiotic,5
@@ -268,7 +268,7 @@ Twelvemile,50,Cassiope tetragona,5,Twelvemile50,Species,9
 Twelvemile,50,Rhizocarpon sp.,5,Twelvemile50,Species,2
 Twelvemile,50,Cetraria islandica,n/a,Twelvemile50,Species,8
 Twelvemile,50,Rhizocarpon geographicum,n/a,Twelvemile50,Species,2
-Twelvemile,50,Dryas sp.,15,Twelvemile50,Genus,8
+Twelvemile,50,Dryas,15,Twelvemile50,Genus,8
 Twelvemile,50,Vaccinium uliginosum,n/a,Twelvemile50,Species,3
 Twelvemile,50,Betula nana,n/a,Twelvemile50,Species,3
 Twelvemile,0,Dactylina arctica,n/a,Twelvemile0,Species,1
@@ -278,7 +278,7 @@ Twelvemile,0,Cassiope tetragona,n/a,Twelvemile0,Species,30
 Twelvemile,0,GraminoidGrass,n/a,Twelvemile0,FncGrp2,3
 Twelvemile,0,Betula nana,5,Twelvemile0,Species,2
 Twelvemile,0,Litter,n/a,Twelvemile0,Abiotic,5
-Twelvemile,0,Dryas sp.,10,Twelvemile0,Genus,5
+Twelvemile,0,Dryas,10,Twelvemile0,Genus,5
 Twelvemile,10,Betula nana,20,Twelvemile10,Species,15
 Twelvemile,10,Masonhalea richardsonii,n/a,Twelvemile10,Species,10
 Twelvemile,10,Cetraria islandica,n/a,Twelvemile10,Species,5
@@ -296,7 +296,7 @@ Twelvemile,20,Cetraria islandica,n/a,Twelvemile20,Species,10
 Twelvemile,20,Umbilicaria hyperborea,n/a,Twelvemile20,Species,10
 Twelvemile,20,Litter,n/a,Twelvemile20,Abiotic,10
 Twelvemile,20,Cassiope tetragona,25,Twelvemile20,Species,20
-Twelvemile,20,Dryas sp.,5,Twelvemile20,Genus,5
+Twelvemile,20,Dryas,5,Twelvemile20,Genus,5
 Twelvemile,20,Betula nana,10,Twelvemile20,Species,5
 Twelvemile,20,GraminoidGrass,10,Twelvemile20,FncGrp2,5
 Twelvemile,20,MossPleurocarp,n/a,Twelvemile20,FncGrp2,7
@@ -308,7 +308,7 @@ Twelvemile,30,Empetrum nigrum,10,Twelvemile30,Species,9
 Twelvemile,30,Cassiope tetragona,n/a,Twelvemile30,Species,9
 Twelvemile,30,Masonhalea richardsonii,5,Twelvemile30,Species,1
 Twelvemile,30,Vaccinium uliginosum,15,Twelvemile30,Species,1
-Twelvemile,30,Dryas sp.,5,Twelvemile30,Genus,9
+Twelvemile,30,Dryas,5,Twelvemile30,Genus,9
 Twelvemile,30,Litter,n/a,Twelvemile30,Abiotic,5
 Twelvemile,30,MossPleurocarp,15,Twelvemile30,FncGrp2,1
 Twelvemile,30,GraminoidGrass,15,Twelvemile30,FncGrp2,5
@@ -358,7 +358,7 @@ Twelvemile,60,Cetraria islandica,n/a,Twelvemile60,Species,2
 Twelvemile,60,Cladonia stygia,n/a,Twelvemile60,Species,10
 Twelvemile,60,Vaccinium vitis-idaea,15,Twelvemile60,Species,8
 Twelvemile,60,Cassiope tetragona,n/a,Twelvemile60,Species,8
-Twelvemile,60,Ledum sp.,10,Twelvemile60,Genus,10
+Twelvemile,60,Ledum,10,Twelvemile60,Genus,10
 Twelvemile,60,MossPleurocarp,5,Twelvemile60,FncGrp2,6
 Twelvemile,60,MossAcrocarp,5,Twelvemile60,FncGrp2,3
 Twelvemile,60,Carex,n/a,Twelvemile60,Genus,1
@@ -367,9 +367,9 @@ Twelvemile,60,Litter,n/a,Twelvemile60,Abiotic,5
 Twelvemile,70,Flavocetraria cucculata,35,Twelvemile70,Species,15
 Twelvemile,70,Asahinea chrysantha,35,Twelvemile70,Species,1
 Twelvemile,70,Cladonia stygia,n/a,Twelvemile70,Species,15
-Twelvemile,70,Stereocaulon sp.,n/a,Twelvemile70,Genus,4
-Twelvemile,70,Dryas sp.,45,Twelvemile70,Genus,25
-Twelvemile,70,Salix sp.,n/a,Twelvemile70,Genus,30
+Twelvemile,70,Stereocaulon,n/a,Twelvemile70,Genus,4
+Twelvemile,70,Dryas,45,Twelvemile70,Genus,25
+Twelvemile,70,Salix,n/a,Twelvemile70,Genus,30
 Twelvemile,70,GraminoidGrass,5,Twelvemile70,FncGrp2,5
 Twelvemile,70,Litter,n/a,Twelvemile70,Abiotic,5
 Twelvemile,80,Betula nana,45,Twelvemile80,Species,65
@@ -381,17 +381,17 @@ Twelvemile,80,Arctocetraria centrifuga,5,Twelvemile80,Species,4
 Twelvemile,80,Flavocetraria cucculata,5,Twelvemile80,Species,4
 Twelvemile,80,MossPleurocarp,10,Twelvemile80,FncGrp2,2
 Twelvemile,80,Anenome,n/a,Twelvemile80,Genus,1
-Twelvemile,80,Ledum sp.,10,Twelvemile80,Genus,3
+Twelvemile,80,Ledum,10,Twelvemile80,Genus,3
 Twelvemile,90,Betula nana,30,Twelvemile90,Species,60
 Twelvemile,90,Vaccinium vitis-idaea,30,Twelvemile90,Species,7
 Twelvemile,90,Flavocetraria cucculata,10,Twelvemile90,Species,5
 Twelvemile,90,Arctocetraria centrifuga,10,Twelvemile90,Species,2
 Twelvemile,90,Cetraria islandica,n/a,Twelvemile90,Species,7
-Twelvemile,90,Ledum sp.,15,Twelvemile90,Genus,1
+Twelvemile,90,Ledum,15,Twelvemile90,Genus,1
 Twelvemile,90,Litter,n/a,Twelvemile90,Abiotic,3
-Twelvemile,90,Aulacomnium sp.,10,Twelvemile90,Genus,15
+Twelvemile,90,Aulacomnium,10,Twelvemile90,Genus,15
 Twelvemile,100,Arctostaphyllos,45,Twelvemile100,Genus,35
-Twelvemile,100,Dryas sp.,n/a,Twelvemile100,Genus,20
+Twelvemile,100,Dryas,n/a,Twelvemile100,Genus,20
 Twelvemile,100,Flavocetraria cucculata,30,Twelvemile100,Species,25
 Twelvemile,100,Cladonia rangiferina,30,Twelvemile100,Species,5
 Twelvemile,100,GraminoidGrass,15,Twelvemile100,FncGrp2,5
