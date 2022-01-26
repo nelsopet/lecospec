@@ -96,7 +96,7 @@ rf_mod_ranger_FncGrp2_pred$confusion.matrix
 # saves the model with the lowest error
 
 #save(rf_mod_ranger_species_pred, file = "Output/E_003_Pred_Model_RandomForest_species_resamp29_1000trees.rda")
-#save(rf_mod_ranger_FncGrp1_pred, file = "Output/E_003_Pred_Model_RandomForest_FncGrp1_resamp29_1000trees.rda")
+save(rf_mod_ranger_FncGrp1_pred, file = "Output/E_003_Pred_Model_RandomForest_FncGrp1_1000trees.rda")
 #save(rf_mod_ranger_FncGrp2_pred, file = "Output/E_003_Pred_Model_RandomForest_FncGrp2_resamp29_1000trees.rda")
 save(rf_mod_ranger_FncGrp2_pred, file = "Output/E_003_Pred_Model_RandomForest_FncGrp2_1000trees.rda")
 

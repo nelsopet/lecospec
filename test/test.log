@@ -1,0 +1,152 @@
+[1] "Testing on files:"
+[1] "./test/test_data/BisonGulchQuads.envi"      
+[2] "./test/test_data/TwelveMileGulchQuads1.envi"
+[3] "./test/test_data/TwelveMileGulchQuads2.envi"
+[1] "Configuration files:"
+[1] "./test/test_configs/test_config_1 copy 2.json"
+[2] "./test/test_configs/test_config_1 copy 3.json"
+[3] "./test/test_configs/test_config_1 copy 4.json"
+[4] "./test/test_configs/test_config_1 copy 5.json"
+[5] "./test/test_configs/test_config_1 copy.json"  
+[6] "./test/test_configs/test_config_1.json"       
+[1] "8 Cores Detected for processing..."
+[1] "Tile based processing complete"
+[[1]]
+           used  (Mb) gc trigger  (Mb)  max used  (Mb)
+Ncells  5037961 269.1    8840985 472.2   8840985 472.2
+Vcells 61845365 471.9  126764614 967.2 126764574 967.2
+
+[[2]]
+           used  (Mb) gc trigger   (Mb)  max used  (Mb)
+Ncells  5036731 269.0    8840987  472.2   8840987 472.2
+Vcells 61840911 471.9  136129756 1038.6 128749627 982.3
+
+[[3]]
+           used  (Mb) gc trigger  (Mb)  max used  (Mb)
+Ncells  5037961 269.1    8840985 472.2   8840985 472.2
+Vcells 61845365 471.9  126764614 967.2 126764574 967.2
+
+[[4]]
+           used  (Mb) gc trigger  (Mb) max used  (Mb)
+Ncells  5037550 269.1    8840985 472.2  8840985 472.2
+Vcells 61842761 471.9  107455872 819.9 96195595 734.0
+
+[1] "Wed Jan 26 12:38:00 2022\nTest completed with warnings for config: \n./test/test_configs/test_config_1 copy 2.json\nand file: \n./test/test_data/BisonGulchQuads.envi\nwarnings: \nsimpleWarning in doTryCatch(return(expr), name, parentenv, handler): NAs introduced by coercion\n"
+[1] "8 Cores Detected for processing..."
+[1] "Tile based processing complete"
+[[1]]
+           used  (Mb) gc trigger  (Mb)  max used  (Mb)
+Ncells  5037960 269.1    8840995 472.2   8840995 472.2
+Vcells 61282821 467.6  125792538 959.8 125792520 959.8
+
+[[2]]
+           used  (Mb) gc trigger   (Mb)  max used  (Mb)
+Ncells  5036730 269.0    8840995  472.2   8840995 472.2
+Vcells 61278367 467.6  135157679 1031.2 128434067 979.9
+
+[[3]]
+           used  (Mb) gc trigger   (Mb)  max used  (Mb)
+Ncells  5037960 269.1    8840985  472.2   8840985 472.2
+Vcells 61282821 467.6  134287528 1024.6 124647264 951.0
+
+[[4]]
+           used  (Mb) gc trigger   (Mb)  max used  (Mb)
+Ncells  5036730 269.0    8840986  472.2   8840986 472.2
+Vcells 61278367 467.6  135157679 1031.2 127764981 974.8
+
+[1] "Wed Jan 26 12:42:17 2022\nTest completed with warnings for config: \n./test/test_configs/test_config_1 copy 3.json\nand file: \n./test/test_data/BisonGulchQuads.envi\nwarnings: \nsimpleWarning in doTryCatch(return(expr), name, parentenv, handler): NAs introduced by coercion\n"
+[1] "8 Cores Detected for processing..."
+[1] "Tile based processing complete"
+[[1]]
+           used  (Mb) gc trigger  (Mb)  max used  (Mb)
+Ncells  5037958 269.1    8840986 472.2   8840986 472.2
+Vcells 61282818 467.6  125792532 959.8 125792517 959.8
+
+[[2]]
+           used  (Mb) gc trigger   (Mb)  max used  (Mb)
+Ncells  5036727 269.0    8840985  472.2   8840985 472.2
+Vcells 61278363 467.6  135157672 1031.2 128434063 979.9
+
+[[3]]
+           used  (Mb) gc trigger   (Mb)  max used  (Mb)
+Ncells  5037958 269.1    8840995  472.2   8840995 472.2
+Vcells 61282818 467.6  134287522 1024.6 124647261 951.0
+
+[[4]]
+           used  (Mb) gc trigger   (Mb)  max used  (Mb)
+Ncells  5036728 269.0    8840985  472.2   8840985 472.2
+Vcells 61278364 467.6  135157673 1031.2 127764978 974.8
+
+[1] "Wed Jan 26 12:45:02 2022\nTest completed with warnings for config: \n./test/test_configs/test_config_1 copy 4.json\nand file: \n./test/test_data/BisonGulchQuads.envi\nwarnings: \nsimpleWarning in doTryCatch(return(expr), name, parentenv, handler): NAs introduced by coercion\n"
+[1] "8 Cores Detected for processing..."
+[1] "Tile based processing complete"
+[[1]]
+           used  (Mb) gc trigger  (Mb)  max used  (Mb)
+Ncells  5037958 269.1    8840986 472.2   8840986 472.2
+Vcells 61282818 467.6  125792532 959.8 125792517 959.8
+
+[[2]]
+           used  (Mb) gc trigger   (Mb)  max used  (Mb)
+Ncells  5036728 269.0    8840985  472.2   8840985 472.2
+Vcells 61278364 467.6  135157673 1031.2 128434064 979.9
+
+[[3]]
+           used  (Mb) gc trigger   (Mb)  max used  (Mb)
+Ncells  5037930 269.1    8840985  472.2   8840985 472.2
+Vcells 61282719 467.6  134287522 1024.6 124647261 951.0
+
+[[4]]
+           used  (Mb) gc trigger   (Mb)  max used  (Mb)
+Ncells  5036728 269.0    8840985  472.2   8840985 472.2
+Vcells 61278364 467.6  135157673 1031.2 127764978 974.8
+
+[1] "Wed Jan 26 12:48:06 2022\nTest completed with warnings for config: \n./test/test_configs/test_config_1 copy 5.json\nand file: \n./test/test_data/BisonGulchQuads.envi\nwarnings: \nsimpleWarning in doTryCatch(return(expr), name, parentenv, handler): NAs introduced by coercion\n"
+[1] "8 Cores Detected for processing..."
+[1] "Tile based processing complete"
+[[1]]
+           used  (Mb) gc trigger  (Mb) max used  (Mb)
+Ncells  5038620 269.1    8840995 472.2  8840995 472.2
+Vcells 60525302 461.8   99793554 761.4 98623397 752.5
+
+[[2]]
+           used  (Mb) gc trigger  (Mb) max used  (Mb)
+Ncells  5037549 269.1    8840985 472.2  8840985 472.2
+Vcells 60520998 461.8  106940652 815.9 96222732 734.2
+
+[[3]]
+           used  (Mb) gc trigger  (Mb)  max used  (Mb)
+Ncells  5038620 269.1    8840985 472.2   8840985 472.2
+Vcells 60525302 461.8  104840464 799.9 103561044 790.2
+
+[[4]]
+           used  (Mb) gc trigger  (Mb) max used  (Mb)
+Ncells  5037549 269.1    8840995 472.2  8840995 472.2
+Vcells 60520998 461.8  106940652 815.9 94874741 723.9
+
+[1] "Wed Jan 26 12:51:05 2022\nTest failed for file:\n./test/test_data/BisonGulchQuads.envi using config: \n./test/test_configs/test_config_1 copy.json\nError: \nError in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'print': cannot coerce type 'closure' to vector of type 'character'\n"
+[1] "8 Cores Detected for processing..."
+[1] "Tile based processing complete"
+[[1]]
+           used  (Mb) gc trigger  (Mb)  max used  (Mb)
+Ncells  5038098 269.1    8840994 472.2   8840994 472.2
+Vcells 61405596 468.5  126004694 961.4 126004513 961.4
+
+[[2]]
+           used  (Mb) gc trigger   (Mb)  max used  (Mb)
+Ncells  5036868 269.0    8840985  472.2   8840985 472.2
+Vcells 61401142 468.5  135369834 1032.8 128502722 980.4
+
+[[3]]
+           used  (Mb) gc trigger   (Mb)  max used  (Mb)
+Ncells  5038098 269.1    8840986  472.2   8840986 472.2
+Vcells 61405596 468.5  134499683 1026.2 124715919 951.6
+
+[[4]]
+           used  (Mb) gc trigger   (Mb)  max used  (Mb)
+Ncells  5036868 269.0    8840995  472.2   8840995 472.2
+Vcells 61401142 468.5  135369834 1032.8 127833636 975.3
+
+[1] "Wed Jan 26 12:53:11 2022\nTest completed with warnings for config: \n./test/test_configs/test_config_1.json\nand file: \n./test/test_data/BisonGulchQuads.envi\nwarnings: \nsimpleWarning in doTryCatch(return(expr), name, parentenv, handler): NAs introduced by coercion\n"
+[1] "8 Cores Detected for processing..."
+[1] "Wed Jan 26 12:55:55 2022\nTest failed for file:\n./test/test_data/TwelveMileGulchQuads1.envi using config: \n./test/test_configs/test_config_1 copy 2.json\nError: \nError in {: task 1 failed - \"invalid 'type' (list) of argument\"\n"
+[1] "Wed Jan 26 12:56:33 2022\nTest failed for file:\n./test/test_data/TwelveMileGulchQuads1.envi using config: \n./test/test_configs/test_config_1 copy 3.json\nError: \nError in unserialize(node$con): error reading from connection\n"
