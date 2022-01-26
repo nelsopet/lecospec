@@ -11,7 +11,43 @@ AKValid2019<-read.csv("./Data/Ground_Validation/QuadratEstimates/Lab_quadrat_cov
 Species_groups<-read.csv("./Data/SpeciesTable_20220113.csv", encoding = 'UTF-8')
 core_names<-colnames(AKValid2019)
 
-#AKValid2019_flat <- 
+
+#Try to make Validation taller for a single join between Plant and SpeciesName
+Species_groups_tall<-Species_groups %>% 
+  pivot_longer(cols=Species_name:Functional_group1) %>%
+  rename(PFT=value)
+
+#Find PFTs found in Validation but not SpeciesTable
+
+AKValid2019 %>% #dim #[1] 400   7
+  dplyr::filter(is.na(cover_prn)==FALSE) %>% 
+  anti_join(Species_groups_tall, by=c("Plant"="PFT")) %>%
+  dplyr::select(Plant, PFT) %>%
+  unique()
+  
+
+AKValidSpecies_missing<-AKValid2019 %>% #dim #[1] 400   7
+  dplyr::filter(is.na(cover_prn)==FALSE & PFT == "Species") %>% 
+  anti_join(Species_groups, by=c("Plant"="Species_name")) #%>%  
+
+AKValidGenus_missing<-AKValid2019 %>%
+  dplyr::filter(is.na(cover_prn)==FALSE & PFT == "Genus") %>% 
+  anti_join(Species_groups, by=c("Plant"="Genus")) 
+
+AKValidFncGrp2_missing<-AKValid2019 %>%
+  dplyr::filter(is.na(cover_prn)==FALSE & PFT == "FncGrp2") %>% 
+  anti_join(Species_groups, by=c("Plant"="Functionalgroup2")) #%>% dim
+
+AKValidAbiotic_missing<-AKValid2019 %>%
+  dplyr::filter(is.na(cover_prn)==FALSE & PFT == "Abiotic") %>% 
+  anti_join(Species_groups, by=c("Plant"="Functional_group1")) #%>% dim
+
+
+AKValid2019_flat_missing<-bind_rows(AKValidSpecies_missing,AKValidGenus_missing,AKValidFncGrp2_missing,AKValidAbiotic_missing)
+
+AKValid2019_flat_missing %>% dplyr::select(Plant) %>% unique()
+
+#Join each column one PFT level at a time. Would be more efficient to make the AKValid2019 tall
   AKValidSpecies<-AKValid2019 %>% #dim #[1] 400   7
   dplyr::filter(is.na(cover_prn)==FALSE & PFT == "Species") %>% 
   left_join(Species_groups, by=c("Plant"="Species_name")) #%>%  
@@ -25,7 +61,7 @@ core_names<-colnames(AKValid2019)
     dplyr::select(core_names) %>% #dim
     left_join(Species_groups, by=c("Plant"="Functionalgroup2")) #%>% dim
   
-  AKValidAbiotic<-AKValid2019 %>%
+  AKValidAbiotic<-AKValid2019$Plant %>%
     dplyr::filter(is.na(cover_prn)==FALSE & PFT == "Abiotic") %>% 
     dplyr::select(core_names) %>% #dim
     left_join(Species_groups, by=c("Plant"="Functional_group1")) #%>% dim
@@ -90,76 +126,6 @@ TwelveMile1Names<-as(TwelveMile1Quads, "data.frame")
       dplyr::rename(PFT_Pct_Human = TotCov) %>%
       dplyr::select(PFT.x, Pix_cnt, PFT_pct_ML, PFT_Pct_Human, meters, Plot.x))
 
-
-###OLD
-# Reads in raster
-Predlayer<-raster("Output/Prediction/V2/FncGrp2/BisonGulchQuads.envi/BisonQuadOut.tif")
-projection(Predlayer)
-# Plots Predicted layer
-# plot(Predlayer)
-
-# Grabs attribute table from image
-#AttributeTab<-Predlayer@data@values @data@attributes%>%as.data.frame()
-
-# Change column name so we can join later
-names(AttributeTab)[1]<-"Class"
-AttributeTab$category<-AttributeTab$category%>%as.character()
-AttributeTab$category[AttributeTab$category == ""] <- "NODATA"
-
-# Imports polygons (quadrats) as shapefiles
-Quadrats<-readOGR("Data/Quadrats.shp")
-
-# Extract pixel values based on polygons (for each quadrat)
-Masklayer<-extract(Predlayer,Quadrats, df =T)
-
-# Changes column name so we can join later
-names(Masklayer)[2]<-"Class"
-Masklayer[is.na(Masklayer)]<- 0
-
-# Joins atrribute table info with quadrat table info
-Masklayer2<-inner_join(Masklayer,AttributeTab, by = "Class" )
-
-# Name of all the classes
-classes<-c(AttributeTab$category%>%unique())
-
-# cREATES AN EMPTY LIST
-listofquads<-list()
-
-# Function calculates percent cover for each functional group
-for (i in 1:length(Masklayer2$ID%>%unique())) {
-  
-  # Subsets the quadrat based on a functional group
-  listofquads[[i]]<-subset(Masklayer2,Masklayer2$ID == i)
-  
-  # Calculates the percentage of each functional group within each quadrat
-  listoferrors<-lapply(1:length(classes), function(x){
-    
-    Fungroup_percent<-count(subset(listofquads[[i]],listofquads[[i]]$category == classes[x]))%>%dplyr::select(freq)/nrow(listofquads[[i]])*100
-    
-    names(Fungroup_percent)[1]<-classes[x]
-    
-    if (nrow(Fungroup_percent)==0){
-      Fungroup_percent[1,1]<-"NA"
-    }
-    
-    return(Fungroup_percent)
-  })
-  
-  # Combines all the functional groups into a dataframe
-  eachquad<-do.call("cbind",listoferrors)
-  
-  # Adds a column that represents quadrat number 
-  eachquad$Quadrat<-paste0("Quad ",i)
-  
-  listofquads[[i]]<-eachquad
-  
-}
-
-# Combines all the quadrat infor into one dataframe
-Accuracy_AssesDF<-do.call("rbind",listofquads)%>%dplyr::select(Quadrat,everything())
-
-# Writes out dataframe
-write.csv(Accuracy_AssesDF,"Output/Accuracy_AssesDF.csv",row.names = F)
 
 
 
