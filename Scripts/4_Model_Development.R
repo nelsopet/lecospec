@@ -6,8 +6,8 @@ library(tidyverse)
 #------------------Building Model without identifying important varibles --------------
 # Spectral Library
 # Output/C_001_SC3_Cleaned_SpectralLib.csv
-SpecLib_derivs<-read.csv("Output/C_001_SC3_Cleaned_SpectralLib.csv")
-#SpecLib_derivs<-read.csv("Output/D_002_SpecLib_Derivs.csv")
+#SpecLib_derivs<-read.csv("Output/C_001_SC3_Cleaned_SpectralLib.csv")
+SpecLib_derivs<-read.csv("Output/D_002_SpecLib_Derivs.csv")
 #SpecLib_derivs<-read.csv("Output/resampled/D_002_SpecLib_Derivs.csv")
 #SpecLib_derivs<-read.csv("Output/resampled/FncGrp2/D_002_SpecLib_Derivs.csv")
 
