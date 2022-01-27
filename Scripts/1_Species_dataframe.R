@@ -313,8 +313,6 @@ SpecLib_groups$Species_name[SpecLib_groups$Code_name=="CAAQ"]<-"Carex aquatilis"
 SpecLib_groups$Species_name[SpecLib_groups$Code_name=="ARLA2"]<-"Arctagrostis latifolia"
 SpecLib_groups$Species_name[SpecLib_groups$Code_name=="ERAN6"]<-"Eriophorum angustifolium"
 SpecLib_groups$Species_name[SpecLib_groups$Code_name=="VAVI"]<-"Vaccinium vitis-idea"
-
-
 SpecLib_groups$Species_name[SpecLib_groups$Code_name=="ALVI5" ]<-"Alnus sp."
 SpecLib_groups$Species_name[SpecLib_groups$Code_name=="ARALA7"]<-"Arctostaphyllos"
 SpecLib_groups$Species_name[SpecLib_groups$Code_name=="BEGL"  ]<-"Betula nana"
@@ -482,7 +480,6 @@ SpecLib_groups$Functional_group1[SpecLib_groups$Code_name=="CAAQ"]<-"Graminoid_S
 SpecLib_groups$Functional_group1[SpecLib_groups$Code_name=="ARLA2"]<-"Graminoid_Grass"
 SpecLib_groups$Functional_group1[SpecLib_groups$Code_name=="ERAN6"]<-"Graminoid_Sedge"
 SpecLib_groups$Functional_group1[SpecLib_groups$Code_name=="VAVI"]<-"Shrub_Evergreen"
-
 SpecLib_groups$Functional_group1[SpecLib_groups$Code_name=="ALVI5" ]<-"Shrub_Alder"
 SpecLib_groups$Functional_group1[SpecLib_groups$Code_name=="ARALA7"]<-"Dwarf_Shrub_Decid"
 SpecLib_groups$Functional_group1[SpecLib_groups$Code_name=="BEGL"  ]<-"Shrub_Betula"
@@ -685,20 +682,16 @@ mutate(
                                                          ifelse(Functional_group1=="Shrub_Evergreen","Shrub_Evergreen",
                                                                 ifelse(Functional_group1=="Shrub_Rosa","Shrub_Decid",
                                                                        ifelse(Functional_group1=="Shrub_Salix","Shrub_Decid",
-                                                                              ifelse(Functional_group1=="Lichen_Fruticose_Yellow","Lichen_Yellow",
-                                                                                     ifelse(Functional_group1=="Lichen_Foliose_Yellow","Lichen_Yellow",
-                                                                                            ifelse(Functional_group1=="Lichen_Epiphyte_Dark","Lichen_Dark",
-                                                                                                   ifelse(Functional_group1=="Lichen_Fruticose_Dark","Lichen_Dark",
-                                                                                                          ifelse(Functional_group1=="Lichen_Fruticose_Light","Lichen_Light",
-                                                                                                                 ifelse(Functional_group1=="Lichen_Epiphyte_Yellow","Lichen_Yellow",
-                                                                                                                        ifelse(Functional_group1=="Lichen_Crustose_Dark","Lichen_Dark",
-                                                                                                                               ifelse(Functional_group1=="Lichen_Crustose_Light","Lichen_Light",
-                                                                                                                                      ifelse(Functional_group1=="Lichen_Foliose_Dark","Lichen_Dark",
-                                                                                                                                             ifelse(Functional_group1=="Lichen_Foliose_Light","Lichen_Light",
-                                                                                                                                                    ifelse(Functional_group1=="Lichen_Foliose_Dark_Peltigera","Lichen_Dark", Functional_group2)))))))))))))))))))) #%>% dplyr::select(Functional_group2)
+                                                                              ifelse(Functional_group1=="Lichen_Fruticose_Yellow","Lichen",
+                                                                                     ifelse(Functional_group1=="Lichen_Foliose_Yellow","Lichen",
+                                                                                            ifelse(Functional_group1=="Lichen_Epiphyte_Dark","Lichen",
+                                                                                                   ifelse(Functional_group1=="Lichen_Fruticose_Dark","Lichen",
+                                                                                                          ifelse(Functional_group1=="Lichen_Fruticose_Light","Lichen",
+                                                                                                                 ifelse(Functional_group1=="Lichen_Epiphyte_Yellow","Lichen",
+                                                                                                                        ifelse(Functional_group1=="Lichen_Crustose_Dark","Lichen",
+                                                                                                                               ifelse(Functional_group1=="Lichen_Crustose_Light","Lichen",
+                                                                                                                                      ifelse(Functional_group1=="Lichen_Foliose_Dark","Lichen",
+                                                                                                                                             ifelse(Functional_group1=="Lichen_Foliose_Light","Lichen",
+                                                                                                                                                    ifelse(Functional_group1=="Lichen_Foliose_Dark_Peltigera","Lichen", Functional_group2)))))))))))))))))))) #%>% dplyr::select(Functional_group2)
 
 write.csv(SpecLib_groups,"Output/B_001_SC1_SpeciesTable.csv",row.names = F)
-
-functional_group_2_key <- as.data.frame(sort(unique(SpecLib_groups$Functional_group2)))
-
-write.csv(functional_group_2_key, "./Output/fg2Key.csv")
