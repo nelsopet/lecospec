@@ -16,7 +16,12 @@ quad_results <- estimate_land_cover(
     output_filepath = "./Output/bison_gulch_outputs_par.grd",
     use_external_bands = TRUE)
 
-visualize_predictions("./Output/bison_gulch_outputs_par.grd", "./Data/SpeciesTable_20220113_2.csv", "Functional_group2")
+output <- raster::raster("./Output/bison_gulch_outputs_par.grd")
+png("./run_out.png")
+plot(output)
+dev.off()
+
+
 
 
 
@@ -33,11 +38,15 @@ tile_results <- process_tile(
     cluster = cl, 
     return_raster = TRUE, 
     save_path = "./test_raster_save.grd", 
-    suppress_output = TRUE)
+    suppress_output = FALSE)
 
 print(tile_results)
 
 raster::endCluster()
 
-tiles <- list.files("./", pattern = "prediction_*")
-result <- merge_tiles_gdal(tiles, "./gdal_merged_predictions.grd")
+species_table <- read.csv("./Data/species_table_new.csv", sep=",", fileEncoding="utf-8")
+print(species_table)
+
+
+functional_group2_levels <- unique(species_table$Functionalgroup2)
+print(functional_group2_levels)
