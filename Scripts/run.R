@@ -17,7 +17,7 @@ quad_results <- estimate_land_cover(
     use_external_bands = TRUE)
 
 output <- raster::raster("./Output/bison_gulch_outputs_par.grd")
-png("./run_out.png")
+png("./run_out.png", width = 1024, height = 1024)
 plot(output)
 dev.off()
 

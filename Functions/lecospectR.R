@@ -1039,6 +1039,7 @@ estimate_land_cover <- function(
             tile_results = unlist(process_tile(
                 tile_filename = tile_filenames[[i]],
                 ml_model = model, 
+                aggregation = config$aggregation,
                 cluster = NULL,
                 return_raster = TRUE,
                 return_filename = TRUE,
@@ -1054,6 +1055,7 @@ estimate_land_cover <- function(
            tile_results = unlist(process_tile(
                 tile_filename = tile_filenames[[i]],
                 ml_model = model, 
+                aggregation = config$aggregation,
                 cluster = cl,
                 return_raster = TRUE,
                 return_filename = TRUE,
@@ -1102,6 +1104,7 @@ estimate_land_cover <- function(
 process_tile <- function(
     tile_filename,
     ml_model, 
+    aggregation,
     cluster = NULL,
     return_raster = TRUE,
     return_filename = FALSE,
@@ -1162,6 +1165,7 @@ process_tile <- function(
     
     predictions <- convert_and_save_output(
         predictions,
+        aggregation,
         save_path = save_path,
         return_raster = return_raster)
     
@@ -1345,7 +1349,7 @@ apply_model <- function(df, model, threads = 1, clean_names = TRUE){
 #' @seealso None
 #' @export 
 #' @examples Not Yet Implmented
-convert_fg2_strings <- function(df) {
+convert_fg2_string <- function(df) {
     df_convert_results <- df %>% dplyr::mutate(z = case_when(
         z == "Litter" ~ 0,
         z == "Mineral" ~ 1,
@@ -2004,6 +2008,38 @@ convert_genus_string <- function(df) {
 }
 
 
+convert_pft_codes <- function(df, aggregation_level, to="int"){
+
+    # list of functions for converting the data from strings to integers
+    to_int = list(
+        Functional_group1 = convert_fg1_string,
+        Functional_group2 = convert_fg2_string,
+        Genus = convert_genus_string,
+        Species = convert_species_string
+        )
+
+    # list of functions for converting from integers to strings
+    to_string = list(
+        Functional_group1 = convert_fg1_int,
+        Functional_group2 = convert_fg2_int,
+        Genus = convert_genus_int,
+        Species = convert_species_int
+    )
+
+    # split by conversion type, then use the appropriate function based on the aggregation level
+    if( to == "int" || to =="Int" || to == "integer"){
+        return( to_int[[aggregation_level]](df) )
+    } else if( to == "string" || to == "String") {
+        return( to_string[[aggregation_level]](df) )
+    } else {
+        # catch invalid 'to' parameter
+        stop(paste0("Cannot convert to type ", to))
+    }
+}
+
+
+
+
 #' aconverts the output to the correct data type (base::data.frame or raster::rasterLayer) and save it to disk
 #'
 #' In addition to converting the file, it saves the file to disk.  
@@ -2020,9 +2056,9 @@ convert_genus_string <- function(df) {
 #' @seealso None
 #' @export 
 #' @examples Not Yet Implmented
-convert_and_save_output <- function(df, save_path = NULL, return_raster = TRUE ){
+convert_and_save_output <- function(df, aggregation_level, save_path = NULL, return_raster = TRUE ){
         if(return_raster){
-        predictions <- convert_fg2_strings(df)
+        predictions <- convert_pft_codes(df, aggregation_level = aggregation_level, to = "int")
         predictions <- raster::rasterFromXYZ(predictions)
         if(!is.null(save_path)){
             if(file.exists(save_path)){
