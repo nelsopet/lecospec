@@ -1440,7 +1440,7 @@ merge_tiles <- function(input_files, output_path = NULL, target_layer = 1) {
         config$output_path, 
         c(filename_and_path))    
     new_filename <- gsub(
-        "tile_" 
+        "tile_",
         "prediction_", 
         c(filename_and_path[[length(filename_and_path)]]))[[1]]
     new_path[[length(filename_and_path)]] <- new_filename
