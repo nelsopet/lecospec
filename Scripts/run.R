@@ -28,13 +28,13 @@ dev.off()
 ml_model <- load_model(model_path)
 
 output_key <- rjson::fromJSON(file = "./fg2key.json")
-key_df <- read.csv("./levels.csv")
 
 cl <- raster::beginCluster()#this is actually quite slow, believe it or not
 
 tile_results <- process_tile(
     test_path_2, 
     ml_model, 
+    2,
     cluster = cl, 
     return_raster = TRUE, 
     save_path = "./test_raster_save.grd", 

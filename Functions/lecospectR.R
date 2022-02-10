@@ -1433,8 +1433,18 @@ merge_tiles <- function(input_files, output_path = NULL, target_layer = 1) {
 #' @export 
 #' @examples Not Yet Implmented
 .convert_tile_filename <- function(tile_path, config) {
-    path <- gsub(config$tile_path, config$output_path, c(tile_path))
-    return(gsub("tile", "prediction", path)[[1]])
+
+    filename_and_path <- strsplit(tile_path, "/", fixed = TRUE)
+    new_path <- gsub(
+        config$tile_path, 
+        config$output_path, 
+        c(filename_and_path))    
+    new_filename <- gsub(
+        "tile_" 
+        "prediction_", 
+        c(filename_and_path[[length(filename_and_path)]]))[[1]]
+    new_path[[length(filename_and_path)]] <- new_filename
+    return( paste(unlist(filename_and_path), sep = "/") )
 }
 
 #' aconverts functional group 2 codes from integers to Strings
@@ -2037,7 +2047,12 @@ convert_pft_codes <- function(df, aggregation_level, to="int"){
     }
 }
 
-
+.update_filename <- function(filepath){
+    path_and_extension <- strsplit(save_path, ".", fixed = TRUE)
+    num_parts <- length(path_and_extension)
+    random_str <- paste0("_", stringi::stri_rand_strings(1,4))[[1]]
+    return( paste(path_and_extension[[1]], random_str, path_and_extension[[num_parts]], sep = ".") )
+}
 
 
 #' aconverts the output to the correct data type (base::data.frame or raster::rasterLayer) and save it to disk
@@ -2057,13 +2072,13 @@ convert_pft_codes <- function(df, aggregation_level, to="int"){
 #' @export 
 #' @examples Not Yet Implmented
 convert_and_save_output <- function(df, aggregation_level, save_path = NULL, return_raster = TRUE ){
-        if(return_raster){
         predictions <- convert_pft_codes(df, aggregation_level = aggregation_level, to = "int")
-        predictions <- raster::rasterFromXYZ(predictions)
+        print(paste0("Attempting to save to ", save_path))
+        if(return_raster){
+            predictions <- raster::rasterFromXYZ(predictions)
         if(!is.null(save_path)){
             if(file.exists(save_path)){
-                random_string <- paste0("_", stringi::stri_rand_strings(1,4), ".")[[1]]
-                new_save_path <- gsub(".", random_string, c(save_path))[[1]]
+                new_save_path <- .update_filename(save_path)
                 raster::writeRaster(predictions, filename = new_save_path)
             } else {
                 raster::writeRaster(predictions, filename = save_path)
@@ -2073,8 +2088,7 @@ convert_and_save_output <- function(df, aggregation_level, save_path = NULL, ret
     } else {
         if(!is.null(save_path)){
             if(file.exists(save_path)){
-                random_string <- paste0("_", stringi::stri_rand_strings(1,4), ".")[[1]]
-                new_save_path <- gsub(".", random_string, c(save_path))[[1]]
+                new_save_path <- .update_filename(save_path)
                 write.csv(predictions, new_save_path)
             } else {
                 write.csv(df, save_path)
