@@ -968,7 +968,7 @@ estimate_land_cover <- function(
     input_filepath,
     config_path = "./config.json",
     cache_filepath = "./",
-    output_filepath = "./predictions.grd",
+    output_filepath =  paste("output-",format(Sys.time(), "%a-%b-%d-%H-%M-%S-%Y"), ".tif", sep=""),
     use_external_bands = FALSE
 ) {
 
@@ -1018,13 +1018,14 @@ estimate_land_cover <- function(
         verbose = FALSE
     )
 
+
     rm(input_raster)
     gc()
 
     prediction_filenames <- lapply(
         tile_filenames,
         function(tile_filename){
-            return(.convert_tile_filename(tile_filename, config = config))
+            return(.convert_tile_filename(tile_filename))
     }) %>% as.vector()
 
     # initialize the variable for the tilewise results
@@ -1036,6 +1037,8 @@ estimate_land_cover <- function(
             i = seq_along(tile_filenames),
             .export = as.vector(ls(.GlobalEnv))
         ) %dopar% {
+            RhpcBLASctl::blas_set_num_threads(1L)
+            RhpcBLASctl::omp_set_num_threads(1L)
             tile_results = unlist(process_tile(
                 tile_filename = tile_filenames[[i]],
                 ml_model = model, 
@@ -1069,13 +1072,11 @@ estimate_land_cover <- function(
     
 
     print("Tile based processing complete")
+    raster::endCluster()
     print(tile_results)
 
     results <- merge_tiles(prediction_filenames, output_path = output_filepath)
 
-   
-
-    raster::endCluster()
 
     return(results)
 }
@@ -1432,19 +1433,15 @@ merge_tiles <- function(input_files, output_path = NULL, target_layer = 1) {
 #' @seealso None
 #' @export 
 #' @examples Not Yet Implmented
-.convert_tile_filename <- function(tile_path, config) {
-
-    filename_and_path <- strsplit(tile_path, "/", fixed = TRUE)
-    new_path <- gsub(
-        config$tile_path, 
-        config$output_path, 
-        c(filename_and_path))    
-    new_filename <- gsub(
-        "tile_",
-        "prediction_", 
-        c(filename_and_path[[length(filename_and_path)]]))[[1]]
-    new_path[[length(filename_and_path)]] <- new_filename
-    return( paste(unlist(filename_and_path), sep = "/") )
+.convert_tile_filename <- function(tile_path) {
+    return( 
+        new_filename <- gsub(
+            "tile_",
+            "prediction_", 
+            c(tile_path),
+            fixed = TRUE
+            )[[1]]
+    )
 }
 
 #' aconverts functional group 2 codes from integers to Strings
@@ -2047,11 +2044,20 @@ convert_pft_codes <- function(df, aggregation_level, to="int"){
     }
 }
 
-.update_filename <- function(filepath){
-    path_and_extension <- strsplit(save_path, ".", fixed = TRUE)
-    num_parts <- length(path_and_extension)
-    random_str <- paste0("_", stringi::stri_rand_strings(1,4))[[1]]
-    return( paste(path_and_extension[[1]], random_str, path_and_extension[[num_parts]], sep = ".") )
+#'
+#' @export
+
+
+update_filename <- function(filepath){
+    if(!file.exists(prefix)){return(prefix)}
+    i=1
+    repeat {
+       f = paste(prefix,i,sep=".")
+       if(!file.exists(f)){
+           return(f)
+           }
+       i=i+1
+     }
 }
 
 
@@ -2077,21 +2083,13 @@ convert_and_save_output <- function(df, aggregation_level, save_path = NULL, ret
         if(return_raster){
             predictions <- raster::rasterFromXYZ(predictions)
         if(!is.null(save_path)){
-            if(file.exists(save_path)){
-                new_save_path <- .update_filename(save_path)
-                raster::writeRaster(predictions, filename = new_save_path)
-            } else {
-                raster::writeRaster(predictions, filename = save_path)
-            }
-        }
+                raster::writeRaster(predictions, filename = save_path, overwrite = TRUE)
+            } 
         return(predictions)
     } else {
         if(!is.null(save_path)){
             if(file.exists(save_path)){
-                new_save_path <- .update_filename(save_path)
-                write.csv(predictions, new_save_path)
-            } else {
-                write.csv(df, save_path)
+                write.csv(predictions, save_path, overwrite=TRUE)
             }
         }
             return(df)

@@ -1,455 +1,5 @@
 [1] "test start"
-[1] "Mon Feb 07 12:19:34 2022"
-[1] "Testing on files:"
-[1] "./test/test_data/BisonGulchQuads.envi"       "./test/test_data/EightMileQuads.envi"        "./test/test_data/TwelveMileGulchQuads1.envi" "./test/test_data/TwelveMileGulchQuads2.envi"
-[1] "Configuration files:"
-[1] "./test/test_configs/fg1_1.json"     "./test/test_configs/fg2_1.json"     "./test/test_configs/species_1.json"
-[1] "8 Cores Detected for processing..."
-[1] "Mon Feb 07 12:20:10 2022\nTest failed for file:\n./test/test_data/BisonGulchQuads.envi using config: \n./test/test_configs/fg1_1.json\nError: \nError in checkForRemoteErrors(val): one node produced an error: argument is of length zero\n"
-17: unserialize(node$con)
-16: recvData.SOCKnode(con)
-15: recvData(con)
-14: FUN(X[[i]], ...)
-13: lapply(cl, recvResult)
-12: checkForRemoteErrors(lapply(cl, recvResult))
-11: parallel::clusterCall(cl, library, pk, character.only = TRUE)
-10: .addPackages(cl, exclude = exclude)
-9: raster::beginCluster(num_cores) at lecospectR.R#986
-8: estimate_land_cover(raster_file, config, output_filepath = output_file, 
-       use_external_bands = TRUE)
-7: doTryCatch(return(expr), name, parentenv, handler)
-6: tryCatchOne(expr, names, parentenv, handlers[[1L]])
-5: tryCatchList(expr, names[-nh], parentenv, handlers[-nh])
-4: doTryCatch(return(expr), name, parentenv, handler)
-3: tryCatchOne(tryCatchList(expr, names[-nh], parentenv, handlers[-nh]), 
-       names[nh], parentenv, handlers[[nh]])
-2: tryCatchList(expr, classes, parentenv, handlers)
-1: tryCatch({
-       output_file <- paste0("./test/test_outputs/pred_", raster_file)
-       output <- estimate_land_cover(raster_file, config, output_filepath = output_file, 
-           use_external_bands = TRUE)
-       append(output_files, output_file)
-       print(paste0(date(), "\nTest passed for config: \n", config, 
-           "and file: \n", file))
-       colors <- create_color_map()
-   }, warning = function(w) {
-       print(paste0(date(), "\nTest completed with warnings for config: \n", 
-           config, "\nand file: \n", raster_file, "\nwarnings: \n", 
-           w))
-   }, error = function(e) {
-       print(paste0(date(), "\nTest failed for file:\n", raster_file, 
-           " using config: \n", config, "\nError: \n", e))
-       traceback()
-   })
-[1] "8 Cores Detected for processing..."
-[1] "Mon Feb 07 12:20:46 2022\nTest failed for file:\n./test/test_data/BisonGulchQuads.envi using config: \n./test/test_configs/fg2_1.json\nError: \nError in checkForRemoteErrors(val): one node produced an error: argument is of length zero\n"
-17: unserialize(node$con)
-16: recvData.SOCKnode(con)
-15: recvData(con)
-14: FUN(X[[i]], ...)
-13: lapply(cl, recvResult)
-12: checkForRemoteErrors(lapply(cl, recvResult))
-11: parallel::clusterCall(cl, library, pk, character.only = TRUE)
-10: .addPackages(cl, exclude = exclude)
-9: raster::beginCluster(num_cores) at lecospectR.R#986
-8: estimate_land_cover(raster_file, config, output_filepath = output_file, 
-       use_external_bands = TRUE)
-7: doTryCatch(return(expr), name, parentenv, handler)
-6: tryCatchOne(expr, names, parentenv, handlers[[1L]])
-5: tryCatchList(expr, names[-nh], parentenv, handlers[-nh])
-4: doTryCatch(return(expr), name, parentenv, handler)
-3: tryCatchOne(tryCatchList(expr, names[-nh], parentenv, handlers[-nh]), 
-       names[nh], parentenv, handlers[[nh]])
-2: tryCatchList(expr, classes, parentenv, handlers)
-1: tryCatch({
-       output_file <- paste0("./test/test_outputs/pred_", raster_file)
-       output <- estimate_land_cover(raster_file, config, output_filepath = output_file, 
-           use_external_bands = TRUE)
-       append(output_files, output_file)
-       print(paste0(date(), "\nTest passed for config: \n", config, 
-           "and file: \n", file))
-       colors <- create_color_map()
-   }, warning = function(w) {
-       print(paste0(date(), "\nTest completed with warnings for config: \n", 
-           config, "\nand file: \n", raster_file, "\nwarnings: \n", 
-           w))
-   }, error = function(e) {
-       print(paste0(date(), "\nTest failed for file:\n", raster_file, 
-           " using config: \n", config, "\nError: \n", e))
-       traceback()
-   })
-[1] "8 Cores Detected for processing..."
-[1] "Mon Feb 07 12:21:16 2022\nTest failed for file:\n./test/test_data/BisonGulchQuads.envi using config: \n./test/test_configs/species_1.json\nError: \nError in checkForRemoteErrors(val): one node produced an error: argument is of length zero\n"
-17: unserialize(node$con)
-16: recvData.SOCKnode(con)
-15: recvData(con)
-14: FUN(X[[i]], ...)
-13: lapply(cl, recvResult)
-12: checkForRemoteErrors(lapply(cl, recvResult))
-11: parallel::clusterCall(cl, library, pk, character.only = TRUE)
-10: .addPackages(cl, exclude = exclude)
-9: raster::beginCluster(num_cores) at lecospectR.R#986
-8: estimate_land_cover(raster_file, config, output_filepath = output_file, 
-       use_external_bands = TRUE)
-7: doTryCatch(return(expr), name, parentenv, handler)
-6: tryCatchOne(expr, names, parentenv, handlers[[1L]])
-5: tryCatchList(expr, names[-nh], parentenv, handlers[-nh])
-4: doTryCatch(return(expr), name, parentenv, handler)
-3: tryCatchOne(tryCatchList(expr, names[-nh], parentenv, handlers[-nh]), 
-       names[nh], parentenv, handlers[[nh]])
-2: tryCatchList(expr, classes, parentenv, handlers)
-1: tryCatch({
-       output_file <- paste0("./test/test_outputs/pred_", raster_file)
-       output <- estimate_land_cover(raster_file, config, output_filepath = output_file, 
-           use_external_bands = TRUE)
-       append(output_files, output_file)
-       print(paste0(date(), "\nTest passed for config: \n", config, 
-           "and file: \n", file))
-       colors <- create_color_map()
-   }, warning = function(w) {
-       print(paste0(date(), "\nTest completed with warnings for config: \n", 
-           config, "\nand file: \n", raster_file, "\nwarnings: \n", 
-           w))
-   }, error = function(e) {
-       print(paste0(date(), "\nTest failed for file:\n", raster_file, 
-           " using config: \n", config, "\nError: \n", e))
-       traceback()
-   })
-[1] "8 Cores Detected for processing..."
-[1] "Mon Feb 07 12:21:44 2022\nTest failed for file:\n./test/test_data/EightMileQuads.envi using config: \n./test/test_configs/fg1_1.json\nError: \nError in checkForRemoteErrors(val): one node produced an error: argument is of length zero\n"
-17: unserialize(node$con)
-16: recvData.SOCKnode(con)
-15: recvData(con)
-14: FUN(X[[i]], ...)
-13: lapply(cl, recvResult)
-12: checkForRemoteErrors(lapply(cl, recvResult))
-11: parallel::clusterCall(cl, library, pk, character.only = TRUE)
-10: .addPackages(cl, exclude = exclude)
-9: raster::beginCluster(num_cores) at lecospectR.R#986
-8: estimate_land_cover(raster_file, config, output_filepath = output_file, 
-       use_external_bands = TRUE)
-7: doTryCatch(return(expr), name, parentenv, handler)
-6: tryCatchOne(expr, names, parentenv, handlers[[1L]])
-5: tryCatchList(expr, names[-nh], parentenv, handlers[-nh])
-4: doTryCatch(return(expr), name, parentenv, handler)
-3: tryCatchOne(tryCatchList(expr, names[-nh], parentenv, handlers[-nh]), 
-       names[nh], parentenv, handlers[[nh]])
-2: tryCatchList(expr, classes, parentenv, handlers)
-1: tryCatch({
-       output_file <- paste0("./test/test_outputs/pred_", raster_file)
-       output <- estimate_land_cover(raster_file, config, output_filepath = output_file, 
-           use_external_bands = TRUE)
-       append(output_files, output_file)
-       print(paste0(date(), "\nTest passed for config: \n", config, 
-           "and file: \n", file))
-       colors <- create_color_map()
-   }, warning = function(w) {
-       print(paste0(date(), "\nTest completed with warnings for config: \n", 
-           config, "\nand file: \n", raster_file, "\nwarnings: \n", 
-           w))
-   }, error = function(e) {
-       print(paste0(date(), "\nTest failed for file:\n", raster_file, 
-           " using config: \n", config, "\nError: \n", e))
-       traceback()
-   })
-[1] "8 Cores Detected for processing..."
-[1] "Mon Feb 07 12:22:12 2022\nTest failed for file:\n./test/test_data/EightMileQuads.envi using config: \n./test/test_configs/fg2_1.json\nError: \nError in checkForRemoteErrors(val): one node produced an error: argument is of length zero\n"
-17: unserialize(node$con)
-16: recvData.SOCKnode(con)
-15: recvData(con)
-14: FUN(X[[i]], ...)
-13: lapply(cl, recvResult)
-12: checkForRemoteErrors(lapply(cl, recvResult))
-11: parallel::clusterCall(cl, library, pk, character.only = TRUE)
-10: .addPackages(cl, exclude = exclude)
-9: raster::beginCluster(num_cores) at lecospectR.R#986
-8: estimate_land_cover(raster_file, config, output_filepath = output_file, 
-       use_external_bands = TRUE)
-7: doTryCatch(return(expr), name, parentenv, handler)
-6: tryCatchOne(expr, names, parentenv, handlers[[1L]])
-5: tryCatchList(expr, names[-nh], parentenv, handlers[-nh])
-4: doTryCatch(return(expr), name, parentenv, handler)
-3: tryCatchOne(tryCatchList(expr, names[-nh], parentenv, handlers[-nh]), 
-       names[nh], parentenv, handlers[[nh]])
-2: tryCatchList(expr, classes, parentenv, handlers)
-1: tryCatch({
-       output_file <- paste0("./test/test_outputs/pred_", raster_file)
-       output <- estimate_land_cover(raster_file, config, output_filepath = output_file, 
-           use_external_bands = TRUE)
-       append(output_files, output_file)
-       print(paste0(date(), "\nTest passed for config: \n", config, 
-           "and file: \n", file))
-       colors <- create_color_map()
-   }, warning = function(w) {
-       print(paste0(date(), "\nTest completed with warnings for config: \n", 
-           config, "\nand file: \n", raster_file, "\nwarnings: \n", 
-           w))
-   }, error = function(e) {
-       print(paste0(date(), "\nTest failed for file:\n", raster_file, 
-           " using config: \n", config, "\nError: \n", e))
-       traceback()
-   })
-[1] "8 Cores Detected for processing..."
-[1] "Mon Feb 07 12:22:40 2022\nTest failed for file:\n./test/test_data/EightMileQuads.envi using config: \n./test/test_configs/species_1.json\nError: \nError in checkForRemoteErrors(val): one node produced an error: argument is of length zero\n"
-17: unserialize(node$con)
-16: recvData.SOCKnode(con)
-15: recvData(con)
-14: FUN(X[[i]], ...)
-13: lapply(cl, recvResult)
-12: checkForRemoteErrors(lapply(cl, recvResult))
-11: parallel::clusterCall(cl, library, pk, character.only = TRUE)
-10: .addPackages(cl, exclude = exclude)
-9: raster::beginCluster(num_cores) at lecospectR.R#986
-8: estimate_land_cover(raster_file, config, output_filepath = output_file, 
-       use_external_bands = TRUE)
-7: doTryCatch(return(expr), name, parentenv, handler)
-6: tryCatchOne(expr, names, parentenv, handlers[[1L]])
-5: tryCatchList(expr, names[-nh], parentenv, handlers[-nh])
-4: doTryCatch(return(expr), name, parentenv, handler)
-3: tryCatchOne(tryCatchList(expr, names[-nh], parentenv, handlers[-nh]), 
-       names[nh], parentenv, handlers[[nh]])
-2: tryCatchList(expr, classes, parentenv, handlers)
-1: tryCatch({
-       output_file <- paste0("./test/test_outputs/pred_", raster_file)
-       output <- estimate_land_cover(raster_file, config, output_filepath = output_file, 
-           use_external_bands = TRUE)
-       append(output_files, output_file)
-       print(paste0(date(), "\nTest passed for config: \n", config, 
-           "and file: \n", file))
-       colors <- create_color_map()
-   }, warning = function(w) {
-       print(paste0(date(), "\nTest completed with warnings for config: \n", 
-           config, "\nand file: \n", raster_file, "\nwarnings: \n", 
-           w))
-   }, error = function(e) {
-       print(paste0(date(), "\nTest failed for file:\n", raster_file, 
-           " using config: \n", config, "\nError: \n", e))
-       traceback()
-   })
-[1] "8 Cores Detected for processing..."
-[1] "Mon Feb 07 12:23:09 2022\nTest failed for file:\n./test/test_data/TwelveMileGulchQuads1.envi using config: \n./test/test_configs/fg1_1.json\nError: \nError in checkForRemoteErrors(val): one node produced an error: argument is of length zero\n"
-17: unserialize(node$con)
-16: recvData.SOCKnode(con)
-15: recvData(con)
-14: FUN(X[[i]], ...)
-13: lapply(cl, recvResult)
-12: checkForRemoteErrors(lapply(cl, recvResult))
-11: parallel::clusterCall(cl, library, pk, character.only = TRUE)
-10: .addPackages(cl, exclude = exclude)
-9: raster::beginCluster(num_cores) at lecospectR.R#986
-8: estimate_land_cover(raster_file, config, output_filepath = output_file, 
-       use_external_bands = TRUE)
-7: doTryCatch(return(expr), name, parentenv, handler)
-6: tryCatchOne(expr, names, parentenv, handlers[[1L]])
-5: tryCatchList(expr, names[-nh], parentenv, handlers[-nh])
-4: doTryCatch(return(expr), name, parentenv, handler)
-3: tryCatchOne(tryCatchList(expr, names[-nh], parentenv, handlers[-nh]), 
-       names[nh], parentenv, handlers[[nh]])
-2: tryCatchList(expr, classes, parentenv, handlers)
-1: tryCatch({
-       output_file <- paste0("./test/test_outputs/pred_", raster_file)
-       output <- estimate_land_cover(raster_file, config, output_filepath = output_file, 
-           use_external_bands = TRUE)
-       append(output_files, output_file)
-       print(paste0(date(), "\nTest passed for config: \n", config, 
-           "and file: \n", file))
-       colors <- create_color_map()
-   }, warning = function(w) {
-       print(paste0(date(), "\nTest completed with warnings for config: \n", 
-           config, "\nand file: \n", raster_file, "\nwarnings: \n", 
-           w))
-   }, error = function(e) {
-       print(paste0(date(), "\nTest failed for file:\n", raster_file, 
-           " using config: \n", config, "\nError: \n", e))
-       traceback()
-   })
-[1] "8 Cores Detected for processing..."
-[1] "Mon Feb 07 12:23:38 2022\nTest failed for file:\n./test/test_data/TwelveMileGulchQuads1.envi using config: \n./test/test_configs/fg2_1.json\nError: \nError in checkForRemoteErrors(val): one node produced an error: argument is of length zero\n"
-17: unserialize(node$con)
-16: recvData.SOCKnode(con)
-15: recvData(con)
-14: FUN(X[[i]], ...)
-13: lapply(cl, recvResult)
-12: checkForRemoteErrors(lapply(cl, recvResult))
-11: parallel::clusterCall(cl, library, pk, character.only = TRUE)
-10: .addPackages(cl, exclude = exclude)
-9: raster::beginCluster(num_cores) at lecospectR.R#986
-8: estimate_land_cover(raster_file, config, output_filepath = output_file, 
-       use_external_bands = TRUE)
-7: doTryCatch(return(expr), name, parentenv, handler)
-6: tryCatchOne(expr, names, parentenv, handlers[[1L]])
-5: tryCatchList(expr, names[-nh], parentenv, handlers[-nh])
-4: doTryCatch(return(expr), name, parentenv, handler)
-3: tryCatchOne(tryCatchList(expr, names[-nh], parentenv, handlers[-nh]), 
-       names[nh], parentenv, handlers[[nh]])
-2: tryCatchList(expr, classes, parentenv, handlers)
-1: tryCatch({
-       output_file <- paste0("./test/test_outputs/pred_", raster_file)
-       output <- estimate_land_cover(raster_file, config, output_filepath = output_file, 
-           use_external_bands = TRUE)
-       append(output_files, output_file)
-       print(paste0(date(), "\nTest passed for config: \n", config, 
-           "and file: \n", file))
-       colors <- create_color_map()
-   }, warning = function(w) {
-       print(paste0(date(), "\nTest completed with warnings for config: \n", 
-           config, "\nand file: \n", raster_file, "\nwarnings: \n", 
-           w))
-   }, error = function(e) {
-       print(paste0(date(), "\nTest failed for file:\n", raster_file, 
-           " using config: \n", config, "\nError: \n", e))
-       traceback()
-   })
-[1] "8 Cores Detected for processing..."
-[1] "Mon Feb 07 12:24:07 2022\nTest failed for file:\n./test/test_data/TwelveMileGulchQuads1.envi using config: \n./test/test_configs/species_1.json\nError: \nError in checkForRemoteErrors(val): one node produced an error: argument is of length zero\n"
-17: unserialize(node$con)
-16: recvData.SOCKnode(con)
-15: recvData(con)
-14: FUN(X[[i]], ...)
-13: lapply(cl, recvResult)
-12: checkForRemoteErrors(lapply(cl, recvResult))
-11: parallel::clusterCall(cl, library, pk, character.only = TRUE)
-10: .addPackages(cl, exclude = exclude)
-9: raster::beginCluster(num_cores) at lecospectR.R#986
-8: estimate_land_cover(raster_file, config, output_filepath = output_file, 
-       use_external_bands = TRUE)
-7: doTryCatch(return(expr), name, parentenv, handler)
-6: tryCatchOne(expr, names, parentenv, handlers[[1L]])
-5: tryCatchList(expr, names[-nh], parentenv, handlers[-nh])
-4: doTryCatch(return(expr), name, parentenv, handler)
-3: tryCatchOne(tryCatchList(expr, names[-nh], parentenv, handlers[-nh]), 
-       names[nh], parentenv, handlers[[nh]])
-2: tryCatchList(expr, classes, parentenv, handlers)
-1: tryCatch({
-       output_file <- paste0("./test/test_outputs/pred_", raster_file)
-       output <- estimate_land_cover(raster_file, config, output_filepath = output_file, 
-           use_external_bands = TRUE)
-       append(output_files, output_file)
-       print(paste0(date(), "\nTest passed for config: \n", config, 
-           "and file: \n", file))
-       colors <- create_color_map()
-   }, warning = function(w) {
-       print(paste0(date(), "\nTest completed with warnings for config: \n", 
-           config, "\nand file: \n", raster_file, "\nwarnings: \n", 
-           w))
-   }, error = function(e) {
-       print(paste0(date(), "\nTest failed for file:\n", raster_file, 
-           " using config: \n", config, "\nError: \n", e))
-       traceback()
-   })
-[1] "8 Cores Detected for processing..."
-[1] "Mon Feb 07 12:24:35 2022\nTest failed for file:\n./test/test_data/TwelveMileGulchQuads2.envi using config: \n./test/test_configs/fg1_1.json\nError: \nError in checkForRemoteErrors(val): one node produced an error: argument is of length zero\n"
-17: unserialize(node$con)
-16: recvData.SOCKnode(con)
-15: recvData(con)
-14: FUN(X[[i]], ...)
-13: lapply(cl, recvResult)
-12: checkForRemoteErrors(lapply(cl, recvResult))
-11: parallel::clusterCall(cl, library, pk, character.only = TRUE)
-10: .addPackages(cl, exclude = exclude)
-9: raster::beginCluster(num_cores) at lecospectR.R#986
-8: estimate_land_cover(raster_file, config, output_filepath = output_file, 
-       use_external_bands = TRUE)
-7: doTryCatch(return(expr), name, parentenv, handler)
-6: tryCatchOne(expr, names, parentenv, handlers[[1L]])
-5: tryCatchList(expr, names[-nh], parentenv, handlers[-nh])
-4: doTryCatch(return(expr), name, parentenv, handler)
-3: tryCatchOne(tryCatchList(expr, names[-nh], parentenv, handlers[-nh]), 
-       names[nh], parentenv, handlers[[nh]])
-2: tryCatchList(expr, classes, parentenv, handlers)
-1: tryCatch({
-       output_file <- paste0("./test/test_outputs/pred_", raster_file)
-       output <- estimate_land_cover(raster_file, config, output_filepath = output_file, 
-           use_external_bands = TRUE)
-       append(output_files, output_file)
-       print(paste0(date(), "\nTest passed for config: \n", config, 
-           "and file: \n", file))
-       colors <- create_color_map()
-   }, warning = function(w) {
-       print(paste0(date(), "\nTest completed with warnings for config: \n", 
-           config, "\nand file: \n", raster_file, "\nwarnings: \n", 
-           w))
-   }, error = function(e) {
-       print(paste0(date(), "\nTest failed for file:\n", raster_file, 
-           " using config: \n", config, "\nError: \n", e))
-       traceback()
-   })
-[1] "8 Cores Detected for processing..."
-[1] "Mon Feb 07 12:25:03 2022\nTest failed for file:\n./test/test_data/TwelveMileGulchQuads2.envi using config: \n./test/test_configs/fg2_1.json\nError: \nError in checkForRemoteErrors(val): one node produced an error: argument is of length zero\n"
-17: unserialize(node$con)
-16: recvData.SOCKnode(con)
-15: recvData(con)
-14: FUN(X[[i]], ...)
-13: lapply(cl, recvResult)
-12: checkForRemoteErrors(lapply(cl, recvResult))
-11: parallel::clusterCall(cl, library, pk, character.only = TRUE)
-10: .addPackages(cl, exclude = exclude)
-9: raster::beginCluster(num_cores) at lecospectR.R#986
-8: estimate_land_cover(raster_file, config, output_filepath = output_file, 
-       use_external_bands = TRUE)
-7: doTryCatch(return(expr), name, parentenv, handler)
-6: tryCatchOne(expr, names, parentenv, handlers[[1L]])
-5: tryCatchList(expr, names[-nh], parentenv, handlers[-nh])
-4: doTryCatch(return(expr), name, parentenv, handler)
-3: tryCatchOne(tryCatchList(expr, names[-nh], parentenv, handlers[-nh]), 
-       names[nh], parentenv, handlers[[nh]])
-2: tryCatchList(expr, classes, parentenv, handlers)
-1: tryCatch({
-       output_file <- paste0("./test/test_outputs/pred_", raster_file)
-       output <- estimate_land_cover(raster_file, config, output_filepath = output_file, 
-           use_external_bands = TRUE)
-       append(output_files, output_file)
-       print(paste0(date(), "\nTest passed for config: \n", config, 
-           "and file: \n", file))
-       colors <- create_color_map()
-   }, warning = function(w) {
-       print(paste0(date(), "\nTest completed with warnings for config: \n", 
-           config, "\nand file: \n", raster_file, "\nwarnings: \n", 
-           w))
-   }, error = function(e) {
-       print(paste0(date(), "\nTest failed for file:\n", raster_file, 
-           " using config: \n", config, "\nError: \n", e))
-       traceback()
-   })
-[1] "8 Cores Detected for processing..."
-[1] "Mon Feb 07 12:25:34 2022\nTest failed for file:\n./test/test_data/TwelveMileGulchQuads2.envi using config: \n./test/test_configs/species_1.json\nError: \nError in checkForRemoteErrors(val): one node produced an error: argument is of length zero\n"
-17: unserialize(node$con)
-16: recvData.SOCKnode(con)
-15: recvData(con)
-14: FUN(X[[i]], ...)
-13: lapply(cl, recvResult)
-12: checkForRemoteErrors(lapply(cl, recvResult))
-11: parallel::clusterCall(cl, library, pk, character.only = TRUE)
-10: .addPackages(cl, exclude = exclude)
-9: raster::beginCluster(num_cores) at lecospectR.R#986
-8: estimate_land_cover(raster_file, config, output_filepath = output_file, 
-       use_external_bands = TRUE)
-7: doTryCatch(return(expr), name, parentenv, handler)
-6: tryCatchOne(expr, names, parentenv, handlers[[1L]])
-5: tryCatchList(expr, names[-nh], parentenv, handlers[-nh])
-4: doTryCatch(return(expr), name, parentenv, handler)
-3: tryCatchOne(tryCatchList(expr, names[-nh], parentenv, handlers[-nh]), 
-       names[nh], parentenv, handlers[[nh]])
-2: tryCatchList(expr, classes, parentenv, handlers)
-1: tryCatch({
-       output_file <- paste0("./test/test_outputs/pred_", raster_file)
-       output <- estimate_land_cover(raster_file, config, output_filepath = output_file, 
-           use_external_bands = TRUE)
-       append(output_files, output_file)
-       print(paste0(date(), "\nTest passed for config: \n", config, 
-           "and file: \n", file))
-       colors <- create_color_map()
-   }, warning = function(w) {
-       print(paste0(date(), "\nTest completed with warnings for config: \n", 
-           config, "\nand file: \n", raster_file, "\nwarnings: \n", 
-           w))
-   }, error = function(e) {
-       print(paste0(date(), "\nTest failed for file:\n", raster_file, 
-           " using config: \n", config, "\nError: \n", e))
-       traceback()
-   })
-[1] "test start"
-[1] "Wed Feb 09 15:46:57 2022"
+[1] "Fri Feb 11 13:54:11 2022"
 [1] "Testing on files:"
 [1] "./test/test_data/BisonGulchQuads.envi"      
 [2] "./test/test_data/EightMileQuads.envi"       
@@ -459,391 +9,7 @@
 [1] "./test/test_configs/fg1_1.json"     "./test/test_configs/fg2_1.json"    
 [3] "./test/test_configs/species_1.json"
 [1] "8 Cores Detected for processing..."
-[1] "Wed Feb 09 15:47:20 2022\nTest failed for file:\n./test/test_data/BisonGulchQuads.envi using config: \n./test/test_configs/fg1_1.json\nError: \nError in checkForRemoteErrors(val): one node produced an error: argument is of length zero\n"
-4: stop(simpleError(msg, call = expr))
-3: e$fun(obj, substitute(ex), parent.frame(), e$data)
-2: foreach::foreach(i = seq_along(tile_filenames), .export = as.vector(ls(.GlobalEnv))) %dopar% 
-       {
-           tile_results = unlist(process_tile(tile_filename = tile_filenames[[i]], 
-               ml_model = model, aggregation = config$aggregation, 
-               cluster = NULL, return_raster = TRUE, return_filename = TRUE, 
-               save_path = prediction_filenames[[i]], suppress_output = TRUE))
-           gc()
-       } at lecospectR.R#1035
-1: estimate_land_cover(test_path, output_filepath = "./Output/bison_gulch_outputs_par.grd", 
-       use_external_bands = TRUE)
-[1] "8 Cores Detected for processing..."
-[1] "Wed Feb 09 15:47:42 2022\nTest failed for file:\n./test/test_data/BisonGulchQuads.envi using config: \n./test/test_configs/fg2_1.json\nError: \nError in checkForRemoteErrors(val): one node produced an error: argument is of length zero\n"
-4: stop(simpleError(msg, call = expr))
-3: e$fun(obj, substitute(ex), parent.frame(), e$data)
-2: foreach::foreach(i = seq_along(tile_filenames), .export = as.vector(ls(.GlobalEnv))) %dopar% 
-       {
-           tile_results = unlist(process_tile(tile_filename = tile_filenames[[i]], 
-               ml_model = model, aggregation = config$aggregation, 
-               cluster = NULL, return_raster = TRUE, return_filename = TRUE, 
-               save_path = prediction_filenames[[i]], suppress_output = TRUE))
-           gc()
-       } at lecospectR.R#1035
-1: estimate_land_cover(test_path, output_filepath = "./Output/bison_gulch_outputs_par.grd", 
-       use_external_bands = TRUE)
-[1] "8 Cores Detected for processing..."
-[1] "Wed Feb 09 15:48:05 2022\nTest failed for file:\n./test/test_data/BisonGulchQuads.envi using config: \n./test/test_configs/species_1.json\nError: \nError in checkForRemoteErrors(val): one node produced an error: argument is of length zero\n"
-4: stop(simpleError(msg, call = expr))
-3: e$fun(obj, substitute(ex), parent.frame(), e$data)
-2: foreach::foreach(i = seq_along(tile_filenames), .export = as.vector(ls(.GlobalEnv))) %dopar% 
-       {
-           tile_results = unlist(process_tile(tile_filename = tile_filenames[[i]], 
-               ml_model = model, aggregation = config$aggregation, 
-               cluster = NULL, return_raster = TRUE, return_filename = TRUE, 
-               save_path = prediction_filenames[[i]], suppress_output = TRUE))
-           gc()
-       } at lecospectR.R#1035
-1: estimate_land_cover(test_path, output_filepath = "./Output/bison_gulch_outputs_par.grd", 
-       use_external_bands = TRUE)
-[1] "8 Cores Detected for processing..."
-[1] "Wed Feb 09 15:48:26 2022\nTest failed for file:\n./test/test_data/EightMileQuads.envi using config: \n./test/test_configs/fg1_1.json\nError: \nError in checkForRemoteErrors(val): one node produced an error: argument is of length zero\n"
-4: stop(simpleError(msg, call = expr))
-3: e$fun(obj, substitute(ex), parent.frame(), e$data)
-2: foreach::foreach(i = seq_along(tile_filenames), .export = as.vector(ls(.GlobalEnv))) %dopar% 
-       {
-           tile_results = unlist(process_tile(tile_filename = tile_filenames[[i]], 
-               ml_model = model, aggregation = config$aggregation, 
-               cluster = NULL, return_raster = TRUE, return_filename = TRUE, 
-               save_path = prediction_filenames[[i]], suppress_output = TRUE))
-           gc()
-       } at lecospectR.R#1035
-1: estimate_land_cover(test_path, output_filepath = "./Output/bison_gulch_outputs_par.grd", 
-       use_external_bands = TRUE)
-[1] "8 Cores Detected for processing..."
-[1] "Wed Feb 09 15:48:48 2022\nTest failed for file:\n./test/test_data/EightMileQuads.envi using config: \n./test/test_configs/fg2_1.json\nError: \nError in checkForRemoteErrors(val): one node produced an error: argument is of length zero\n"
-4: stop(simpleError(msg, call = expr))
-3: e$fun(obj, substitute(ex), parent.frame(), e$data)
-2: foreach::foreach(i = seq_along(tile_filenames), .export = as.vector(ls(.GlobalEnv))) %dopar% 
-       {
-           tile_results = unlist(process_tile(tile_filename = tile_filenames[[i]], 
-               ml_model = model, aggregation = config$aggregation, 
-               cluster = NULL, return_raster = TRUE, return_filename = TRUE, 
-               save_path = prediction_filenames[[i]], suppress_output = TRUE))
-           gc()
-       } at lecospectR.R#1035
-1: estimate_land_cover(test_path, output_filepath = "./Output/bison_gulch_outputs_par.grd", 
-       use_external_bands = TRUE)
-[1] "8 Cores Detected for processing..."
-[1] "Wed Feb 09 15:49:10 2022\nTest failed for file:\n./test/test_data/EightMileQuads.envi using config: \n./test/test_configs/species_1.json\nError: \nError in checkForRemoteErrors(val): one node produced an error: argument is of length zero\n"
-4: stop(simpleError(msg, call = expr))
-3: e$fun(obj, substitute(ex), parent.frame(), e$data)
-2: foreach::foreach(i = seq_along(tile_filenames), .export = as.vector(ls(.GlobalEnv))) %dopar% 
-       {
-           tile_results = unlist(process_tile(tile_filename = tile_filenames[[i]], 
-               ml_model = model, aggregation = config$aggregation, 
-               cluster = NULL, return_raster = TRUE, return_filename = TRUE, 
-               save_path = prediction_filenames[[i]], suppress_output = TRUE))
-           gc()
-       } at lecospectR.R#1035
-1: estimate_land_cover(test_path, output_filepath = "./Output/bison_gulch_outputs_par.grd", 
-       use_external_bands = TRUE)
-[1] "8 Cores Detected for processing..."
-[1] "Wed Feb 09 15:49:32 2022\nTest failed for file:\n./test/test_data/TwelveMileGulchQuads1.envi using config: \n./test/test_configs/fg1_1.json\nError: \nError in checkForRemoteErrors(val): one node produced an error: argument is of length zero\n"
-4: stop(simpleError(msg, call = expr))
-3: e$fun(obj, substitute(ex), parent.frame(), e$data)
-2: foreach::foreach(i = seq_along(tile_filenames), .export = as.vector(ls(.GlobalEnv))) %dopar% 
-       {
-           tile_results = unlist(process_tile(tile_filename = tile_filenames[[i]], 
-               ml_model = model, aggregation = config$aggregation, 
-               cluster = NULL, return_raster = TRUE, return_filename = TRUE, 
-               save_path = prediction_filenames[[i]], suppress_output = TRUE))
-           gc()
-       } at lecospectR.R#1035
-1: estimate_land_cover(test_path, output_filepath = "./Output/bison_gulch_outputs_par.grd", 
-       use_external_bands = TRUE)
-[1] "8 Cores Detected for processing..."
-[1] "Wed Feb 09 15:49:54 2022\nTest failed for file:\n./test/test_data/TwelveMileGulchQuads1.envi using config: \n./test/test_configs/fg2_1.json\nError: \nError in checkForRemoteErrors(val): one node produced an error: argument is of length zero\n"
-4: stop(simpleError(msg, call = expr))
-3: e$fun(obj, substitute(ex), parent.frame(), e$data)
-2: foreach::foreach(i = seq_along(tile_filenames), .export = as.vector(ls(.GlobalEnv))) %dopar% 
-       {
-           tile_results = unlist(process_tile(tile_filename = tile_filenames[[i]], 
-               ml_model = model, aggregation = config$aggregation, 
-               cluster = NULL, return_raster = TRUE, return_filename = TRUE, 
-               save_path = prediction_filenames[[i]], suppress_output = TRUE))
-           gc()
-       } at lecospectR.R#1035
-1: estimate_land_cover(test_path, output_filepath = "./Output/bison_gulch_outputs_par.grd", 
-       use_external_bands = TRUE)
-[1] "8 Cores Detected for processing..."
-[1] "Wed Feb 09 15:50:17 2022\nTest failed for file:\n./test/test_data/TwelveMileGulchQuads1.envi using config: \n./test/test_configs/species_1.json\nError: \nError in checkForRemoteErrors(val): one node produced an error: argument is of length zero\n"
-4: stop(simpleError(msg, call = expr))
-3: e$fun(obj, substitute(ex), parent.frame(), e$data)
-2: foreach::foreach(i = seq_along(tile_filenames), .export = as.vector(ls(.GlobalEnv))) %dopar% 
-       {
-           tile_results = unlist(process_tile(tile_filename = tile_filenames[[i]], 
-               ml_model = model, aggregation = config$aggregation, 
-               cluster = NULL, return_raster = TRUE, return_filename = TRUE, 
-               save_path = prediction_filenames[[i]], suppress_output = TRUE))
-           gc()
-       } at lecospectR.R#1035
-1: estimate_land_cover(test_path, output_filepath = "./Output/bison_gulch_outputs_par.grd", 
-       use_external_bands = TRUE)
-[1] "8 Cores Detected for processing..."
-[1] "Wed Feb 09 15:50:39 2022\nTest failed for file:\n./test/test_data/TwelveMileGulchQuads2.envi using config: \n./test/test_configs/fg1_1.json\nError: \nError in checkForRemoteErrors(val): one node produced an error: argument is of length zero\n"
-4: stop(simpleError(msg, call = expr))
-3: e$fun(obj, substitute(ex), parent.frame(), e$data)
-2: foreach::foreach(i = seq_along(tile_filenames), .export = as.vector(ls(.GlobalEnv))) %dopar% 
-       {
-           tile_results = unlist(process_tile(tile_filename = tile_filenames[[i]], 
-               ml_model = model, aggregation = config$aggregation, 
-               cluster = NULL, return_raster = TRUE, return_filename = TRUE, 
-               save_path = prediction_filenames[[i]], suppress_output = TRUE))
-           gc()
-       } at lecospectR.R#1035
-1: estimate_land_cover(test_path, output_filepath = "./Output/bison_gulch_outputs_par.grd", 
-       use_external_bands = TRUE)
-[1] "8 Cores Detected for processing..."
-[1] "Wed Feb 09 15:51:02 2022\nTest failed for file:\n./test/test_data/TwelveMileGulchQuads2.envi using config: \n./test/test_configs/fg2_1.json\nError: \nError in checkForRemoteErrors(val): one node produced an error: argument is of length zero\n"
-4: stop(simpleError(msg, call = expr))
-3: e$fun(obj, substitute(ex), parent.frame(), e$data)
-2: foreach::foreach(i = seq_along(tile_filenames), .export = as.vector(ls(.GlobalEnv))) %dopar% 
-       {
-           tile_results = unlist(process_tile(tile_filename = tile_filenames[[i]], 
-               ml_model = model, aggregation = config$aggregation, 
-               cluster = NULL, return_raster = TRUE, return_filename = TRUE, 
-               save_path = prediction_filenames[[i]], suppress_output = TRUE))
-           gc()
-       } at lecospectR.R#1035
-1: estimate_land_cover(test_path, output_filepath = "./Output/bison_gulch_outputs_par.grd", 
-       use_external_bands = TRUE)
-[1] "8 Cores Detected for processing..."
-[1] "Wed Feb 09 15:51:26 2022\nTest failed for file:\n./test/test_data/TwelveMileGulchQuads2.envi using config: \n./test/test_configs/species_1.json\nError: \nError in checkForRemoteErrors(val): one node produced an error: argument is of length zero\n"
-4: stop(simpleError(msg, call = expr))
-3: e$fun(obj, substitute(ex), parent.frame(), e$data)
-2: foreach::foreach(i = seq_along(tile_filenames), .export = as.vector(ls(.GlobalEnv))) %dopar% 
-       {
-           tile_results = unlist(process_tile(tile_filename = tile_filenames[[i]], 
-               ml_model = model, aggregation = config$aggregation, 
-               cluster = NULL, return_raster = TRUE, return_filename = TRUE, 
-               save_path = prediction_filenames[[i]], suppress_output = TRUE))
-           gc()
-       } at lecospectR.R#1035
-1: estimate_land_cover(test_path, output_filepath = "./Output/bison_gulch_outputs_par.grd", 
-       use_external_bands = TRUE)
-[1] "test start"
-[1] "Wed Feb 09 17:06:48 2022"
-[1] "Testing on files:"
-[1] "./test/test_data/BisonGulchQuads.envi"      
-[2] "./test/test_data/EightMileQuads.envi"       
-[3] "./test/test_data/TwelveMileGulchQuads1.envi"
-[4] "./test/test_data/TwelveMileGulchQuads2.envi"
-[1] "Configuration files:"
-[1] "./test/test_configs/fg1_1.json"     "./test/test_configs/fg2_1.json"    
-[3] "./test/test_configs/species_1.json"
-[1] "8 Cores Detected for processing..."
-[1] "Wed Feb 09 17:07:20 2022\nTest failed for file:\n./test/test_data/BisonGulchQuads.envi using config: \n./test/test_configs/fg1_1.json\nError: \nError in checkForRemoteErrors(val): one node produced an error: argument is of length zero\n"
-4: stop(simpleError(msg, call = expr))
-3: e$fun(obj, substitute(ex), parent.frame(), e$data)
-2: foreach::foreach(i = seq_along(tile_filenames), .export = as.vector(ls(.GlobalEnv))) %dopar% 
-       {
-           tile_results = unlist(process_tile(tile_filename = tile_filenames[[i]], 
-               ml_model = model, aggregation = config$aggregation, 
-               cluster = NULL, return_raster = TRUE, return_filename = TRUE, 
-               save_path = prediction_filenames[[i]], suppress_output = TRUE))
-           gc()
-       } at lecospectR.R#1035
-1: estimate_land_cover(test_path, output_filepath = "./Output/bison_gulch_outputs_par.grd", 
-       use_external_bands = TRUE)
-[1] "8 Cores Detected for processing..."
-[1] "Wed Feb 09 17:07:54 2022\nTest failed for file:\n./test/test_data/BisonGulchQuads.envi using config: \n./test/test_configs/fg2_1.json\nError: \nError in checkForRemoteErrors(val): one node produced an error: argument is of length zero\n"
-4: stop(simpleError(msg, call = expr))
-3: e$fun(obj, substitute(ex), parent.frame(), e$data)
-2: foreach::foreach(i = seq_along(tile_filenames), .export = as.vector(ls(.GlobalEnv))) %dopar% 
-       {
-           tile_results = unlist(process_tile(tile_filename = tile_filenames[[i]], 
-               ml_model = model, aggregation = config$aggregation, 
-               cluster = NULL, return_raster = TRUE, return_filename = TRUE, 
-               save_path = prediction_filenames[[i]], suppress_output = TRUE))
-           gc()
-       } at lecospectR.R#1035
-1: estimate_land_cover(test_path, output_filepath = "./Output/bison_gulch_outputs_par.grd", 
-       use_external_bands = TRUE)
-[1] "8 Cores Detected for processing..."
-[1] "Wed Feb 09 17:08:23 2022\nTest failed for file:\n./test/test_data/BisonGulchQuads.envi using config: \n./test/test_configs/species_1.json\nError: \nError in checkForRemoteErrors(val): one node produced an error: argument is of length zero\n"
-4: stop(simpleError(msg, call = expr))
-3: e$fun(obj, substitute(ex), parent.frame(), e$data)
-2: foreach::foreach(i = seq_along(tile_filenames), .export = as.vector(ls(.GlobalEnv))) %dopar% 
-       {
-           tile_results = unlist(process_tile(tile_filename = tile_filenames[[i]], 
-               ml_model = model, aggregation = config$aggregation, 
-               cluster = NULL, return_raster = TRUE, return_filename = TRUE, 
-               save_path = prediction_filenames[[i]], suppress_output = TRUE))
-           gc()
-       } at lecospectR.R#1035
-1: estimate_land_cover(test_path, output_filepath = "./Output/bison_gulch_outputs_par.grd", 
-       use_external_bands = TRUE)
-[1] "8 Cores Detected for processing..."
-[1] "Wed Feb 09 17:08:47 2022\nTest failed for file:\n./test/test_data/EightMileQuads.envi using config: \n./test/test_configs/fg1_1.json\nError: \nError in checkForRemoteErrors(val): one node produced an error: argument is of length zero\n"
-4: stop(simpleError(msg, call = expr))
-3: e$fun(obj, substitute(ex), parent.frame(), e$data)
-2: foreach::foreach(i = seq_along(tile_filenames), .export = as.vector(ls(.GlobalEnv))) %dopar% 
-       {
-           tile_results = unlist(process_tile(tile_filename = tile_filenames[[i]], 
-               ml_model = model, aggregation = config$aggregation, 
-               cluster = NULL, return_raster = TRUE, return_filename = TRUE, 
-               save_path = prediction_filenames[[i]], suppress_output = TRUE))
-           gc()
-       } at lecospectR.R#1035
-1: estimate_land_cover(test_path, output_filepath = "./Output/bison_gulch_outputs_par.grd", 
-       use_external_bands = TRUE)
-[1] "8 Cores Detected for processing..."
-[1] "Wed Feb 09 17:09:12 2022\nTest failed for file:\n./test/test_data/EightMileQuads.envi using config: \n./test/test_configs/fg2_1.json\nError: \nError in checkForRemoteErrors(val): one node produced an error: argument is of length zero\n"
-4: stop(simpleError(msg, call = expr))
-3: e$fun(obj, substitute(ex), parent.frame(), e$data)
-2: foreach::foreach(i = seq_along(tile_filenames), .export = as.vector(ls(.GlobalEnv))) %dopar% 
-       {
-           tile_results = unlist(process_tile(tile_filename = tile_filenames[[i]], 
-               ml_model = model, aggregation = config$aggregation, 
-               cluster = NULL, return_raster = TRUE, return_filename = TRUE, 
-               save_path = prediction_filenames[[i]], suppress_output = TRUE))
-           gc()
-       } at lecospectR.R#1035
-1: estimate_land_cover(test_path, output_filepath = "./Output/bison_gulch_outputs_par.grd", 
-       use_external_bands = TRUE)
-[1] "8 Cores Detected for processing..."
-[1] "Wed Feb 09 17:09:42 2022\nTest failed for file:\n./test/test_data/EightMileQuads.envi using config: \n./test/test_configs/species_1.json\nError: \nError in checkForRemoteErrors(val): one node produced an error: argument is of length zero\n"
-4: stop(simpleError(msg, call = expr))
-3: e$fun(obj, substitute(ex), parent.frame(), e$data)
-2: foreach::foreach(i = seq_along(tile_filenames), .export = as.vector(ls(.GlobalEnv))) %dopar% 
-       {
-           tile_results = unlist(process_tile(tile_filename = tile_filenames[[i]], 
-               ml_model = model, aggregation = config$aggregation, 
-               cluster = NULL, return_raster = TRUE, return_filename = TRUE, 
-               save_path = prediction_filenames[[i]], suppress_output = TRUE))
-           gc()
-       } at lecospectR.R#1035
-1: estimate_land_cover(test_path, output_filepath = "./Output/bison_gulch_outputs_par.grd", 
-       use_external_bands = TRUE)
-[1] "8 Cores Detected for processing..."
-[1] "Wed Feb 09 17:10:16 2022\nTest failed for file:\n./test/test_data/TwelveMileGulchQuads1.envi using config: \n./test/test_configs/fg1_1.json\nError: \nError in checkForRemoteErrors(val): one node produced an error: argument is of length zero\n"
-4: stop(simpleError(msg, call = expr))
-3: e$fun(obj, substitute(ex), parent.frame(), e$data)
-2: foreach::foreach(i = seq_along(tile_filenames), .export = as.vector(ls(.GlobalEnv))) %dopar% 
-       {
-           tile_results = unlist(process_tile(tile_filename = tile_filenames[[i]], 
-               ml_model = model, aggregation = config$aggregation, 
-               cluster = NULL, return_raster = TRUE, return_filename = TRUE, 
-               save_path = prediction_filenames[[i]], suppress_output = TRUE))
-           gc()
-       } at lecospectR.R#1035
-1: estimate_land_cover(test_path, output_filepath = "./Output/bison_gulch_outputs_par.grd", 
-       use_external_bands = TRUE)
-[1] "8 Cores Detected for processing..."
-[1] "Wed Feb 09 17:11:01 2022\nTest failed for file:\n./test/test_data/TwelveMileGulchQuads1.envi using config: \n./test/test_configs/fg2_1.json\nError: \nError in checkForRemoteErrors(val): one node produced an error: argument is of length zero\n"
-4: stop(simpleError(msg, call = expr))
-3: e$fun(obj, substitute(ex), parent.frame(), e$data)
-2: foreach::foreach(i = seq_along(tile_filenames), .export = as.vector(ls(.GlobalEnv))) %dopar% 
-       {
-           tile_results = unlist(process_tile(tile_filename = tile_filenames[[i]], 
-               ml_model = model, aggregation = config$aggregation, 
-               cluster = NULL, return_raster = TRUE, return_filename = TRUE, 
-               save_path = prediction_filenames[[i]], suppress_output = TRUE))
-           gc()
-       } at lecospectR.R#1035
-1: estimate_land_cover(test_path, output_filepath = "./Output/bison_gulch_outputs_par.grd", 
-       use_external_bands = TRUE)
-[1] "8 Cores Detected for processing..."
-[1] "Wed Feb 09 17:11:54 2022\nTest failed for file:\n./test/test_data/TwelveMileGulchQuads1.envi using config: \n./test/test_configs/species_1.json\nError: \nError in checkForRemoteErrors(val): one node produced an error: argument is of length zero\n"
-4: stop(simpleError(msg, call = expr))
-3: e$fun(obj, substitute(ex), parent.frame(), e$data)
-2: foreach::foreach(i = seq_along(tile_filenames), .export = as.vector(ls(.GlobalEnv))) %dopar% 
-       {
-           tile_results = unlist(process_tile(tile_filename = tile_filenames[[i]], 
-               ml_model = model, aggregation = config$aggregation, 
-               cluster = NULL, return_raster = TRUE, return_filename = TRUE, 
-               save_path = prediction_filenames[[i]], suppress_output = TRUE))
-           gc()
-       } at lecospectR.R#1035
-1: estimate_land_cover(test_path, output_filepath = "./Output/bison_gulch_outputs_par.grd", 
-       use_external_bands = TRUE)
-[1] "8 Cores Detected for processing..."
-[1] "Wed Feb 09 17:12:44 2022\nTest failed for file:\n./test/test_data/TwelveMileGulchQuads2.envi using config: \n./test/test_configs/fg1_1.json\nError: \nError in checkForRemoteErrors(val): one node produced an error: argument is of length zero\n"
-4: stop(simpleError(msg, call = expr))
-3: e$fun(obj, substitute(ex), parent.frame(), e$data)
-2: foreach::foreach(i = seq_along(tile_filenames), .export = as.vector(ls(.GlobalEnv))) %dopar% 
-       {
-           tile_results = unlist(process_tile(tile_filename = tile_filenames[[i]], 
-               ml_model = model, aggregation = config$aggregation, 
-               cluster = NULL, return_raster = TRUE, return_filename = TRUE, 
-               save_path = prediction_filenames[[i]], suppress_output = TRUE))
-           gc()
-       } at lecospectR.R#1035
-1: estimate_land_cover(test_path, output_filepath = "./Output/bison_gulch_outputs_par.grd", 
-       use_external_bands = TRUE)
-[1] "8 Cores Detected for processing..."
-[1] "Wed Feb 09 17:13:30 2022\nTest failed for file:\n./test/test_data/TwelveMileGulchQuads2.envi using config: \n./test/test_configs/fg2_1.json\nError: \nError in checkForRemoteErrors(val): one node produced an error: argument is of length zero\n"
-4: stop(simpleError(msg, call = expr))
-3: e$fun(obj, substitute(ex), parent.frame(), e$data)
-2: foreach::foreach(i = seq_along(tile_filenames), .export = as.vector(ls(.GlobalEnv))) %dopar% 
-       {
-           tile_results = unlist(process_tile(tile_filename = tile_filenames[[i]], 
-               ml_model = model, aggregation = config$aggregation, 
-               cluster = NULL, return_raster = TRUE, return_filename = TRUE, 
-               save_path = prediction_filenames[[i]], suppress_output = TRUE))
-           gc()
-       } at lecospectR.R#1035
-1: estimate_land_cover(test_path, output_filepath = "./Output/bison_gulch_outputs_par.grd", 
-       use_external_bands = TRUE)
-[1] "8 Cores Detected for processing..."
-[1] "Wed Feb 09 17:14:09 2022\nTest failed for file:\n./test/test_data/TwelveMileGulchQuads2.envi using config: \n./test/test_configs/species_1.json\nError: \nError in checkForRemoteErrors(val): one node produced an error: argument is of length zero\n"
-4: stop(simpleError(msg, call = expr))
-3: e$fun(obj, substitute(ex), parent.frame(), e$data)
-2: foreach::foreach(i = seq_along(tile_filenames), .export = as.vector(ls(.GlobalEnv))) %dopar% 
-       {
-           tile_results = unlist(process_tile(tile_filename = tile_filenames[[i]], 
-               ml_model = model, aggregation = config$aggregation, 
-               cluster = NULL, return_raster = TRUE, return_filename = TRUE, 
-               save_path = prediction_filenames[[i]], suppress_output = TRUE))
-           gc()
-       } at lecospectR.R#1035
-1: estimate_land_cover(test_path, output_filepath = "./Output/bison_gulch_outputs_par.grd", 
-       use_external_bands = TRUE)
-[1] "test start"
-[1] "Thu Feb 10 00:47:20 2022"
-[1] "Testing on files:"
-[1] "./test/test_data/BisonGulchQuads.envi"      
-[2] "./test/test_data/EightMileQuads.envi"       
-[3] "./test/test_data/TwelveMileGulchQuads1.envi"
-[4] "./test/test_data/TwelveMileGulchQuads2.envi"
-[1] "Configuration files:"
-[1] "./test/test_configs/fg1_1.json"     "./test/test_configs/fg2_1.json"    
-[3] "./test/test_configs/species_1.json"
-[1] "8 Cores Detected for processing..."
-[1] "Thu Feb 10 00:47:55 2022\nTest failed for file:\n./test/test_data/BisonGulchQuads.envi using config: \n./test/test_configs/fg1_1.json\nError: \nError in checkForRemoteErrors(val): one node produced an error: argument is of length zero\n"
-4: stop(simpleError(msg, call = expr))
-3: e$fun(obj, substitute(ex), parent.frame(), e$data)
-2: foreach::foreach(i = seq_along(tile_filenames), .export = as.vector(ls(.GlobalEnv))) %dopar% 
-       {
-           tile_results = unlist(process_tile(tile_filename = tile_filenames[[i]], 
-               ml_model = model, aggregation = config$aggregation, 
-               cluster = NULL, return_raster = TRUE, return_filename = TRUE, 
-               save_path = prediction_filenames[[i]], suppress_output = TRUE))
-           gc()
-       } at lecospectR.R#1035
-1: estimate_land_cover(test_path, output_filepath = "./Output/bison_gulch_outputs_par.grd", 
-       use_external_bands = TRUE)
-[1] "8 Cores Detected for processing..."
-[1] "Thu Feb 10 00:48:23 2022\nTest failed for file:\n./test/test_data/BisonGulchQuads.envi using config: \n./test/test_configs/fg2_1.json\nError: \nError in checkForRemoteErrors(val): one node produced an error: argument is of length zero\n"
-4: stop(simpleError(msg, call = expr))
-3: e$fun(obj, substitute(ex), parent.frame(), e$data)
-2: foreach::foreach(i = seq_along(tile_filenames), .export = as.vector(ls(.GlobalEnv))) %dopar% 
-       {
-           tile_results = unlist(process_tile(tile_filename = tile_filenames[[i]], 
-               ml_model = model, aggregation = config$aggregation, 
-               cluster = NULL, return_raster = TRUE, return_filename = TRUE, 
-               save_path = prediction_filenames[[i]], suppress_output = TRUE))
-           gc()
-       } at lecospectR.R#1035
-1: estimate_land_cover(test_path, output_filepath = "./Output/bison_gulch_outputs_par.grd", 
-       use_external_bands = TRUE)
-[1] "8 Cores Detected for processing..."
-[1] "preprocessing raster at ./tiles//tile_o3ApVImpAKWpajf6.grd"
+[1] "preprocessing raster at ./tiles//tile_HHWOkN2v8EEeTPIL.grd"
 [1] "Imputing..."
   missForest iteration 1 in progress...done!
   missForest iteration 2 in progress...done!
@@ -873,11 +39,11 @@
 [89] "TCARI2/OSAVI2" "TGI"           "TVI"           "Vogelmann"    
 [93] "Vogelmann2"    "Vogelmann3"    "Vogelmann4"   
 [1] "Resampled Dataframe Dimensions:"
-[1] 2792  375
+[1] 1051  375
 [1] "Index Dataframe Dimensions:"
-[1] 2792   95
-[1] "Attempting to save to ./predictions//prediction_o3ApVImpAKWpajf6.grd"
-[1] "preprocessing raster at ./tiles//tile_TDgmrin7Ymk1sKLZ.grd"
+[1] 1051   95
+[1] "Attempting to save to ./tiles//prediction_HHWOkN2v8EEeTPIL.grd"
+[1] "preprocessing raster at ./tiles//tile_DMglINRGQ9tYvtMg.grd"
 [1] "Imputing..."
   missForest iteration 1 in progress...done!
   missForest iteration 2 in progress...done!
@@ -907,70 +73,11 @@
 [89] "TCARI2/OSAVI2" "TGI"           "TVI"           "Vogelmann"    
 [93] "Vogelmann2"    "Vogelmann3"    "Vogelmann4"   
 [1] "Resampled Dataframe Dimensions:"
-[1] 3021  375
+[1] 1741  375
 [1] "Index Dataframe Dimensions:"
-[1] 3021   95
-[1] "Attempting to save to ./predictions//prediction_TDgmrin7Ymk1sKLZ.grd"
-[1] "Thu Feb 10 00:49:25 2022\nTest failed for file:\n./test/test_data/BisonGulchQuads.envi using config: \n./test/test_configs/species_1.json\nError: \nError in {: task 1 failed - \"Attempting to write a file to a path that does not exist:\n  ./predictions\"\n"
-4: stop(simpleError(msg, call = expr))
-3: e$fun(obj, substitute(ex), parent.frame(), e$data)
-2: foreach::foreach(i = seq_along(tile_filenames), .export = as.vector(ls(.GlobalEnv))) %dopar% 
-       {
-           tile_results = unlist(process_tile(tile_filename = tile_filenames[[i]], 
-               ml_model = model, aggregation = config$aggregation, 
-               cluster = NULL, return_raster = TRUE, return_filename = TRUE, 
-               save_path = prediction_filenames[[i]], suppress_output = TRUE))
-           gc()
-       } at lecospectR.R#1035
-1: estimate_land_cover(test_path, output_filepath = "./Output/bison_gulch_outputs_par.grd", 
-       use_external_bands = TRUE)
-[1] "8 Cores Detected for processing..."
-[1] "Thu Feb 10 00:49:52 2022\nTest failed for file:\n./test/test_data/EightMileQuads.envi using config: \n./test/test_configs/fg1_1.json\nError: \nError in checkForRemoteErrors(val): one node produced an error: argument is of length zero\n"
-4: stop(simpleError(msg, call = expr))
-3: e$fun(obj, substitute(ex), parent.frame(), e$data)
-2: foreach::foreach(i = seq_along(tile_filenames), .export = as.vector(ls(.GlobalEnv))) %dopar% 
-       {
-           tile_results = unlist(process_tile(tile_filename = tile_filenames[[i]], 
-               ml_model = model, aggregation = config$aggregation, 
-               cluster = NULL, return_raster = TRUE, return_filename = TRUE, 
-               save_path = prediction_filenames[[i]], suppress_output = TRUE))
-           gc()
-       } at lecospectR.R#1035
-1: estimate_land_cover(test_path, output_filepath = "./Output/bison_gulch_outputs_par.grd", 
-       use_external_bands = TRUE)
-[1] "8 Cores Detected for processing..."
-[1] "Thu Feb 10 00:50:34 2022\nTest failed for file:\n./test/test_data/EightMileQuads.envi using config: \n./test/test_configs/fg2_1.json\nError: \nError in checkForRemoteErrors(val): one node produced an error: argument is of length zero\n"
-4: stop(simpleError(msg, call = expr))
-3: e$fun(obj, substitute(ex), parent.frame(), e$data)
-2: foreach::foreach(i = seq_along(tile_filenames), .export = as.vector(ls(.GlobalEnv))) %dopar% 
-       {
-           tile_results = unlist(process_tile(tile_filename = tile_filenames[[i]], 
-               ml_model = model, aggregation = config$aggregation, 
-               cluster = NULL, return_raster = TRUE, return_filename = TRUE, 
-               save_path = prediction_filenames[[i]], suppress_output = TRUE))
-           gc()
-       } at lecospectR.R#1035
-1: estimate_land_cover(test_path, output_filepath = "./Output/bison_gulch_outputs_par.grd", 
-       use_external_bands = TRUE)
-[1] "8 Cores Detected for processing..."
-[1] "test start"
-[1] "Thu Feb 10 09:57:06 2022"
-[1] "Testing on files:"
-[1] "./test/test_data/BisonGulchQuads.envi"      
-[2] "./test/test_data/EightMileQuads.envi"       
-[3] "./test/test_data/TwelveMileGulchQuads1.envi"
-[4] "./test/test_data/TwelveMileGulchQuads2.envi"
-[1] "Configuration files:"
-[1] "./test/test_configs/fg1_1.json"     "./test/test_configs/fg2_1.json"    
-[3] "./test/test_configs/species_1.json"
-[1] "8 Cores Detected for processing..."
-[1] "Thu Feb 10 09:57:33 2022\nTest failed for file:\n./test/test_data/BisonGulchQuads.envi using config: \n./test/test_configs/fg1_1.json\nError: \nError in checkForRemoteErrors(val): one node produced an error: argument is of length zero\n"
-No traceback available 
-[1] "8 Cores Detected for processing..."
-[1] "Thu Feb 10 09:58:03 2022\nTest failed for file:\n./test/test_data/BisonGulchQuads.envi using config: \n./test/test_configs/fg2_1.json\nError: \nError in checkForRemoteErrors(val): one node produced an error: argument is of length zero\n"
-No traceback available 
-[1] "8 Cores Detected for processing..."
-[1] "preprocessing raster at ./tiles//tile_CSB0TJ8be75cfzhe.grd"
+[1] 1741   95
+[1] "Attempting to save to ./tiles//prediction_DMglINRGQ9tYvtMg.grd"
+[1] "preprocessing raster at ./tiles//tile_PZnOjUigf0sBNeXE.grd"
 [1] "Imputing..."
   missForest iteration 1 in progress...done!
   missForest iteration 2 in progress...done!
@@ -1000,11 +107,11 @@ No traceback available
 [89] "TCARI2/OSAVI2" "TGI"           "TVI"           "Vogelmann"    
 [93] "Vogelmann2"    "Vogelmann3"    "Vogelmann4"   
 [1] "Resampled Dataframe Dimensions:"
-[1] 2792  375
+[1] 1493  375
 [1] "Index Dataframe Dimensions:"
-[1] 2792   95
-[1] "Attempting to save to ./predictions//prediction_CSB0TJ8be75cfzhe.grd"
-[1] "preprocessing raster at ./tiles//tile_rQItjwNLCrmfy16d.grd"
+[1] 1493   95
+[1] "Attempting to save to ./tiles//prediction_PZnOjUigf0sBNeXE.grd"
+[1] "preprocessing raster at ./tiles//tile_Gjvs3QsB6n9rXXbp.grd"
 [1] "Imputing..."
   missForest iteration 1 in progress...done!
   missForest iteration 2 in progress...done!
@@ -1034,21 +141,472 @@ No traceback available
 [89] "TCARI2/OSAVI2" "TGI"           "TVI"           "Vogelmann"    
 [93] "Vogelmann2"    "Vogelmann3"    "Vogelmann4"   
 [1] "Resampled Dataframe Dimensions:"
-[1] 3021  375
+[1] 1528  375
 [1] "Index Dataframe Dimensions:"
-[1] 3021   95
-[1] "Attempting to save to ./predictions//prediction_rQItjwNLCrmfy16d.grd"
-[1] "Thu Feb 10 09:59:02 2022\nTest failed for file:\n./test/test_data/BisonGulchQuads.envi using config: \n./test/test_configs/species_1.json\nError: \nError in {: task 1 failed - \"Attempting to write a file to a path that does not exist:\n  ./predictions\"\n"
-No traceback available 
+[1] 1528   95
+[1] "Attempting to save to ./tiles//prediction_Gjvs3QsB6n9rXXbp.grd"
+[1] "Tile based processing complete"
+[[1]]
+          used  (Mb) gc trigger  (Mb)  max used   (Mb)
+Ncells 5008297 267.5    8878200 474.2   8878200  474.2
+Vcells 9202041  70.3   29988947 228.8 386156461 2946.2
+
+[[2]]
+          used  (Mb) gc trigger  (Mb)  max used   (Mb)
+Ncells 5007173 267.5    8878200 474.2   8878200  474.2
+Vcells 9201440  70.3   31271940 238.6 386156461 2946.2
+
+[[3]]
+          used  (Mb) gc trigger  (Mb)  max used   (Mb)
+Ncells 5007181 267.5    8878200 474.2   8878200  474.2
+Vcells 9201469  70.3   30128054 229.9 386156461 2946.2
+
+[[4]]
+          used  (Mb) gc trigger  (Mb)  max used   (Mb)
+Ncells 5007189 267.5    8878200 474.2   8878200  474.2
+Vcells 9201498  70.3   31117963 237.5 386156461 2946.2
+
+[1] "Fri Feb 11 13:55:22 2022\nTest failed for file:\n./test/test_data/BisonGulchQuads.envi using config: \n./test/test_configs/fg1_1.json\nError: \nError in .local(x, filename, ...): Attempting to write a file to a path that does not exist:\n  ./test/test_outputs/pred_./test/test_data\n"
+18: unserialize(node$con)
+17: recvData.SOCKnode(con)
+16: recvData(con)
+15: FUN(X[[i]], ...)
+14: lapply(cl[1:jobs], recvResult)
+13: staticClusterApply(cl, fun, length(x), argfun)
+12: clusterApply(cl = cl, x = splitList(X, nchunks), fun = lapply, 
+        FUN = fun, ...)
+11: do.call(c, clusterApply(cl = cl, x = splitList(X, nchunks), fun = lapply, 
+        FUN = fun, ...), quote = TRUE)
+10: parallel::parLapply(cluster, tiles, crop_and_save_raster) at lecospectR.R#790
+9: make_tiles(input_raster, num_x = config$x_tiles, num_y = config$y_tiles, 
+       save_path = config$tile_path, cluster = cl, verbose = FALSE) at lecospectR.R#1012
+8: estimate_land_cover(raster_file, config, output_filepath = output_file, 
+       use_external_bands = TRUE)
+7: doTryCatch(return(expr), name, parentenv, handler)
+6: tryCatchOne(expr, names, parentenv, handlers[[1L]])
+5: tryCatchList(expr, names[-nh], parentenv, handlers[-nh])
+4: doTryCatch(return(expr), name, parentenv, handler)
+3: tryCatchOne(tryCatchList(expr, names[-nh], parentenv, handlers[-nh]), 
+       names[nh], parentenv, handlers[[nh]])
+2: tryCatchList(expr, classes, parentenv, handlers)
+1: tryCatch({
+       output_file <- paste0("./test/test_outputs/pred_", raster_file)
+       output <- estimate_land_cover(raster_file, config, output_filepath = output_file, 
+           use_external_bands = TRUE)
+       append(output_files, output_file)
+       print(paste0(date(), "\nTest passed for config: \n", config, 
+           "and file: \n", file))
+       colors <- create_color_map()
+   }, warning = function(w) {
+       print(paste0(date(), "\nTest completed with warnings for config: \n", 
+           config, "\nand file: \n", raster_file, "\nwarnings: \n", 
+           w))
+   }, error = function(e) {
+       print(paste0(date(), "\nTest failed for file:\n", raster_file, 
+           " using config: \n", config, "\nError: \n", e))
+       traceback()
+   })
 [1] "8 Cores Detected for processing..."
-[1] "Thu Feb 10 09:59:25 2022\nTest failed for file:\n./test/test_data/EightMileQuads.envi using config: \n./test/test_configs/fg1_1.json\nError: \nError in checkForRemoteErrors(val): one node produced an error: argument is of length zero\n"
-No traceback available 
+[1] "preprocessing raster at ./tiles//tile_s7RjYyWKYUHVTmP1.grd"
+[1] "Imputing..."
+  missForest iteration 1 in progress...done!
+  missForest iteration 2 in progress...done!
+[1] "Calulating Vegetation Indices:"
+ [1] "Boochs"        "Boochs2"       "CARI"          "Carter"       
+ [5] "Carter2"       "Carter3"       "Carter4"       "Carter5"      
+ [9] "Carter6"       "CI"            "CI2"           "ClAInt"       
+[13] "CRI1"          "CRI2"          "CRI3"          "CRI4"         
+[17] "D1"            "D2"            "Datt"          "Datt2"        
+[21] "Datt3"         "Datt4"         "Datt5"         "Datt6"        
+[25] "DD"            "DDn"           "DPI"           "DWSI4"        
+[29] "EGFN"          "EGFR"          "EVI"           "GDVI_2"       
+[33] "GDVI_3"        "GDVI_4"        "GI"            "Gitelson"     
+[37] "Gitelson2"     "GMI1"          "GMI2"          "Green NDVI"   
+[41] "Maccioni"      "MCARI"         "MCARI/OSAVI"   "MCARI2"       
+[45] "MCARI2/OSAVI2" "mND705"        "mNDVI"         "MPRI"         
+[49] "MSAVI"         "mSR"           "mSR2"          "mSR705"       
+[53] "MTCI"          "MTVI"          "NDVI"          "NDVI2"        
+[57] "NDVI3"         "NPCI"          "OSAVI"         "OSAVI2"       
+[61] "PARS"          "PRI"           "PRI*CI2"       "PRI_norm"     
+[65] "PSND"          "PSRI"          "PSSR"          "RDVI"         
+[69] "REP_LE"        "REP_Li"        "SAVI"          "SIPI"         
+[73] "SPVI"          "SR"            "SR1"           "SR2"          
+[77] "SR3"           "SR4"           "SR5"           "SR6"          
+[81] "SR7"           "SR8"           "SRPI"          "Sum_Dr1"      
+[85] "Sum_Dr2"       "TCARI"         "TCARI/OSAVI"   "TCARI2"       
+[89] "TCARI2/OSAVI2" "TGI"           "TVI"           "Vogelmann"    
+[93] "Vogelmann2"    "Vogelmann3"    "Vogelmann4"   
+[1] "Resampled Dataframe Dimensions:"
+[1] 1051  375
+[1] "Index Dataframe Dimensions:"
+[1] 1051   95
+[1] "Attempting to save to ./tiles//prediction_s7RjYyWKYUHVTmP1.grd"
+[1] "preprocessing raster at ./tiles//tile_IRNKCwJQc5NRALh4.grd"
+[1] "Imputing..."
+  missForest iteration 1 in progress...done!
+  missForest iteration 2 in progress...done!
+[1] "Calulating Vegetation Indices:"
+ [1] "Boochs"        "Boochs2"       "CARI"          "Carter"       
+ [5] "Carter2"       "Carter3"       "Carter4"       "Carter5"      
+ [9] "Carter6"       "CI"            "CI2"           "ClAInt"       
+[13] "CRI1"          "CRI2"          "CRI3"          "CRI4"         
+[17] "D1"            "D2"            "Datt"          "Datt2"        
+[21] "Datt3"         "Datt4"         "Datt5"         "Datt6"        
+[25] "DD"            "DDn"           "DPI"           "DWSI4"        
+[29] "EGFN"          "EGFR"          "EVI"           "GDVI_2"       
+[33] "GDVI_3"        "GDVI_4"        "GI"            "Gitelson"     
+[37] "Gitelson2"     "GMI1"          "GMI2"          "Green NDVI"   
+[41] "Maccioni"      "MCARI"         "MCARI/OSAVI"   "MCARI2"       
+[45] "MCARI2/OSAVI2" "mND705"        "mNDVI"         "MPRI"         
+[49] "MSAVI"         "mSR"           "mSR2"          "mSR705"       
+[53] "MTCI"          "MTVI"          "NDVI"          "NDVI2"        
+[57] "NDVI3"         "NPCI"          "OSAVI"         "OSAVI2"       
+[61] "PARS"          "PRI"           "PRI*CI2"       "PRI_norm"     
+[65] "PSND"          "PSRI"          "PSSR"          "RDVI"         
+[69] "REP_LE"        "REP_Li"        "SAVI"          "SIPI"         
+[73] "SPVI"          "SR"            "SR1"           "SR2"          
+[77] "SR3"           "SR4"           "SR5"           "SR6"          
+[81] "SR7"           "SR8"           "SRPI"          "Sum_Dr1"      
+[85] "Sum_Dr2"       "TCARI"         "TCARI/OSAVI"   "TCARI2"       
+[89] "TCARI2/OSAVI2" "TGI"           "TVI"           "Vogelmann"    
+[93] "Vogelmann2"    "Vogelmann3"    "Vogelmann4"   
+[1] "Resampled Dataframe Dimensions:"
+[1] 1741  375
+[1] "Index Dataframe Dimensions:"
+[1] 1741   95
+[1] "Attempting to save to ./tiles//prediction_IRNKCwJQc5NRALh4.grd"
+[1] "preprocessing raster at ./tiles//tile_mOfE6TBC8VBi0g3B.grd"
+[1] "Imputing..."
+  missForest iteration 1 in progress...done!
+  missForest iteration 2 in progress...done!
+[1] "Calulating Vegetation Indices:"
+ [1] "Boochs"        "Boochs2"       "CARI"          "Carter"       
+ [5] "Carter2"       "Carter3"       "Carter4"       "Carter5"      
+ [9] "Carter6"       "CI"            "CI2"           "ClAInt"       
+[13] "CRI1"          "CRI2"          "CRI3"          "CRI4"         
+[17] "D1"            "D2"            "Datt"          "Datt2"        
+[21] "Datt3"         "Datt4"         "Datt5"         "Datt6"        
+[25] "DD"            "DDn"           "DPI"           "DWSI4"        
+[29] "EGFN"          "EGFR"          "EVI"           "GDVI_2"       
+[33] "GDVI_3"        "GDVI_4"        "GI"            "Gitelson"     
+[37] "Gitelson2"     "GMI1"          "GMI2"          "Green NDVI"   
+[41] "Maccioni"      "MCARI"         "MCARI/OSAVI"   "MCARI2"       
+[45] "MCARI2/OSAVI2" "mND705"        "mNDVI"         "MPRI"         
+[49] "MSAVI"         "mSR"           "mSR2"          "mSR705"       
+[53] "MTCI"          "MTVI"          "NDVI"          "NDVI2"        
+[57] "NDVI3"         "NPCI"          "OSAVI"         "OSAVI2"       
+[61] "PARS"          "PRI"           "PRI*CI2"       "PRI_norm"     
+[65] "PSND"          "PSRI"          "PSSR"          "RDVI"         
+[69] "REP_LE"        "REP_Li"        "SAVI"          "SIPI"         
+[73] "SPVI"          "SR"            "SR1"           "SR2"          
+[77] "SR3"           "SR4"           "SR5"           "SR6"          
+[81] "SR7"           "SR8"           "SRPI"          "Sum_Dr1"      
+[85] "Sum_Dr2"       "TCARI"         "TCARI/OSAVI"   "TCARI2"       
+[89] "TCARI2/OSAVI2" "TGI"           "TVI"           "Vogelmann"    
+[93] "Vogelmann2"    "Vogelmann3"    "Vogelmann4"   
+[1] "Resampled Dataframe Dimensions:"
+[1] 1493  375
+[1] "Index Dataframe Dimensions:"
+[1] 1493   95
+[1] "Attempting to save to ./tiles//prediction_mOfE6TBC8VBi0g3B.grd"
+[1] "preprocessing raster at ./tiles//tile_MzhRLXXzkVfMmEBP.grd"
+[1] "Imputing..."
+  missForest iteration 1 in progress...done!
+  missForest iteration 2 in progress...done!
+[1] "Calulating Vegetation Indices:"
+ [1] "Boochs"        "Boochs2"       "CARI"          "Carter"       
+ [5] "Carter2"       "Carter3"       "Carter4"       "Carter5"      
+ [9] "Carter6"       "CI"            "CI2"           "ClAInt"       
+[13] "CRI1"          "CRI2"          "CRI3"          "CRI4"         
+[17] "D1"            "D2"            "Datt"          "Datt2"        
+[21] "Datt3"         "Datt4"         "Datt5"         "Datt6"        
+[25] "DD"            "DDn"           "DPI"           "DWSI4"        
+[29] "EGFN"          "EGFR"          "EVI"           "GDVI_2"       
+[33] "GDVI_3"        "GDVI_4"        "GI"            "Gitelson"     
+[37] "Gitelson2"     "GMI1"          "GMI2"          "Green NDVI"   
+[41] "Maccioni"      "MCARI"         "MCARI/OSAVI"   "MCARI2"       
+[45] "MCARI2/OSAVI2" "mND705"        "mNDVI"         "MPRI"         
+[49] "MSAVI"         "mSR"           "mSR2"          "mSR705"       
+[53] "MTCI"          "MTVI"          "NDVI"          "NDVI2"        
+[57] "NDVI3"         "NPCI"          "OSAVI"         "OSAVI2"       
+[61] "PARS"          "PRI"           "PRI*CI2"       "PRI_norm"     
+[65] "PSND"          "PSRI"          "PSSR"          "RDVI"         
+[69] "REP_LE"        "REP_Li"        "SAVI"          "SIPI"         
+[73] "SPVI"          "SR"            "SR1"           "SR2"          
+[77] "SR3"           "SR4"           "SR5"           "SR6"          
+[81] "SR7"           "SR8"           "SRPI"          "Sum_Dr1"      
+[85] "Sum_Dr2"       "TCARI"         "TCARI/OSAVI"   "TCARI2"       
+[89] "TCARI2/OSAVI2" "TGI"           "TVI"           "Vogelmann"    
+[93] "Vogelmann2"    "Vogelmann3"    "Vogelmann4"   
+[1] "Resampled Dataframe Dimensions:"
+[1] 1528  375
+[1] "Index Dataframe Dimensions:"
+[1] 1528   95
+[1] "Attempting to save to ./tiles//prediction_MzhRLXXzkVfMmEBP.grd"
+[1] "Tile based processing complete"
+[[1]]
+          used  (Mb) gc trigger  (Mb)  max used   (Mb)
+Ncells 5007244 267.5    8878200 474.2   8878200  474.2
+Vcells 9961329  76.0   36024721 274.9 386156461 2946.2
+
+[[2]]
+          used  (Mb) gc trigger  (Mb)  max used   (Mb)
+Ncells 5007254 267.5    8878200 474.2   8878200  474.2
+Vcells 9961459  76.0   31260619 238.5 386156461 2946.2
+
+[[3]]
+          used  (Mb) gc trigger  (Mb)  max used   (Mb)
+Ncells 5007262 267.5    8878200 474.2   8878200  474.2
+Vcells 9961488  76.1   36190035 276.2 386156461 2946.2
+
+[[4]]
+          used  (Mb) gc trigger  (Mb)  max used   (Mb)
+Ncells 5007270 267.5    8878200 474.2   8878200  474.2
+Vcells 9961517  76.1   31276623 238.7 386156461 2946.2
+
+[1] "Fri Feb 11 13:56:29 2022\nTest failed for file:\n./test/test_data/BisonGulchQuads.envi using config: \n./test/test_configs/fg2_1.json\nError: \nError in .local(x, filename, ...): Attempting to write a file to a path that does not exist:\n  ./test/test_outputs/pred_./test/test_data\n"
+18: unserialize(node$con)
+17: recvData.SOCKnode(con)
+16: recvData(con)
+15: FUN(X[[i]], ...)
+14: lapply(cl[1:jobs], recvResult)
+13: staticClusterApply(cl, fun, length(x), argfun)
+12: clusterApply(cl = cl, x = splitList(X, nchunks), fun = lapply, 
+        FUN = fun, ...)
+11: do.call(c, clusterApply(cl = cl, x = splitList(X, nchunks), fun = lapply, 
+        FUN = fun, ...), quote = TRUE)
+10: parallel::parLapply(cluster, tiles, crop_and_save_raster) at lecospectR.R#790
+9: make_tiles(input_raster, num_x = config$x_tiles, num_y = config$y_tiles, 
+       save_path = config$tile_path, cluster = cl, verbose = FALSE) at lecospectR.R#1012
+8: estimate_land_cover(raster_file, config, output_filepath = output_file, 
+       use_external_bands = TRUE)
+7: doTryCatch(return(expr), name, parentenv, handler)
+6: tryCatchOne(expr, names, parentenv, handlers[[1L]])
+5: tryCatchList(expr, names[-nh], parentenv, handlers[-nh])
+4: doTryCatch(return(expr), name, parentenv, handler)
+3: tryCatchOne(tryCatchList(expr, names[-nh], parentenv, handlers[-nh]), 
+       names[nh], parentenv, handlers[[nh]])
+2: tryCatchList(expr, classes, parentenv, handlers)
+1: tryCatch({
+       output_file <- paste0("./test/test_outputs/pred_", raster_file)
+       output <- estimate_land_cover(raster_file, config, output_filepath = output_file, 
+           use_external_bands = TRUE)
+       append(output_files, output_file)
+       print(paste0(date(), "\nTest passed for config: \n", config, 
+           "and file: \n", file))
+       colors <- create_color_map()
+   }, warning = function(w) {
+       print(paste0(date(), "\nTest completed with warnings for config: \n", 
+           config, "\nand file: \n", raster_file, "\nwarnings: \n", 
+           w))
+   }, error = function(e) {
+       print(paste0(date(), "\nTest failed for file:\n", raster_file, 
+           " using config: \n", config, "\nError: \n", e))
+       traceback()
+   })
 [1] "8 Cores Detected for processing..."
-[1] "Thu Feb 10 09:59:56 2022\nTest failed for file:\n./test/test_data/EightMileQuads.envi using config: \n./test/test_configs/fg2_1.json\nError: \nError in checkForRemoteErrors(val): one node produced an error: argument is of length zero\n"
-No traceback available 
+[1] "preprocessing raster at ./tiles//tile_1GZIhKP5uqsatLx9.grd"
+[1] "Imputing..."
+  missForest iteration 1 in progress...done!
+  missForest iteration 2 in progress...done!
+[1] "Calulating Vegetation Indices:"
+ [1] "Boochs"        "Boochs2"       "CARI"          "Carter"       
+ [5] "Carter2"       "Carter3"       "Carter4"       "Carter5"      
+ [9] "Carter6"       "CI"            "CI2"           "ClAInt"       
+[13] "CRI1"          "CRI2"          "CRI3"          "CRI4"         
+[17] "D1"            "D2"            "Datt"          "Datt2"        
+[21] "Datt3"         "Datt4"         "Datt5"         "Datt6"        
+[25] "DD"            "DDn"           "DPI"           "DWSI4"        
+[29] "EGFN"          "EGFR"          "EVI"           "GDVI_2"       
+[33] "GDVI_3"        "GDVI_4"        "GI"            "Gitelson"     
+[37] "Gitelson2"     "GMI1"          "GMI2"          "Green NDVI"   
+[41] "Maccioni"      "MCARI"         "MCARI/OSAVI"   "MCARI2"       
+[45] "MCARI2/OSAVI2" "mND705"        "mNDVI"         "MPRI"         
+[49] "MSAVI"         "mSR"           "mSR2"          "mSR705"       
+[53] "MTCI"          "MTVI"          "NDVI"          "NDVI2"        
+[57] "NDVI3"         "NPCI"          "OSAVI"         "OSAVI2"       
+[61] "PARS"          "PRI"           "PRI*CI2"       "PRI_norm"     
+[65] "PSND"          "PSRI"          "PSSR"          "RDVI"         
+[69] "REP_LE"        "REP_Li"        "SAVI"          "SIPI"         
+[73] "SPVI"          "SR"            "SR1"           "SR2"          
+[77] "SR3"           "SR4"           "SR5"           "SR6"          
+[81] "SR7"           "SR8"           "SRPI"          "Sum_Dr1"      
+[85] "Sum_Dr2"       "TCARI"         "TCARI/OSAVI"   "TCARI2"       
+[89] "TCARI2/OSAVI2" "TGI"           "TVI"           "Vogelmann"    
+[93] "Vogelmann2"    "Vogelmann3"    "Vogelmann4"   
+[1] "Resampled Dataframe Dimensions:"
+[1] 1051  375
+[1] "Index Dataframe Dimensions:"
+[1] 1051   95
+[1] "Attempting to save to ./tiles//prediction_1GZIhKP5uqsatLx9.grd"
+[1] "preprocessing raster at ./tiles//tile_atUMtRTWmgOVzFA0.grd"
+[1] "Imputing..."
+  missForest iteration 1 in progress...done!
+  missForest iteration 2 in progress...done!
+[1] "Calulating Vegetation Indices:"
+ [1] "Boochs"        "Boochs2"       "CARI"          "Carter"       
+ [5] "Carter2"       "Carter3"       "Carter4"       "Carter5"      
+ [9] "Carter6"       "CI"            "CI2"           "ClAInt"       
+[13] "CRI1"          "CRI2"          "CRI3"          "CRI4"         
+[17] "D1"            "D2"            "Datt"          "Datt2"        
+[21] "Datt3"         "Datt4"         "Datt5"         "Datt6"        
+[25] "DD"            "DDn"           "DPI"           "DWSI4"        
+[29] "EGFN"          "EGFR"          "EVI"           "GDVI_2"       
+[33] "GDVI_3"        "GDVI_4"        "GI"            "Gitelson"     
+[37] "Gitelson2"     "GMI1"          "GMI2"          "Green NDVI"   
+[41] "Maccioni"      "MCARI"         "MCARI/OSAVI"   "MCARI2"       
+[45] "MCARI2/OSAVI2" "mND705"        "mNDVI"         "MPRI"         
+[49] "MSAVI"         "mSR"           "mSR2"          "mSR705"       
+[53] "MTCI"          "MTVI"          "NDVI"          "NDVI2"        
+[57] "NDVI3"         "NPCI"          "OSAVI"         "OSAVI2"       
+[61] "PARS"          "PRI"           "PRI*CI2"       "PRI_norm"     
+[65] "PSND"          "PSRI"          "PSSR"          "RDVI"         
+[69] "REP_LE"        "REP_Li"        "SAVI"          "SIPI"         
+[73] "SPVI"          "SR"            "SR1"           "SR2"          
+[77] "SR3"           "SR4"           "SR5"           "SR6"          
+[81] "SR7"           "SR8"           "SRPI"          "Sum_Dr1"      
+[85] "Sum_Dr2"       "TCARI"         "TCARI/OSAVI"   "TCARI2"       
+[89] "TCARI2/OSAVI2" "TGI"           "TVI"           "Vogelmann"    
+[93] "Vogelmann2"    "Vogelmann3"    "Vogelmann4"   
+[1] "Resampled Dataframe Dimensions:"
+[1] 1741  375
+[1] "Index Dataframe Dimensions:"
+[1] 1741   95
+[1] "Attempting to save to ./tiles//prediction_atUMtRTWmgOVzFA0.grd"
+[1] "preprocessing raster at ./tiles//tile_lkAm891iu2JN5SlA.grd"
+[1] "Imputing..."
+  missForest iteration 1 in progress...done!
+  missForest iteration 2 in progress...done!
+[1] "Calulating Vegetation Indices:"
+ [1] "Boochs"        "Boochs2"       "CARI"          "Carter"       
+ [5] "Carter2"       "Carter3"       "Carter4"       "Carter5"      
+ [9] "Carter6"       "CI"            "CI2"           "ClAInt"       
+[13] "CRI1"          "CRI2"          "CRI3"          "CRI4"         
+[17] "D1"            "D2"            "Datt"          "Datt2"        
+[21] "Datt3"         "Datt4"         "Datt5"         "Datt6"        
+[25] "DD"            "DDn"           "DPI"           "DWSI4"        
+[29] "EGFN"          "EGFR"          "EVI"           "GDVI_2"       
+[33] "GDVI_3"        "GDVI_4"        "GI"            "Gitelson"     
+[37] "Gitelson2"     "GMI1"          "GMI2"          "Green NDVI"   
+[41] "Maccioni"      "MCARI"         "MCARI/OSAVI"   "MCARI2"       
+[45] "MCARI2/OSAVI2" "mND705"        "mNDVI"         "MPRI"         
+[49] "MSAVI"         "mSR"           "mSR2"          "mSR705"       
+[53] "MTCI"          "MTVI"          "NDVI"          "NDVI2"        
+[57] "NDVI3"         "NPCI"          "OSAVI"         "OSAVI2"       
+[61] "PARS"          "PRI"           "PRI*CI2"       "PRI_norm"     
+[65] "PSND"          "PSRI"          "PSSR"          "RDVI"         
+[69] "REP_LE"        "REP_Li"        "SAVI"          "SIPI"         
+[73] "SPVI"          "SR"            "SR1"           "SR2"          
+[77] "SR3"           "SR4"           "SR5"           "SR6"          
+[81] "SR7"           "SR8"           "SRPI"          "Sum_Dr1"      
+[85] "Sum_Dr2"       "TCARI"         "TCARI/OSAVI"   "TCARI2"       
+[89] "TCARI2/OSAVI2" "TGI"           "TVI"           "Vogelmann"    
+[93] "Vogelmann2"    "Vogelmann3"    "Vogelmann4"   
+[1] "Resampled Dataframe Dimensions:"
+[1] 1493  375
+[1] "Index Dataframe Dimensions:"
+[1] 1493   95
+[1] "Attempting to save to ./tiles//prediction_lkAm891iu2JN5SlA.grd"
+[1] "preprocessing raster at ./tiles//tile_lSCdIR5RLBuFAEcc.grd"
+[1] "Imputing..."
+  missForest iteration 1 in progress...done!
+  missForest iteration 2 in progress...done!
+[1] "Calulating Vegetation Indices:"
+ [1] "Boochs"        "Boochs2"       "CARI"          "Carter"       
+ [5] "Carter2"       "Carter3"       "Carter4"       "Carter5"      
+ [9] "Carter6"       "CI"            "CI2"           "ClAInt"       
+[13] "CRI1"          "CRI2"          "CRI3"          "CRI4"         
+[17] "D1"            "D2"            "Datt"          "Datt2"        
+[21] "Datt3"         "Datt4"         "Datt5"         "Datt6"        
+[25] "DD"            "DDn"           "DPI"           "DWSI4"        
+[29] "EGFN"          "EGFR"          "EVI"           "GDVI_2"       
+[33] "GDVI_3"        "GDVI_4"        "GI"            "Gitelson"     
+[37] "Gitelson2"     "GMI1"          "GMI2"          "Green NDVI"   
+[41] "Maccioni"      "MCARI"         "MCARI/OSAVI"   "MCARI2"       
+[45] "MCARI2/OSAVI2" "mND705"        "mNDVI"         "MPRI"         
+[49] "MSAVI"         "mSR"           "mSR2"          "mSR705"       
+[53] "MTCI"          "MTVI"          "NDVI"          "NDVI2"        
+[57] "NDVI3"         "NPCI"          "OSAVI"         "OSAVI2"       
+[61] "PARS"          "PRI"           "PRI*CI2"       "PRI_norm"     
+[65] "PSND"          "PSRI"          "PSSR"          "RDVI"         
+[69] "REP_LE"        "REP_Li"        "SAVI"          "SIPI"         
+[73] "SPVI"          "SR"            "SR1"           "SR2"          
+[77] "SR3"           "SR4"           "SR5"           "SR6"          
+[81] "SR7"           "SR8"           "SRPI"          "Sum_Dr1"      
+[85] "Sum_Dr2"       "TCARI"         "TCARI/OSAVI"   "TCARI2"       
+[89] "TCARI2/OSAVI2" "TGI"           "TVI"           "Vogelmann"    
+[93] "Vogelmann2"    "Vogelmann3"    "Vogelmann4"   
+[1] "Resampled Dataframe Dimensions:"
+[1] 1528  375
+[1] "Index Dataframe Dimensions:"
+[1] 1528   95
+[1] "Attempting to save to ./tiles//prediction_lSCdIR5RLBuFAEcc.grd"
+[1] "Tile based processing complete"
+[[1]]
+           used  (Mb) gc trigger  (Mb)  max used   (Mb)
+Ncells  5006067 267.4    8878200 474.2   8878200  474.2
+Vcells 10613153  81.0   36143985 275.8 386156461 2946.2
+
+[[2]]
+           used  (Mb) gc trigger  (Mb)  max used   (Mb)
+Ncells  5006077 267.4    8878200 474.2   8878200  474.2
+Vcells 10613283  81.0   37632269 287.2 386156461 2946.2
+
+[[3]]
+           used  (Mb) gc trigger  (Mb)  max used   (Mb)
+Ncells  5006085 267.4    8878200 474.2   8878200  474.2
+Vcells 10613312  81.0   34533064 263.5 386156461 2946.2
+
+[[4]]
+           used  (Mb) gc trigger  (Mb)  max used   (Mb)
+Ncells  5006093 267.4    8878200 474.2   8878200  474.2
+Vcells 10613341  81.0   37585478 286.8 386156461 2946.2
+
+[1] "Fri Feb 11 13:57:44 2022\nTest failed for file:\n./test/test_data/BisonGulchQuads.envi using config: \n./test/test_configs/species_1.json\nError: \nError in .local(x, filename, ...): Attempting to write a file to a path that does not exist:\n  ./test/test_outputs/pred_./test/test_data\n"
+18: unserialize(node$con)
+17: recvData.SOCKnode(con)
+16: recvData(con)
+15: FUN(X[[i]], ...)
+14: lapply(cl[1:jobs], recvResult)
+13: staticClusterApply(cl, fun, length(x), argfun)
+12: clusterApply(cl = cl, x = splitList(X, nchunks), fun = lapply, 
+        FUN = fun, ...)
+11: do.call(c, clusterApply(cl = cl, x = splitList(X, nchunks), fun = lapply, 
+        FUN = fun, ...), quote = TRUE)
+10: parallel::parLapply(cluster, tiles, crop_and_save_raster) at lecospectR.R#790
+9: make_tiles(input_raster, num_x = config$x_tiles, num_y = config$y_tiles, 
+       save_path = config$tile_path, cluster = cl, verbose = FALSE) at lecospectR.R#1012
+8: estimate_land_cover(raster_file, config, output_filepath = output_file, 
+       use_external_bands = TRUE)
+7: doTryCatch(return(expr), name, parentenv, handler)
+6: tryCatchOne(expr, names, parentenv, handlers[[1L]])
+5: tryCatchList(expr, names[-nh], parentenv, handlers[-nh])
+4: doTryCatch(return(expr), name, parentenv, handler)
+3: tryCatchOne(tryCatchList(expr, names[-nh], parentenv, handlers[-nh]), 
+       names[nh], parentenv, handlers[[nh]])
+2: tryCatchList(expr, classes, parentenv, handlers)
+1: tryCatch({
+       output_file <- paste0("./test/test_outputs/pred_", raster_file)
+       output <- estimate_land_cover(raster_file, config, output_filepath = output_file, 
+           use_external_bands = TRUE)
+       append(output_files, output_file)
+       print(paste0(date(), "\nTest passed for config: \n", config, 
+           "and file: \n", file))
+       colors <- create_color_map()
+   }, warning = function(w) {
+       print(paste0(date(), "\nTest completed with warnings for config: \n", 
+           config, "\nand file: \n", raster_file, "\nwarnings: \n", 
+           w))
+   }, error = function(e) {
+       print(paste0(date(), "\nTest failed for file:\n", raster_file, 
+           " using config: \n", config, "\nError: \n", e))
+       traceback()
+   })
 [1] "8 Cores Detected for processing..."
-[1] "preprocessing raster at ./tiles//tile_3EKiBopWLWYv57p5.grd"
-[1] "preprocessing raster at ./tiles//tile_nCxAS5wiE3MuTSOO.grd"
+[1] "preprocessing raster at ./tiles//tile_a5UCaSN0ycgH0eli.grd"
+[1] "preprocessing raster at ./tiles//tile_2gmAK2y8iHnvSmjg.grd"
+[1] "preprocessing raster at ./tiles//tile_a0xL0hvitagP4fac.grd"
+[1] "preprocessing raster at ./tiles//tile_yQ0AzNZR7sESdjrq.grd"
 [1] "Imputing..."
   missForest iteration 1 in progress...done!
   missForest iteration 2 in progress...done!
@@ -1081,16 +639,51 @@ No traceback available
 [1]  21 375
 [1] "Index Dataframe Dimensions:"
 [1] 21 95
-[1] "Thu Feb 10 10:01:12 2022\nTest failed for file:\n./test/test_data/EightMileQuads.envi using config: \n./test/test_configs/species_1.json\nError: \nError in {: task 2 failed - \"Missing data in columns: CARI, Carter, Carter2, Carter3, Carter4, Carter5, CI, CI2, CRI1, CRI2, CRI3, CRI4, D1, D2, Datt, Datt2, Datt3, Datt4, Datt5, Datt6, DPI, DWSI4, EGFN, EGFR, GDVI2, GDVI3, GDVI4, GI, Gitelson2, GMI1, GMI2, GreenNDVI, Maccioni, MCARI, MCARIOSAVI, MCARI2, MCARI2OSAVI2, mND705, mNDVI, MPRI, mSR, mSR2, mSR705, MTCI, NDVI, NDVI2, NDVI3, NPCI, PARS, PRI, PRICI2, PRInorm, PSND, PSRI, PSSR, RDVI, REPLE, REPLi, SIPI, SR, SR1, SR2, SR3, SR4, SR5, SR6, SR7, SR8, SRPI, TCARI, TCARIOSAVI, TCARI2, TCARI2OSAVI2, Vogelmann, Vogelmann2, Vogelmann3, Vogelmann4.\"\n"
-No traceback available 
+[1] "Fri Feb 11 13:58:56 2022\nTest failed for file:\n./test/test_data/EightMileQuads.envi using config: \n./test/test_configs/fg1_1.json\nError: \nError in {: task 4 failed - \"Missing data in columns: CARI, Carter, Carter2, Carter3, Carter4, Carter5, CI, CI2, CRI1, CRI2, CRI3, CRI4, D1, D2, Datt, Datt2, Datt3, Datt4, Datt5, Datt6, DPI, DWSI4, EGFN, EGFR, GDVI2, GDVI3, GDVI4, GI, Gitelson2, GMI1, GMI2, GreenNDVI, Maccioni, MCARI, MCARIOSAVI, MCARI2, MCARI2OSAVI2, mND705, mNDVI, MPRI, mSR, mSR2, mSR705, MTCI, NDVI, NDVI2, NDVI3, NPCI, PARS, PRI, PRICI2, PRInorm, PSND, PSRI, PSSR, RDVI, REPLE, REPLi, SIPI, SR, SR1, SR2, SR3, SR4, SR5, SR6, SR7, SR8, SRPI, TCARI, TCARIOSAVI, TCARI2, TCARI2OSAVI2, Vogelmann, Vogelmann2, Vogelmann3, Vogelmann4.\"\n"
+18: unserialize(node$con)
+17: recvData.SOCKnode(con)
+16: recvData(con)
+15: FUN(X[[i]], ...)
+14: lapply(cl[1:jobs], recvResult)
+13: staticClusterApply(cl, fun, length(x), argfun)
+12: clusterApply(cl = cl, x = splitList(X, nchunks), fun = lapply, 
+        FUN = fun, ...)
+11: do.call(c, clusterApply(cl = cl, x = splitList(X, nchunks), fun = lapply, 
+        FUN = fun, ...), quote = TRUE)
+10: parallel::parLapply(cluster, tiles, crop_and_save_raster) at lecospectR.R#790
+9: make_tiles(input_raster, num_x = config$x_tiles, num_y = config$y_tiles, 
+       save_path = config$tile_path, cluster = cl, verbose = FALSE) at lecospectR.R#1012
+8: estimate_land_cover(raster_file, config, output_filepath = output_file, 
+       use_external_bands = TRUE)
+7: doTryCatch(return(expr), name, parentenv, handler)
+6: tryCatchOne(expr, names, parentenv, handlers[[1L]])
+5: tryCatchList(expr, names[-nh], parentenv, handlers[-nh])
+4: doTryCatch(return(expr), name, parentenv, handler)
+3: tryCatchOne(tryCatchList(expr, names[-nh], parentenv, handlers[-nh]), 
+       names[nh], parentenv, handlers[[nh]])
+2: tryCatchList(expr, classes, parentenv, handlers)
+1: tryCatch({
+       output_file <- paste0("./test/test_outputs/pred_", raster_file)
+       output <- estimate_land_cover(raster_file, config, output_filepath = output_file, 
+           use_external_bands = TRUE)
+       append(output_files, output_file)
+       print(paste0(date(), "\nTest passed for config: \n", config, 
+           "and file: \n", file))
+       colors <- create_color_map()
+   }, warning = function(w) {
+       print(paste0(date(), "\nTest completed with warnings for config: \n", 
+           config, "\nand file: \n", raster_file, "\nwarnings: \n", 
+           w))
+   }, error = function(e) {
+       print(paste0(date(), "\nTest failed for file:\n", raster_file, 
+           " using config: \n", config, "\nError: \n", e))
+       traceback()
+   })
 [1] "8 Cores Detected for processing..."
-[1] "Thu Feb 10 10:01:36 2022\nTest failed for file:\n./test/test_data/TwelveMileGulchQuads1.envi using config: \n./test/test_configs/fg1_1.json\nError: \nError in checkForRemoteErrors(val): one node produced an error: argument is of length zero\n"
-No traceback available 
-[1] "8 Cores Detected for processing..."
-[1] "Thu Feb 10 10:02:06 2022\nTest failed for file:\n./test/test_data/TwelveMileGulchQuads1.envi using config: \n./test/test_configs/fg2_1.json\nError: \nError in checkForRemoteErrors(val): one node produced an error: argument is of length zero\n"
-No traceback available 
-[1] "8 Cores Detected for processing..."
-[1] "preprocessing raster at ./tiles//tile_Bgq8VZcSUN0ii3Se.grd"
+[1] "preprocessing raster at ./tiles//tile_IgciMf4wyhMNIRLx.grd"
+[1] "preprocessing raster at ./tiles//tile_zSnnTPpZiN1Ly8Xx.grd"
+[1] "preprocessing raster at ./tiles//tile_RUy3JiIVcnurrZAc.grd"
+[1] "preprocessing raster at ./tiles//tile_Jrn1xdB3LnIfjpgf.grd"
 [1] "Imputing..."
   missForest iteration 1 in progress...done!
   missForest iteration 2 in progress...done!
@@ -1120,11 +713,54 @@ No traceback available
 [89] "TCARI2/OSAVI2" "TGI"           "TVI"           "Vogelmann"    
 [93] "Vogelmann2"    "Vogelmann3"    "Vogelmann4"   
 [1] "Resampled Dataframe Dimensions:"
-[1] 569 375
+[1]  21 375
 [1] "Index Dataframe Dimensions:"
-[1] 569  95
-[1] "Attempting to save to ./predictions//prediction_Bgq8VZcSUN0ii3Se.grd"
-[1] "preprocessing raster at ./tiles//tile_cKx4z0RZxLJ21TEu.grd"
+[1] 21 95
+[1] "Fri Feb 11 14:00:15 2022\nTest failed for file:\n./test/test_data/EightMileQuads.envi using config: \n./test/test_configs/fg2_1.json\nError: \nError in {: task 4 failed - \"Missing data in columns: CARI, Carter, Carter2, Carter3, Carter4, Carter5, CI, CI2, CRI1, CRI2, CRI3, CRI4, D1, D2, Datt, Datt2, Datt3, Datt4, Datt5, Datt6, DPI, DWSI4, EGFN, EGFR, GDVI2, GDVI3, GDVI4, GI, Gitelson2, GMI1, GMI2, GreenNDVI, Maccioni, MCARI, MCARIOSAVI, MCARI2, MCARI2OSAVI2, mND705, mNDVI, MPRI, mSR, mSR2, mSR705, MTCI, NDVI, NDVI2, NDVI3, NPCI, PARS, PRI, PRICI2, PRInorm, PSND, PSRI, PSSR, RDVI, REPLE, REPLi, SIPI, SR, SR1, SR2, SR3, SR4, SR5, SR6, SR7, SR8, SRPI, TCARI, TCARIOSAVI, TCARI2, TCARI2OSAVI2, Vogelmann, Vogelmann2, Vogelmann3, Vogelmann4.\"\n"
+18: unserialize(node$con)
+17: recvData.SOCKnode(con)
+16: recvData(con)
+15: FUN(X[[i]], ...)
+14: lapply(cl[1:jobs], recvResult)
+13: staticClusterApply(cl, fun, length(x), argfun)
+12: clusterApply(cl = cl, x = splitList(X, nchunks), fun = lapply, 
+        FUN = fun, ...)
+11: do.call(c, clusterApply(cl = cl, x = splitList(X, nchunks), fun = lapply, 
+        FUN = fun, ...), quote = TRUE)
+10: parallel::parLapply(cluster, tiles, crop_and_save_raster) at lecospectR.R#790
+9: make_tiles(input_raster, num_x = config$x_tiles, num_y = config$y_tiles, 
+       save_path = config$tile_path, cluster = cl, verbose = FALSE) at lecospectR.R#1012
+8: estimate_land_cover(raster_file, config, output_filepath = output_file, 
+       use_external_bands = TRUE)
+7: doTryCatch(return(expr), name, parentenv, handler)
+6: tryCatchOne(expr, names, parentenv, handlers[[1L]])
+5: tryCatchList(expr, names[-nh], parentenv, handlers[-nh])
+4: doTryCatch(return(expr), name, parentenv, handler)
+3: tryCatchOne(tryCatchList(expr, names[-nh], parentenv, handlers[-nh]), 
+       names[nh], parentenv, handlers[[nh]])
+2: tryCatchList(expr, classes, parentenv, handlers)
+1: tryCatch({
+       output_file <- paste0("./test/test_outputs/pred_", raster_file)
+       output <- estimate_land_cover(raster_file, config, output_filepath = output_file, 
+           use_external_bands = TRUE)
+       append(output_files, output_file)
+       print(paste0(date(), "\nTest passed for config: \n", config, 
+           "and file: \n", file))
+       colors <- create_color_map()
+   }, warning = function(w) {
+       print(paste0(date(), "\nTest completed with warnings for config: \n", 
+           config, "\nand file: \n", raster_file, "\nwarnings: \n", 
+           w))
+   }, error = function(e) {
+       print(paste0(date(), "\nTest failed for file:\n", raster_file, 
+           " using config: \n", config, "\nError: \n", e))
+       traceback()
+   })
+[1] "8 Cores Detected for processing..."
+[1] "preprocessing raster at ./tiles//tile_YNSlpiG3dt2Pf2Lc.grd"
+[1] "preprocessing raster at ./tiles//tile_TjdDzGUlwAs1RG4J.grd"
+[1] "preprocessing raster at ./tiles//tile_i9zDeh1abrthVOaC.grd"
+[1] "preprocessing raster at ./tiles//tile_60ZXW0jwSeA9yAz5.grd"
 [1] "Imputing..."
   missForest iteration 1 in progress...done!
   missForest iteration 2 in progress...done!
@@ -1154,216 +790,48 @@ No traceback available
 [89] "TCARI2/OSAVI2" "TGI"           "TVI"           "Vogelmann"    
 [93] "Vogelmann2"    "Vogelmann3"    "Vogelmann4"   
 [1] "Resampled Dataframe Dimensions:"
-[1] 972 375
+[1]  21 375
 [1] "Index Dataframe Dimensions:"
-[1] 972  95
-[1] "Attempting to save to ./predictions//prediction_cKx4z0RZxLJ21TEu.grd"
-[1] "Thu Feb 10 10:03:10 2022\nTest failed for file:\n./test/test_data/TwelveMileGulchQuads1.envi using config: \n./test/test_configs/species_1.json\nError: \nError in {: task 1 failed - \"Attempting to write a file to a path that does not exist:\n  ./predictions\"\n"
-No traceback available 
+[1] 21 95
+[1] "Fri Feb 11 14:01:42 2022\nTest failed for file:\n./test/test_data/EightMileQuads.envi using config: \n./test/test_configs/species_1.json\nError: \nError in {: task 4 failed - \"Missing data in columns: CARI, Carter, Carter2, Carter3, Carter4, Carter5, CI, CI2, CRI1, CRI2, CRI3, CRI4, D1, D2, Datt, Datt2, Datt3, Datt4, Datt5, Datt6, DPI, DWSI4, EGFN, EGFR, GDVI2, GDVI3, GDVI4, GI, Gitelson2, GMI1, GMI2, GreenNDVI, Maccioni, MCARI, MCARIOSAVI, MCARI2, MCARI2OSAVI2, mND705, mNDVI, MPRI, mSR, mSR2, mSR705, MTCI, NDVI, NDVI2, NDVI3, NPCI, PARS, PRI, PRICI2, PRInorm, PSND, PSRI, PSSR, RDVI, REPLE, REPLi, SIPI, SR, SR1, SR2, SR3, SR4, SR5, SR6, SR7, SR8, SRPI, TCARI, TCARIOSAVI, TCARI2, TCARI2OSAVI2, Vogelmann, Vogelmann2, Vogelmann3, Vogelmann4.\"\n"
+18: unserialize(node$con)
+17: recvData.SOCKnode(con)
+16: recvData(con)
+15: FUN(X[[i]], ...)
+14: lapply(cl[1:jobs], recvResult)
+13: staticClusterApply(cl, fun, length(x), argfun)
+12: clusterApply(cl = cl, x = splitList(X, nchunks), fun = lapply, 
+        FUN = fun, ...)
+11: do.call(c, clusterApply(cl = cl, x = splitList(X, nchunks), fun = lapply, 
+        FUN = fun, ...), quote = TRUE)
+10: parallel::parLapply(cluster, tiles, crop_and_save_raster) at lecospectR.R#790
+9: make_tiles(input_raster, num_x = config$x_tiles, num_y = config$y_tiles, 
+       save_path = config$tile_path, cluster = cl, verbose = FALSE) at lecospectR.R#1012
+8: estimate_land_cover(raster_file, config, output_filepath = output_file, 
+       use_external_bands = TRUE)
+7: doTryCatch(return(expr), name, parentenv, handler)
+6: tryCatchOne(expr, names, parentenv, handlers[[1L]])
+5: tryCatchList(expr, names[-nh], parentenv, handlers[-nh])
+4: doTryCatch(return(expr), name, parentenv, handler)
+3: tryCatchOne(tryCatchList(expr, names[-nh], parentenv, handlers[-nh]), 
+       names[nh], parentenv, handlers[[nh]])
+2: tryCatchList(expr, classes, parentenv, handlers)
+1: tryCatch({
+       output_file <- paste0("./test/test_outputs/pred_", raster_file)
+       output <- estimate_land_cover(raster_file, config, output_filepath = output_file, 
+           use_external_bands = TRUE)
+       append(output_files, output_file)
+       print(paste0(date(), "\nTest passed for config: \n", config, 
+           "and file: \n", file))
+       colors <- create_color_map()
+   }, warning = function(w) {
+       print(paste0(date(), "\nTest completed with warnings for config: \n", 
+           config, "\nand file: \n", raster_file, "\nwarnings: \n", 
+           w))
+   }, error = function(e) {
+       print(paste0(date(), "\nTest failed for file:\n", raster_file, 
+           " using config: \n", config, "\nError: \n", e))
+       traceback()
+   })
 [1] "8 Cores Detected for processing..."
-[1] "Thu Feb 10 10:03:49 2022\nTest failed for file:\n./test/test_data/TwelveMileGulchQuads2.envi using config: \n./test/test_configs/fg1_1.json\nError: \nError in checkForRemoteErrors(val): one node produced an error: argument is of length zero\n"
-No traceback available 
-[1] "8 Cores Detected for processing..."
-[1] "Thu Feb 10 10:04:38 2022\nTest failed for file:\n./test/test_data/TwelveMileGulchQuads2.envi using config: \n./test/test_configs/fg2_1.json\nError: \nError in checkForRemoteErrors(val): one node produced an error: argument is of length zero\n"
-No traceback available 
-[1] "8 Cores Detected for processing..."
-[1] "preprocessing raster at ./tiles//tile_0HGDxh4pNADxDiVv.grd"
-[1] "Imputing..."
-  missForest iteration 1 in progress...done!
-  missForest iteration 2 in progress...done!
-[1] "Calulating Vegetation Indices:"
- [1] "Boochs"        "Boochs2"       "CARI"          "Carter"       
- [5] "Carter2"       "Carter3"       "Carter4"       "Carter5"      
- [9] "Carter6"       "CI"            "CI2"           "ClAInt"       
-[13] "CRI1"          "CRI2"          "CRI3"          "CRI4"         
-[17] "D1"            "D2"            "Datt"          "Datt2"        
-[21] "Datt3"         "Datt4"         "Datt5"         "Datt6"        
-[25] "DD"            "DDn"           "DPI"           "DWSI4"        
-[29] "EGFN"          "EGFR"          "EVI"           "GDVI_2"       
-[33] "GDVI_3"        "GDVI_4"        "GI"            "Gitelson"     
-[37] "Gitelson2"     "GMI1"          "GMI2"          "Green NDVI"   
-[41] "Maccioni"      "MCARI"         "MCARI/OSAVI"   "MCARI2"       
-[45] "MCARI2/OSAVI2" "mND705"        "mNDVI"         "MPRI"         
-[49] "MSAVI"         "mSR"           "mSR2"          "mSR705"       
-[53] "MTCI"          "MTVI"          "NDVI"          "NDVI2"        
-[57] "NDVI3"         "NPCI"          "OSAVI"         "OSAVI2"       
-[61] "PARS"          "PRI"           "PRI*CI2"       "PRI_norm"     
-[65] "PSND"          "PSRI"          "PSSR"          "RDVI"         
-[69] "REP_LE"        "REP_Li"        "SAVI"          "SIPI"         
-[73] "SPVI"          "SR"            "SR1"           "SR2"          
-[77] "SR3"           "SR4"           "SR5"           "SR6"          
-[81] "SR7"           "SR8"           "SRPI"          "Sum_Dr1"      
-[85] "Sum_Dr2"       "TCARI"         "TCARI/OSAVI"   "TCARI2"       
-[89] "TCARI2/OSAVI2" "TGI"           "TVI"           "Vogelmann"    
-[93] "Vogelmann2"    "Vogelmann3"    "Vogelmann4"   
-[1] "Resampled Dataframe Dimensions:"
-[1] 965 375
-[1] "Index Dataframe Dimensions:"
-[1] 965  95
-[1] "Attempting to save to ./predictions//prediction_0HGDxh4pNADxDiVv.grd"
-[1] "preprocessing raster at ./tiles//tile_lXuVAgQAoXOg1whr.grd"
-[1] "Imputing..."
-  missForest iteration 1 in progress...done!
-  missForest iteration 2 in progress...done!
-[1] "Calulating Vegetation Indices:"
- [1] "Boochs"        "Boochs2"       "CARI"          "Carter"       
- [5] "Carter2"       "Carter3"       "Carter4"       "Carter5"      
- [9] "Carter6"       "CI"            "CI2"           "ClAInt"       
-[13] "CRI1"          "CRI2"          "CRI3"          "CRI4"         
-[17] "D1"            "D2"            "Datt"          "Datt2"        
-[21] "Datt3"         "Datt4"         "Datt5"         "Datt6"        
-[25] "DD"            "DDn"           "DPI"           "DWSI4"        
-[29] "EGFN"          "EGFR"          "EVI"           "GDVI_2"       
-[33] "GDVI_3"        "GDVI_4"        "GI"            "Gitelson"     
-[37] "Gitelson2"     "GMI1"          "GMI2"          "Green NDVI"   
-[41] "Maccioni"      "MCARI"         "MCARI/OSAVI"   "MCARI2"       
-[45] "MCARI2/OSAVI2" "mND705"        "mNDVI"         "MPRI"         
-[49] "MSAVI"         "mSR"           "mSR2"          "mSR705"       
-[53] "MTCI"          "MTVI"          "NDVI"          "NDVI2"        
-[57] "NDVI3"         "NPCI"          "OSAVI"         "OSAVI2"       
-[61] "PARS"          "PRI"           "PRI*CI2"       "PRI_norm"     
-[65] "PSND"          "PSRI"          "PSSR"          "RDVI"         
-[69] "REP_LE"        "REP_Li"        "SAVI"          "SIPI"         
-[73] "SPVI"          "SR"            "SR1"           "SR2"          
-[77] "SR3"           "SR4"           "SR5"           "SR6"          
-[81] "SR7"           "SR8"           "SRPI"          "Sum_Dr1"      
-[85] "Sum_Dr2"       "TCARI"         "TCARI/OSAVI"   "TCARI2"       
-[89] "TCARI2/OSAVI2" "TGI"           "TVI"           "Vogelmann"    
-[93] "Vogelmann2"    "Vogelmann3"    "Vogelmann4"   
-[1] "Resampled Dataframe Dimensions:"
-[1] 1149  375
-[1] "Index Dataframe Dimensions:"
-[1] 1149   95
-[1] "Attempting to save to ./predictions//prediction_lXuVAgQAoXOg1whr.grd"
-[1] "Thu Feb 10 10:05:46 2022\nTest failed for file:\n./test/test_data/TwelveMileGulchQuads2.envi using config: \n./test/test_configs/species_1.json\nError: \nError in {: task 1 failed - \"Attempting to write a file to a path that does not exist:\n  ./predictions\"\n"
-No traceback available 
-[1] "test start"
-[1] "Thu Feb 10 17:33:12 2022"
-[1] "Testing on files:"
-[1] "./test/test_data/BisonGulchQuads.envi"      
-[2] "./test/test_data/EightMileQuads.envi"       
-[3] "./test/test_data/TwelveMileGulchQuads1.envi"
-[4] "./test/test_data/TwelveMileGulchQuads2.envi"
-[1] "Configuration files:"
-[1] "./test/test_configs/fg1_1.json"     "./test/test_configs/fg2_1.json"    
-[3] "./test/test_configs/species_1.json"
-[1] "Thu Feb 10 17:33:13 2022\nTest failed for file:\n./test/test_data/BisonGulchQuads.envi using config: \n./test/test_configs/fg1_1.json\nError: \nError in estimate_land_cover(raster_file, config, output_filepath = output_file, : could not find function \"estimate_land_cover\"\n"
-1: source("./Functions/lecospectR.R")
-[1] "Thu Feb 10 17:33:13 2022\nTest failed for file:\n./test/test_data/BisonGulchQuads.envi using config: \n./test/test_configs/fg2_1.json\nError: \nError in estimate_land_cover(raster_file, config, output_filepath = output_file, : could not find function \"estimate_land_cover\"\n"
-1: source("./Functions/lecospectR.R")
-[1] "Thu Feb 10 17:33:13 2022\nTest failed for file:\n./test/test_data/BisonGulchQuads.envi using config: \n./test/test_configs/species_1.json\nError: \nError in estimate_land_cover(raster_file, config, output_filepath = output_file, : could not find function \"estimate_land_cover\"\n"
-1: source("./Functions/lecospectR.R")
-[1] "Thu Feb 10 17:33:13 2022\nTest failed for file:\n./test/test_data/EightMileQuads.envi using config: \n./test/test_configs/fg1_1.json\nError: \nError in estimate_land_cover(raster_file, config, output_filepath = output_file, : could not find function \"estimate_land_cover\"\n"
-1: source("./Functions/lecospectR.R")
-[1] "Thu Feb 10 17:33:13 2022\nTest failed for file:\n./test/test_data/EightMileQuads.envi using config: \n./test/test_configs/fg2_1.json\nError: \nError in estimate_land_cover(raster_file, config, output_filepath = output_file, : could not find function \"estimate_land_cover\"\n"
-1: source("./Functions/lecospectR.R")
-[1] "Thu Feb 10 17:33:13 2022\nTest failed for file:\n./test/test_data/EightMileQuads.envi using config: \n./test/test_configs/species_1.json\nError: \nError in estimate_land_cover(raster_file, config, output_filepath = output_file, : could not find function \"estimate_land_cover\"\n"
-1: source("./Functions/lecospectR.R")
-[1] "Thu Feb 10 17:33:13 2022\nTest failed for file:\n./test/test_data/TwelveMileGulchQuads1.envi using config: \n./test/test_configs/fg1_1.json\nError: \nError in estimate_land_cover(raster_file, config, output_filepath = output_file, : could not find function \"estimate_land_cover\"\n"
-1: source("./Functions/lecospectR.R")
-[1] "Thu Feb 10 17:33:13 2022\nTest failed for file:\n./test/test_data/TwelveMileGulchQuads1.envi using config: \n./test/test_configs/fg2_1.json\nError: \nError in estimate_land_cover(raster_file, config, output_filepath = output_file, : could not find function \"estimate_land_cover\"\n"
-1: source("./Functions/lecospectR.R")
-[1] "Thu Feb 10 17:33:13 2022\nTest failed for file:\n./test/test_data/TwelveMileGulchQuads1.envi using config: \n./test/test_configs/species_1.json\nError: \nError in estimate_land_cover(raster_file, config, output_filepath = output_file, : could not find function \"estimate_land_cover\"\n"
-1: source("./Functions/lecospectR.R")
-[1] "Thu Feb 10 17:33:13 2022\nTest failed for file:\n./test/test_data/TwelveMileGulchQuads2.envi using config: \n./test/test_configs/fg1_1.json\nError: \nError in estimate_land_cover(raster_file, config, output_filepath = output_file, : could not find function \"estimate_land_cover\"\n"
-1: source("./Functions/lecospectR.R")
-[1] "Thu Feb 10 17:33:13 2022\nTest failed for file:\n./test/test_data/TwelveMileGulchQuads2.envi using config: \n./test/test_configs/fg2_1.json\nError: \nError in estimate_land_cover(raster_file, config, output_filepath = output_file, : could not find function \"estimate_land_cover\"\n"
-1: source("./Functions/lecospectR.R")
-[1] "Thu Feb 10 17:33:13 2022\nTest failed for file:\n./test/test_data/TwelveMileGulchQuads2.envi using config: \n./test/test_configs/species_1.json\nError: \nError in estimate_land_cover(raster_file, config, output_filepath = output_file, : could not find function \"estimate_land_cover\"\n"
-1: source("./Functions/lecospectR.R")
-[1] "test start"
-[1] "Thu Feb 10 17:41:28 2022"
-[1] "Testing on files:"
-[1] "./test/test_data/BisonGulchQuads.envi"      
-[2] "./test/test_data/EightMileQuads.envi"       
-[3] "./test/test_data/TwelveMileGulchQuads1.envi"
-[4] "./test/test_data/TwelveMileGulchQuads2.envi"
-[1] "Configuration files:"
-[1] "./test/test_configs/fg1_1.json"     "./test/test_configs/fg2_1.json"    
-[3] "./test/test_configs/species_1.json"
-[1] "8 Cores Detected for processing..."
-[1] "Thu Feb 10 17:42:09 2022\nTest failed for file:\n./test/test_data/BisonGulchQuads.envi using config: \n./test/test_configs/fg1_1.json\nError: \nError in checkForRemoteErrors(val): one node produced an error: argument is of length zero\n"
-1: source("./Functions/lecospectR.R")
-[1] "8 Cores Detected for processing..."
-[1] "Thu Feb 10 17:42:40 2022\nTest failed for file:\n./test/test_data/BisonGulchQuads.envi using config: \n./test/test_configs/fg2_1.json\nError: \nError in checkForRemoteErrors(val): one node produced an error: argument is of length zero\n"
-1: source("./Functions/lecospectR.R")
-[1] "8 Cores Detected for processing..."
-[1] "preprocessing raster at ./tiles//tile_t6wmOPVpvIJCDofn.grd"
-[1] "Imputing..."
-  missForest iteration 1 in progress...done!
-  missForest iteration 2 in progress...done!
-[1] "Calulating Vegetation Indices:"
- [1] "Boochs"        "Boochs2"       "CARI"          "Carter"       
- [5] "Carter2"       "Carter3"       "Carter4"       "Carter5"      
- [9] "Carter6"       "CI"            "CI2"           "ClAInt"       
-[13] "CRI1"          "CRI2"          "CRI3"          "CRI4"         
-[17] "D1"            "D2"            "Datt"          "Datt2"        
-[21] "Datt3"         "Datt4"         "Datt5"         "Datt6"        
-[25] "DD"            "DDn"           "DPI"           "DWSI4"        
-[29] "EGFN"          "EGFR"          "EVI"           "GDVI_2"       
-[33] "GDVI_3"        "GDVI_4"        "GI"            "Gitelson"     
-[37] "Gitelson2"     "GMI1"          "GMI2"          "Green NDVI"   
-[41] "Maccioni"      "MCARI"         "MCARI/OSAVI"   "MCARI2"       
-[45] "MCARI2/OSAVI2" "mND705"        "mNDVI"         "MPRI"         
-[49] "MSAVI"         "mSR"           "mSR2"          "mSR705"       
-[53] "MTCI"          "MTVI"          "NDVI"          "NDVI2"        
-[57] "NDVI3"         "NPCI"          "OSAVI"         "OSAVI2"       
-[61] "PARS"          "PRI"           "PRI*CI2"       "PRI_norm"     
-[65] "PSND"          "PSRI"          "PSSR"          "RDVI"         
-[69] "REP_LE"        "REP_Li"        "SAVI"          "SIPI"         
-[73] "SPVI"          "SR"            "SR1"           "SR2"          
-[77] "SR3"           "SR4"           "SR5"           "SR6"          
-[81] "SR7"           "SR8"           "SRPI"          "Sum_Dr1"      
-[85] "Sum_Dr2"       "TCARI"         "TCARI/OSAVI"   "TCARI2"       
-[89] "TCARI2/OSAVI2" "TGI"           "TVI"           "Vogelmann"    
-[93] "Vogelmann2"    "Vogelmann3"    "Vogelmann4"   
-[1] "Resampled Dataframe Dimensions:"
-[1] 2792  375
-[1] "Index Dataframe Dimensions:"
-[1] 2792   95
-[1] "Attempting to save to ."                        
-[2] "Attempting to save to tiles"                    
-[3] "Attempting to save to "                         
-[4] "Attempting to save to tile_t6wmOPVpvIJCDofn.grd"
-[1] "Thu Feb 10 17:43:30 2022\nTest completed with warnings for config: \n./test/test_configs/species_1.json\nand file: \n./test/test_data/BisonGulchQuads.envi\nwarnings: \nsimpleWarning in if (file.exists(save_path)) {: the condition has length > 1 and only the first element will be used\n"
-[1] "8 Cores Detected for processing..."
-[1] "Thu Feb 10 17:44:04 2022\nTest failed for file:\n./test/test_data/EightMileQuads.envi using config: \n./test/test_configs/fg1_1.json\nError: \nError in checkForRemoteErrors(val): one node produced an error: argument is of length zero\n"
-1: source("./Functions/lecospectR.R")
-[1] "Thu Feb 10 17:44:33 2022\nTest failed for file:\n./test/test_data/EightMileQuads.envi using config: \n./test/test_configs/fg2_1.json\nError: \nError in checkForRemoteErrors(lapply(cl, recvResult)): 8 nodes produced errors; first error: package or namespace load failed for 'hsdar':\n memory exhausted (limit reached?)\n"
-1: source("./Functions/lecospectR.R")
-[1] "Thu Feb 10 17:44:33 2022\nTest completed with warnings for config: \n./test/test_configs/species_1.json\nand file: \n./test/test_data/EightMileQuads.envi\nwarnings: \nsimpleWarning in system(cmd, wait = FALSE, input = \"\"): 'CreateProcess' failed to run 'C:\\PROGRA~1\\R\\R-41~1.2\\bin\\x64\\Rscript.exe C:/Users/kenne/Documents/R/win-library/4.1/snow/RSOCKnode.R MASTER=localhost PORT=11670 OUT=/dev/null SNOWLIB=C:/Users/kenne/Documents/R/win-library/4.1'\n"
-[1] "Thu Feb 10 17:44:33 2022\nTest completed with warnings for config: \n./test/test_configs/fg1_1.json\nand file: \n./test/test_data/TwelveMileGulchQuads1.envi\nwarnings: \nsimpleWarning in system(cmd, wait = FALSE, input = \"\"): 'CreateProcess' failed to run 'C:\\PROGRA~1\\R\\R-41~1.2\\bin\\x64\\Rscript.exe C:/Users/kenne/Documents/R/win-library/4.1/snow/RSOCKnode.R MASTER=localhost PORT=11670 OUT=/dev/null SNOWLIB=C:/Users/kenne/Documents/R/win-library/4.1'\n"
-[1] "Thu Feb 10 17:44:33 2022\nTest completed with warnings for config: \n./test/test_configs/fg2_1.json\nand file: \n./test/test_data/TwelveMileGulchQuads1.envi\nwarnings: \nsimpleWarning in system(cmd, wait = FALSE, input = \"\"): 'CreateProcess' failed to run 'C:\\PROGRA~1\\R\\R-41~1.2\\bin\\x64\\Rscript.exe C:/Users/kenne/Documents/R/win-library/4.1/snow/RSOCKnode.R MASTER=localhost PORT=11670 OUT=/dev/null SNOWLIB=C:/Users/kenne/Documents/R/win-library/4.1'\n"
-Warning messages:
-1: In .Internal(gc(verbose, reset, full)) :
-  closing unused connection 11 (<-kubernetes.docker.internal:11670)
-2: In .Internal(gc(verbose, reset, full)) :
-  closing unused connection 10 (<-kubernetes.docker.internal:11670)
-3: In .Internal(gc(verbose, reset, full)) :
-  closing unused connection 9 (<-kubernetes.docker.internal:11670)
-4: In .Internal(gc(verbose, reset, full)) :
-  closing unused connection 8 (<-kubernetes.docker.internal:11670)
-5: In .Internal(gc(verbose, reset, full)) :
-  closing unused connection 7 (<-kubernetes.docker.internal:11670)
-6: In .Internal(gc(verbose, reset, full)) :
-  closing unused connection 6 (<-kubernetes.docker.internal:11670)
-7: In .Internal(gc(verbose, reset, full)) :
-  closing unused connection 5 (<-kubernetes.docker.internal:11670)
-8: In .Internal(gc(verbose, reset, full)) :
-  closing unused connection 4 (<-kubernetes.docker.internal:11670)
-9: In .Internal(gc(verbose, reset, full)) :
-  closing unused connection 19 (<-kubernetes.docker.internal:11670)
-10: In .Internal(gc(verbose, reset, full)) :
-  closing unused connection 18 (<-kubernetes.docker.internal:11670)
-11: In .Internal(gc(verbose, reset, full)) :
-  closing unused connection 17 (<-kubernetes.docker.internal:11670)
-12: In .Internal(gc(verbose, reset, full)) :
-  closing unused connection 16 (<-kubernetes.docker.internal:11670)
-13: In .Internal(gc(verbose, reset, full)) :
-  closing unused connection 15 (<-kubernetes.docker.internal:11670)
-14: In .Internal(gc(verbose, reset, full)) :
-  closing unused connection 14 (<-kubernetes.docker.internal:11670)
-15: In .Internal(gc(verbose, reset, full)) :
-  closing unused connection 13 (<-kubernetes.docker.internal:11670)
-16: In .Internal(gc(verbose, reset, full)) :
-  closing unused connection 12 (<-kubernetes.docker.internal:11670)
+[1] "Fri Feb 11 14:02:18 2022\nTest completed with warnings for config: \n./test/test_configs/fg1_1.json\nand file: \n./test/test_data/TwelveMileGulchQuads1.envi\nwarnings: \nsimpleWarning in doTryCatch(return(expr), name, parentenv, handler): NAs introduced by coercion\n"
