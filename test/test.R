@@ -84,4 +84,3 @@ write.csv(
     output_files,
     "./test/last_test_files.txt"
 )
-

@@ -1,20 +1,31 @@
 source("./Functions/lecospectR.R")
 
+require(RhpcBLASctl)
+RhpcBLASctl::get_num_cores()
+RhpcBLASctl::get_num_procs()
+RhpcBLASctl::omp_get_max_threads()
+RhpcBLASctl::omp_get_num_procs()
+RhpcBLASctl::blas_set_num_threads(8L)
+RhpcBLASctl::omp_set_num_threads(8L)
+
 test_path <- "F:/Lecospec/Ground_Validation/BisonGulchQuads.envi"
 
-raster(test_path) %>% plot()
+#raster(test_path) %>% plot()
 test_path_2 <- "F:/Lecospec/tiles/tile_0bYSfUorxlbPTIkA.grd"
 model_path <- "C:/Users/kenne/Documents/GitHub/lecospec/Output/E_003_Pred_Model_RandomForest_FncGrp2_1000trees.rda"
 big_test <- "F:/DataCubes/raw_1511_rd_rf_or"
+
+print(date())
+quad_results <- estimate_land_cover(
+    test_path, 
+    output_filepath = "./Output/bison_gulch_outputs_par.grd",
+    use_external_bands = TRUE)
+print(date())
 
 big_results <- estimate_land_cover(
     big_test,
     output_filepath = "./Outputs/raw_1511_PREDICTIONS.grd")
 
-quad_results <- estimate_land_cover(
-    test_path, 
-    output_filepath = "./Output/bison_gulch_outputs_par.grd",
-    use_external_bands = TRUE)
 
 output <- raster::raster("./Output/bison_gulch_outputs_par.grd")
 png("./run_out.png", width = 1024, height = 1024)
@@ -28,17 +39,19 @@ dev.off()
 ml_model <- load_model(model_path)
 
 output_key <- rjson::fromJSON(file = "./fg2key.json")
-key_df <- read.csv("./levels.csv")
 
 cl <- raster::beginCluster()#this is actually quite slow, believe it or not
 
+print(date())
 tile_results <- process_tile(
     test_path_2, 
     ml_model, 
+    2,
     cluster = cl, 
     return_raster = TRUE, 
     save_path = "./test_raster_save.grd", 
     suppress_output = FALSE)
+print(date())
 
 print(tile_results)
 
@@ -50,3 +63,7 @@ print(species_table)
 
 functional_group2_levels <- unique(species_table$Functionalgroup2)
 print(functional_group2_levels)
+
+
+uf_test <- update_filename(test_path)
+print(uf_test)
