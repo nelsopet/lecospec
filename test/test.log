@@ -835,3 +835,7 @@ Vcells 10613341  81.0   37585478 286.8 386156461 2946.2
    })
 [1] "8 Cores Detected for processing..."
 [1] "Fri Feb 11 14:02:18 2022\nTest completed with warnings for config: \n./test/test_configs/fg1_1.json\nand file: \n./test/test_data/TwelveMileGulchQuads1.envi\nwarnings: \nsimpleWarning in doTryCatch(return(expr), name, parentenv, handler): NAs introduced by coercion\n"
+[1] "8 Cores Detected for processing..."
+[1] "Fri Feb 11 14:03:00 2022\nTest completed with warnings for config: \n./test/test_configs/fg2_1.json\nand file: \n./test/test_data/TwelveMileGulchQuads1.envi\nwarnings: \nsimpleWarning in doTryCatch(return(expr), name, parentenv, handler): NAs introduced by coercion\n"
+[1] "8 Cores Detected for processing..."
+[1] "Fri Feb 11 14:03:36 2022\nTest completed with warnings for config: \n./test/test_configs/species_1.json\nand file: \n./test/test_data/TwelveMileGulchQuads1.envi\nwarnings: \nsimpleWarning in doTryCatch(return(expr), name, parentenv, handler): NAs introduced by coercion\n"
