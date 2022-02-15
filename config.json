@@ -4,9 +4,9 @@
     "x_tiles": 2,
     "y_tiles": 2,
     "tile_path": "./tiles/",
-    "model_path": "./Output/E_003_Pred_Model_RandomForest_species_1000trees.rda",
+    "model_path": "./Output/E_003_Pred_Model_RandomForest_FncGrp1_1000trees.rda",
     "clusterCores": null,
-    "parallelize_by_tiles": false,
+    "parallelize_by_tiles": true,
     "application": "Not yet implemented",
     "cache_path": "not yet implemented", 
     "key_path": "./fg2key.json",
@@ -14,5 +14,5 @@
     "install_path": "./",
     "external_bands": "./bands.csv",
     "output_format": "grd",
-    "aggregation": "Species"
+    "aggregation": "FncGrp1"
 }

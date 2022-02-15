@@ -1,7 +1,7 @@
 source("./Functions/lecospectR.R")
 
 test_log <- "./test/test.log"
-sink(test_log, append = TRUE)
+#sink(test_log, append = TRUE)
 print("test start")
 print(date())
 
@@ -30,12 +30,11 @@ for(raster_file in test_files){
         tryCatch(
             {
                 output_file <- paste0(
-                        "./test/test_outputs/pred_",
+                        "./test/test_outputs/",
                         raster_file)
                 output <- estimate_land_cover(
                     raster_file, 
                     config,
-                    output_filepath = output_file,
                     use_external_bands = TRUE)
 
                 append(output_files, output_file)

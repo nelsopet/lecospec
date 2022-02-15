@@ -988,6 +988,11 @@ estimate_land_cover <- function(
 
 
     print(paste0(num_cores, " Cores Detected for processing..."))
+    background_blas_threads <- RhpcBLASctl::get_num_procs()
+    background_omp_threads <- RhpcBLASctl::omp_get_max_threads()
+    background_processes <- RhpcBLASctl::get_num_procs()
+
+
 
 
     # Load the model
@@ -1075,12 +1080,25 @@ estimate_land_cover <- function(
     raster::endCluster()
     print(tile_results)
 
+    # return the background thread configuration to its initial state
+    if(config$parallelize_by_tiles){
+        RhpcBLASctl::blas_set_num_threads(background_blas_threads)
+        RhpcBLASctl::omp_set_num_threads(background_omp_threads)
+    }
+
     results <- merge_tiles(prediction_filenames, output_path = output_filepath)
 
 
     return(results)
 }
 
+handle_empty_tile <- function(tile_raster, save_path = NULL){
+
+    # convert to a raster
+    if(!is.null(save_path)){
+        raster::writeRaster(tile_raster[[1]], save_path)
+    }
+}
 
 
 #' processes a small raster imarge
@@ -1117,7 +1135,9 @@ process_tile <- function(
     print(paste0("preprocessing raster at ", tile_filename))
     base_df <- preprocess_raster_to_df(raster_obj, ml_model)
     
-    if(nrow(base_df) == 0){
+    if(nrow(base_df) < 100 ){
+        warning("The tile has fewer than 100 filled pixels")
+        handle_empty_tile(raster_obj, save_path = save_path)
         if(!suppress_output){
             if(return_raster){
                 return(raster_obj)
@@ -1331,14 +1351,28 @@ clean_names <- function(variables){
 #' @examples Not Yet Implmented
 apply_model <- function(df, model, threads = 1, clean_names = TRUE){
 
-    prediction <-predict(
-        model,
-        data = df,
-        type='response',
-        num.threads = threads
-    ) #(Ranger model)
+    prediction <- tryCatch(
+        {
+            predict(
+                model,
+                data = df,
+                type='response',
+                num.threads = threads
+            )$predictions %>% as.data.frame() #(Ranger model)
+
+    }, 
+    error = function(cond){
+        colnames(output_df) <- c("predictions")
+        message("Error applying model - likely an empty file:")
+        message(cond)
+        # return df of NAs
+        y <- data.frame()
+        y$predictions <- df[, 1]
+        y
+
+    })
+
     #print(predictions$prediction)
-    return(prediction$predictions %>% as.data.frame())
 }
 
 #' a quick function based on the original code

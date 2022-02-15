@@ -19,7 +19,7 @@ Revisit after integration test and accuracy assessment.
 * Image segmentation: segment images into plants (from spectra or prediction)
 
 ## Code Review
-
+TO DO: add tryCatch 
 
 ## Bug Fixes
 
