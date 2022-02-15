@@ -839,3 +839,622 @@ Vcells 10613341  81.0   37585478 286.8 386156461 2946.2
 [1] "Fri Feb 11 14:03:00 2022\nTest completed with warnings for config: \n./test/test_configs/fg2_1.json\nand file: \n./test/test_data/TwelveMileGulchQuads1.envi\nwarnings: \nsimpleWarning in doTryCatch(return(expr), name, parentenv, handler): NAs introduced by coercion\n"
 [1] "8 Cores Detected for processing..."
 [1] "Fri Feb 11 14:03:36 2022\nTest completed with warnings for config: \n./test/test_configs/species_1.json\nand file: \n./test/test_data/TwelveMileGulchQuads1.envi\nwarnings: \nsimpleWarning in doTryCatch(return(expr), name, parentenv, handler): NAs introduced by coercion\n"
+[1] "8 Cores Detected for processing..."
+[1] "Fri Feb 11 14:04:13 2022\nTest completed with warnings for config: \n./test/test_configs/fg1_1.json\nand file: \n./test/test_data/TwelveMileGulchQuads2.envi\nwarnings: \nsimpleWarning in doTryCatch(return(expr), name, parentenv, handler): NAs introduced by coercion\n"
+[1] "8 Cores Detected for processing..."
+[1] "Fri Feb 11 14:04:45 2022\nTest completed with warnings for config: \n./test/test_configs/fg2_1.json\nand file: \n./test/test_data/TwelveMileGulchQuads2.envi\nwarnings: \nsimpleWarning in doTryCatch(return(expr), name, parentenv, handler): NAs introduced by coercion\n"
+[1] "8 Cores Detected for processing..."
+[1] "Fri Feb 11 14:05:19 2022\nTest completed with warnings for config: \n./test/test_configs/species_1.json\nand file: \n./test/test_data/TwelveMileGulchQuads2.envi\nwarnings: \nsimpleWarning in doTryCatch(return(expr), name, parentenv, handler): NAs introduced by coercion\n"
+[1] "test start"
+[1] "Mon Feb 14 10:46:00 2022"
+[1] "Testing on files:"
+[1] "./test/test_data/BisonGulchQuads.envi"      
+[2] "./test/test_data/EightMileQuads.envi"       
+[3] "./test/test_data/TwelveMileGulchQuads1.envi"
+[4] "./test/test_data/TwelveMileGulchQuads2.envi"
+[1] "Configuration files:"
+[1] "./test/test_configs/fg1_1.json"     "./test/test_configs/fg2_1.json"    
+[3] "./test/test_configs/species_1.json"
+[1] "8 Cores Detected for processing..."
+[1] "preprocessing raster at ./tiles//tile_mikDitNU71bmna0R.grd"
+[1] "Imputing..."
+  missForest iteration 1 in progress...done!
+  missForest iteration 2 in progress...done!
+[1] "Calulating Vegetation Indices:"
+ [1] "Boochs"        "Boochs2"       "CARI"          "Carter"       
+ [5] "Carter2"       "Carter3"       "Carter4"       "Carter5"      
+ [9] "Carter6"       "CI"            "CI2"           "ClAInt"       
+[13] "CRI1"          "CRI2"          "CRI3"          "CRI4"         
+[17] "D1"            "D2"            "Datt"          "Datt2"        
+[21] "Datt3"         "Datt4"         "Datt5"         "Datt6"        
+[25] "DD"            "DDn"           "DPI"           "DWSI4"        
+[29] "EGFN"          "EGFR"          "EVI"           "GDVI_2"       
+[33] "GDVI_3"        "GDVI_4"        "GI"            "Gitelson"     
+[37] "Gitelson2"     "GMI1"          "GMI2"          "Green NDVI"   
+[41] "Maccioni"      "MCARI"         "MCARI/OSAVI"   "MCARI2"       
+[45] "MCARI2/OSAVI2" "mND705"        "mNDVI"         "MPRI"         
+[49] "MSAVI"         "mSR"           "mSR2"          "mSR705"       
+[53] "MTCI"          "MTVI"          "NDVI"          "NDVI2"        
+[57] "NDVI3"         "NPCI"          "OSAVI"         "OSAVI2"       
+[61] "PARS"          "PRI"           "PRI*CI2"       "PRI_norm"     
+[65] "PSND"          "PSRI"          "PSSR"          "RDVI"         
+[69] "REP_LE"        "REP_Li"        "SAVI"          "SIPI"         
+[73] "SPVI"          "SR"            "SR1"           "SR2"          
+[77] "SR3"           "SR4"           "SR5"           "SR6"          
+[81] "SR7"           "SR8"           "SRPI"          "Sum_Dr1"      
+[85] "Sum_Dr2"       "TCARI"         "TCARI/OSAVI"   "TCARI2"       
+[89] "TCARI2/OSAVI2" "TGI"           "TVI"           "Vogelmann"    
+[93] "Vogelmann2"    "Vogelmann3"    "Vogelmann4"   
+[1] "Resampled Dataframe Dimensions:"
+[1] 1051  375
+[1] "Index Dataframe Dimensions:"
+[1] 1051   95
+[1] "Attempting to save to ./tiles//prediction_mikDitNU71bmna0R.grd"
+[1] "preprocessing raster at ./tiles//tile_SFHRrn0G9PZDVa0C.grd"
+[1] "Imputing..."
+  missForest iteration 1 in progress...done!
+  missForest iteration 2 in progress...done!
+[1] "Calulating Vegetation Indices:"
+ [1] "Boochs"        "Boochs2"       "CARI"          "Carter"       
+ [5] "Carter2"       "Carter3"       "Carter4"       "Carter5"      
+ [9] "Carter6"       "CI"            "CI2"           "ClAInt"       
+[13] "CRI1"          "CRI2"          "CRI3"          "CRI4"         
+[17] "D1"            "D2"            "Datt"          "Datt2"        
+[21] "Datt3"         "Datt4"         "Datt5"         "Datt6"        
+[25] "DD"            "DDn"           "DPI"           "DWSI4"        
+[29] "EGFN"          "EGFR"          "EVI"           "GDVI_2"       
+[33] "GDVI_3"        "GDVI_4"        "GI"            "Gitelson"     
+[37] "Gitelson2"     "GMI1"          "GMI2"          "Green NDVI"   
+[41] "Maccioni"      "MCARI"         "MCARI/OSAVI"   "MCARI2"       
+[45] "MCARI2/OSAVI2" "mND705"        "mNDVI"         "MPRI"         
+[49] "MSAVI"         "mSR"           "mSR2"          "mSR705"       
+[53] "MTCI"          "MTVI"          "NDVI"          "NDVI2"        
+[57] "NDVI3"         "NPCI"          "OSAVI"         "OSAVI2"       
+[61] "PARS"          "PRI"           "PRI*CI2"       "PRI_norm"     
+[65] "PSND"          "PSRI"          "PSSR"          "RDVI"         
+[69] "REP_LE"        "REP_Li"        "SAVI"          "SIPI"         
+[73] "SPVI"          "SR"            "SR1"           "SR2"          
+[77] "SR3"           "SR4"           "SR5"           "SR6"          
+[81] "SR7"           "SR8"           "SRPI"          "Sum_Dr1"      
+[85] "Sum_Dr2"       "TCARI"         "TCARI/OSAVI"   "TCARI2"       
+[89] "TCARI2/OSAVI2" "TGI"           "TVI"           "Vogelmann"    
+[93] "Vogelmann2"    "Vogelmann3"    "Vogelmann4"   
+[1] "Resampled Dataframe Dimensions:"
+[1] 1741  375
+[1] "Index Dataframe Dimensions:"
+[1] 1741   95
+[1] "Attempting to save to ./tiles//prediction_SFHRrn0G9PZDVa0C.grd"
+[1] "preprocessing raster at ./tiles//tile_iaGtvlpZtA2RwLwr.grd"
+[1] "Imputing..."
+  missForest iteration 1 in progress...done!
+  missForest iteration 2 in progress...done!
+[1] "Calulating Vegetation Indices:"
+ [1] "Boochs"        "Boochs2"       "CARI"          "Carter"       
+ [5] "Carter2"       "Carter3"       "Carter4"       "Carter5"      
+ [9] "Carter6"       "CI"            "CI2"           "ClAInt"       
+[13] "CRI1"          "CRI2"          "CRI3"          "CRI4"         
+[17] "D1"            "D2"            "Datt"          "Datt2"        
+[21] "Datt3"         "Datt4"         "Datt5"         "Datt6"        
+[25] "DD"            "DDn"           "DPI"           "DWSI4"        
+[29] "EGFN"          "EGFR"          "EVI"           "GDVI_2"       
+[33] "GDVI_3"        "GDVI_4"        "GI"            "Gitelson"     
+[37] "Gitelson2"     "GMI1"          "GMI2"          "Green NDVI"   
+[41] "Maccioni"      "MCARI"         "MCARI/OSAVI"   "MCARI2"       
+[45] "MCARI2/OSAVI2" "mND705"        "mNDVI"         "MPRI"         
+[49] "MSAVI"         "mSR"           "mSR2"          "mSR705"       
+[53] "MTCI"          "MTVI"          "NDVI"          "NDVI2"        
+[57] "NDVI3"         "NPCI"          "OSAVI"         "OSAVI2"       
+[61] "PARS"          "PRI"           "PRI*CI2"       "PRI_norm"     
+[65] "PSND"          "PSRI"          "PSSR"          "RDVI"         
+[69] "REP_LE"        "REP_Li"        "SAVI"          "SIPI"         
+[73] "SPVI"          "SR"            "SR1"           "SR2"          
+[77] "SR3"           "SR4"           "SR5"           "SR6"          
+[81] "SR7"           "SR8"           "SRPI"          "Sum_Dr1"      
+[85] "Sum_Dr2"       "TCARI"         "TCARI/OSAVI"   "TCARI2"       
+[89] "TCARI2/OSAVI2" "TGI"           "TVI"           "Vogelmann"    
+[93] "Vogelmann2"    "Vogelmann3"    "Vogelmann4"   
+[1] "Resampled Dataframe Dimensions:"
+[1] 1493  375
+[1] "Index Dataframe Dimensions:"
+[1] 1493   95
+[1] "Attempting to save to ./tiles//prediction_iaGtvlpZtA2RwLwr.grd"
+[1] "preprocessing raster at ./tiles//tile_TtZPRxqC7GWKYVc7.grd"
+[1] "Imputing..."
+  missForest iteration 1 in progress...done!
+  missForest iteration 2 in progress...done!
+[1] "Calulating Vegetation Indices:"
+ [1] "Boochs"        "Boochs2"       "CARI"          "Carter"       
+ [5] "Carter2"       "Carter3"       "Carter4"       "Carter5"      
+ [9] "Carter6"       "CI"            "CI2"           "ClAInt"       
+[13] "CRI1"          "CRI2"          "CRI3"          "CRI4"         
+[17] "D1"            "D2"            "Datt"          "Datt2"        
+[21] "Datt3"         "Datt4"         "Datt5"         "Datt6"        
+[25] "DD"            "DDn"           "DPI"           "DWSI4"        
+[29] "EGFN"          "EGFR"          "EVI"           "GDVI_2"       
+[33] "GDVI_3"        "GDVI_4"        "GI"            "Gitelson"     
+[37] "Gitelson2"     "GMI1"          "GMI2"          "Green NDVI"   
+[41] "Maccioni"      "MCARI"         "MCARI/OSAVI"   "MCARI2"       
+[45] "MCARI2/OSAVI2" "mND705"        "mNDVI"         "MPRI"         
+[49] "MSAVI"         "mSR"           "mSR2"          "mSR705"       
+[53] "MTCI"          "MTVI"          "NDVI"          "NDVI2"        
+[57] "NDVI3"         "NPCI"          "OSAVI"         "OSAVI2"       
+[61] "PARS"          "PRI"           "PRI*CI2"       "PRI_norm"     
+[65] "PSND"          "PSRI"          "PSSR"          "RDVI"         
+[69] "REP_LE"        "REP_Li"        "SAVI"          "SIPI"         
+[73] "SPVI"          "SR"            "SR1"           "SR2"          
+[77] "SR3"           "SR4"           "SR5"           "SR6"          
+[81] "SR7"           "SR8"           "SRPI"          "Sum_Dr1"      
+[85] "Sum_Dr2"       "TCARI"         "TCARI/OSAVI"   "TCARI2"       
+[89] "TCARI2/OSAVI2" "TGI"           "TVI"           "Vogelmann"    
+[93] "Vogelmann2"    "Vogelmann3"    "Vogelmann4"   
+[1] "Resampled Dataframe Dimensions:"
+[1] 1528  375
+[1] "Index Dataframe Dimensions:"
+[1] 1528   95
+[1] "Attempting to save to ./tiles//prediction_TtZPRxqC7GWKYVc7.grd"
+[1] "Tile based processing complete"
+[[1]]
+          used  (Mb) gc trigger  (Mb) max used  (Mb)
+Ncells 4982903 266.2    8880184 474.3  8880184 474.3
+Vcells 8811505  67.3   29926316 228.4 58449833 446.0
+
+[[2]]
+          used  (Mb) gc trigger  (Mb) max used  (Mb)
+Ncells 4987698 266.4    8880184 474.3  8880184 474.3
+Vcells 8826174  67.4   31170669 237.9 60880212 464.5
+
+[[3]]
+          used  (Mb) gc trigger  (Mb) max used  (Mb)
+Ncells 4987706 266.4    8880184 474.3  8880184 474.3
+Vcells 8826203  67.4   30046313 229.3 60880212 464.5
+
+[[4]]
+          used  (Mb) gc trigger  (Mb) max used  (Mb)
+Ncells 4987714 266.4    8880184 474.3  8880184 474.3
+Vcells 8826232  67.4   31202100 238.1 60941600 465.0
+
+[1] "Mon Feb 14 10:47:23 2022\nTest completed with warnings for config: \n./test/test_configs/fg1_1.json\nand file: \n./test/test_data/BisonGulchQuads.envi\nwarnings: \nsimpleWarning in .gd_SetProject(object, ...): NOT UPDATED FOR PROJ >= 6\n"
+[1] "8 Cores Detected for processing..."
+[1] "preprocessing raster at ./tiles//tile_DITazUNN4t31x1Vn.grd"
+[1] "Imputing..."
+  missForest iteration 1 in progress...done!
+  missForest iteration 2 in progress...done!
+[1] "Calulating Vegetation Indices:"
+ [1] "Boochs"        "Boochs2"       "CARI"          "Carter"       
+ [5] "Carter2"       "Carter3"       "Carter4"       "Carter5"      
+ [9] "Carter6"       "CI"            "CI2"           "ClAInt"       
+[13] "CRI1"          "CRI2"          "CRI3"          "CRI4"         
+[17] "D1"            "D2"            "Datt"          "Datt2"        
+[21] "Datt3"         "Datt4"         "Datt5"         "Datt6"        
+[25] "DD"            "DDn"           "DPI"           "DWSI4"        
+[29] "EGFN"          "EGFR"          "EVI"           "GDVI_2"       
+[33] "GDVI_3"        "GDVI_4"        "GI"            "Gitelson"     
+[37] "Gitelson2"     "GMI1"          "GMI2"          "Green NDVI"   
+[41] "Maccioni"      "MCARI"         "MCARI/OSAVI"   "MCARI2"       
+[45] "MCARI2/OSAVI2" "mND705"        "mNDVI"         "MPRI"         
+[49] "MSAVI"         "mSR"           "mSR2"          "mSR705"       
+[53] "MTCI"          "MTVI"          "NDVI"          "NDVI2"        
+[57] "NDVI3"         "NPCI"          "OSAVI"         "OSAVI2"       
+[61] "PARS"          "PRI"           "PRI*CI2"       "PRI_norm"     
+[65] "PSND"          "PSRI"          "PSSR"          "RDVI"         
+[69] "REP_LE"        "REP_Li"        "SAVI"          "SIPI"         
+[73] "SPVI"          "SR"            "SR1"           "SR2"          
+[77] "SR3"           "SR4"           "SR5"           "SR6"          
+[81] "SR7"           "SR8"           "SRPI"          "Sum_Dr1"      
+[85] "Sum_Dr2"       "TCARI"         "TCARI/OSAVI"   "TCARI2"       
+[89] "TCARI2/OSAVI2" "TGI"           "TVI"           "Vogelmann"    
+[93] "Vogelmann2"    "Vogelmann3"    "Vogelmann4"   
+[1] "Resampled Dataframe Dimensions:"
+[1] 1051  375
+[1] "Index Dataframe Dimensions:"
+[1] 1051   95
+[1] "Attempting to save to ./tiles//prediction_DITazUNN4t31x1Vn.grd"
+[1] "preprocessing raster at ./tiles//tile_VTOLOMWlP5pmhWF9.grd"
+[1] "Imputing..."
+  missForest iteration 1 in progress...done!
+  missForest iteration 2 in progress...done!
+[1] "Calulating Vegetation Indices:"
+ [1] "Boochs"        "Boochs2"       "CARI"          "Carter"       
+ [5] "Carter2"       "Carter3"       "Carter4"       "Carter5"      
+ [9] "Carter6"       "CI"            "CI2"           "ClAInt"       
+[13] "CRI1"          "CRI2"          "CRI3"          "CRI4"         
+[17] "D1"            "D2"            "Datt"          "Datt2"        
+[21] "Datt3"         "Datt4"         "Datt5"         "Datt6"        
+[25] "DD"            "DDn"           "DPI"           "DWSI4"        
+[29] "EGFN"          "EGFR"          "EVI"           "GDVI_2"       
+[33] "GDVI_3"        "GDVI_4"        "GI"            "Gitelson"     
+[37] "Gitelson2"     "GMI1"          "GMI2"          "Green NDVI"   
+[41] "Maccioni"      "MCARI"         "MCARI/OSAVI"   "MCARI2"       
+[45] "MCARI2/OSAVI2" "mND705"        "mNDVI"         "MPRI"         
+[49] "MSAVI"         "mSR"           "mSR2"          "mSR705"       
+[53] "MTCI"          "MTVI"          "NDVI"          "NDVI2"        
+[57] "NDVI3"         "NPCI"          "OSAVI"         "OSAVI2"       
+[61] "PARS"          "PRI"           "PRI*CI2"       "PRI_norm"     
+[65] "PSND"          "PSRI"          "PSSR"          "RDVI"         
+[69] "REP_LE"        "REP_Li"        "SAVI"          "SIPI"         
+[73] "SPVI"          "SR"            "SR1"           "SR2"          
+[77] "SR3"           "SR4"           "SR5"           "SR6"          
+[81] "SR7"           "SR8"           "SRPI"          "Sum_Dr1"      
+[85] "Sum_Dr2"       "TCARI"         "TCARI/OSAVI"   "TCARI2"       
+[89] "TCARI2/OSAVI2" "TGI"           "TVI"           "Vogelmann"    
+[93] "Vogelmann2"    "Vogelmann3"    "Vogelmann4"   
+[1] "Resampled Dataframe Dimensions:"
+[1] 1741  375
+[1] "Index Dataframe Dimensions:"
+[1] 1741   95
+[1] "Attempting to save to ./tiles//prediction_VTOLOMWlP5pmhWF9.grd"
+[1] "preprocessing raster at ./tiles//tile_fqtknsPlm1LrZ0J2.grd"
+[1] "Imputing..."
+  missForest iteration 1 in progress...done!
+  missForest iteration 2 in progress...done!
+[1] "Calulating Vegetation Indices:"
+ [1] "Boochs"        "Boochs2"       "CARI"          "Carter"       
+ [5] "Carter2"       "Carter3"       "Carter4"       "Carter5"      
+ [9] "Carter6"       "CI"            "CI2"           "ClAInt"       
+[13] "CRI1"          "CRI2"          "CRI3"          "CRI4"         
+[17] "D1"            "D2"            "Datt"          "Datt2"        
+[21] "Datt3"         "Datt4"         "Datt5"         "Datt6"        
+[25] "DD"            "DDn"           "DPI"           "DWSI4"        
+[29] "EGFN"          "EGFR"          "EVI"           "GDVI_2"       
+[33] "GDVI_3"        "GDVI_4"        "GI"            "Gitelson"     
+[37] "Gitelson2"     "GMI1"          "GMI2"          "Green NDVI"   
+[41] "Maccioni"      "MCARI"         "MCARI/OSAVI"   "MCARI2"       
+[45] "MCARI2/OSAVI2" "mND705"        "mNDVI"         "MPRI"         
+[49] "MSAVI"         "mSR"           "mSR2"          "mSR705"       
+[53] "MTCI"          "MTVI"          "NDVI"          "NDVI2"        
+[57] "NDVI3"         "NPCI"          "OSAVI"         "OSAVI2"       
+[61] "PARS"          "PRI"           "PRI*CI2"       "PRI_norm"     
+[65] "PSND"          "PSRI"          "PSSR"          "RDVI"         
+[69] "REP_LE"        "REP_Li"        "SAVI"          "SIPI"         
+[73] "SPVI"          "SR"            "SR1"           "SR2"          
+[77] "SR3"           "SR4"           "SR5"           "SR6"          
+[81] "SR7"           "SR8"           "SRPI"          "Sum_Dr1"      
+[85] "Sum_Dr2"       "TCARI"         "TCARI/OSAVI"   "TCARI2"       
+[89] "TCARI2/OSAVI2" "TGI"           "TVI"           "Vogelmann"    
+[93] "Vogelmann2"    "Vogelmann3"    "Vogelmann4"   
+[1] "Resampled Dataframe Dimensions:"
+[1] 1493  375
+[1] "Index Dataframe Dimensions:"
+[1] 1493   95
+[1] "Attempting to save to ./tiles//prediction_fqtknsPlm1LrZ0J2.grd"
+[1] "preprocessing raster at ./tiles//tile_s7H9MTviT3RDUdjF.grd"
+[1] "Imputing..."
+  missForest iteration 1 in progress...done!
+  missForest iteration 2 in progress...done!
+[1] "Calulating Vegetation Indices:"
+ [1] "Boochs"        "Boochs2"       "CARI"          "Carter"       
+ [5] "Carter2"       "Carter3"       "Carter4"       "Carter5"      
+ [9] "Carter6"       "CI"            "CI2"           "ClAInt"       
+[13] "CRI1"          "CRI2"          "CRI3"          "CRI4"         
+[17] "D1"            "D2"            "Datt"          "Datt2"        
+[21] "Datt3"         "Datt4"         "Datt5"         "Datt6"        
+[25] "DD"            "DDn"           "DPI"           "DWSI4"        
+[29] "EGFN"          "EGFR"          "EVI"           "GDVI_2"       
+[33] "GDVI_3"        "GDVI_4"        "GI"            "Gitelson"     
+[37] "Gitelson2"     "GMI1"          "GMI2"          "Green NDVI"   
+[41] "Maccioni"      "MCARI"         "MCARI/OSAVI"   "MCARI2"       
+[45] "MCARI2/OSAVI2" "mND705"        "mNDVI"         "MPRI"         
+[49] "MSAVI"         "mSR"           "mSR2"          "mSR705"       
+[53] "MTCI"          "MTVI"          "NDVI"          "NDVI2"        
+[57] "NDVI3"         "NPCI"          "OSAVI"         "OSAVI2"       
+[61] "PARS"          "PRI"           "PRI*CI2"       "PRI_norm"     
+[65] "PSND"          "PSRI"          "PSSR"          "RDVI"         
+[69] "REP_LE"        "REP_Li"        "SAVI"          "SIPI"         
+[73] "SPVI"          "SR"            "SR1"           "SR2"          
+[77] "SR3"           "SR4"           "SR5"           "SR6"          
+[81] "SR7"           "SR8"           "SRPI"          "Sum_Dr1"      
+[85] "Sum_Dr2"       "TCARI"         "TCARI/OSAVI"   "TCARI2"       
+[89] "TCARI2/OSAVI2" "TGI"           "TVI"           "Vogelmann"    
+[93] "Vogelmann2"    "Vogelmann3"    "Vogelmann4"   
+[1] "Resampled Dataframe Dimensions:"
+[1] 1528  375
+[1] "Index Dataframe Dimensions:"
+[1] 1528   95
+[1] "Attempting to save to ./tiles//prediction_s7H9MTviT3RDUdjF.grd"
+[1] "Tile based processing complete"
+[[1]]
+          used  (Mb) gc trigger  (Mb) max used  (Mb)
+Ncells 5000076 267.1    8880184 474.3  8880184 474.3
+Vcells 9621320  73.5   37421927 285.6 60941600 465.0
+
+[[2]]
+          used  (Mb) gc trigger  (Mb) max used  (Mb)
+Ncells 5000086 267.1    8880184 474.3  8880184 474.3
+Vcells 9621450  73.5   31267872 238.6 61070061 466.0
+
+[[3]]
+          used  (Mb) gc trigger  (Mb) max used  (Mb)
+Ncells 5000094 267.1    8880184 474.3  8880184 474.3
+Vcells 9621479  73.5   37594980 286.9 61070061 466.0
+
+[[4]]
+          used  (Mb) gc trigger  (Mb) max used  (Mb)
+Ncells 5000102 267.1    8880184 474.3  8880184 474.3
+Vcells 9621508  73.5   32113080 245.1 62720858 478.6
+
+[1] "Mon Feb 14 10:48:39 2022\nTest completed with warnings for config: \n./test/test_configs/fg2_1.json\nand file: \n./test/test_data/BisonGulchQuads.envi\nwarnings: \nsimpleWarning in .gd_SetProject(object, ...): NOT UPDATED FOR PROJ >= 6\n"
+[1] "8 Cores Detected for processing..."
+[1] "preprocessing raster at ./tiles//tile_NKGAzysLz7hvsYRH.grd"
+[1] "Imputing..."
+  missForest iteration 1 in progress...done!
+  missForest iteration 2 in progress...done!
+[1] "Calulating Vegetation Indices:"
+ [1] "Boochs"        "Boochs2"       "CARI"          "Carter"       
+ [5] "Carter2"       "Carter3"       "Carter4"       "Carter5"      
+ [9] "Carter6"       "CI"            "CI2"           "ClAInt"       
+[13] "CRI1"          "CRI2"          "CRI3"          "CRI4"         
+[17] "D1"            "D2"            "Datt"          "Datt2"        
+[21] "Datt3"         "Datt4"         "Datt5"         "Datt6"        
+[25] "DD"            "DDn"           "DPI"           "DWSI4"        
+[29] "EGFN"          "EGFR"          "EVI"           "GDVI_2"       
+[33] "GDVI_3"        "GDVI_4"        "GI"            "Gitelson"     
+[37] "Gitelson2"     "GMI1"          "GMI2"          "Green NDVI"   
+[41] "Maccioni"      "MCARI"         "MCARI/OSAVI"   "MCARI2"       
+[45] "MCARI2/OSAVI2" "mND705"        "mNDVI"         "MPRI"         
+[49] "MSAVI"         "mSR"           "mSR2"          "mSR705"       
+[53] "MTCI"          "MTVI"          "NDVI"          "NDVI2"        
+[57] "NDVI3"         "NPCI"          "OSAVI"         "OSAVI2"       
+[61] "PARS"          "PRI"           "PRI*CI2"       "PRI_norm"     
+[65] "PSND"          "PSRI"          "PSSR"          "RDVI"         
+[69] "REP_LE"        "REP_Li"        "SAVI"          "SIPI"         
+[73] "SPVI"          "SR"            "SR1"           "SR2"          
+[77] "SR3"           "SR4"           "SR5"           "SR6"          
+[81] "SR7"           "SR8"           "SRPI"          "Sum_Dr1"      
+[85] "Sum_Dr2"       "TCARI"         "TCARI/OSAVI"   "TCARI2"       
+[89] "TCARI2/OSAVI2" "TGI"           "TVI"           "Vogelmann"    
+[93] "Vogelmann2"    "Vogelmann3"    "Vogelmann4"   
+[1] "Resampled Dataframe Dimensions:"
+[1] 1051  375
+[1] "Index Dataframe Dimensions:"
+[1] 1051   95
+[1] "Attempting to save to ./tiles//prediction_NKGAzysLz7hvsYRH.grd"
+[1] "preprocessing raster at ./tiles//tile_RhJ2A4ynvkS5hekE.grd"
+[1] "Imputing..."
+  missForest iteration 1 in progress...done!
+  missForest iteration 2 in progress...done!
+[1] "Calulating Vegetation Indices:"
+ [1] "Boochs"        "Boochs2"       "CARI"          "Carter"       
+ [5] "Carter2"       "Carter3"       "Carter4"       "Carter5"      
+ [9] "Carter6"       "CI"            "CI2"           "ClAInt"       
+[13] "CRI1"          "CRI2"          "CRI3"          "CRI4"         
+[17] "D1"            "D2"            "Datt"          "Datt2"        
+[21] "Datt3"         "Datt4"         "Datt5"         "Datt6"        
+[25] "DD"            "DDn"           "DPI"           "DWSI4"        
+[29] "EGFN"          "EGFR"          "EVI"           "GDVI_2"       
+[33] "GDVI_3"        "GDVI_4"        "GI"            "Gitelson"     
+[37] "Gitelson2"     "GMI1"          "GMI2"          "Green NDVI"   
+[41] "Maccioni"      "MCARI"         "MCARI/OSAVI"   "MCARI2"       
+[45] "MCARI2/OSAVI2" "mND705"        "mNDVI"         "MPRI"         
+[49] "MSAVI"         "mSR"           "mSR2"          "mSR705"       
+[53] "MTCI"          "MTVI"          "NDVI"          "NDVI2"        
+[57] "NDVI3"         "NPCI"          "OSAVI"         "OSAVI2"       
+[61] "PARS"          "PRI"           "PRI*CI2"       "PRI_norm"     
+[65] "PSND"          "PSRI"          "PSSR"          "RDVI"         
+[69] "REP_LE"        "REP_Li"        "SAVI"          "SIPI"         
+[73] "SPVI"          "SR"            "SR1"           "SR2"          
+[77] "SR3"           "SR4"           "SR5"           "SR6"          
+[81] "SR7"           "SR8"           "SRPI"          "Sum_Dr1"      
+[85] "Sum_Dr2"       "TCARI"         "TCARI/OSAVI"   "TCARI2"       
+[89] "TCARI2/OSAVI2" "TGI"           "TVI"           "Vogelmann"    
+[93] "Vogelmann2"    "Vogelmann3"    "Vogelmann4"   
+[1] "Resampled Dataframe Dimensions:"
+[1] 1741  375
+[1] "Index Dataframe Dimensions:"
+[1] 1741   95
+[1] "Attempting to save to ./tiles//prediction_RhJ2A4ynvkS5hekE.grd"
+[1] "preprocessing raster at ./tiles//tile_nzw12HK3MxYq0fcf.grd"
+[1] "Imputing..."
+  missForest iteration 1 in progress...done!
+  missForest iteration 2 in progress...done!
+[1] "Calulating Vegetation Indices:"
+ [1] "Boochs"        "Boochs2"       "CARI"          "Carter"       
+ [5] "Carter2"       "Carter3"       "Carter4"       "Carter5"      
+ [9] "Carter6"       "CI"            "CI2"           "ClAInt"       
+[13] "CRI1"          "CRI2"          "CRI3"          "CRI4"         
+[17] "D1"            "D2"            "Datt"          "Datt2"        
+[21] "Datt3"         "Datt4"         "Datt5"         "Datt6"        
+[25] "DD"            "DDn"           "DPI"           "DWSI4"        
+[29] "EGFN"          "EGFR"          "EVI"           "GDVI_2"       
+[33] "GDVI_3"        "GDVI_4"        "GI"            "Gitelson"     
+[37] "Gitelson2"     "GMI1"          "GMI2"          "Green NDVI"   
+[41] "Maccioni"      "MCARI"         "MCARI/OSAVI"   "MCARI2"       
+[45] "MCARI2/OSAVI2" "mND705"        "mNDVI"         "MPRI"         
+[49] "MSAVI"         "mSR"           "mSR2"          "mSR705"       
+[53] "MTCI"          "MTVI"          "NDVI"          "NDVI2"        
+[57] "NDVI3"         "NPCI"          "OSAVI"         "OSAVI2"       
+[61] "PARS"          "PRI"           "PRI*CI2"       "PRI_norm"     
+[65] "PSND"          "PSRI"          "PSSR"          "RDVI"         
+[69] "REP_LE"        "REP_Li"        "SAVI"          "SIPI"         
+[73] "SPVI"          "SR"            "SR1"           "SR2"          
+[77] "SR3"           "SR4"           "SR5"           "SR6"          
+[81] "SR7"           "SR8"           "SRPI"          "Sum_Dr1"      
+[85] "Sum_Dr2"       "TCARI"         "TCARI/OSAVI"   "TCARI2"       
+[89] "TCARI2/OSAVI2" "TGI"           "TVI"           "Vogelmann"    
+[93] "Vogelmann2"    "Vogelmann3"    "Vogelmann4"   
+[1] "Resampled Dataframe Dimensions:"
+[1] 1493  375
+[1] "Index Dataframe Dimensions:"
+[1] 1493   95
+[1] "Attempting to save to ./tiles//prediction_nzw12HK3MxYq0fcf.grd"
+[1] "preprocessing raster at ./tiles//tile_idj03YHp9snlfE8s.grd"
+[1] "Imputing..."
+  missForest iteration 1 in progress...done!
+  missForest iteration 2 in progress...done!
+[1] "Calulating Vegetation Indices:"
+ [1] "Boochs"        "Boochs2"       "CARI"          "Carter"       
+ [5] "Carter2"       "Carter3"       "Carter4"       "Carter5"      
+ [9] "Carter6"       "CI"            "CI2"           "ClAInt"       
+[13] "CRI1"          "CRI2"          "CRI3"          "CRI4"         
+[17] "D1"            "D2"            "Datt"          "Datt2"        
+[21] "Datt3"         "Datt4"         "Datt5"         "Datt6"        
+[25] "DD"            "DDn"           "DPI"           "DWSI4"        
+[29] "EGFN"          "EGFR"          "EVI"           "GDVI_2"       
+[33] "GDVI_3"        "GDVI_4"        "GI"            "Gitelson"     
+[37] "Gitelson2"     "GMI1"          "GMI2"          "Green NDVI"   
+[41] "Maccioni"      "MCARI"         "MCARI/OSAVI"   "MCARI2"       
+[45] "MCARI2/OSAVI2" "mND705"        "mNDVI"         "MPRI"         
+[49] "MSAVI"         "mSR"           "mSR2"          "mSR705"       
+[53] "MTCI"          "MTVI"          "NDVI"          "NDVI2"        
+[57] "NDVI3"         "NPCI"          "OSAVI"         "OSAVI2"       
+[61] "PARS"          "PRI"           "PRI*CI2"       "PRI_norm"     
+[65] "PSND"          "PSRI"          "PSSR"          "RDVI"         
+[69] "REP_LE"        "REP_Li"        "SAVI"          "SIPI"         
+[73] "SPVI"          "SR"            "SR1"           "SR2"          
+[77] "SR3"           "SR4"           "SR5"           "SR6"          
+[81] "SR7"           "SR8"           "SRPI"          "Sum_Dr1"      
+[85] "Sum_Dr2"       "TCARI"         "TCARI/OSAVI"   "TCARI2"       
+[89] "TCARI2/OSAVI2" "TGI"           "TVI"           "Vogelmann"    
+[93] "Vogelmann2"    "Vogelmann3"    "Vogelmann4"   
+[1] "Resampled Dataframe Dimensions:"
+[1] 1528  375
+[1] "Index Dataframe Dimensions:"
+[1] 1528   95
+[1] "Attempting to save to ./tiles//prediction_idj03YHp9snlfE8s.grd"
+[1] "Tile based processing complete"
+[[1]]
+           used  (Mb) gc trigger  (Mb) max used  (Mb)
+Ncells  5001122 267.1    8880184 474.3  8880184 474.3
+Vcells 10276473  78.5   36067120 275.2 62720858 478.6
+
+[[2]]
+           used  (Mb) gc trigger  (Mb) max used  (Mb)
+Ncells  5001132 267.1    8880184 474.3  8880184 474.3
+Vcells 10276603  78.5   39277465 299.7 62720858 478.6
+
+[[3]]
+           used  (Mb) gc trigger  (Mb) max used  (Mb)
+Ncells  5001140 267.1    8880184 474.3  8880184 474.3
+Vcells 10276632  78.5   36943755 281.9 62720858 478.6
+
+[[4]]
+           used  (Mb) gc trigger  (Mb) max used  (Mb)
+Ncells  5001148 267.1    8880184 474.3  8880184 474.3
+Vcells 10276661  78.5   39327422 300.1 62720858 478.6
+
+[1] "Mon Feb 14 10:49:52 2022\nTest completed with warnings for config: \n./test/test_configs/species_1.json\nand file: \n./test/test_data/BisonGulchQuads.envi\nwarnings: \nsimpleWarning in .gd_SetProject(object, ...): NOT UPDATED FOR PROJ >= 6\n"
+[1] "8 Cores Detected for processing..."
+[1] "preprocessing raster at ./tiles//tile_as6tALh6MStWG4jC.grd"
+[1] "preprocessing raster at ./tiles//tile_maHtpPN5mIwH8dwe.grd"
+[1] "preprocessing raster at ./tiles//tile_6zQVyD4iJcDWwGGk.grd"
+[1] "preprocessing raster at ./tiles//tile_btGHgPTRjKCRM0mQ.grd"
+[1] "Imputing..."
+  missForest iteration 1 in progress...done!
+  missForest iteration 2 in progress...done!
+[1] "Calulating Vegetation Indices:"
+ [1] "Boochs"        "Boochs2"       "CARI"          "Carter"       
+ [5] "Carter2"       "Carter3"       "Carter4"       "Carter5"      
+ [9] "Carter6"       "CI"            "CI2"           "ClAInt"       
+[13] "CRI1"          "CRI2"          "CRI3"          "CRI4"         
+[17] "D1"            "D2"            "Datt"          "Datt2"        
+[21] "Datt3"         "Datt4"         "Datt5"         "Datt6"        
+[25] "DD"            "DDn"           "DPI"           "DWSI4"        
+[29] "EGFN"          "EGFR"          "EVI"           "GDVI_2"       
+[33] "GDVI_3"        "GDVI_4"        "GI"            "Gitelson"     
+[37] "Gitelson2"     "GMI1"          "GMI2"          "Green NDVI"   
+[41] "Maccioni"      "MCARI"         "MCARI/OSAVI"   "MCARI2"       
+[45] "MCARI2/OSAVI2" "mND705"        "mNDVI"         "MPRI"         
+[49] "MSAVI"         "mSR"           "mSR2"          "mSR705"       
+[53] "MTCI"          "MTVI"          "NDVI"          "NDVI2"        
+[57] "NDVI3"         "NPCI"          "OSAVI"         "OSAVI2"       
+[61] "PARS"          "PRI"           "PRI*CI2"       "PRI_norm"     
+[65] "PSND"          "PSRI"          "PSSR"          "RDVI"         
+[69] "REP_LE"        "REP_Li"        "SAVI"          "SIPI"         
+[73] "SPVI"          "SR"            "SR1"           "SR2"          
+[77] "SR3"           "SR4"           "SR5"           "SR6"          
+[81] "SR7"           "SR8"           "SRPI"          "Sum_Dr1"      
+[85] "Sum_Dr2"       "TCARI"         "TCARI/OSAVI"   "TCARI2"       
+[89] "TCARI2/OSAVI2" "TGI"           "TVI"           "Vogelmann"    
+[93] "Vogelmann2"    "Vogelmann3"    "Vogelmann4"   
+[1] "Resampled Dataframe Dimensions:"
+[1]  21 375
+[1] "Index Dataframe Dimensions:"
+[1] 21 95
+[1] "Mon Feb 14 10:51:34 2022\nTest failed for file:\n./test/test_data/EightMileQuads.envi using config: \n./test/test_configs/fg1_1.json\nError: \nError in {: task 4 failed - \"Missing data in columns: CARI, Carter, Carter2, Carter3, Carter4, Carter5, CI, CI2, CRI1, CRI2, CRI3, CRI4, D1, D2, Datt, Datt2, Datt3, Datt4, Datt5, Datt6, DPI, DWSI4, EGFN, EGFR, GDVI2, GDVI3, GDVI4, GI, Gitelson2, GMI1, GMI2, GreenNDVI, Maccioni, MCARI, MCARIOSAVI, MCARI2, MCARI2OSAVI2, mND705, mNDVI, MPRI, mSR, mSR2, mSR705, MTCI, NDVI, NDVI2, NDVI3, NPCI, PARS, PRI, PRICI2, PRInorm, PSND, PSRI, PSSR, RDVI, REPLE, REPLi, SIPI, SR, SR1, SR2, SR3, SR4, SR5, SR6, SR7, SR8, SRPI, TCARI, TCARIOSAVI, TCARI2, TCARI2OSAVI2, Vogelmann, Vogelmann2, Vogelmann3, Vogelmann4.\"\n"
+No traceback available 
+[1] "8 Cores Detected for processing..."
+[1] "preprocessing raster at ./tiles//tile_O4nqKqAQLSjQcQZP.grd"
+[1] "preprocessing raster at ./tiles//tile_8KrAW0mtPiLyPP6S.grd"
+[1] "preprocessing raster at ./tiles//tile_ir5Qc76RgJW8Kiw8.grd"
+[1] "preprocessing raster at ./tiles//tile_zIJd5UHHjwC8KoGu.grd"
+[1] "Imputing..."
+  missForest iteration 1 in progress...done!
+  missForest iteration 2 in progress...done!
+[1] "Calulating Vegetation Indices:"
+ [1] "Boochs"        "Boochs2"       "CARI"          "Carter"       
+ [5] "Carter2"       "Carter3"       "Carter4"       "Carter5"      
+ [9] "Carter6"       "CI"            "CI2"           "ClAInt"       
+[13] "CRI1"          "CRI2"          "CRI3"          "CRI4"         
+[17] "D1"            "D2"            "Datt"          "Datt2"        
+[21] "Datt3"         "Datt4"         "Datt5"         "Datt6"        
+[25] "DD"            "DDn"           "DPI"           "DWSI4"        
+[29] "EGFN"          "EGFR"          "EVI"           "GDVI_2"       
+[33] "GDVI_3"        "GDVI_4"        "GI"            "Gitelson"     
+[37] "Gitelson2"     "GMI1"          "GMI2"          "Green NDVI"   
+[41] "Maccioni"      "MCARI"         "MCARI/OSAVI"   "MCARI2"       
+[45] "MCARI2/OSAVI2" "mND705"        "mNDVI"         "MPRI"         
+[49] "MSAVI"         "mSR"           "mSR2"          "mSR705"       
+[53] "MTCI"          "MTVI"          "NDVI"          "NDVI2"        
+[57] "NDVI3"         "NPCI"          "OSAVI"         "OSAVI2"       
+[61] "PARS"          "PRI"           "PRI*CI2"       "PRI_norm"     
+[65] "PSND"          "PSRI"          "PSSR"          "RDVI"         
+[69] "REP_LE"        "REP_Li"        "SAVI"          "SIPI"         
+[73] "SPVI"          "SR"            "SR1"           "SR2"          
+[77] "SR3"           "SR4"           "SR5"           "SR6"          
+[81] "SR7"           "SR8"           "SRPI"          "Sum_Dr1"      
+[85] "Sum_Dr2"       "TCARI"         "TCARI/OSAVI"   "TCARI2"       
+[89] "TCARI2/OSAVI2" "TGI"           "TVI"           "Vogelmann"    
+[93] "Vogelmann2"    "Vogelmann3"    "Vogelmann4"   
+[1] "Resampled Dataframe Dimensions:"
+[1]  21 375
+[1] "Index Dataframe Dimensions:"
+[1] 21 95
+[1] "Mon Feb 14 10:53:19 2022\nTest failed for file:\n./test/test_data/EightMileQuads.envi using config: \n./test/test_configs/fg2_1.json\nError: \nError in {: task 4 failed - \"Missing data in columns: CARI, Carter, Carter2, Carter3, Carter4, Carter5, CI, CI2, CRI1, CRI2, CRI3, CRI4, D1, D2, Datt, Datt2, Datt3, Datt4, Datt5, Datt6, DPI, DWSI4, EGFN, EGFR, GDVI2, GDVI3, GDVI4, GI, Gitelson2, GMI1, GMI2, GreenNDVI, Maccioni, MCARI, MCARIOSAVI, MCARI2, MCARI2OSAVI2, mND705, mNDVI, MPRI, mSR, mSR2, mSR705, MTCI, NDVI, NDVI2, NDVI3, NPCI, PARS, PRI, PRICI2, PRInorm, PSND, PSRI, PSSR, RDVI, REPLE, REPLi, SIPI, SR, SR1, SR2, SR3, SR4, SR5, SR6, SR7, SR8, SRPI, TCARI, TCARIOSAVI, TCARI2, TCARI2OSAVI2, Vogelmann, Vogelmann2, Vogelmann3, Vogelmann4.\"\n"
+No traceback available 
+[1] "8 Cores Detected for processing..."
+[1] "preprocessing raster at ./tiles//tile_Zc2NpzJUT4VKMDim.grd"
+[1] "preprocessing raster at ./tiles//tile_eUGQ4vIAVxMqqA9s.grd"
+[1] "preprocessing raster at ./tiles//tile_GyQZmLezkEHgUxG6.grd"
+[1] "preprocessing raster at ./tiles//tile_5CgUKBQph7sQqhqI.grd"
+[1] "Imputing..."
+  missForest iteration 1 in progress...done!
+  missForest iteration 2 in progress...done!
+[1] "Calulating Vegetation Indices:"
+ [1] "Boochs"        "Boochs2"       "CARI"          "Carter"       
+ [5] "Carter2"       "Carter3"       "Carter4"       "Carter5"      
+ [9] "Carter6"       "CI"            "CI2"           "ClAInt"       
+[13] "CRI1"          "CRI2"          "CRI3"          "CRI4"         
+[17] "D1"            "D2"            "Datt"          "Datt2"        
+[21] "Datt3"         "Datt4"         "Datt5"         "Datt6"        
+[25] "DD"            "DDn"           "DPI"           "DWSI4"        
+[29] "EGFN"          "EGFR"          "EVI"           "GDVI_2"       
+[33] "GDVI_3"        "GDVI_4"        "GI"            "Gitelson"     
+[37] "Gitelson2"     "GMI1"          "GMI2"          "Green NDVI"   
+[41] "Maccioni"      "MCARI"         "MCARI/OSAVI"   "MCARI2"       
+[45] "MCARI2/OSAVI2" "mND705"        "mNDVI"         "MPRI"         
+[49] "MSAVI"         "mSR"           "mSR2"          "mSR705"       
+[53] "MTCI"          "MTVI"          "NDVI"          "NDVI2"        
+[57] "NDVI3"         "NPCI"          "OSAVI"         "OSAVI2"       
+[61] "PARS"          "PRI"           "PRI*CI2"       "PRI_norm"     
+[65] "PSND"          "PSRI"          "PSSR"          "RDVI"         
+[69] "REP_LE"        "REP_Li"        "SAVI"          "SIPI"         
+[73] "SPVI"          "SR"            "SR1"           "SR2"          
+[77] "SR3"           "SR4"           "SR5"           "SR6"          
+[81] "SR7"           "SR8"           "SRPI"          "Sum_Dr1"      
+[85] "Sum_Dr2"       "TCARI"         "TCARI/OSAVI"   "TCARI2"       
+[89] "TCARI2/OSAVI2" "TGI"           "TVI"           "Vogelmann"    
+[93] "Vogelmann2"    "Vogelmann3"    "Vogelmann4"   
+[1] "Resampled Dataframe Dimensions:"
+[1]  21 375
+[1] "Index Dataframe Dimensions:"
+[1] 21 95
+[1] "Mon Feb 14 10:54:55 2022\nTest failed for file:\n./test/test_data/EightMileQuads.envi using config: \n./test/test_configs/species_1.json\nError: \nError in {: task 4 failed - \"Missing data in columns: CARI, Carter, Carter2, Carter3, Carter4, Carter5, CI, CI2, CRI1, CRI2, CRI3, CRI4, D1, D2, Datt, Datt2, Datt3, Datt4, Datt5, Datt6, DPI, DWSI4, EGFN, EGFR, GDVI2, GDVI3, GDVI4, GI, Gitelson2, GMI1, GMI2, GreenNDVI, Maccioni, MCARI, MCARIOSAVI, MCARI2, MCARI2OSAVI2, mND705, mNDVI, MPRI, mSR, mSR2, mSR705, MTCI, NDVI, NDVI2, NDVI3, NPCI, PARS, PRI, PRICI2, PRInorm, PSND, PSRI, PSSR, RDVI, REPLE, REPLi, SIPI, SR, SR1, SR2, SR3, SR4, SR5, SR6, SR7, SR8, SRPI, TCARI, TCARIOSAVI, TCARI2, TCARI2OSAVI2, Vogelmann, Vogelmann2, Vogelmann3, Vogelmann4.\"\n"
+No traceback available 
+[1] "8 Cores Detected for processing..."
+[1] "Mon Feb 14 10:55:35 2022\nTest completed with warnings for config: \n./test/test_configs/fg1_1.json\nand file: \n./test/test_data/TwelveMileGulchQuads1.envi\nwarnings: \nsimpleWarning in doTryCatch(return(expr), name, parentenv, handler): NAs introduced by coercion\n"
+[1] "8 Cores Detected for processing..."
+[1] "Mon Feb 14 10:56:19 2022\nTest completed with warnings for config: \n./test/test_configs/fg2_1.json\nand file: \n./test/test_data/TwelveMileGulchQuads1.envi\nwarnings: \nsimpleWarning in doTryCatch(return(expr), name, parentenv, handler): NAs introduced by coercion\n"
+[1] "8 Cores Detected for processing..."
+[1] "Mon Feb 14 10:56:57 2022\nTest completed with warnings for config: \n./test/test_configs/species_1.json\nand file: \n./test/test_data/TwelveMileGulchQuads1.envi\nwarnings: \nsimpleWarning in doTryCatch(return(expr), name, parentenv, handler): NAs introduced by coercion\n"
+[1] "8 Cores Detected for processing..."
+[1] "Mon Feb 14 10:57:38 2022\nTest completed with warnings for config: \n./test/test_configs/fg1_1.json\nand file: \n./test/test_data/TwelveMileGulchQuads2.envi\nwarnings: \nsimpleWarning in doTryCatch(return(expr), name, parentenv, handler): NAs introduced by coercion\n"
+[1] "Mon Feb 14 10:58:01 2022\nTest failed for file:\n./test/test_data/TwelveMileGulchQuads2.envi using config: \n./test/test_configs/fg2_1.json\nError: \nError in unserialize(node$con): error reading from connection\n"

@@ -8,24 +8,24 @@ RhpcBLASctl::omp_get_num_procs()
 RhpcBLASctl::blas_set_num_threads(8L)
 RhpcBLASctl::omp_set_num_threads(8L)
 
-test_path <- "F:/Lecospec/Ground_Validation/BisonGulchQuads.envi"
+test_path <- "F:/Lecospec/Ground_Validation/EightMileQuads.envi"
 
 #raster(test_path) %>% plot()
 test_path_2 <- "F:/Lecospec/tiles/tile_0bYSfUorxlbPTIkA.grd"
-model_path <- "C:/Users/kenne/Documents/GitHub/lecospec/Output/E_003_Pred_Model_RandomForest_FncGrp2_1000trees.rda"
+model_path <- "C:/Users/kenne/Documents/GitHub/lecospec/Output/E_003_Pred_Model_RandomForest_FncGrp1_1000trees.rda"
 big_test <- "F:/DataCubes/raw_1511_rd_rf_or"
 
 print(date())
 quad_results <- estimate_land_cover(
     test_path, 
-    output_filepath = "./Output/bison_gulch_outputs_par.grd",
+    output_filepath = "./Output/em_outputs_2.grd",
     use_external_bands = TRUE)
 print(date())
 
 big_results <- estimate_land_cover(
     big_test,
     output_filepath = "./Outputs/raw_1511_PREDICTIONS.grd")
-
+print(date())
 
 output <- raster::raster("./Output/bison_gulch_outputs_par.grd")
 png("./run_out.png", width = 1024, height = 1024)
@@ -37,6 +37,7 @@ dev.off()
 
 
 ml_model <- load_model(model_path)
+print(ml_model$forest$independent.variable.names)
 
 output_key <- rjson::fromJSON(file = "./fg2key.json")
 
@@ -67,3 +68,13 @@ print(functional_group2_levels)
 
 uf_test <- update_filename(test_path)
 print(uf_test)
+
+
+tiles <- c(
+    "./tiles//prediction_V2tsWuMaJEzoJ2MF.grd",
+    "./tiles//prediction_xhzHX4KVl89FsfOU.grd",
+    "./tiles//prediction_kGVDd3pM4lcWqNRs.grd",
+    "./tiles//prediction_LWlMl4y7KcDL8Hw4.grd"
+)
+
+output <- merge_tiles(tiles, "./merge_test.tif")
