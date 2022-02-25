@@ -8,10 +8,10 @@ RhpcBLASctl::omp_get_num_procs()
 RhpcBLASctl::blas_set_num_threads(8L)
 RhpcBLASctl::omp_set_num_threads(8L)
 
-test_path <- "F:/Lecospec/Ground_Validation/EightMileQuads.envi"
+test_path <- "F:/Lecospec/Ground_Validation/TwelveMileGulchQuads1.envi"
 
 #raster(test_path) %>% plot()
-test_path_2 <- "F:/Lecospec/tiles/tile_0bYSfUorxlbPTIkA.grd"
+test_path_2 <- "tiles/tile_bJz800Y1xBCxST63.grd"
 model_path <- "C:/Users/kenne/Documents/GitHub/lecospec/Output/E_003_Pred_Model_RandomForest_FncGrp1_1000trees.rda"
 big_test <- "F:/DataCubes/raw_1511_rd_rf_or"
 
@@ -21,6 +21,12 @@ quad_results <- estimate_land_cover(
     output_filepath = "./Output/em_outputs_2.grd",
     use_external_bands = TRUE)
 print(date())
+
+print(quad_results)
+plot(quad_results)
+
+raster::dataType(quad_results)
+
 
 big_results <- estimate_land_cover(
     big_test,
@@ -39,22 +45,22 @@ dev.off()
 ml_model <- load_model(model_path)
 print(ml_model$forest$independent.variable.names)
 
-output_key <- rjson::fromJSON(file = "./fg2key.json")
-
 cl <- raster::beginCluster()#this is actually quite slow, believe it or not
 
 print(date())
 tile_results <- process_tile(
     test_path_2, 
     ml_model, 
-    2,
+    1,
     cluster = cl, 
     return_raster = TRUE, 
     save_path = "./test_raster_save.grd", 
     suppress_output = FALSE)
 print(date())
 
+plot(tile_results)
 print(tile_results)
+raster::dataType(tile_results)
 
 raster::endCluster()
 
@@ -78,3 +84,11 @@ tiles <- c(
 )
 
 output <- merge_tiles(tiles, "./merge_test.tif")
+
+
+test <- raster::brick(test_path)
+test_df <- raster::rasterToPoints(test)
+
+has_empty_column(test_df)
+
+summary(test_df)
