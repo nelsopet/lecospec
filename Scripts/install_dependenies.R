@@ -25,7 +25,8 @@ lecospec_depenencies <- c(
     "RColorBrewer",
     "leaflet",
     "leaflet.opacity",
-    "leaflegend"
+    "leaflegend",
+    "naniar"
 )
 
 install.packages(lecospec_depenencies, repos = "http://cran.rstudio.com/")

@@ -1,30 +1,23 @@
 source("./Functions/lecospectR.R")
 
-require(RhpcBLASctl)
-RhpcBLASctl::get_num_cores()
-RhpcBLASctl::get_num_procs()
-RhpcBLASctl::omp_get_max_threads()
-RhpcBLASctl::omp_get_num_procs()
-RhpcBLASctl::blas_set_num_threads(8L)
-RhpcBLASctl::omp_set_num_threads(8L)
+test_path <- "F:/Lecospec/Ground_Validation/EightMileQuads.envi"
 
-test_path <- "F:/Lecospec/Ground_Validation/TwelveMileGulchQuads1.envi"
-
-#raster(test_path) %>% plot()
-test_path_2 <- "tiles/tile_bJz800Y1xBCxST63.grd"
+raster::raster(test_path) %>% plot()
+test_path_2 <- "F:/Lecospec/tiles/tile_GTM72GyUTkf3hMsm.grd"
 model_path <- "C:/Users/kenne/Documents/GitHub/lecospec/Output/E_003_Pred_Model_RandomForest_FncGrp1_1000trees.rda"
 big_test <- "F:/DataCubes/raw_1511_rd_rf_or"
 
 print(date())
 quad_results <- estimate_land_cover(
     test_path, 
-    output_filepath = "./Output/em_outputs_2.grd",
+    output_filepath = "./Output/em_outputs_m.grd",
     use_external_bands = TRUE)
 print(date())
 
 print(quad_results)
+png("./test_results.png")
 plot(quad_results)
-
+dev.off()
 raster::dataType(quad_results)
 
 
@@ -37,10 +30,6 @@ output <- raster::raster("./Output/bison_gulch_outputs_par.grd")
 png("./run_out.png", width = 1024, height = 1024)
 plot(output)
 dev.off()
-
-
-
-
 
 ml_model <- load_model(model_path)
 print(ml_model$forest$independent.variable.names)
@@ -84,6 +73,7 @@ tiles <- c(
 )
 
 output <- merge_tiles(tiles, "./merge_test.tif")
+
 
 
 test <- raster::brick(test_path)
