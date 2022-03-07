@@ -35,3 +35,4 @@ TO DO: add tryCatch
 `RhpcBLASctl::blas_set_num_threads(1L) RhpcBLASctl::omp_set_num_threads(1L) sink("C:/Users/kenne/Documents/GitHub/lecospec/lecospec.log", append = TRUE)`
 
 
+use chi-squared test for validation

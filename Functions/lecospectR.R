@@ -592,26 +592,7 @@ attach_veg_indices <- function(df) {
 }
 
 
-
-#' Resample the data frame/spectra every distance=5 units
-#'
-#' Long Description here
-#'
-#' @return 
-#' @param df: a dataframe of spectral data
-#' @param distance (default: 5nm): distance to resample bands
-#' @return data frame of resampled data
-#' @seealso None
-#' @export 
-#' @examples Not Yet Implmented
-resample_spectra <- function(spec_lib) {
-    print("Not yet implemented")
-    return(spec_lib)
-}
-
-
-
-#' COmbines derivatives (veg indices) and prediction
+#' Combines derivatives (veg indices) and prediction
 #'
 #' Long Description here
 #'
@@ -697,22 +678,39 @@ load_csv <- function(filepath, output_type = "df") {
 #'
 impute_spectra <- function(x, cluster = NULL, method = "missForest") {
 
-    df <- x
-
+    df <- x 
+    bands <- colnames(df)
     if (!is.data.frame(x)) {
         df <- x %>%
         rasterToPoints() %>%
+        as.data.frame() %>% 
+        as.matrix() %>% 
+        t() %>% 
+        as.data.frame()
+
+    } else {
+        df <- x %>% 
+        as.matrix() %>% 
+        t() %>% 
         as.data.frame()
     }
 
     print("Imputing...")
     if (method == "missForest") {
-        missForest::missForest(df, maxiter = 3)
-        output_data <- df
+        missForest::missForest(df, maxiter = 1)
+        output_data <- df %>% 
+        as.matrix() %>% 
+        t() %>% 
+        as.data.frame()    
     } else {
-        output_data <- useful::simple.impute(df)
+        output_data <- useful::simple.impute(df) %>%
+        as.matrix() %>% 
+        t() %>% 
+        as.data.frame()       
     }
-        
+    
+    colnames(output_data) <- bands
+    
     if (!is.data.frame(x)) {
         spectral_matrix <- as.matrix(df)
         output_data <- raster::rasterFromXYZ(
@@ -721,6 +719,7 @@ impute_spectra <- function(x, cluster = NULL, method = "missForest") {
         raster::extent(output_data) <- raster::extent(x)
     }
     gc()
+
     return(output_data)
 }#end impute_spectra
 
@@ -892,40 +891,6 @@ plot_agg_results <- function(df, save_file = "Output/results.jpeg") {
     return(my_plot)
 }
 
-# 
-#' Function Reads in the data and replace/removes weird values
-#'
-#' Long Description here
-#'
-#' @return 
-#' @param x
-#' @seealso None
-#' @export 
-#' @examples Not Yet Implmented
-#'
-make_speclib_derivs<- function(filename)  {  
-    # Reads in spectral libray as .csv
-    # Right now your spectral library would have already have 
-    # weird values removed/replaced
-    spectral_lib <- read.csv(
-        filename,
-        check.names = F)
-
-    spectral_lib <- Deriv_combine(spectral_lib)
-
-    write.csv(
-        spectral_lib,
-        paste(
-            out_file,
-            "D_002_SpecLib_Derivs",
-            ".csv",
-            sep = ""),
-        row.names = F)
-
-    # Normalize Values here
-    return(spectral_lib)
-}
-
 #' Function Reads in the data and replace/removes weird values
 #'
 #' Long Description here
@@ -1088,6 +1053,8 @@ estimate_land_cover <- function(
     }
 
     results <- merge_tiles(prediction_filenames, output_path = output_filepath)
+
+    raster::dataType(results) <- "INT2U"
     
     # stop writing terminal output to the log file
     sink(NULL)
@@ -1152,12 +1119,14 @@ process_tile <- function(
     suppress_output = FALSE
     ) {
     raster_obj <- raster::brick(tile_filename)
+    plot(raster_obj)
     input_crs <- raster::crs(raster_obj)
     print(paste0("preprocessing raster at ", tile_filename))
     base_df <- preprocess_raster_to_df(raster_obj, ml_model)
     
-    if(nrow(base_df) < 1 || has_empty_column(base_df)){
-        print("The tile has fewer than 100 filled pixels")
+    if(nrow(base_df) < 1){
+        print("The tile has no rows!")
+        print(dim(base_df))
         handle_empty_tile(raster_obj, save_path = save_path)
 
         if(!suppress_output){
@@ -1177,11 +1146,15 @@ process_tile <- function(
         gc()
 
         imputed_df <- impute_spectra(base_df, method = "median")
-        print(summary(imputed_df))
         rm(base_df)
         gc()
 
-        resampled_df <- resample_df(imputed_df)
+        # drop rows that are uniformly zero
+        cleaned_df <- drop_zero_rows(imputed_df)
+        rm(imputed_df)
+        gc()
+
+        resampled_df <- resample_df(cleaned_df)
         gc()
 
         veg_indices <- get_vegetation_indices(resampled_df, ml_model, cluster = cluster)
@@ -1198,27 +1171,21 @@ process_tile <- function(
         rm(resampled_df)
         gc()
 
+        imputed_df_full <- impute_spectra(df, method="median")
+
         
-        prediction <- apply_model(df, ml_model)
-        print("Predictions from Aplly_model")
-        print(summary(prediction))
+        prediction <- apply_model(imputed_df_full, ml_model)
         rm(df)
         gc()
 
-        prediction <- postprocess_prediction(prediction, imputed_df)
+        prediction <- postprocess_prediction(prediction, cleaned_df)
         
-        print("After Post Processing")
-        print(summary(prediction))
 
         prediction <- convert_and_save_output(
             prediction,
             aggregation,
             save_path = save_path,
             return_raster = return_raster)
-
-            print("After Conversion")
-            print(prediction)
-            print(summary(prediction))
         
         raster::crs(prediction) <- input_crs
 
@@ -1273,7 +1240,7 @@ preprocess_raster_to_df <- function(raster_obj, model) {
     df <- raster::rasterToPoints(raster_obj) %>% as.data.frame()
     df <- remove_noisy_cols(df)
     df <- filter_bands(df)
-    df <- filter_empty_points(df) 
+    #df <- filter_empty_points(df)
     gc()
     return(df)
 }
@@ -1478,13 +1445,15 @@ merge_tiles <- function(input_files, output_path = NULL, target_layer = 1) {
         master_raster <- raster::merge(
             master_raster,
             new_raster,
-            tolerance = 0.5)
-        
+            datatype='INT2U',
+            tolerance = 0.5
+        )
     }
     if(!is.null(output_path)) {
         raster::writeRaster(master_raster, output_path, datatype='INT2U', overwrite = TRUE)
     }
 
+    raster::dataType(master_raster) <- "INT2U"
     return(master_raster)
 }
 
@@ -2145,14 +2114,11 @@ update_filename <- function(prefix){
 #' @examples Not Yet Implmented
 convert_and_save_output <- function(df, aggregation_level, save_path = NULL, return_raster = TRUE ){
         prediction <- convert_pft_codes(df, aggregation_level = aggregation_level, to = "int")
-        print("After Converting to Integer")
-        print(summary(prediction))
         print(paste0("Attempting to save to ", save_path))
         if(return_raster){
             prediction <- raster::rasterFromXYZ(prediction)
             print("Converted to Raster")
             raster::dataType(prediction) <- "INT2U" # set to int datatype (unsigned int // 2 bytes)
-            print(prediction)
         if(!is.null(save_path)){
                 raster::writeRaster(prediction, filename = save_path, datatype='INT2U', overwrite = TRUE)
             } 
@@ -2214,14 +2180,29 @@ visualize_prediction <- function(filepath, colormap){
 #' @export 
 #' @examples Not Yet Implmented
 filter_empty_points <- function(df){
+    print("Data summary before filtering")
+    print(dim(df))
     drop_cols <- c("x","y")
-    columns_to_check <- setdiff(colnames(df), drop_cols) 
+    columns_to_check <- setdiff(colnames(df), drop_cols)
+
     df_no_empty_rows <- df %>% 
+        naniar::replace_with_na_all(condition = ~.x == 0) %>%
         dplyr::filter_at(
             .vars = vars(one_of(columns_to_check)),
-            ~ !is.na(.)
-        )
+            ~!is.na(.)
+        ) 
+    print("data summary after filering")
+    print(dim(df_no_empty_rows))
     return(df_no_empty_rows)
+}
+
+
+drop_zero_rows <- function(df) {
+    # sort the columsn to make sure x and y are first before calculating rowsums
+    df_rowsums <- df %>% dplyr::relocate(y) %>% dplyr::relocate(x)
+    num_cols = ncol(df)
+    # return only the rows with rowsums over zero
+    return( df_rowsums[rowSums(df_rowsums[,3:num_cols], na.rm = TRUE) > 0.001, ])
 }
 
 #' removes empty rows from the data.frame
