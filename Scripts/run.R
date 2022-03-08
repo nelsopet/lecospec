@@ -2,7 +2,8 @@ source("./Functions/lecospectR.R")
 
 test_path <- "F:/Lecospec/Ground_Validation/EightMileQuads.envi"
 
-raster::raster(test_path) %>% plot()
+raster::raster(test_path) %>% hist()
+
 test_path_2 <- "F:/Lecospec/tiles/tile_GTM72GyUTkf3hMsm.grd"
 model_path <- "C:/Users/kenne/Documents/GitHub/lecospec/Output/E_003_Pred_Model_RandomForest_FncGrp1_1000trees.rda"
 big_test <- "F:/DataCubes/raw_1511_rd_rf_or"
@@ -18,8 +19,10 @@ print(quad_results)
 png("./test_results.png")
 plot(quad_results)
 dev.off()
+png("./test_results_2.png")
+hist(quad_results)
+dev.off()
 raster::dataType(quad_results)
-
 
 big_results <- estimate_land_cover(
     big_test,

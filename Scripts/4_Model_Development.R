@@ -65,7 +65,7 @@ rf_mod_ranger_FncGrp2_pred<-ranger::ranger(
 
 #rf_mod_ranger_species_pred
 #rf_mod_ranger_FncGrp1_pred
-rf_mod_ranger_FncGrp2_pred$confusion.matrix
+rf_mod_ranger_FncGrp1_pred$confusion.matrix
 
 #rf_mod_randomforest
  # Build models using 0.99 percent cutoff for corelated varibles
