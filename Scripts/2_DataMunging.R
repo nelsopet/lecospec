@@ -312,10 +312,10 @@ Murph2_spectra_metadata$Area<- "Murphy"
 Murph2_metadata_instrument<-meta(Murph2_spectra)
 
 #Combine metadata generated in this script with instrument metadata
-Murph2_metadata<-cbind(Murph2_metadata,Murph2_metadata_instrument)
+Murph2_metadata<-cbind(Murph2_spectra_metadata,Murph2_metadata_instrument)
 
 ###Set metadata
-meta(Murph2_spectra) = data.frame(Murph2_spectra_metadata, stringsAsFactors = FALSE)
+meta(Murph2_spectra) = data.frame(Murph2_metadata, stringsAsFactors = FALSE)
 
 ###save spectra (Raw)
 saveRDS(Murph2_spectra      ,"./Output/A_008_SC2_Murph2_spectra.rds")

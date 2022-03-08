@@ -571,9 +571,18 @@ table(Cleaned_Speclib$Functional_group2)%>%as.data.frame()
 #36                   Wood_Coarse    5
 
 write.csv(Cleaned_Speclib, "./Output/C_001_SC3_Cleaned_SpectralLib.csv")
+
 saveRDS(Cleaned_Speclib_rds,"./Output/C_002_SC3_Cleaned_Speclib.rds")
 
 
+#Make a table showing all the scans tallied by the three groups.
+
+Cleaned_Speclib %>% 
+  dplyr::filter(is.na(File.Name.1)==FALSE) %>% 
+  group_by(Functional_group1, Functional_group2) %>% #,Species_name) %>% 
+  tally() %>% 
+  as.data.frame() %>% #View()
+  write.csv("./Output/C_003_SC3_Cleaned_SpectralLib_table.csv")
 
 
 ###Run LandCoverEstimator to generate Spectral Derivatives.
