@@ -676,20 +676,23 @@ load_csv <- function(filepath, output_type = "df") {
 #' @export 
 #' @examples Not Yet Implmented
 #'
-impute_spectra <- function(x, cluster = NULL, method = "missForest") {
-
+impute_spectra <- function(x, cluster = NULL, method = "missForest", transpose=FALSE) {
     df <- x 
-    bands <- colnames(df)
+    
+
+    # convert to a data.frame if x is a raster
     if (!is.data.frame(x)) {
         df <- x %>%
         rasterToPoints() %>%
-        as.data.frame() %>% 
-        as.matrix() %>% 
-        t() %>% 
-        as.data.frame()
+        as.data.frame() 
+    }
+    # save band names in case we need to transpose and restore column names later
+    bands <- colnames(df)
 
-    } else {
-        df <- x %>% 
+
+    # transpose if needed
+    if(transpose){
+        df <- df %>%
         as.matrix() %>% 
         t() %>% 
         as.data.frame()
@@ -697,19 +700,21 @@ impute_spectra <- function(x, cluster = NULL, method = "missForest") {
 
     print("Imputing...")
     if (method == "missForest") {
-        missForest::missForest(df, maxiter = 1)
-        output_data <- df %>% 
-        as.matrix() %>% 
-        t() %>% 
-        as.data.frame()    
-    } else {
-        output_data <- useful::simple.impute(df) %>%
-        as.matrix() %>% 
-        t() %>% 
-        as.data.frame()       
+        output_data <- missForest::missForest(df, maxiter = 3,)$ximp
+    } else if(method == "median"){
+        output_data <- useful::simple.impute(df)     
+    } else if( method == "mean"){
+        output_data <- useful::simple.impute(df, fun = mean)
     }
     
-    colnames(output_data) <- bands
+    if(transpose){
+        output_data <- output_data %>% 
+        as.matrix() %>% 
+        t() %>% 
+        as.data.frame()
+        colnames(output_data) <- bands
+    }
+
     
     if (!is.data.frame(x)) {
         spectral_matrix <- as.matrix(df)
@@ -1081,7 +1086,7 @@ handle_empty_tile <- function(tile_raster, save_path = NULL){
 has_empty_column <- function(df){
     # chack if there are not enough data in any column for missForest
     num_na_per_col <- colSums(is.na(df))
-    all_na_column <- (num_na_per_col >= (nrow(df) - 5))
+    all_na_column <- (num_na_per_col >= (nrow(df) - 2))
 
     if(any(all_na_column)){
         return( TRUE )
@@ -1119,7 +1124,6 @@ process_tile <- function(
     suppress_output = FALSE
     ) {
     raster_obj <- raster::brick(tile_filename)
-    plot(raster_obj)
     input_crs <- raster::crs(raster_obj)
     print(paste0("preprocessing raster at ", tile_filename))
     base_df <- preprocess_raster_to_df(raster_obj, ml_model)
@@ -1145,16 +1149,28 @@ process_tile <- function(
         rm(raster_obj)
         gc()
 
-        imputed_df <- impute_spectra(base_df, method = "median")
+        cleaned_df <- drop_zero_rows(base_df)
         rm(base_df)
         gc()
 
-        # drop rows that are uniformly zero
-        cleaned_df <- drop_zero_rows(imputed_df)
-        rm(imputed_df)
+
+        imputed_df <- data.frame()
+
+        if(has_empty_column(cleaned_df)){
+            message("empty column detected, imputing row-wise")
+            imputed_df <- impute_spectra(cleaned_df, transpose=TRUE)
+        } else {
+            imputed_df <- impute_spectra(cleaned_df)
+        }
+
+        try(
+            rm(cleaned_df)
+        )# sometimes garbage collection gets there first, which is fine
         gc()
 
-        resampled_df <- resample_df(cleaned_df)
+        # drop rows that are uniformly zero
+      
+        resampled_df <- resample_df(imputed_df)
         gc()
 
         veg_indices <- get_vegetation_indices(resampled_df, ml_model, cluster = cluster)
@@ -1178,7 +1194,7 @@ process_tile <- function(
         rm(df)
         gc()
 
-        prediction <- postprocess_prediction(prediction, cleaned_df)
+        prediction <- postprocess_prediction(prediction, imputed_df_full)
         
 
         prediction <- convert_and_save_output(
@@ -2202,7 +2218,7 @@ drop_zero_rows <- function(df) {
     df_rowsums <- df %>% dplyr::relocate(y) %>% dplyr::relocate(x)
     num_cols = ncol(df)
     # return only the rows with rowsums over zero
-    return( df_rowsums[rowSums(df_rowsums[,3:num_cols], na.rm = TRUE) > 0.001, ])
+    return( df_rowsums[rowSums(df_rowsums[,3:num_cols], na.rm = TRUE) > 0.0001, ])
 }
 
 #' removes empty rows from the data.frame
