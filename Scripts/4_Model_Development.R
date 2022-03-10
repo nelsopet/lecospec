@@ -65,7 +65,8 @@ rf_mod_ranger_FncGrp2_pred<-ranger::ranger(
 
 #rf_mod_ranger_species_pred
 #rf_mod_ranger_FncGrp1_pred
-rf_mod_ranger_FncGrp1_pred$confusion.matrix
+
+write.csv(rf_mod_ranger_FncGrp1_pred$confusion.matrix, "./Output/E_003_Ranger_FncGrp1_Confusion_1000trees.csv")
 
 #rf_mod_randomforest
  # Build models using 0.99 percent cutoff for corelated varibles
