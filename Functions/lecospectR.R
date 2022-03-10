@@ -700,7 +700,7 @@ impute_spectra <- function(x, cluster = NULL, method = "missForest", transpose=F
 
     print("Imputing...")
     if (method == "missForest") {
-        output_data <- missForest::missForest(df, maxiter = 3,)$ximp
+        output_data <- missForest::missForest(df, maxiter = 1,)$ximp
     } else if(method == "median"){
         output_data <- useful::simple.impute(df)     
     } else if( method == "mean"){
@@ -1094,6 +1094,13 @@ has_empty_column <- function(df){
     return( FALSE )
 }
 
+
+drop_empty_columns <- function(df){
+    num_na_per_col <- colSums(is.na(df))
+    all_na_column <- (num_na_per_col == (nrow(df)))
+    df_no_cols <- df[, !all_na_column]
+    return(df_no_cols)
+}
 #' processes a small raster imarge
 #'
 #' processes the given image in-memory.  This assumes that the image is small enough that tiling is not required.  
@@ -1154,15 +1161,11 @@ process_tile <- function(
         gc()
 
 
-        imputed_df <- data.frame()
+        cleaned_df_no_empty_cols <- drop_empty_columns(cleaned_df)
 
-        if(has_empty_column(cleaned_df)){
-            message("empty column detected, imputing row-wise")
-            imputed_df <- impute_spectra(cleaned_df, transpose=TRUE)
-        } else {
-            imputed_df <- impute_spectra(cleaned_df)
-        }
-
+        
+        imputed_df <- impute_spectra(cleaned_df_no_empty_cols)
+    
         try(
             rm(cleaned_df)
         )# sometimes garbage collection gets there first, which is fine
@@ -1254,7 +1257,7 @@ filter_bands <- function(df) {
 #' @examples Not Yet Implmented
 preprocess_raster_to_df <- function(raster_obj, model) {
     df <- raster::rasterToPoints(raster_obj) %>% as.data.frame()
-    df <- remove_noisy_cols(df)
+    df <- remove_noisy_cols(df, max_index = 300)
     df <- filter_bands(df)
     #df <- filter_empty_points(df)
     gc()
