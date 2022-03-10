@@ -1,6 +1,6 @@
 source("./Functions/lecospectR.R")
 
-test_path <- "F:/Lecospec/Ground_Validation/BisonGulchQuads.envi"
+test_path <- "F:/Lecospec/Ground_Validation/EightMileQuads.envi"
 
 raster::raster(test_path) %>% plot()
 
