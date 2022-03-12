@@ -439,7 +439,7 @@ get_vegetation_indices <- function(
 
     if(!is.null(cluster)){
         # cluster supplied, so use parallel execution
-        doParallel::registerDoParallel(cluster)
+        doSNOW::registerDoSNOW(cluster)
         veg_indices <- foreach(
             i = seq_along(target_indices),
             .combine = cbind,
@@ -1057,7 +1057,7 @@ estimate_land_cover <- function(
         RhpcBLASctl::omp_set_num_threads(background_omp_threads)
     }
 
-    results <- merge_tiles(prediction_filenames, output_path = output_filepath)
+    results <- merge_tiles(unlist(prediction_filenames), output_path = output_filepath)
 
     raster::dataType(results) <- "INT2U"
     
@@ -1134,8 +1134,9 @@ process_tile <- function(
     input_crs <- raster::crs(raster_obj)
     print(paste0("preprocessing raster at ", tile_filename))
     base_df <- preprocess_raster_to_df(raster_obj, ml_model)
+    print("passes")
     
-    if(nrow(base_df) < 1){
+    if(nrow(base_df) < 2){
         print("The tile has no rows!")
         print(dim(base_df))
         handle_empty_tile(raster_obj, save_path = save_path)
@@ -1146,7 +1147,11 @@ process_tile <- function(
             } else {
                 return(base_df)
             } 
+
         } 
+        print(save_path)
+        return(unlist(save_path))
+        # add return value if output is suppressed
     } else {
         # this runs if and only if there is sufficient data
     
@@ -1209,7 +1214,8 @@ process_tile <- function(
         raster::crs(prediction) <- input_crs
 
         if(suppress_output){
-            return(save_path)
+            print(save_path)
+            return(unlist(save_path))
         }
         return(prediction)
     }
@@ -1257,9 +1263,19 @@ filter_bands <- function(df) {
 #' @examples Not Yet Implmented
 preprocess_raster_to_df <- function(raster_obj, model) {
     df <- raster::rasterToPoints(raster_obj) %>% as.data.frame()
-    df <- remove_noisy_cols(df, max_index = 300)
+    if(nrow(df) < 1){
+        #return df here as filtering fails later
+        return (df)
+    }
+    print("Converted to Data frame?")
+    print(is.data.frame(df))
+    df <- remove_noisy_cols(df, max_index = 300) %>% as.data.frame()
+    print("Noisy columns removed")
+    print(is.data.frame(df))
     df <- filter_bands(df)
     #df <- filter_empty_points(df)
+    print("Filtered")
+    print(is.data.frame(df))
     gc()
     return(df)
 }
