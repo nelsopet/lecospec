@@ -1,8 +1,8 @@
 require(tidyverse)
 require(compiler)
 require(raster)
-require(parallel)
-require(doParallel)
+#require(parallel)
+#require(doParallel)
 require(hsdar)
 require(spectrolab)
 require(ranger)
@@ -11,6 +11,8 @@ require(stringi)
 require(rjson)
 require(rgdal)
 require(gdalUtils)
+require(snow)
+require(doSNOW)
 
 
 #' Functions returns columns that are bandpasses
@@ -429,8 +431,6 @@ get_vegetation_indices <- function(
     cluster = NULL) {
 
     target_indices <- get_required_veg_indices(ml_model)
-    print("Calulating Vegetation Indices:")
-    print(target_indices)
     # Creates a new model built on important variables
     # Initialize variable
     veg_indices <- NULL
@@ -439,7 +439,8 @@ get_vegetation_indices <- function(
 
     if(!is.null(cluster)){
         # cluster supplied, so use parallel execution
-        doSNOW::registerDoSNOW(cluster)
+        #doSNOW::registerDoSNOW(cluster)
+        doParallel::registerDoParallel(cluster)
         veg_indices <- foreach(
             i = seq_along(target_indices),
             .combine = cbind,
@@ -955,7 +956,7 @@ estimate_land_cover <- function(
         num_cores <- config$clusterCores
     }
     # set up the parallel cluster
-    raster::beginCluster(num_cores)
+    raster::beginCluster(num_cores -1)
     cl <- raster::getCluster()
     print(cl)
 
@@ -983,14 +984,14 @@ estimate_land_cover <- function(
     num_tiles_y <- config$y_tiles
 
     if(config$automatic_tiling){
-        num_tiles_x <- calc_num_tiles(input_filepath)
-        num_tiles_y <- calc_num_tiles(input_filepath)
+        num_tiles_x <- calc_num_tiles(input_filepath, max_size = config$max_size)
+        num_tiles_y <- calc_num_tiles(input_filepath, max_size = config$max_size)
     }
 
     tile_filenames <- make_tiles(
         input_raster,
-        num_x = config$x_tiles,
-        num_y = config$y_tiles,
+        num_x = num_tiles_x,
+        num_y = num_tiles_y,
         save_path = config$tile_path,
         cluster = cl,
         verbose = FALSE
@@ -1007,15 +1008,17 @@ estimate_land_cover <- function(
     }) %>% as.vector()
 
     # initialize the variable for the tilewise results
-    tile_results <- NULL
+    tile_results <- vector("list", length = length(tile_filenames))
     #edge artifacts?
     if(config$parallelize_by_tiles){
-        doSNOW::registerDoSNOW(cl)
+        #doSNOW::registerDoSNOW(cl)
+        doParallel::registerDoParallel(cl)
         tile_results <- foreach::foreach(
             i = seq_along(tile_filenames),
             .export = as.vector(ls(.GlobalEnv))
         ) %dopar% {
-            tile_results = unlist(process_tile(
+            gc()
+            process_tile(
                 tile_filename = tile_filenames[[i]],
                 ml_model = model, 
                 aggregation = config$aggregation,
@@ -1023,15 +1026,15 @@ estimate_land_cover <- function(
                 return_raster = TRUE,
                 return_filename = TRUE,
                 save_path = prediction_filenames[[i]],
-                suppress_output = TRUE))
-            gc()#garbage collect between iterations
+                suppress_output = TRUE)
         }
     } else {
         tile_results <- foreach::foreach(
             i=seq_along(tile_filenames), 
             .export = c("model", "cl")
         ) %do% {
-           tile_results = unlist(process_tile(
+            gc()
+            process_tile(
                 tile_filename = tile_filenames[[i]],
                 ml_model = model, 
                 aggregation = config$aggregation,
@@ -1039,8 +1042,7 @@ estimate_land_cover <- function(
                 return_raster = TRUE,
                 return_filename = TRUE,
                 save_path = prediction_filenames[[i]],
-                suppress_output = TRUE))
-            gc()
+                suppress_output = TRUE)
         }
     }
     gc() #clean up
@@ -1057,7 +1059,7 @@ estimate_land_cover <- function(
         RhpcBLASctl::omp_set_num_threads(background_omp_threads)
     }
 
-    results <- merge_tiles(unlist(prediction_filenames), output_path = output_filepath)
+    results <- merge_tiles(prediction_filenames, output_path = output_filepath)
 
     raster::dataType(results) <- "INT2U"
     
@@ -2275,8 +2277,8 @@ merge_tiles_gdal <- function(
 #' @seealso None
 #' @export 
 #' @examples Not Yet Implmented
-calc_num_tiles <- function(file_path, max_size = 128){
-    file_size <- file.info(file_path)$size
+calc_num_tiles <- function(file_path, max_size = 1024){
+    file_size <- file.info(file_path)$size / (1024 * 1024)
     tile_size <- file_size / max_size
     num_xy <- ceiling(sqrt(tile_size))
     return(num_xy)
