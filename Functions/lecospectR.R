@@ -1007,9 +1007,6 @@ estimate_land_cover <- function(
             return(.convert_tile_filename(tile_filename))
     }) %>% as.vector()
 
-    print(tile_filenames)
-    print(prediction_filenames)
-
     # initialize the variable for the tilewise results
     tile_results <- vector("list", length = length(tile_filenames))
     #edge artifacts?
