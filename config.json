@@ -1,9 +1,9 @@
 {
     "automatic_tiling": false,
     "max_size": 1024,
-    "x_tiles": 2,
-    "y_tiles": 2,
-    "tile_path": "./tiles/",
+    "x_tiles": 10,
+    "y_tiles": 10,
+    "tile_path": "F:/Lecospec/tiles/",
     "model_path": "./Output/E_003_Pred_Model_RandomForest_FncGrp1_1000trees.rda",
     "clusterCores": null,
     "parallelize_by_tiles": false,

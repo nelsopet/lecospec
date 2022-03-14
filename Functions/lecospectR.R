@@ -1,8 +1,8 @@
 require(tidyverse)
 require(compiler)
 require(raster)
-require(parallel)
-require(doParallel)
+#require(parallel)
+#require(doParallel)
 require(hsdar)
 require(spectrolab)
 require(ranger)
@@ -11,6 +11,8 @@ require(stringi)
 require(rjson)
 require(rgdal)
 require(gdalUtils)
+require(snow)
+require(doSNOW)
 
 
 #' Functions returns columns that are bandpasses
@@ -429,8 +431,6 @@ get_vegetation_indices <- function(
     cluster = NULL) {
 
     target_indices <- get_required_veg_indices(ml_model)
-    print("Calulating Vegetation Indices:")
-    print(target_indices)
     # Creates a new model built on important variables
     # Initialize variable
     veg_indices <- NULL
@@ -1007,7 +1007,7 @@ estimate_land_cover <- function(
     }) %>% as.vector()
 
     # initialize the variable for the tilewise results
-    tile_results <- NULL
+    tile_results <- vector("list", length = length(tile_filenames))
     #edge artifacts?
     if(config$parallelize_by_tiles){
         doSNOW::registerDoSNOW(cl)
@@ -1015,7 +1015,8 @@ estimate_land_cover <- function(
             i = seq_along(tile_filenames),
             .export = as.vector(ls(.GlobalEnv))
         ) %dopar% {
-            tile_results = unlist(process_tile(
+            gc()
+            process_tile(
                 tile_filename = tile_filenames[[i]],
                 ml_model = model, 
                 aggregation = config$aggregation,
@@ -1023,15 +1024,15 @@ estimate_land_cover <- function(
                 return_raster = TRUE,
                 return_filename = TRUE,
                 save_path = prediction_filenames[[i]],
-                suppress_output = TRUE))
-            gc()#garbage collect between iterations
+                suppress_output = TRUE)
         }
     } else {
         tile_results <- foreach::foreach(
             i=seq_along(tile_filenames), 
             .export = c("model", "cl")
         ) %do% {
-           tile_results = unlist(process_tile(
+            gc()
+            process_tile(
                 tile_filename = tile_filenames[[i]],
                 ml_model = model, 
                 aggregation = config$aggregation,
@@ -1039,8 +1040,7 @@ estimate_land_cover <- function(
                 return_raster = TRUE,
                 return_filename = TRUE,
                 save_path = prediction_filenames[[i]],
-                suppress_output = TRUE))
-            gc()
+                suppress_output = TRUE)
         }
     }
     gc() #clean up
@@ -1057,7 +1057,7 @@ estimate_land_cover <- function(
         RhpcBLASctl::omp_set_num_threads(background_omp_threads)
     }
 
-    results <- merge_tiles(unlist(prediction_filenames), output_path = output_filepath)
+    results <- merge_tiles(prediction_filenames, output_path = output_filepath)
 
     raster::dataType(results) <- "INT2U"
     
