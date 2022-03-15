@@ -1,12 +1,13 @@
 source("./Functions/lecospectR.R")
 
-test_path <- "F:/Lecospec/Ground_Validation/TwelveMileGulchQuads1.envi"
+test_path <- "F:/Lecospec/Ground_Validation/BisonGulchQuads.envi"
 
 raster::raster(test_path) %>% plot()
 
 test_path_2 <- "F:/Lecospec/tiles/tile_GTM72GyUTkf3hMsm.grd"
 model_path <- "C:/Users/kenne/Documents/GitHub/lecospec/Output/E_003_Pred_Model_RandomForest_FncGrp1_1000trees.rda"
 big_test <- "F:/DataCubes/raw_1511_rd_rf_or"
+medium_test <- "./Data/SubsetDatacube"
 
 print(date())
 quad_results <- estimate_land_cover(
@@ -23,6 +24,12 @@ png("./test_results_BG.png")
 barplot(quad_results)
 dev.off()
 raster::dataType(quad_results)
+
+medium_results  <- estimate_land_cover(
+    medium_test,
+    output_filepath = "./Outputs/subset_predictions.grd",
+    use_external_bands = TRUE)
+print(date())
 
 big_results <- estimate_land_cover(
     big_test,
