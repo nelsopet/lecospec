@@ -1180,7 +1180,7 @@ process_tile <- function(
         cleaned_df_no_empty_cols <- drop_empty_columns(cleaned_df)
 
         
-        imputed_df <- impute_spectra(cleaned_df_no_empty_cols)
+        imputed_df <- impute_spectra(cleaned_df_no_empty_cols, cluster = cluster)
     
         try(
             rm(cleaned_df)
