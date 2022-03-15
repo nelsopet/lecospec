@@ -950,18 +950,19 @@ estimate_land_cover <- function(
     config <- rjson::fromJSON(file = config_path)
 
     # determine the number of cores to use
-    num_cores <- parallel::detectCores() #detect cores on system
+    num_cores <- parallel::detectCores() - 1#detect cores on system
     # see if the number of cores to use is specified in the config
     if(is.integer(config$clusterCores)){
         num_cores <- config$clusterCores
     }
     # set up the parallel cluster
-    raster::beginCluster(num_cores -1)
+    raster::beginCluster(num_cores)
     cl <- raster::getCluster()
     print(cl)
 
 
-    print(paste0(num_cores, " Cores Detected for processing..."))
+    print(paste0(parallel::detectCores(), " Cores Detected for processing..."))
+    print(paste0("Cluster initialized with ", num_cores, " processes"))
     background_blas_threads <- RhpcBLASctl::get_num_procs()
     background_omp_threads <- RhpcBLASctl::omp_get_max_threads()
 
@@ -1010,6 +1011,11 @@ estimate_land_cover <- function(
     # initialize the variable for the tilewise results
     tile_results <- vector("list", length = length(tile_filenames))
     #edge artifacts?
+
+
+
+
+
     if(config$parallelize_by_tiles){
         #doSNOW::registerDoSNOW(cl)
         doParallel::registerDoParallel(cl)
@@ -1018,7 +1024,8 @@ estimate_land_cover <- function(
             .export = as.vector(ls(.GlobalEnv))
         ) %dopar% {
             gc()
-            process_tile(
+            sink(get_log_filename(tile_filenames[[i]]))
+            tile_result <- process_tile(
                 tile_filename = tile_filenames[[i]],
                 ml_model = model, 
                 aggregation = config$aggregation,
@@ -1027,6 +1034,8 @@ estimate_land_cover <- function(
                 return_filename = TRUE,
                 save_path = prediction_filenames[[i]],
                 suppress_output = TRUE)
+            sink(NULL)
+            return(tile_result)
         }
     } else {
         tile_results <- foreach::foreach(
@@ -1034,7 +1043,8 @@ estimate_land_cover <- function(
             .export = c("model", "cl")
         ) %do% {
             gc()
-            process_tile(
+            sink(get_log_filename(tile_filenames[[i]]))
+            tile_result <- process_tile(
                 tile_filename = tile_filenames[[i]],
                 ml_model = model, 
                 aggregation = config$aggregation,
@@ -1044,6 +1054,8 @@ estimate_land_cover <- function(
                 save_path = prediction_filenames[[i]],
                 suppress_output = TRUE)
         }
+        sink(NULL)
+        return(tile_result)
     }
     gc() #clean up
 
@@ -1062,9 +1074,6 @@ estimate_land_cover <- function(
     results <- merge_tiles(prediction_filenames, output_path = output_filepath)
 
     raster::dataType(results) <- "INT2U"
-    
-    # stop writing terminal output to the log file
-    sink(NULL)
 
     return(results)
 }
@@ -2327,3 +2336,69 @@ project_to_epsg <- function(raster_obj, epsg_code, categorical_raster = FALSE){
     return(raster::projectRaster(raster_obj, target_crs))
 }
 
+build_adjacency_list <- function(filepath) {
+    df <- read.csv(filepath, header = TRUE)
+    num_rows <- nrow(df)
+    num_levels <- ncol(df)
+    adjacency_list <- list()
+
+    for(i in seq.int(num_rows)){
+        for( j in seq.int(num_levels)){
+            counter <- 0
+            key <- df[[i,j]]
+            values <- vector(mode = "any", length = num_levels)
+            while(counter <= num_levels){
+                if(counter < j){
+                    values[[counter]] <- NA
+                } else {
+                    values[[counter]] <- df[[i, counter]]
+                }
+                counter <- counter + 1
+            }
+            adjacency_list[[key]] <- values
+        }
+    }
+
+    return(adjacency_list)
+}
+
+enum_pfts <- function(pft){
+    if(pft == 1){
+        return("Functional_Group1")
+    } else if(pft == 2){
+        return("Functional_Group2")
+    } else if(pft == 3){
+        return("Genus")
+    } else if(pft == 4){
+        return("Species")
+    } else if(pft == "Functional_Group1"){
+        return(1)
+    } else if(pft == "Functional_Group2"){
+        return(2)
+    } else if( pft == "Genus"){
+        return(3)
+    } else if( pft == "Species"){
+        return(4)
+    }
+}
+
+# Note to self: use R JSON to save and load adjacency list
+# write a function that uses the list and the value to get new value
+# then an lapply to the df column to create new level column
+# then assemble into a convenient wrapper
+
+# should take predictions file and map it to target type as a data frame
+
+# then aggregate the df
+# score against hand-labeled data.
+
+get_log_filename <- function(tile_path) {
+    return( 
+        new_filename <- gsub(
+            ".grd",
+            ".log", 
+            c(tile_path),
+            fixed = TRUE
+            )[[1]]
+    )
+}
