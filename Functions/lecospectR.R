@@ -251,7 +251,8 @@ resample_df <- function(df) {
     spec_library <- df_to_speclib(df, type="spectrolab")
     speclib_resampled <- spectrolab::resample(
         spec_library,
-        seq(397.593,899.424,5)
+        seq(397.593,899.424,5),
+        parallel = FALSE
     ) 
     
     df_resampled <- speclib_to_df(speclib_resampled) %>% dplyr::select(-sample_name)
@@ -1053,9 +1054,9 @@ estimate_land_cover <- function(
                 return_filename = TRUE,
                 save_path = prediction_filenames[[i]],
                 suppress_output = TRUE)
-        }
         sink(NULL)
         return(tile_result)
+        }
     }
     gc() #clean up
 
