@@ -251,7 +251,8 @@ resample_df <- function(df) {
     spec_library <- df_to_speclib(df, type="spectrolab")
     speclib_resampled <- spectrolab::resample(
         spec_library,
-        seq(397.593,899.424,5)
+        seq(397.593,899.424,5),
+        parallel = FALSE
     ) 
     
     df_resampled <- speclib_to_df(speclib_resampled) %>% dplyr::select(-sample_name)
@@ -975,6 +976,13 @@ estimate_land_cover <- function(
 
     # load the input datacube and split into tiles
     input_raster <- raster::brick(input_filepath)
+    input_crs <- raster::crs(input_raster)
+    input_extent <- raster::extent(input_raster)
+
+    if(is.na(input_crs)){
+        warning("The input raster does not have a CRS specified.")
+    }
+
     if(use_external_bands){
         band_count <- raster::nlayers(input_raster)
         bandnames <- read.csv(config$external_bands)$x[1:band_count] %>% as.vector()
@@ -1053,9 +1061,9 @@ estimate_land_cover <- function(
                 return_filename = TRUE,
                 save_path = prediction_filenames[[i]],
                 suppress_output = TRUE)
-        }
         sink(NULL)
         return(tile_result)
+        }
     }
     gc() #clean up
 
@@ -1078,13 +1086,17 @@ estimate_land_cover <- function(
     return(results)
 }
 
-handle_empty_tile <- function(tile_raster, save_path = NULL){
+handle_empty_tile <- function(tile_raster, save_path = NULL, target_crs = NULL){
 
     # convert to a raster
     output_raster <- raster::raster(
         tile_raster,
         layer=0
     )
+    if(!is.null(target_crs)){
+        raster::crs(output_raster) <- target_crs
+    }
+
     names(output_raster) <- c("predictions")
     raster::dataType(output_raster) <- "INT2U"
     if(!is.null(save_path)){
@@ -1145,12 +1157,15 @@ process_tile <- function(
     input_crs <- raster::crs(raster_obj)
     print(paste0("preprocessing raster at ", tile_filename))
     base_df <- preprocess_raster_to_df(raster_obj, ml_model)
-    print("passes")
+    print(input_crs)
     
     if(nrow(base_df) < 2){
         print("The tile has no rows!")
         print(dim(base_df))
-        handle_empty_tile(raster_obj, save_path = save_path)
+        handle_empty_tile(
+            raster_obj,
+            save_path = save_path,
+            target_crs = input_crs)
 
         if(!suppress_output){
             if(return_raster){
@@ -1220,7 +1235,8 @@ process_tile <- function(
             prediction,
             aggregation,
             save_path = save_path,
-            return_raster = return_raster)
+            return_raster = return_raster,
+            target_crs = input_crs)
         
         raster::crs(prediction) <- input_crs
 
@@ -1488,11 +1504,9 @@ merge_tiles <- function(input_files, output_path = NULL, target_layer = 1) {
         new_raster <- raster::raster(input_file)
         raster::dataType(new_raster) <- "INT2U"
         # above is robust against multi-layer images
-        master_raster <- raster::merge(
+        master_raster <- safe_merge(
             master_raster,
-            new_raster,
-            datatype='INT2U',
-            tolerance = 0.5
+            new_raster
         )
     }
     if(!is.null(output_path)) {
@@ -2158,13 +2172,16 @@ update_filename <- function(prefix){
 #' @seealso None
 #' @export 
 #' @examples Not Yet Implmented
-convert_and_save_output <- function(df, aggregation_level, save_path = NULL, return_raster = TRUE ){
+convert_and_save_output <- function(df, aggregation_level, save_path = NULL, return_raster = TRUE, target_crs = NULL ){
         prediction <- convert_pft_codes(df, aggregation_level = aggregation_level, to = "int")
         print(paste0("Attempting to save to ", save_path))
         if(return_raster){
             prediction <- raster::rasterFromXYZ(prediction)
             print("Converted to Raster")
             raster::dataType(prediction) <- "INT2U" # set to int datatype (unsigned int // 2 bytes)
+            if(!is.null(target_crs)){
+                raster::crs(prediction) <- target_crs
+            }
         if(!is.null(save_path)){
                 raster::writeRaster(prediction, filename = save_path, datatype='INT2U', overwrite = TRUE)
             } 
@@ -2400,5 +2417,19 @@ get_log_filename <- function(tile_path) {
             c(tile_path),
             fixed = TRUE
             )[[1]]
+    )
+}
+
+safe_merge <- function(raster_one, raster_two, target_crs = NULL){
+    template <- raster::projectRaster(from = raster_two, to= raster_one, alignOnly=TRUE)
+    #template is an empty raster that has the projected extent of r2 but is aligned with r1 (i.e. same resolution, origin, and crs of r1)
+    r2_aligned <- raster::projectRaster(from = raster_two, to= template)
+    return( 
+        raster::merge(
+            raster_one, 
+            raster_two,
+            datatype='INT2U',
+            tolerance = 0.5
+        ) 
     )
 }
