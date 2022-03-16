@@ -36,3 +36,11 @@ Revisit after integration test and accuracy assessment.
 
 
 use chi-squared test for validation
+
+
+Use this for the merges:
+template<- projectRaster(from = r2, to= r1, alignOnly=TRUE)
+#template is an empty raster that has the projected extent of r2 but is aligned with r1 (i.e. same resolution, origin, and crs of r1)
+r2_aligned<- projectRaster(from = r2, to= template)
+r_merged<- merge(r1,r2) 
+r_merged2<- mosaic(r1,r2, fun=mean, na.rm=TRUE)
