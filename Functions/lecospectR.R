@@ -1047,8 +1047,7 @@ estimate_land_cover <- function(
         }
     } else {
         tile_results <- foreach::foreach(
-            i=seq_along(tile_filenames), 
-            .export = c("model", "cl")
+            i=seq_along(tile_filenames)
         ) %do% {
             gc()
             sink(get_log_filename(tile_filenames[[i]]))
@@ -1087,12 +1086,9 @@ estimate_land_cover <- function(
 }
 
 handle_empty_tile <- function(tile_raster, save_path = NULL, target_crs = NULL){
-
     # convert to a raster
-    output_raster <- raster::raster(
-        tile_raster,
-        layer=0
-    )
+    output_raster <- tile_raster[[1]]
+    
     if(!is.null(target_crs)){
         raster::crs(output_raster) <- target_crs
     }
@@ -1103,6 +1099,11 @@ handle_empty_tile <- function(tile_raster, save_path = NULL, target_crs = NULL){
         raster::writeRaster(output_raster, save_path, datatype = "INT2U")
         
     }
+
+    print("Empty Input Raster")
+    print(tile_raster)
+    print("Output Raster")
+    print(output_raster)
     return(output_raster)
 }
 
@@ -2427,7 +2428,7 @@ safe_merge <- function(raster_one, raster_two, target_crs = NULL){
     return( 
         raster::merge(
             raster_one, 
-            raster_two,
+            r2_aligned,
             datatype='INT2U',
             tolerance = 0.5
         ) 
