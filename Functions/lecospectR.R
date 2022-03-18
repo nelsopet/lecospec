@@ -1097,9 +1097,10 @@ handle_empty_tile <- function(tile_raster, save_path = NULL, target_crs = NULL){
     raster::dataType(output_raster) <- "INT2U"
     if(!is.null(save_path)){
         raster::writeRaster(output_raster, save_path, datatype = "INT2U")
-        
     }
 
+    
+      
     print("Empty Input Raster")
     print(tile_raster)
     print("Output Raster")
@@ -1290,6 +1291,9 @@ filter_bands <- function(df) {
 #' @export 
 #' @examples Not Yet Implmented
 preprocess_raster_to_df <- function(raster_obj, model) {
+  if(mean(values(raster_obj))==0){
+    return(data.frame())
+  }
     df <- raster::rasterToPoints(raster_obj) %>% as.data.frame()
     if(nrow(df) < 1){
         #return df here as filtering fails later
