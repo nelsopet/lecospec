@@ -2430,7 +2430,6 @@ safe_merge <- function(raster_one, raster_two, target_crs = NULL){
             raster_one, 
             r2_aligned,
             datatype='INT2U',
-            tolerance = 0.5
-        ) 
+            tolerance = 1.0        ) 
     )
 }
