@@ -2404,6 +2404,23 @@ enum_pfts <- function(pft){
     }
 }
 
+change_aggregation <- function(prediction_vec, aggregation_level, aggregation_key){
+    updated_predictions <- vector("list", length=length(prediction_vec))
+    for(i in seq_along(prediction_vec)){
+        prediction <- prediction_vec[[i]]
+        updated_predictions[[i]] <- aggregation_key[[prediction]][[aggregation_level]]
+    }
+
+    return(updated_predictions)
+}
+
+get_prediction_distribution <- function(prediction_vec){
+    num_observations <- length(prediction_vec)
+    df <- as.data.frame(table(prediction_vec))
+    df$distrution <- df$freq / num_observations
+    return(df)
+}
+
 # Note to self: use R JSON to save and load adjacency list
 # write a function that uses the list and the value to get new value
 # then an lapply to the df column to create new level column
@@ -2424,6 +2441,9 @@ get_log_filename <- function(tile_path) {
             )[[1]]
     )
 }
+
+
+
 
 safe_merge <- function(raster_one, raster_two, target_crs = NULL){
     template <- raster::projectRaster(from = raster_two, to= raster_one, alignOnly=TRUE)
