@@ -2155,11 +2155,11 @@ convert_pft_codes <- function(df, aggregation_level, to="int"){
     )
 
     # split by conversion type, then use the appropriate function based on the aggregation level
-    if( to == "int" || to =="Int" || to == "integer"){
+    if( to == "int" | to =="Int" | to == "integer"){
         result <- to_int[[aggregation_level]](df)
         #result$z <- as.integer(result$z)
         return( result )
-    } else if( to == "string" || to == "String") {
+    } else if( to == "string" | to == "String") {
         return( to_string[[aggregation_level]](df) )
     } else {
         # catch invalid 'to' parameter
@@ -2200,11 +2200,11 @@ update_filename <- function(prefix){
 #' @seealso None
 #' @export 
 #' @examples Not Yet Implmented
-convert_and_save_output <- function(df, aggregation_level, save_path = NULL, return_raster = TRUE, target_crs = NULL ){
+convert_and_save_output <- function(df, aggregation_level, save_path = NULL, return_raster = TRUE, target_crs = NULL){
         prediction <- convert_pft_codes(df, aggregation_level = aggregation_level, to = "int")
         print(paste0("Attempting to save to ", save_path))
         if(return_raster){
-            prediction <- raster::rasterFromXYZ(prediction)
+            prediction <- raster::rasterFromXYZ(prediction, digits=4)
             print("Converted to Raster")
             raster::dataType(prediction) <- "INT2U" # set to int datatype (unsigned int // 2 bytes)
             if(!is.null(target_crs)){
