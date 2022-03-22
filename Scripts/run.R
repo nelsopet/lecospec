@@ -2,7 +2,7 @@ source("./Functions/lecospectR.R")
 
 test_path <- "./Data/Ground_Validation/BisonGulchQuads.envi"
 
-raster::raster(test_path) %>% plot()
+#raster::raster(test_path) %>% plot()
 
 test_path_2 <- "F:/Lecospec/tiles/tile_GTM72GyUTkf3hMsm.grd"
 model_path <- "C:/Users/kenne/Documents/GitHub/lecospec/Output/E_003_Pred_Model_RandomForest_FncGrp1_1000trees.rda"
