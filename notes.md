@@ -13,6 +13,9 @@
 Revisit after integration test and accuracy assessment.
 
 
+## See raster::approxNA()
+
+
 ## Student Projects
 * Data labeling app for validation ()
 * GPU processing of pipeline
@@ -44,3 +47,17 @@ template<- projectRaster(from = r2, to= r1, alignOnly=TRUE)
 r2_aligned<- projectRaster(from = r2, to= template)
 r_merged<- merge(r1,r2) 
 r_merged2<- mosaic(r1,r2, fun=mean, na.rm=TRUE)
+
+
+preprocess_raster_to_df <- function(raster_obj, model) {
+  if(is.na(mean(values(raster_obj),na.rm=TRUE)))
+  {return (data.frame())}
+   
+  if(mean(values(raster_obj), na.rm=TRUE)==0){
+    return(data.frame())
+  }
+    df <- raster::rasterToPoints(raster_obj) %>% as.data.frame()
+    if(nrow(df) < 1){
+        #return df here as filtering fails later
+        return (df)
+    }

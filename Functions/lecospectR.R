@@ -771,7 +771,7 @@ make_tiles <- function(
 
     get_random_filename <- function() {
         random_tile_id <- stringi::stri_rand_strings(1,16)
-        random_filename <- paste0("tile_", random_tile_id, ".grd")
+        random_filename <- paste0("tile_", random_tile_id, ".tif")
         return(random_filename)
     }
 
@@ -983,6 +983,8 @@ estimate_land_cover <- function(
         warning("The input raster does not have a CRS specified.")
     }
 
+    # save the band names since they will be lost now that we are using .tif tiles 
+    bandnames <- names(input_raster)
     if(use_external_bands){
         band_count <- raster::nlayers(input_raster)
         bandnames <- read.csv(config$external_bands)$x[1:band_count] %>% as.vector()
@@ -1039,6 +1041,7 @@ estimate_land_cover <- function(
                 aggregation = config$aggregation,
                 cluster = NULL,
                 return_raster = TRUE,
+                names = bandnames,
                 return_filename = TRUE,
                 save_path = prediction_filenames[[i]],
                 suppress_output = TRUE)
@@ -1057,6 +1060,7 @@ estimate_land_cover <- function(
                 aggregation = config$aggregation,
                 cluster = cl,
                 return_raster = TRUE,
+                names = bandnames,
                 return_filename = TRUE,
                 save_path = prediction_filenames[[i]],
                 suppress_output = TRUE)
@@ -1088,6 +1092,7 @@ estimate_land_cover <- function(
 handle_empty_tile <- function(tile_raster, save_path = NULL, target_crs = NULL){
     # convert to a raster
     output_raster <- tile_raster[[1]]
+
     
     if(!is.null(target_crs)){
         raster::crs(output_raster) <- target_crs
@@ -1095,6 +1100,8 @@ handle_empty_tile <- function(tile_raster, save_path = NULL, target_crs = NULL){
 
     names(output_raster) <- c("predictions")
     raster::dataType(output_raster) <- "INT2U"
+    
+    print(raster::NAvalue(output_raster))
     if(!is.null(save_path)){
         raster::writeRaster(output_raster, save_path, datatype = "INT2U")
     }
@@ -1151,6 +1158,7 @@ process_tile <- function(
     aggregation,
     cluster = NULL,
     return_raster = TRUE,
+    names=NULL,
     return_filename = FALSE,
     save_path = NULL,
     suppress_output = FALSE
@@ -1158,7 +1166,7 @@ process_tile <- function(
     raster_obj <- raster::brick(tile_filename)
     input_crs <- raster::crs(raster_obj)
     print(paste0("preprocessing raster at ", tile_filename))
-    base_df <- preprocess_raster_to_df(raster_obj, ml_model)
+    base_df <- preprocess_raster_to_df(raster_obj, ml_model, names=names)
     print(input_crs)
     
     if(nrow(base_df) < 2){
@@ -1290,10 +1298,24 @@ filter_bands <- function(df) {
 #' @seealso None
 #' @export 
 #' @examples Not Yet Implmented
-preprocess_raster_to_df <- function(raster_obj, model) {
-  if(mean(values(raster_obj))==0){
-    return(data.frame())
-  }
+preprocess_raster_to_df <- function(raster_obj, model, names=NULL) {
+
+    #unique_levels <- unique(raster::values(raster_obj))
+    #mean_of_levels <- mean(unique_levels, na.rm = TRUE)
+
+    filter_value <- mean(raster::values(raster_obj), na.rm = TRUE)# NA or 0 is bad
+
+    if( filter_value == 0 | is.na(filter_value)){
+        return(data.frame())
+    }
+
+    if(!is.null(names)){
+        #try assigning the names to the bands (ignoring extras)
+        try({
+            names(raster_obj) <- names[1:length(names(raster_obj))]
+        })
+    }
+
     df <- raster::rasterToPoints(raster_obj) %>% as.data.frame()
     if(nrow(df) < 1){
         #return df here as filtering fails later
@@ -1366,6 +1388,7 @@ preprocess_raster_to_parquet <- function(
 #' @export 
 #' @examples Not Yet Implmented
 convert_wavelength_strings <- function(wavelengths) {
+    print(wavelengths)
     ncharacters <- nchar(wavelengths)
     corrected_values <- numeric(length = length(wavelengths))
     for (w in seq_along(wavelengths)){
@@ -2434,7 +2457,7 @@ get_prediction_distribution <- function(prediction_vec){
 get_log_filename <- function(tile_path) {
     return( 
         new_filename <- gsub(
-            ".grd",
+            ".tif",
             ".log", 
             c(tile_path),
             fixed = TRUE
