@@ -61,3 +61,10 @@ preprocess_raster_to_df <- function(raster_obj, model) {
         #return df here as filtering fails later
         return (df)
     }
+
+
+
+## Timing
+* 7 minutes for BG Quads with filter step
+* 4 minutes for BG Quads without filter step
+* less than 1 minute as a block (process_tile) with sampling instead of raster::values()

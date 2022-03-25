@@ -1,8 +1,8 @@
 {
     "automatic_tiling": false,
     "max_size": 200,
-    "x_tiles": 3,
-    "y_tiles": 4,
+    "x_tiles": 2,
+    "y_tiles": 2,
     "tile_path": "./tiles/",
     "model_path": "./Output/E_003_Pred_Model_RandomForest_FncGrp1_1000trees.rda",
     "clusterCores": 4,

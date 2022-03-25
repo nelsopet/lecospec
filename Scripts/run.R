@@ -4,7 +4,7 @@ test_path <- "./Data/Ground_Validation/BisonGulchQuads.envi"
 
 #raster::raster(test_path) %>% plot()
 
-test_path_2 <- "F:/Lecospec/tiles/tile_GTM72GyUTkf3hMsm.grd"
+test_path_2 <- "tiles/tile_CpDHDDdNOXTuX0G4.tif"
 model_path <- "C:/Users/kenne/Documents/GitHub/lecospec/Output/E_003_Pred_Model_RandomForest_FncGrp1_1000trees.rda"
 big_test <- "F:/DataCubes/raw_1511_rd_rf_or"
 medium_test <- "./Data/SubsetDatacube"
@@ -14,6 +14,7 @@ quad_results <- estimate_land_cover(
     test_path, 
     output_filepath = "./Output/em_outputs_m.grd",
     use_external_bands = TRUE)
+closeAllConnections()
 print(date())
 
 print(quad_results)
@@ -44,17 +45,24 @@ dev.off()
 ml_model <- load_model(model_path)
 print(ml_model$forest$independent.variable.names)
 
+# load bands
+bandnames <- read.csv("./bands.csv")$x %>% as.vector()
+
 cl <- raster::beginCluster()#this is actually quite slow, believe it or not
 
 print(date())
-tile_results <- process_tile(
-    test_path_2, 
-    ml_model, 
-    1,
-    cluster = cl, 
-    return_raster = TRUE, 
-    save_path = "./test_raster_save.grd", 
-    suppress_output = FALSE)
+profvis::profvis(
+    tile_results <- process_tile(
+        tif_test, 
+        ml_model, 
+        1,
+        cluster = NULL, 
+        return_raster = TRUE, 
+        names = bandnames,
+        save_path = "./test_raster_save.grd", 
+        suppress_output = FALSE),
+    interval = 0.01
+)
 print(date())
 
 plot(tile_results)
@@ -92,3 +100,20 @@ test_df <- raster::rasterToPoints(test)
 has_empty_column(test_df)
 
 summary(test_df)
+
+print(date())
+mean(raster::values(raster::brick(test_path)), na.rm = TRUE)
+print(date())
+
+
+## convert the BG Quads to .tif format
+
+tif_test <- "./Data/BisonGulchQuads.tif"
+
+raster::writeRaster(
+    raster::brick(test_path),
+    tif_test,
+    "GTiff"
+)
+
+raster::writeFormats()

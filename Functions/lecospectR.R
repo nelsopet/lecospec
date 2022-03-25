@@ -771,7 +771,7 @@ make_tiles <- function(
 
     get_random_filename <- function() {
         random_tile_id <- stringi::stri_rand_strings(1,16)
-        random_filename <- paste0("tile_", random_tile_id, ".tif")
+        random_filename <- paste0("tile_", random_tile_id, ".envi")
         return(random_filename)
     }
 
@@ -940,7 +940,7 @@ estimate_land_cover <- function(
     input_filepath,
     config_path = "./config.json",
     cache_filepath = "./",
-    output_filepath =  paste("output-",format(Sys.time(), "%a-%b-%d-%H-%M-%S-%Y"), ".tif", sep=""),
+    output_filepath =  paste("output-",format(Sys.time(), "%a-%b-%d-%H-%M-%S-%Y"), ".envi", sep=""),
     use_external_bands = FALSE
 ) {
 
@@ -983,7 +983,7 @@ estimate_land_cover <- function(
         warning("The input raster does not have a CRS specified.")
     }
 
-    # save the band names since they will be lost now that we are using .tif tiles 
+    # save the band names since they will be lost now that we are using .envi tiles 
     bandnames <- names(input_raster)
     if(use_external_bands){
         band_count <- raster::nlayers(input_raster)
@@ -2457,7 +2457,7 @@ get_prediction_distribution <- function(prediction_vec){
 get_log_filename <- function(tile_path) {
     return( 
         new_filename <- gsub(
-            ".tif",
+            ".envi",
             ".log", 
             c(tile_path),
             fixed = TRUE
