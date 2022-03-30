@@ -53,7 +53,7 @@ cl <- raster::beginCluster()#this is actually quite slow, believe it or not
 print(date())
 profvis::profvis(
     tile_results <- process_tile(
-        tif_test, 
+        test_path, 
         ml_model, 
         1,
         cluster = NULL, 

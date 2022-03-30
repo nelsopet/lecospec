@@ -2389,9 +2389,9 @@ build_adjacency_list <- function(filepath) {
 
     for(i in seq.int(num_rows)){
         for( j in seq.int(num_levels)){
-            counter <- 0
+            counter <- 1
             key <- df[[i,j]]
-            values <- vector(mode = "any", length = num_levels)
+            values <- vector(mode = "numeric", length = num_levels)
             while(counter <= num_levels){
                 if(counter < j){
                     values[[counter]] <- NA
@@ -2440,9 +2440,14 @@ change_aggregation <- function(prediction_vec, aggregation_level, aggregation_ke
 get_prediction_distribution <- function(prediction_vec){
     num_observations <- length(prediction_vec)
     df <- as.data.frame(table(prediction_vec))
-    df$distrution <- df$freq / num_observations
+    df$distrution <- df$Freq / num_observations
     return(df)
 }
+
+separate_quadrats <- function(prediction_ras){
+
+}
+
 
 # Note to self: use R JSON to save and load adjacency list
 # write a function that uses the list and the value to get new value
@@ -2480,3 +2485,13 @@ safe_merge <- function(raster_one, raster_two, target_crs = NULL){
             tolerance = 1.0        ) 
     )
 }
+
+validate_results <- function(
+    prediction_ras, 
+    quadrat_shapefile, 
+    validation_table,
+    pft_key,
+    aggregation_level = 1
+ ) {
+    
+ }
