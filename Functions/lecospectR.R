@@ -1023,6 +1023,7 @@ estimate_land_cover <- function(
     #edge artifacts?
 
 
+    # exports <- c()
 
 
 
@@ -2427,6 +2428,7 @@ enum_pfts <- function(pft){
     }
 }
 
+# changes aggregation level
 change_aggregation <- function(prediction_vec, aggregation_level, aggregation_key){
     updated_predictions <- vector("list", length=length(prediction_vec))
     for(i in seq_along(prediction_vec)){
@@ -2458,7 +2460,6 @@ separate_quadrats <- function(prediction_ras){
 
 # then aggregate the df
 # score against hand-labeled data.
-
 get_log_filename <- function(tile_path) {
     return( 
         new_filename <- gsub(
@@ -2492,6 +2493,30 @@ validate_results <- function(
     validation_table,
     pft_key,
     aggregation_level = 1
- ) {
-    
+ ){
+    # Need to make keys shared and unique.  Really need the R equivalent of spark's RDD.reduceByKey()
+    # store the results
+    results <- list()
+    for(i in 1:nrow(quadrat_shapefile)){
+        quadrat_shape <- quadrat_shapefile[i,]
+        quadrat_ras <- raster::mask(prediction_ras, quadrat_shape)
+        quadrat_df <- raster::rasterToPoints(quadrat_ras)
+        quadrat_validation_df <- get_prediction_distribution(quadrat_df$z) %>% as.data.frame()
+        quadrat_validation_df$quadrat <- quadrat_shape$CLASS_NAME
+        quadrat_validation_df$quadrat_id <- quadrat_shape$CLASS_ID
+        
+    }
  }
+
+
+create_validation_templates <- function(pft_df){
+    # chi squared independent assumption might be an issue
+    # Bonferoni correction?
+    
+
+
+}
+
+create_validation_plot <- function(df){
+    # ggplot for 
+}

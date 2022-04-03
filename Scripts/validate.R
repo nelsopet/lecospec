@@ -53,7 +53,7 @@ pft_path <- "Data/species_table_new.csv"
 pft_table <- read.csv(pft_path)
 
 pft_conv <- build_adjacency_list(pft_path)
-print(pft_conv)
+print(str(pft_conv))
 
 #save the converter to JSON for reuse
 jsonData <- rjson::toJSON(pft_conv)

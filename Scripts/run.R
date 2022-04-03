@@ -117,3 +117,5 @@ raster::writeRaster(
 )
 
 raster::writeFormats()
+
+key_df <- 1:8 %>% as.data.frame() %>% rename(., z=.) %>% convert_pft_codes(., 1, to="string")
