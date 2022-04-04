@@ -2,14 +2,14 @@ Plot,meters,Plant,cover,UID,PFT,cover_prn
 Bisongulch,0,Betula nana,20,Bisongulch0,Species,45
 Bisongulch,0,Vaccinium uliginosum,35,Bisongulch0,Species,15
 Bisongulch,0,Picea,20,Bisongulch0,Genus,10
-Bisongulch,0,Hedysarum,10,Bisongulch0,Genus,5
+Bisongulch,0,Forb,10,Bisongulch0,Genus,5
 Bisongulch,0,Litter,n/a,Bisongulch0,Abiotic,5
 Bisongulch,0,Dryas,n/a,Bisongulch0,Genus,10
 Bisongulch,0,Stereocaulon,10,Bisongulch0,Genus,5
 Bisongulch,0,MossPleurocarp,5,Bisongulch0,FncGrp2,5
 Bisongulch,10,Rock,30,Bisongulch10,Abiotic,10
-Bisongulch,10,Bare soil,10,Bisongulch10,Abiotic,10
-Bisongulch,10,Thamnolia,5,Bisongulch10,Species,5
+Bisongulch,10,Bare Soil,10,Bisongulch10,Abiotic,10
+Bisongulch,10,LightTerrestrialMacrolichen,5,Bisongulch10,Species,5
 Bisongulch,10,Asahinea chrysantha,1,Bisongulch10,Species,2
 Bisongulch,10,Flavocetraria nivalis,1,Bisongulch10,Species,2
 Bisongulch,10,Rhizocarpon geographicum,3,Bisongulch10,Species,6
@@ -25,12 +25,12 @@ Bisongulch,20,Melanelia sp.,30,Bisongulch20,Species,10
 Bisongulch,20,MossAcrocarp,n/a,Bisongulch20,FncGrp2,20
 Bisongulch,20,Dryas,30,Bisongulch20,Genus,20
 Bisongulch,30,Rock,75,Bisongulch30,Abiotic,75
-Bisongulch,30,Astragulus,25,Bisongulch30,Genus,25
+Bisongulch,30,Forb,25,Bisongulch30,Genus,25
 Bisongulch,40,Betula nana,80,Bisongulch40,Species,95
 Bisongulch,40,GraminoidGrass,20,Bisongulch40,FncGrp2,5
 Bisongulch,50,Arctostaphyllos,5,Bisongulch50,Genus,5
 Bisongulch,50,Rock,85,Bisongulch50,Abiotic,75
-Bisongulch,50,Phlox,n/a,Bisongulch50,Genus,1
+Bisongulch,50,Forb,n/a,Bisongulch50,Genus,1
 Bisongulch,50,Vaccinium uliginosum,n/a,Bisongulch50,Species,1
 Bisongulch,50,Litter,n/a,Bisongulch50,Abiotic,10
 Bisongulch,50,Dryas,5,Bisongulch50,Genus,2
@@ -38,24 +38,24 @@ Bisongulch,50,Carex,n/a,Bisongulch50,Genus,1
 Bisongulch,50,Rhizocarpon geographicum,n/a,Bisongulch50,Species,2
 Bisongulch,50,Melanelia sp.,5,Bisongulch50,Species,3
 Bisongulch,60,Rock,50,Bisongulch60,Abiotic,25
-Bisongulch,60,Bare soil,n/a,Bisongulch60,Abiotic,15
+Bisongulch,60,Bare Soil,n/a,Bisongulch60,Abiotic,15
 Bisongulch,60,Litter,n/a,Bisongulch60,Abiotic,10
 Bisongulch,60,Vaccinium uliginosum,20,Bisongulch60,Species,5
 Bisongulch,60,Dryas,n/a,Bisongulch60,Genus,25
-Bisongulch,60,Oxytropis,n/a,Bisongulch60,Genus,1
+Bisongulch,60,Forb,n/a,Bisongulch60,Genus,1
 Bisongulch,60,Carex,n/a,Bisongulch60,Genus,1
-Bisongulch,60,Thamnolia,25,Bisongulch60,Species,10
+Bisongulch,60,LightTerrestrialMacrolichen,25,Bisongulch60,Species,10
 Bisongulch,60,Rhizocarpon geographicum,5,Bisongulch60,Species,1
 Bisongulch,60,Arctocetraria centrifuga,5,Bisongulch60,Species,7
-Bisongulch,70,Bare soil,n/a,Bisongulch70,Abiotic,5
+Bisongulch,70,Bare Soil,n/a,Bisongulch70,Abiotic,5
 Bisongulch,70,Rock,50,Bisongulch70,Abiotic,35
 Bisongulch,70,Litter,n/a,Bisongulch70,Abiotic,5
-Bisongulch,70,Oxytropis,n/a,Bisongulch70,Genus,3
-Bisongulch,70,Anenome,n/a,Bisongulch70,Genus,2
+Bisongulch,70,Forb,n/a,Bisongulch70,Genus,3
+Bisongulch,70,Forb,n/a,Bisongulch70,Genus,2
 Bisongulch,70,Vaccinium uliginosum,n/a,Bisongulch70,Species,10
 Bisongulch,70,Salix,n/a,Bisongulch70,Genus,6
 Bisongulch,70,Dryas,n/a,Bisongulch70,Genus,25
-Bisongulch,70,Thamnolia,5,Bisongulch70,Species,5
+Bisongulch,70,LightTerrestrialMacrolichen,5,Bisongulch70,Species,5
 Bisongulch,70,GraminoidGrass,n/a,Bisongulch70,FncGrp2,1
 Bisongulch,70,Arctocetraria centrifuga,n/a,Bisongulch70,Species,2
 Bisongulch,70,Rhizocarpon geographicum,n/a,Bisongulch70,Species,1
@@ -63,195 +63,195 @@ Bisongulch,80,Vaccinium uliginosum,30,Bisongulch80,Species,15
 Bisongulch,80,Dryas,n/a,Bisongulch80,Genus,10
 Bisongulch,80,Picea,20,Bisongulch80,Genus,30
 Bisongulch,80,Litter,30,Bisongulch80,Abiotic,30
-Bisongulch,80,Potentilla fruticosa,n/a,Bisongulch80,Species,2
+Bisongulch,80,ShrubDecidOther,n/a,Bisongulch80,Species,2
 Bisongulch,80,Stereocaulon sp.,5,Bisongulch80,Species,1
 Bisongulch,80,Carex,n/a,Bisongulch80,Genus,1
 Bisongulch,80,MossPleurocarp,n/a,Bisongulch80,FncGrp2,2
 Bisongulch,80,Empetrum nigrum,15,Bisongulch80,Species,9
 Bisongulch,90,Litter,n/a,Bisongulch90,Abiotic,10
 Bisongulch,90,Betula nana,100,Bisongulch90,Species,90
-Bisongulch,100,Bare soil,30,Bisongulch100,Abiotic,20
+Bisongulch,100,Bare Soil,30,Bisongulch100,Abiotic,20
 Bisongulch,100,Dryas,n/a,Bisongulch100,Genus,50
-Bisongulch,100,Potentilla fruticosa,n/a,Bisongulch100,Species,6
+Bisongulch,100,ShrubDecidOther,n/a,Bisongulch100,Species,6
 Bisongulch,100,Carex,n/a,Bisongulch100,Genus,6
 Bisongulch,100,Vaccinium uliginosum,n/a,Bisongulch100,Species,3
 Bisongulch,100,Litter,10,Bisongulch100,Abiotic,15
-EaglesummitHS,Q0,Light fruticose lichen,30,EaglesummitHSQ0,Lichen,
-EaglesummitHS,Q0,Dark foliose lichen,5,EaglesummitHSQ0,Lichen,
-EaglesummitHS,Q0,Dryas sp.,20,EaglesummitHSQ0,Dwarf shrub ,
-EaglesummitHS,Q0,Litter,5,EaglesummitHSQ0,Litter,
-EaglesummitHS,Q0,Rock,10,EaglesummitHSQ0,Abiotic,
-EaglesummitHS,Q0,dark fruticose lichen,15,EaglesummitHSQ0,Lichen,
-EaglesummitHS,Q0,Forb,10,EaglesummitHSQ0,Forb,
-EaglesummitHS,Q0,Betula nana,5,EaglesummitHSQ0,Shrub,
-EaglesummitHS,Q1,Vaccinium sp.,15,EaglesummitHSQ1,Dwarf shrub,
-EaglesummitHS,Q1,Dwarf shrub,5,EaglesummitHSQ1,Dwarf shrub ,
-EaglesummitHS,Q1,Graminoid,10,EaglesummitHSQ1,Graminoid,
-EaglesummitHS,Q1,Dryas sp.,15,EaglesummitHSQ1,Dwarf shrub ,
-EaglesummitHS,Q1,dark fruticose lichen,35,EaglesummitHSQ1,Lichen,
-EaglesummitHS,Q1,Light fruticose lichen,5,EaglesummitHSQ1,Lichen,
-EaglesummitHS,Q1,forb,15,EaglesummitHSQ1,Forb,
-EaglesummitHS,Q2,Pleurocarp,30,EaglesummitHSQ2,Moss,
-EaglesummitHS,Q2,Vaccinium sp.,15,EaglesummitHSQ2,Dwarf shrub,
-EaglesummitHS,Q2,Forb,45,EaglesummitHSQ2,Forb,
-EaglesummitHS,Q2,Graminoid,5,EaglesummitHSQ2,Graminoid,
-EaglesummitHS,Q2,Litter,5,EaglesummitHSQ2,Litter,
-EaglesummitHS,Q3,Light fruticose lichen,75,EaglesummitHSQ3,Lichen,
-EaglesummitHS,Q3,Vaccinium vitis-idaea,10,EaglesummitHSQ3,Dwarf shrub,
-EaglesummitHS,Q3,dark fruticose lichen,10,EaglesummitHSQ3,Lichen,
-EaglesummitHS,Q3,Graminoid,5,EaglesummitHSQ3,Graminoid,
-EaglesummitHS,Q4,Empetrum nigrum,35,EaglesummitHSQ4,Dwarf shrub,
-EaglesummitHS,Q4,Forb,30,EaglesummitHSQ4,Forb,
-EaglesummitHS,Q4,Light fruticose lichen,20,EaglesummitHSQ4,Lichen,
-EaglesummitHS,Q4,Graminoid,10,EaglesummitHSQ4,Graminoid,
-EaglesummitHS,Q4,Litter,5,EaglesummitHSQ4,Litter,
-EaglesummitHS,Q5,Pleurocarp,25,EaglesummitHSQ5,Moss,
-EaglesummitHS,Q5,Forb,40,EaglesummitHSQ5,Forb,
-EaglesummitHS,Q5,Vaccinium sp.,15,EaglesummitHSQ5,Dwarf shrub,
-EaglesummitHS,Q5,Dryas sp.,10,EaglesummitHSQ5,Dwarf shrub ,
-EaglesummitHS,Q5,Dark fruticose lichen,10,EaglesummitHSQ5,Lichen,
-EaglesummitHS,Q6,Graminoid,15,EaglesummitHSQ6,Graminoid,
-EaglesummitHS,Q6,Empetrum nigrum,35,EaglesummitHSQ6,Dwarf shrub,
-EaglesummitHS,Q6,Betula nana,25,EaglesummitHSQ6,Shrub,
-EaglesummitHS,Q6,Dryas sp.,10,EaglesummitHSQ6,Dwarf shrub ,
-EaglesummitHS,Q6,Litter,5,EaglesummitHSQ6,Litter,
-EaglesummitHS,Q6,Forb,10,EaglesummitHSQ6,Forb,
-EaglesummitHS,Q7,Salix reticulata,65,EaglesummitHSQ7,Dwarf shrub,
-EaglesummitHS,Q7,Light fruticose lichen,20,EaglesummitHSQ7,Lichen,
-EaglesummitHS,Q7,Empetrum nigrum,5,EaglesummitHSQ7,Dwarf shrub,
-EaglesummitHS,Q7,Vaccinium vitis-idaea,5,EaglesummitHSQ7,Dwarf shrub,
-EaglesummitHS,Q7,Graminoid,5,EaglesummitHSQ7,Graminoid,
-EaglesummitHS,Q8,Light fruticose lichen,45,EaglesummitHSQ8,Lichen,
-EaglesummitHS,Q8,Vaccinium vitis-idaea,20,EaglesummitHSQ8,Dwarf shrub,
-EaglesummitHS,Q8,Salix reticulata,25,EaglesummitHSQ8,Dwarf shrub,
-EaglesummitHS,Q8,Dryas sp.,10,EaglesummitHSQ8,Dwarf shrub ,
-EaglesummitHS,Q9,Rock,30,EaglesummitHSQ9,Abiotic,
-EaglesummitHS,Q9,Yellow fruticose lichen,5,EaglesummitHSQ9,Lichen,
-EaglesummitHS,Q9,Dark fruticose lichen,10,EaglesummitHSQ9,Lichen,
-EaglesummitHS,Q9,Dryas sp.,25,EaglesummitHSQ9,Dwarf shrub ,
-EaglesummitHS,Q9,Vaccinium vitis-idaea,15,EaglesummitHSQ9,Dwarf shrub,
-EaglesummitHS,Q9,Acrocarp ,15,EaglesummitHSQ9,Moss,
-EaglesummitHS,Q10,Vaccinium sp.,45,EaglesummitHSQ10,Dwarf shrub,
-EaglesummitHS,Q10,Yellow fruticose lichen,20,EaglesummitHSQ10,Lichen,
-EaglesummitHS,Q10,Dryas sp.,10,EaglesummitHSQ10,Dwarf shrub ,
-EaglesummitHS,Q10,Vaccinium vitis-idaea,10,EaglesummitHSQ10,Dwarf shrub,
-EaglesummitHS,Q10,Rock,5,EaglesummitHSQ10,Abiotic,
-EaglesummitHS,Q10,Litter,5,EaglesummitHSQ10,Litter,
-EaglesummitHS,Q10,Dark fruticose lichen,5,EaglesummitHSQ10,Lichen,
-EaglesummitPL,Q0,Light fruticose lichen,35,EaglesummitPLQ0,Lichen,
-EaglesummitPL,Q0,Litter,5,EaglesummitPLQ0,Litter,
-EaglesummitPL,Q0,Graminoid,5,EaglesummitPLQ0,Graminoid,
-EaglesummitPL,Q0,Forb,40,EaglesummitPLQ0,Forb,
-EaglesummitPL,Q0,Acrocarp ,10,EaglesummitPLQ0,Moss,
-EaglesummitPL,Q0,Rock,5,EaglesummitPLQ0,Abiotic,
-EaglesummitPL,Q1,Light fruticose lichen,30,EaglesummitPLQ1,Lichen,
-EaglesummitPL,Q1,Acrocarp ,35,EaglesummitPLQ1,Moss,
-EaglesummitPL,Q1,Dark fruticose lichen,10,EaglesummitPLQ1,Lichen,
-EaglesummitPL,Q1,Vaccinium vitis-idaea,5,EaglesummitPLQ1,Dwarf shrub,
-EaglesummitPL,Q1,litter,10,EaglesummitPLQ1,Litter,
-EaglesummitPL,Q1,Graminoid,7,EaglesummitPLQ1,Graminoid,
-EaglesummitPL,Q1,Betula nana,3,EaglesummitPLQ1,Shrub,
-EaglesummitPL,Q2,Light fruticose lichen,10,EaglesummitPLQ2,Lichen,
-EaglesummitPL,Q2,Dark foliose lichen,25,EaglesummitPLQ2,Lichen,
-EaglesummitPL,Q2,Yellow fruticose lichen,35,EaglesummitPLQ2,Lichen,
-EaglesummitPL,Q2,Graminoid,20,EaglesummitPLQ2,Graminoid,
-EaglesummitPL,Q2,Litter,10,EaglesummitPLQ2,Litter,
-EaglesummitPL,Q3,Yellow fruticose lichen,35,EaglesummitPLQ3,Lichen,
-EaglesummitPL,Q3,Acrocarp ,30,EaglesummitPLQ3,Moss,
-EaglesummitPL,Q3,Forb,5,EaglesummitPLQ3,Forb,
-EaglesummitPL,Q3,Graminoid,15,EaglesummitPLQ3,Graminoid,
-EaglesummitPL,Q3,litter,10,EaglesummitPLQ3,Litter,
-EaglesummitPL,Q3,Rock,5,EaglesummitPLQ3,Abiotic,
-EaglesummitPL,Q4,Vaccinium vitis-idaea,20,EaglesummitPLQ4,Dwarf shrub,
-EaglesummitPL,Q4,Rock,20,EaglesummitPLQ4,Abiotic,
-EaglesummitPL,Q4,ledum decumbens,5,EaglesummitPLQ4,Dwarf shrub,
-EaglesummitPL,Q4,Dark foliose lichen,15,EaglesummitPLQ4,Lichen,
-EaglesummitPL,Q4,Litter,20,EaglesummitPLQ4,Litter,
-EaglesummitPL,Q4,Light fruticose lichen,5,EaglesummitPLQ4,Lichen,
-EaglesummitPL,Q4,Acrocarp ,5,EaglesummitPLQ4,Moss,
-EaglesummitPL,Q4,Graminoid,10,EaglesummitPLQ4,Graminoid,
-EaglesummitPL,Q5,Yellow fruticose lichen,60,EaglesummitPLQ5,Lichen,
-EaglesummitPL,Q5,Acrocarp ,25,EaglesummitPLQ5,Moss,
-EaglesummitPL,Q5,Litter,5,EaglesummitPLQ5,Litter,
-EaglesummitPL,Q5,Light fruticose lichen,10,EaglesummitPLQ5,Lichen,
-EaglesummitPL,Q6,Yellow fruticose lichen,35,EaglesummitPLQ6,Lichen,
-EaglesummitPL,Q6,Forb,35,EaglesummitPLQ6,Forb,
-EaglesummitPL,Q6,Graminoid,10,EaglesummitPLQ6,Graminoid,
-EaglesummitPL,Q6,Light fruticose lichen,15,EaglesummitPLQ6,Lichen,
-EaglesummitPL,Q6,Rock,5,EaglesummitPLQ6,Abiotic,
-EaglesummitPL,Q7,Light fruticose lichen,60,EaglesummitPLQ7,Lichen,
-EaglesummitPL,Q7,Forb,25,EaglesummitPLQ7,Forb,
-EaglesummitPL,Q7,Graminoid,10,EaglesummitPLQ7,Graminoid,
-EaglesummitPL,Q7,Litter,5,EaglesummitPLQ7,Litter,
-EaglesummitPL,Q8,Forb,35,EaglesummitPLQ8,Forb,
-EaglesummitPL,Q8,Light fruticose lichen,20,EaglesummitPLQ8,Lichen,
-EaglesummitPL,Q8,Litter,15,EaglesummitPLQ8,Litter,
-EaglesummitPL,Q8,Graminoid,10,EaglesummitPLQ8,Graminoid,
-EaglesummitPL,Q8,Vaccinium vitis-idaea,15,EaglesummitPLQ8,Dwarf shrub,
-EaglesummitPL,Q8,Dark foliose lichen,5,EaglesummitPLQ8,Lichen,
-EaglesummitPL,Q9,Vaccinium vitis-idaea,35,EaglesummitPLQ9,Dwarf shrub,
-EaglesummitPL,Q9,Empetrum nigrum,5,EaglesummitPLQ9,Dwarf shrub,
-EaglesummitPL,Q9,Dark foliose lichen,10,EaglesummitPLQ9,Lichen,
-EaglesummitPL,Q9,Light fruticose lichen,5,EaglesummitPLQ9,Lichen,
-EaglesummitPL,Q9,Dark fruticose lichen,20,EaglesummitPLQ9,Lichen,
-EaglesummitPL,Q9,Litter,15,EaglesummitPLQ9,Litter,
-EaglesummitPL,Q9,Forb,10,EaglesummitPLQ9,Forb,
-EaglesummitPL,Q1,Yellow fruticose lichen,75,EaglesummitPLQ1,Lichen,
-EaglesummitPL,Q1,Dark foliose lichen,10,EaglesummitPLQ1,Lichen,
-EaglesummitPL,Q1,Graminoid,15,EaglesummitPLQ1,Graminoid,
-EaglesummitPL2,Q9,Vaccinium uliginosum,45,EaglesummitPL2Q9,Dwarf shrub,
-EaglesummitPL2,Q9,Yellow fruticose lichen,25,EaglesummitPL2Q9,Lichen,
-EaglesummitPL2,Q9,dark fruticose lichen,20,EaglesummitPL2Q9,Lichen,
-EaglesummitPL2,Q9,Graminoid,10,EaglesummitPL2Q9,Graminoid,
-EaglesummitPL2,Q1,Yellow fruticose lichen,80,EaglesummitPL2Q1,Lichen,
-EaglesummitPL2,Q1,Vaccinium vitis-idaea,10,EaglesummitPL2Q1,Dwarf shrub,
-EaglesummitPL2,Q1,Dark fruticose lichen,5,EaglesummitPL2Q1,Lichen,
-EaglesummitPL2,Q1,Acrocarp ,5,EaglesummitPL2Q1,Moss,
-Murphydome,Q4?,Dryas sp.,35,MurphydomeQ4?,Dwarf shrub ,
-Murphydome,Q4?,Rock,30,MurphydomeQ4?,Abiotic,
-Murphydome,Q4?,Dark crustose lichen,10,MurphydomeQ4?,Lichen,
-Murphydome,Q4?,Yellow fruticose lichen,10,MurphydomeQ4?,Lichen,
-Murphydome,Q4?,Forb,10,MurphydomeQ4?,Forb,
-Murphydome,Q4?,Acrocarp ,5,MurphydomeQ4?,Moss,
-Murphydome,Q9,Dryas sp.,25,MurphydomeQ9,Dwarf shrub ,
-Murphydome,Q9,Rock,25,MurphydomeQ9,Abiotic,
-Murphydome,Q9,Vaccinium vitis-idaea,20,MurphydomeQ9,Dwarf shrub,
-Murphydome,Q9,Dark crustose lichen,15,MurphydomeQ9,Lichen,
-Murphydome,Q9,Betula nana,15,MurphydomeQ9,Shrub,
-Murphydome,Q2,Acrocarp ,40,MurphydomeQ2,Moss,
-Murphydome,Q2,Rock,25,MurphydomeQ2,Abiotic,
-Murphydome,Q2,Dryas sp.,35,MurphydomeQ2,Dwarf shrub ,
-Murphydome,Q3,Rock,30,MurphydomeQ3,Abiotic,
-Murphydome,Q3,Dryas sp.,40,MurphydomeQ3,Dwarf shrub ,
-Murphydome,Q3,ledum decumbens,10,MurphydomeQ3,Dwarf shrub,
-Murphydome,Q3,Acrocarp ,15,MurphydomeQ3,Moss,
-Murphydome,Q3,Dark crustose lichen,5,MurphydomeQ3,Lichen,
-Murphydome,Q4?2,Rock,55,MurphydomeQ4?2,Abiotic,
-Murphydome,Q4?2,Dryas sp.,30,MurphydomeQ4?2,Dwarf shrub ,
-Murphydome,Q4?2,Acrocarp ,15,MurphydomeQ4?2,Moss,
-Murphydome,Q6,Vaccinium vitis-idaea,25,MurphydomeQ6,Dwarf shrub,
-Murphydome,Q6,Dryas sp.,25,MurphydomeQ6,Dwarf shrub ,
-Murphydome,Q6,Rock,20,MurphydomeQ6,Abiotic,
-Murphydome,Q6,Acrocarp ,20,MurphydomeQ6,Moss,
-Murphydome,Q6,Dwarf shrub,10,MurphydomeQ6,Dwarf shrub ,
-Murphydome,Q65,Dryas sp.,30,MurphydomeQ65,Dwarf shrub ,
-Murphydome,Q65,Rock,35,MurphydomeQ65,Abiotic,
-Murphydome,Q65,Acrocarp ,15,MurphydomeQ65,Moss,
-Murphydome,Q65,Dark crustose lichen,10,MurphydomeQ65,Lichen,
-Murphydome,Q65,Light fruticose lichen,5,MurphydomeQ65,Lichen,
-Murphydome,Q65,Dwarf shrub,5,MurphydomeQ65,Dwarf shrub ,
-Murphydome,Q75,Vaccinium vitis-idaea,30,MurphydomeQ75,Dwarf shrub,
-Murphydome,Q75,Rock,40,MurphydomeQ75,Abiotic,
-Murphydome,Q75,Dryas sp.,20,MurphydomeQ75,Dwarf shrub ,
-Murphydome,Q75,Dark foliose lichen,10,MurphydomeQ75,Lichen,
-Murphydome,Q84,Dryas sp.,30,MurphydomeQ84,Dwarf shrub ,
-Murphydome,Q84,Forb,10,MurphydomeQ84,Forb,
-Murphydome,Q84,Graminoid,5,MurphydomeQ84,Graminoid,
-Murphydome,Q84,Vaccinium vitis-idaea,5,MurphydomeQ84,Dwarf shrub,
-Murphydome,Q84,Yellow crustose lichen,5,MurphydomeQ84,Lichen,
-Murphydome,Q84,Dark crustose lichen,5,MurphydomeQ84,Lichen,
-Murphydome,Q84,Acrocarp ,10,MurphydomeQ84,Moss,
-Murphydome,Q84,Rock,30,MurphydomeQ84,Abiotic,
+EaglesummitHS,0,LightTerrestrialMacrolichen,30,EaglesummitHSQ0,Lichen,
+EaglesummitHS,0,DarkTerrestrialMacrolichen,5,EaglesummitHSQ0,Lichen,
+EaglesummitHS,0,Dryas sp.,20,EaglesummitHSQ0,Dwarf shrub ,
+EaglesummitHS,0,Litter,5,EaglesummitHSQ0,Litter,
+EaglesummitHS,0,Rock,10,EaglesummitHSQ0,Abiotic,
+EaglesummitHS,0,DarkTerrestrialMacrolichen,15,EaglesummitHSQ0,Lichen,
+EaglesummitHS,0,Forb,10,EaglesummitHSQ0,Forb,
+EaglesummitHS,0,Betula nana,5,EaglesummitHSQ0,Shrub,
+EaglesummitHS,1,Vaccinium,15,EaglesummitHSQ1,Dwarf shrub,
+EaglesummitHS,1,ShrubEvergreenBroadleaf,5,EaglesummitHSQ1,Dwarf shrub ,
+EaglesummitHS,1,Graminoid,10,EaglesummitHSQ1,Graminoid,
+EaglesummitHS,1,Dryas sp.,15,EaglesummitHSQ1,Dwarf shrub ,
+EaglesummitHS,1,DarkTerrestrialMacrolichen,35,EaglesummitHSQ1,Lichen,
+EaglesummitHS,1,LightTerrestrialMacrolichen,5,EaglesummitHSQ1,Lichen,
+EaglesummitHS,1,Forb,15,EaglesummitHSQ1,Forb,
+EaglesummitHS,2,MossPleurocarp,30,EaglesummitHSQ2,Moss,
+EaglesummitHS,2,Vaccinium,15,EaglesummitHSQ2,Dwarf shrub,
+EaglesummitHS,2,Forb,45,EaglesummitHSQ2,Forb,
+EaglesummitHS,2,Graminoid,5,EaglesummitHSQ2,Graminoid,
+EaglesummitHS,2,Litter,5,EaglesummitHSQ2,Litter,
+EaglesummitHS,3,LightTerrestrialMacrolichen,75,EaglesummitHSQ3,Lichen,
+EaglesummitHS,3,Vaccinium vitis-idea,10,EaglesummitHSQ3,Dwarf shrub,
+EaglesummitHS,3,DarkTerrestrialMacrolichen,10,EaglesummitHSQ3,Lichen,
+EaglesummitHS,3,Graminoid,5,EaglesummitHSQ3,Graminoid,
+EaglesummitHS,4,Empetrum nigrum,35,EaglesummitHSQ4,Dwarf shrub,
+EaglesummitHS,4,Forb,30,EaglesummitHSQ4,Forb,
+EaglesummitHS,4,LightTerrestrialMacrolichen,20,EaglesummitHSQ4,Lichen,
+EaglesummitHS,4,Graminoid,10,EaglesummitHSQ4,Graminoid,
+EaglesummitHS,4,Litter,5,EaglesummitHSQ4,Litter,
+EaglesummitHS,5,MossPleurocarp,25,EaglesummitHSQ5,Moss,
+EaglesummitHS,5,Forb,40,EaglesummitHSQ5,Forb,
+EaglesummitHS,5,Vaccinium,15,EaglesummitHSQ5,Dwarf shrub,
+EaglesummitHS,5,Dryas sp.,10,EaglesummitHSQ5,Dwarf shrub ,
+EaglesummitHS,5,DarkTerrestrialMacrolichen,10,EaglesummitHSQ5,Lichen,
+EaglesummitHS,6,Graminoid,15,EaglesummitHSQ6,Graminoid,
+EaglesummitHS,6,Empetrum nigrum,35,EaglesummitHSQ6,Dwarf shrub,
+EaglesummitHS,6,Betula nana,25,EaglesummitHSQ6,Shrub,
+EaglesummitHS,6,Dryas sp.,10,EaglesummitHSQ6,Dwarf shrub ,
+EaglesummitHS,6,Litter,5,EaglesummitHSQ6,Litter,
+EaglesummitHS,6,Forb,10,EaglesummitHSQ6,Forb,
+EaglesummitHS,7,Salix,65,EaglesummitHSQ7,Dwarf shrub,
+EaglesummitHS,7,LightTerrestrialMacrolichen,20,EaglesummitHSQ7,Lichen,
+EaglesummitHS,7,Empetrum nigrum,5,EaglesummitHSQ7,Dwarf shrub,
+EaglesummitHS,7,Vaccinium vitis-idea,5,EaglesummitHSQ7,Dwarf shrub,
+EaglesummitHS,7,Graminoid,5,EaglesummitHSQ7,Graminoid,
+EaglesummitHS,8,LightTerrestrialMacrolichen,45,EaglesummitHSQ8,Lichen,
+EaglesummitHS,8,Vaccinium vitis-idea,20,EaglesummitHSQ8,Dwarf shrub,
+EaglesummitHS,8,Salix,25,EaglesummitHSQ8,Dwarf shrub,
+EaglesummitHS,8,Dryas sp.,10,EaglesummitHSQ8,Dwarf shrub ,
+EaglesummitHS,9,Rock,30,EaglesummitHSQ9,Abiotic,
+EaglesummitHS,9,YellowTerrestrialMacrolichen,5,EaglesummitHSQ9,Lichen,
+EaglesummitHS,9,DarkTerrestrialMacrolichen,10,EaglesummitHSQ9,Lichen,
+EaglesummitHS,9,Dryas sp.,25,EaglesummitHSQ9,Dwarf shrub ,
+EaglesummitHS,9,Vaccinium vitis-idea,15,EaglesummitHSQ9,Dwarf shrub,
+EaglesummitHS,9,MossAcrocarp,15,EaglesummitHSQ9,Moss,
+EaglesummitHS,10,Vaccinium,45,EaglesummitHSQ10,Dwarf shrub,
+EaglesummitHS,10,YellowTerrestrialMacrolichen,20,EaglesummitHSQ10,Lichen,
+EaglesummitHS,10,Dryas sp.,10,EaglesummitHSQ10,Dwarf shrub ,
+EaglesummitHS,10,Vaccinium vitis-idea,10,EaglesummitHSQ10,Dwarf shrub,
+EaglesummitHS,10,Rock,5,EaglesummitHSQ10,Abiotic,
+EaglesummitHS,10,Litter,5,EaglesummitHSQ10,Litter,
+EaglesummitHS,10,DarkTerrestrialMacrolichen,5,EaglesummitHSQ10,Lichen,
+EaglesummitPL,0,LightTerrestrialMacrolichen,35,EaglesummitPLQ0,Lichen,
+EaglesummitPL,0,Litter,5,EaglesummitPLQ0,Litter,
+EaglesummitPL,0,Graminoid,5,EaglesummitPLQ0,Graminoid,
+EaglesummitPL,0,Forb,40,EaglesummitPLQ0,Forb,
+EaglesummitPL,0,MossAcrocarp,10,EaglesummitPLQ0,Moss,
+EaglesummitPL,0,Rock,5,EaglesummitPLQ0,Abiotic,
+EaglesummitPL,1,LightTerrestrialMacrolichen,30,EaglesummitPLQ1,Lichen,
+EaglesummitPL,1,MossAcrocarp,35,EaglesummitPLQ1,Moss,
+EaglesummitPL,1,DarkTerrestrialMacrolichen,10,EaglesummitPLQ1,Lichen,
+EaglesummitPL,1,Vaccinium vitis-idea,5,EaglesummitPLQ1,Dwarf shrub,
+EaglesummitPL,1,Litter,10,EaglesummitPLQ1,Litter,
+EaglesummitPL,1,Graminoid,7,EaglesummitPLQ1,Graminoid,
+EaglesummitPL,1,Betula nana,3,EaglesummitPLQ1,Shrub,
+EaglesummitPL,2,LightTerrestrialMacrolichen,10,EaglesummitPLQ2,Lichen,
+EaglesummitPL,2,DarkTerrestrialMacrolichen,25,EaglesummitPLQ2,Lichen,
+EaglesummitPL,2,YellowTerrestrialMacrolichen,35,EaglesummitPLQ2,Lichen,
+EaglesummitPL,2,Graminoid,20,EaglesummitPLQ2,Graminoid,
+EaglesummitPL,2,Litter,10,EaglesummitPLQ2,Litter,
+EaglesummitPL,3,YellowTerrestrialMacrolichen,35,EaglesummitPLQ3,Lichen,
+EaglesummitPL,3,MossAcrocarp,30,EaglesummitPLQ3,Moss,
+EaglesummitPL,3,Forb,5,EaglesummitPLQ3,Forb,
+EaglesummitPL,3,Graminoid,15,EaglesummitPLQ3,Graminoid,
+EaglesummitPL,3,Litter,10,EaglesummitPLQ3,Litter,
+EaglesummitPL,3,Rock,5,EaglesummitPLQ3,Abiotic,
+EaglesummitPL,4,Vaccinium vitis-idea,20,EaglesummitPLQ4,Dwarf shrub,
+EaglesummitPL,4,Rock,20,EaglesummitPLQ4,Abiotic,
+EaglesummitPL,4,Ledum decumbens,5,EaglesummitPLQ4,Dwarf shrub,
+EaglesummitPL,4,DarkTerrestrialMacrolichen,15,EaglesummitPLQ4,Lichen,
+EaglesummitPL,4,Litter,20,EaglesummitPLQ4,Litter,
+EaglesummitPL,4,LightTerrestrialMacrolichen,5,EaglesummitPLQ4,Lichen,
+EaglesummitPL,4,MossAcrocarp,5,EaglesummitPLQ4,Moss,
+EaglesummitPL,4,Graminoid,10,EaglesummitPLQ4,Graminoid,
+EaglesummitPL,5,YellowTerrestrialMacrolichen,60,EaglesummitPLQ5,Lichen,
+EaglesummitPL,5,MossAcrocarp,25,EaglesummitPLQ5,Moss,
+EaglesummitPL,5,Litter,5,EaglesummitPLQ5,Litter,
+EaglesummitPL,5,LightTerrestrialMacrolichen,10,EaglesummitPLQ5,Lichen,
+EaglesummitPL,6,YellowTerrestrialMacrolichen,35,EaglesummitPLQ6,Lichen,
+EaglesummitPL,6,Forb,35,EaglesummitPLQ6,Forb,
+EaglesummitPL,6,Graminoid,10,EaglesummitPLQ6,Graminoid,
+EaglesummitPL,6,LightTerrestrialMacrolichen,15,EaglesummitPLQ6,Lichen,
+EaglesummitPL,6,Rock,5,EaglesummitPLQ6,Abiotic,
+EaglesummitPL,7,LightTerrestrialMacrolichen,60,EaglesummitPLQ7,Lichen,
+EaglesummitPL,7,Forb,25,EaglesummitPLQ7,Forb,
+EaglesummitPL,7,Graminoid,10,EaglesummitPLQ7,Graminoid,
+EaglesummitPL,7,Litter,5,EaglesummitPLQ7,Litter,
+EaglesummitPL,8,Forb,35,EaglesummitPLQ8,Forb,
+EaglesummitPL,8,LightTerrestrialMacrolichen,20,EaglesummitPLQ8,Lichen,
+EaglesummitPL,8,Litter,15,EaglesummitPLQ8,Litter,
+EaglesummitPL,8,Graminoid,10,EaglesummitPLQ8,Graminoid,
+EaglesummitPL,8,Vaccinium vitis-idea,15,EaglesummitPLQ8,Dwarf shrub,
+EaglesummitPL,8,DarkTerrestrialMacrolichen,5,EaglesummitPLQ8,Lichen,
+EaglesummitPL,9,Vaccinium vitis-idea,35,EaglesummitPLQ9,Dwarf shrub,
+EaglesummitPL,9,Empetrum nigrum,5,EaglesummitPLQ9,Dwarf shrub,
+EaglesummitPL,9,DarkTerrestrialMacrolichen,10,EaglesummitPLQ9,Lichen,
+EaglesummitPL,9,LightTerrestrialMacrolichen,5,EaglesummitPLQ9,Lichen,
+EaglesummitPL,9,DarkTerrestrialMacrolichen,20,EaglesummitPLQ9,Lichen,
+EaglesummitPL,9,Litter,15,EaglesummitPLQ9,Litter,
+EaglesummitPL,9,Forb,10,EaglesummitPLQ9,Forb,
+EaglesummitPL,1,YellowTerrestrialMacrolichen,75,EaglesummitPLQ1,Lichen,
+EaglesummitPL,1,DarkTerrestrialMacrolichen,10,EaglesummitPLQ1,Lichen,
+EaglesummitPL,1,Graminoid,15,EaglesummitPLQ1,Graminoid,
+EaglesummitPL2,9,Vaccinium uliginosum,45,EaglesummitPL2Q9,Dwarf shrub,
+EaglesummitPL2,9,YellowTerrestrialMacrolichen,25,EaglesummitPL2Q9,Lichen,
+EaglesummitPL2,9,DarkTerrestrialMacrolichen,20,EaglesummitPL2Q9,Lichen,
+EaglesummitPL2,9,Graminoid,10,EaglesummitPL2Q9,Graminoid,
+EaglesummitPL2,1,YellowTerrestrialMacrolichen,80,EaglesummitPL2Q1,Lichen,
+EaglesummitPL2,1,Vaccinium vitis-idea,10,EaglesummitPL2Q1,Dwarf shrub,
+EaglesummitPL2,1,DarkTerrestrialMacrolichen,5,EaglesummitPL2Q1,Lichen,
+EaglesummitPL2,1,MossAcrocarp,5,EaglesummitPL2Q1,Moss,
+Murphydome,4,Dryas sp.,35,MurphydomeQ4,Dwarf shrub ,
+Murphydome,4,Rock,30,MurphydomeQ4,Abiotic,
+Murphydome,4,DarkTerrestrialMacrolichen,10,MurphydomeQ4,Lichen,
+Murphydome,4,YellowTerrestrialMacrolichen,10,MurphydomeQ4,Lichen,
+Murphydome,4,Forb,10,MurphydomeQ4,Forb,
+Murphydome,4,MossAcrocarp,5,MurphydomeQ4,Moss,
+Murphydome,9,Dryas sp.,25,MurphydomeQ9,Dwarf shrub ,
+Murphydome,9,Rock,25,MurphydomeQ9,Abiotic,
+Murphydome,9,Vaccinium vitis-idea,20,MurphydomeQ9,Dwarf shrub,
+Murphydome,9,DarkTerrestrialMacrolichen,15,MurphydomeQ9,Lichen,
+Murphydome,9,Betula nana,15,MurphydomeQ9,Shrub,
+Murphydome,2,MossAcrocarp,40,MurphydomeQ2,Moss,
+Murphydome,2,Rock,25,MurphydomeQ2,Abiotic,
+Murphydome,2,Dryas sp.,35,MurphydomeQ2,Dwarf shrub ,
+Murphydome,3,Rock,30,MurphydomeQ3,Abiotic,
+Murphydome,3,Dryas sp.,40,MurphydomeQ3,Dwarf shrub ,
+Murphydome,3,Ledum decumbens,10,MurphydomeQ3,Dwarf shrub,
+Murphydome,3,MossAcrocarp,15,MurphydomeQ3,Moss,
+Murphydome,3,DarkTerrestrialMacrolichen,5,MurphydomeQ3,Lichen,
+Murphydome,42,Rock,55,MurphydomeQ42,Abiotic,
+Murphydome,42,Dryas sp.,30,MurphydomeQ42,Dwarf shrub ,
+Murphydome,42,MossAcrocarp,15,MurphydomeQ42,Moss,
+Murphydome,6,Vaccinium vitis-idea,25,MurphydomeQ6,Dwarf shrub,
+Murphydome,6,Dryas sp.,25,MurphydomeQ6,Dwarf shrub ,
+Murphydome,6,Rock,20,MurphydomeQ6,Abiotic,
+Murphydome,6,MossAcrocarp,20,MurphydomeQ6,Moss,
+Murphydome,6,ShrubEvergreenBroadleaf,10,MurphydomeQ6,Dwarf shrub ,
+Murphydome,65,Dryas sp.,30,MurphydomeQ65,Dwarf shrub ,
+Murphydome,65,Rock,35,MurphydomeQ65,Abiotic,
+Murphydome,65,MossAcrocarp,15,MurphydomeQ65,Moss,
+Murphydome,65,DarkTerrestrialMacrolichen,10,MurphydomeQ65,Lichen,
+Murphydome,65,LightTerrestrialMacrolichen,5,MurphydomeQ65,Lichen,
+Murphydome,65,ShrubEvergreenBroadleaf,5,MurphydomeQ65,Dwarf shrub ,
+Murphydome,75,Vaccinium vitis-idea,30,MurphydomeQ75,Dwarf shrub,
+Murphydome,75,Rock,40,MurphydomeQ75,Abiotic,
+Murphydome,75,Dryas sp.,20,MurphydomeQ75,Dwarf shrub ,
+Murphydome,75,DarkTerrestrialMacrolichen,10,MurphydomeQ75,Lichen,
+Murphydome,84,Dryas sp.,30,MurphydomeQ84,Dwarf shrub ,
+Murphydome,84,Forb,10,MurphydomeQ84,Forb,
+Murphydome,84,Graminoid,5,MurphydomeQ84,Graminoid,
+Murphydome,84,Vaccinium vitis-idea,5,MurphydomeQ84,Dwarf shrub,
+Murphydome,84,YellowTerrestrialCrustose,5,MurphydomeQ84,Lichen,
+Murphydome,84,DarkTerrestrialMacrolichen,5,MurphydomeQ84,Lichen,
+Murphydome,84,MossAcrocarp,10,MurphydomeQ84,Moss,
+Murphydome,84,Rock,30,MurphydomeQ84,Abiotic,
 Twelvemile,40,MossPleurocarp,30,Twelvemile40,FncGrp2,20
 Twelvemile,40,MossAcrocarp,15,Twelvemile40,FncGrp2,7
 Twelvemile,40,Dryas,25,Twelvemile40,Genus,35
@@ -302,7 +302,7 @@ Twelvemile,20,GraminoidGrass,10,Twelvemile20,FncGrp2,5
 Twelvemile,20,MossPleurocarp,n/a,Twelvemile20,FncGrp2,7
 Twelvemile,20,Rock,n/a,Twelvemile20,Abiotic,1
 Twelvemile,20,Empetrum nigrum,n/a,Twelvemile20,Species,5
-Twelvemile,20,Vaccinium vitis-idaea,5,Twelvemile20,Species,2
+Twelvemile,20,Vaccinium vitis-idea,5,Twelvemile20,Species,2
 Twelvemile,30,Cladonia mitis,50,Twelvemile30,Species,60
 Twelvemile,30,Empetrum nigrum,10,Twelvemile30,Species,9
 Twelvemile,30,Cassiope tetragona,n/a,Twelvemile30,Species,9
@@ -312,57 +312,57 @@ Twelvemile,30,Dryas,5,Twelvemile30,Genus,9
 Twelvemile,30,Litter,n/a,Twelvemile30,Abiotic,5
 Twelvemile,30,MossPleurocarp,15,Twelvemile30,FncGrp2,1
 Twelvemile,30,GraminoidGrass,15,Twelvemile30,FncGrp2,5
-Wickershamdome,Q0,Rock,65,WickershamdomeQ0,Abiotic,
-Wickershamdome,Q0,Arctous alpina,10,WickershamdomeQ0,Dwarf shrub,
-Wickershamdome,Q0,Acrocarp ,10,WickershamdomeQ0,Moss,
-Wickershamdome,Q0,Dwarf shrub,15,WickershamdomeQ0,Dwarf shrub ,
-Wickershamdome,Q1,Arctous alpina,40,WickershamdomeQ1,Dwarf shrub,
-Wickershamdome,Q1,Yellow fruticose lichen,15,WickershamdomeQ1,Lichen,
-Wickershamdome,Q1,Vaccinium vitis-idaea,15,WickershamdomeQ1,Dwarf shrub,
-Wickershamdome,Q1,Dwarf shrub,10,WickershamdomeQ1,Dwarf shrub ,
-Wickershamdome,Q1,Rock,5,WickershamdomeQ1,Abiotic,
-Wickershamdome,Q1,Dark foliose lichen,5,WickershamdomeQ1,Lichen,
-Wickershamdome,Q1,Acrocarp ,10,WickershamdomeQ1,Moss,
-Wickershamdome,Q2,Vaccinium vitis-idaea,35,WickershamdomeQ2,Dwarf shrub,
-Wickershamdome,Q2,Arctous alpina,40,WickershamdomeQ2,Dwarf shrub,
-Wickershamdome,Q2,Yellow fruticose lichen,20,WickershamdomeQ2,Lichen,
-Wickershamdome,Q2,Graminoid,5,WickershamdomeQ2,Graminoid,
-Wickershamdome,Q3,Arctous alpina,70,WickershamdomeQ3,Dwarf shrub,
-Wickershamdome,Q3,Rock,25,WickershamdomeQ3,Abiotic,
-Wickershamdome,Q3,Light fruticose lichen,5,WickershamdomeQ3,Lichen,
-Wickershamdome,Q4,Acrocarp ,35,WickershamdomeQ4,Moss,
-Wickershamdome,Q4,Arctous alpina,45,WickershamdomeQ4,Dwarf shrub,
-Wickershamdome,Q4,Litter,5,WickershamdomeQ4,Litter,
-Wickershamdome,Q4,Light fruticose lichen,5,WickershamdomeQ4,Lichen,
-Wickershamdome,Q4,Rock,10,WickershamdomeQ4,Abiotic,
-Wickershamdome,Q7,Betula sp.,40,WickershamdomeQ7,Shrub,
-Wickershamdome,Q7,Dryas sp.,25,WickershamdomeQ7,Dwarf shrub ,
-Wickershamdome,Q7,Vaccinium vitis-idaea,10,WickershamdomeQ7,Dwarf shrub,
-Wickershamdome,Q7,Dark fruticose lichen,5,WickershamdomeQ7,Lichen,
-Wickershamdome,Q7,Graminoid,10,WickershamdomeQ7,Graminoid,
-Wickershamdome,Q7,Rock,5,WickershamdomeQ7,Abiotic,
-Wickershamdome,Q7,Acrocarp ,5,WickershamdomeQ7,Moss,
-Wickershamdome,Q8,Betula sp.,90,WickershamdomeQ8,Shrub,
-Wickershamdome,Q8,Light fruticose lichen,10,WickershamdomeQ8,Lichen,
-Wickershamdome,Q9,Graminoid,30,WickershamdomeQ9,Graminoid,
-Wickershamdome,Q9,Betula sp.,55,WickershamdomeQ9,Shrub,
-Wickershamdome,Q9,Acrocarp ,15,WickershamdomeQ9,Moss,
-Wickershamdome,Q10,Yellow fruticose lichen,25,WickershamdomeQ10,Lichen,
-Wickershamdome,Q10,Betula sp.,30,WickershamdomeQ10,Shrub,
-Wickershamdome,Q10,Graminoid,10,WickershamdomeQ10,Graminoid,
-Wickershamdome,Q10,Vaccinium vitis-idaea,25,WickershamdomeQ10,Dwarf shrub,
-Wickershamdome,Q10,Dark crustose lichen,10,WickershamdomeQ10,Lichen,
+Wickershamdome,0,Rock,65,WickershamdomeQ0,Abiotic,
+Wickershamdome,0,Arctostaphyllos,10,WickershamdomeQ0,Dwarf shrub,
+Wickershamdome,0,MossAcrocarp,10,WickershamdomeQ0,Moss,
+Wickershamdome,0,ShrubEvergreenBroadleaf,15,WickershamdomeQ0,Dwarf shrub,
+Wickershamdome,1,Arctostaphyllos,40,WickershamdomeQ1,Dwarf shrub,
+Wickershamdome,1,YellowTerrestrialMacrolichen,15,WickershamdomeQ1,Lichen,
+Wickershamdome,1,Vaccinium vitis-idea,15,WickershamdomeQ1,Dwarf shrub,
+Wickershamdome,1,ShrubEvergreenBroadleaf,10,WickershamdomeQ1,Dwarf shrub ,
+Wickershamdome,1,Rock,5,WickershamdomeQ1,Abiotic,
+Wickershamdome,1,DarkTerrestrialMacrolichen,5,WickershamdomeQ1,Lichen,
+Wickershamdome,1,MossAcrocarp,10,WickershamdomeQ1,Moss,
+Wickershamdome,2,Vaccinium vitis-idea,35,WickershamdomeQ2,Dwarf shrub,
+Wickershamdome,2,Arctostaphyllos,40,WickershamdomeQ2,Dwarf shrub,
+Wickershamdome,2,YellowTerrestrialMacrolichen,20,WickershamdomeQ2,Lichen,
+Wickershamdome,2,Graminoid,5,WickershamdomeQ2,Graminoid,
+Wickershamdome,3,Arctostaphyllos,70,WickershamdomeQ3,Dwarf shrub,
+Wickershamdome,3,Rock,25,WickershamdomeQ3,Abiotic,
+Wickershamdome,3,LightTerrestrialMacrolichen,5,WickershamdomeQ3,Lichen,
+Wickershamdome,4,MossAcrocarp,35,WickershamdomeQ4,Moss,
+Wickershamdome,4,Arctostaphyllos,45,WickershamdomeQ4,Dwarf shrub,
+Wickershamdome,4,Litter,5,WickershamdomeQ4,Litter,
+Wickershamdome,4,LightTerrestrialMacrolichen,5,WickershamdomeQ4,Lichen,
+Wickershamdome,4,Rock,10,WickershamdomeQ4,Abiotic,
+Wickershamdome,7,Betula,40,WickershamdomeQ7,Shrub,
+Wickershamdome,7,Dryas sp.,25,WickershamdomeQ7,Dwarf shrub ,
+Wickershamdome,7,Vaccinium vitis-idea,10,WickershamdomeQ7,Dwarf shrub,
+Wickershamdome,7,DarkTerrestrialMacrolichen,5,WickershamdomeQ7,Lichen,
+Wickershamdome,7,Graminoid,10,WickershamdomeQ7,Graminoid,
+Wickershamdome,7,Rock,5,WickershamdomeQ7,Abiotic,
+Wickershamdome,7,MossAcrocarp,5,WickershamdomeQ7,Moss,
+Wickershamdome,8,Betula,90,WickershamdomeQ8,Shrub,
+Wickershamdome,8,LightTerrestrialMacrolichen,10,WickershamdomeQ8,Lichen,
+Wickershamdome,9,Graminoid,30,WickershamdomeQ9,Graminoid,
+Wickershamdome,9,Betula,55,WickershamdomeQ9,Shrub,
+Wickershamdome,9,MossAcrocarp,15,WickershamdomeQ9,Moss,
+Wickershamdome,10,YellowTerrestrialMacrolichen,25,WickershamdomeQ10,Lichen,
+Wickershamdome,10,Betula,30,WickershamdomeQ10,Shrub,
+Wickershamdome,10,Graminoid,10,WickershamdomeQ10,Graminoid,
+Wickershamdome,10,Vaccinium vitis-idea,25,WickershamdomeQ10,Dwarf shrub,
+Wickershamdome,10,DarkTerrestrialMacrolichen,10,WickershamdomeQ10,Lichen,
 Twelvemile,60,Betula nana,40,Twelvemile60,Species,40
 Twelvemile,60,Flavocetraria cucculata,15,Twelvemile60,Species,6
 Twelvemile,60,Cetraria islandica,n/a,Twelvemile60,Species,2
 Twelvemile,60,Cladonia stygia,n/a,Twelvemile60,Species,10
-Twelvemile,60,Vaccinium vitis-idaea,15,Twelvemile60,Species,8
+Twelvemile,60,Vaccinium vitis-idea,15,Twelvemile60,Species,8
 Twelvemile,60,Cassiope tetragona,n/a,Twelvemile60,Species,8
 Twelvemile,60,Ledum,10,Twelvemile60,Genus,10
 Twelvemile,60,MossPleurocarp,5,Twelvemile60,FncGrp2,6
 Twelvemile,60,MossAcrocarp,5,Twelvemile60,FncGrp2,3
 Twelvemile,60,Carex,n/a,Twelvemile60,Genus,1
-Twelvemile,60,Polygonum,n/a,Twelvemile60,Genus,1
+Twelvemile,60,Forb,n/a,Twelvemile60,Genus,1
 Twelvemile,60,Litter,n/a,Twelvemile60,Abiotic,5
 Twelvemile,70,Flavocetraria cucculata,35,Twelvemile70,Species,15
 Twelvemile,70,Asahinea chrysantha,35,Twelvemile70,Species,1
@@ -376,14 +376,14 @@ Twelvemile,80,Betula nana,45,Twelvemile80,Species,65
 Twelvemile,80,Rock,5,Twelvemile80,Abiotic,1
 Twelvemile,80,GraminoidGrass,10,Twelvemile80,FncGrp2,8
 Twelvemile,80,Litter,n/a,Twelvemile80,Abiotic,15
-Twelvemile,80,Vaccinium vitis-idaea,15,Twelvemile80,Species,1
+Twelvemile,80,Vaccinium vitis-idea,15,Twelvemile80,Species,1
 Twelvemile,80,Arctocetraria centrifuga,5,Twelvemile80,Species,4
 Twelvemile,80,Flavocetraria cucculata,5,Twelvemile80,Species,4
 Twelvemile,80,MossPleurocarp,10,Twelvemile80,FncGrp2,2
-Twelvemile,80,Anenome,n/a,Twelvemile80,Genus,1
+Twelvemile,80,Forb,n/a,Twelvemile80,Genus,1
 Twelvemile,80,Ledum,10,Twelvemile80,Genus,3
 Twelvemile,90,Betula nana,30,Twelvemile90,Species,60
-Twelvemile,90,Vaccinium vitis-idaea,30,Twelvemile90,Species,7
+Twelvemile,90,Vaccinium vitis-idea,30,Twelvemile90,Species,7
 Twelvemile,90,Flavocetraria cucculata,10,Twelvemile90,Species,5
 Twelvemile,90,Arctocetraria centrifuga,10,Twelvemile90,Species,2
 Twelvemile,90,Cetraria islandica,n/a,Twelvemile90,Species,7

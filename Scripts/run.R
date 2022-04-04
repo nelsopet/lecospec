@@ -53,7 +53,7 @@ cl <- raster::beginCluster()#this is actually quite slow, believe it or not
 print(date())
 profvis::profvis(
     tile_results <- process_tile(
-        tif_test, 
+        test_path, 
         ml_model, 
         1,
         cluster = NULL, 
@@ -73,7 +73,6 @@ raster::endCluster()
 
 species_table <- read.csv("./Data/species_table_new.csv", sep=",", fileEncoding="utf-8")
 print(species_table)
-
 
 functional_group2_levels <- unique(species_table$Functionalgroup2)
 print(functional_group2_levels)
@@ -117,3 +116,5 @@ raster::writeRaster(
 )
 
 raster::writeFormats()
+
+key_df <- 1:8 %>% as.data.frame() %>% print() %>% rename(., x1=.) %>% convert_pft_codes(., 1, to="string")
