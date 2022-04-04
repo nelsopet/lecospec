@@ -27,6 +27,7 @@ print(raster::crs(tile_results))
 # separate the quadrats
 shapefile_path <- "Data/Vectors/TwelveMileQ0_10_20_30_40m.shp"
 tm_shapes <- sf::st_read(shapefile_path)
+tm_shapes$CLASS_NAME <- gsub("0m", "0", tm_shapes$CLASS_NAME)
 print(tm_shapes)
 plot(tm_shapes,  add = TRUE)
 extracted_quads <- raster::extract(tile_results, tm_shapes) %>% as.data.frame()
@@ -36,7 +37,7 @@ tm_shapes$CLASS_ID
 # get the quardrat distributions
 prediction_df <- raster::rasterToPoints(tile_results) %>% as.data.frame()
 summary(prediction_df)
-test_dist <- get_prediction_distribution(prediction_vec = prediction_df$z, )
+test_dist <- get_prediction_distribution(prediction_df$z)
 print(test_dist)
 
 # load the validation data
@@ -61,3 +62,51 @@ write(jsonData, "./pft_adj_list.json")
 
 # filter to 
 head(bison_gulch_quad_validation)
+
+
+# build a validation template
+print(pft1_template)
+pft2_template <- build_validation_template(pft_table, col=4)
+genus_template <- build_validation_template(pft_table, col=3)
+species_template <- build_validation_template(pft_table, col=2)
+print(species_template)
+
+write.csv(pft1_template, "./pft1_template.csv")
+write.csv(pft2_template, "./pft2_template.csv")
+write.csv(genus_template, "./genus_template.csv")
+write.csv(species_template, "./species_template.csv")
+print(pft1_template)
+
+plot(tile_results)
+
+# fix the shapefile names
+tm_shapes$CLASS_NAME <- c(
+    "Twelvemile40",
+    "Twelvemile30",
+    "Twelvemile20",
+    "Twelvemile10",
+    "Twelvemile0"
+)
+
+pft1_template <- build_validation_template(pft_table)
+pft_conv <- build_adjacency_list(pft_path)
+print(pft_conv)
+source("./Functions/lecospectR.R")
+
+validation_result <- validate_results(
+    tile_results,
+    tm_shapes,
+    validation_df,
+    rjson::fromJSON(file="./pft_adj_list.json"),
+    "./pft1_template.csv"
+)
+
+print(validation_df$Plant)
+validation_df <- read.csv(validation_data_path, na.strings=c("NA", "n/a"))
+change_aggregation(validation_df$Plant, 1, pft_conv)
+
+
+print(summary(validation_df))
+
+print(validation_result)
+

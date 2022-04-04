@@ -2392,7 +2392,7 @@ build_adjacency_list <- function(filepath) {
         for( j in seq.int(num_levels)){
             counter <- 1
             key <- df[[i,j]]
-            values <- vector(mode = "numeric", length = num_levels)
+            values <- vector(mode = "character", length = num_levels)
             while(counter <= num_levels){
                 if(counter < j){
                     values[[counter]] <- NA
@@ -2401,7 +2401,7 @@ build_adjacency_list <- function(filepath) {
                 }
                 counter <- counter + 1
             }
-            adjacency_list[[key]] <- values
+            adjacency_list[[key]] <- values[2:(num_levels)]
         }
     }
 
@@ -2430,19 +2430,22 @@ enum_pfts <- function(pft){
 
 # changes aggregation level
 change_aggregation <- function(prediction_vec, aggregation_level, aggregation_key){
-    updated_predictions <- vector("list", length=length(prediction_vec))
+    updated_predictions <- vector("character", length=length(prediction_vec))
     for(i in seq_along(prediction_vec)){
+        aggregation_idx <- 5-aggregation_level
         prediction <- prediction_vec[[i]]
-        updated_predictions[[i]] <- aggregation_key[[prediction]][[aggregation_level]]
+        #print(prediction)
+        updated_predictions[[i]] <- aggregation_key[[prediction]][[aggregation_idx]]
     }
 
     return(updated_predictions)
 }
 
-get_prediction_distribution <- function(prediction_vec){
-    num_observations <- length(prediction_vec)
-    df <- as.data.frame(table(prediction_vec))
-    df$distrution <- df$Freq / num_observations
+get_prediction_distribution <- function(prediction_df){
+    num_observations <- nrow(prediction_df)
+    df <- prediction_df %>% count(z) %>% as.data.frame()
+    #df$key <- unique(prediction_vec) %>% as.vector()
+    df$distribution <- df$n / num_observations
     return(df)
 }
 
@@ -2492,23 +2495,122 @@ validate_results <- function(
     quadrat_shapefile, 
     validation_table,
     pft_key,
+    template_path,
     aggregation_level = 1
  ){
     # Need to make keys shared and unique.  Really need the R equivalent of spark's RDD.reduceByKey()
     # store the results
+
+
     results <- list()
+       
     for(i in 1:nrow(quadrat_shapefile)){
+        # load the template 
+        template <- read.csv(file = template_path, row.names = 1)
+
+        # crop the raster to the quadrat
         quadrat_shape <- quadrat_shapefile[i,]
-        quadrat_ras <- raster::mask(prediction_ras, quadrat_shape)
-        quadrat_df <- raster::rasterToPoints(quadrat_ras)
-        quadrat_validation_df <- get_prediction_distribution(quadrat_df$z) %>% as.data.frame()
-        quadrat_validation_df$quadrat <- quadrat_shape$CLASS_NAME
-        quadrat_validation_df$quadrat_id <- quadrat_shape$CLASS_ID
+        quadrat_ras <- raster::crop(prediction_ras, quadrat_shape)
+
+
+        png(paste0("./test_plot_", i, ".png"))
+        plot(quadrat_ras)
+        dev.off()
         
+        quadrat_df <- raster::rasterToPoints(quadrat_ras) %>% as.data.frame()
+
+        # prediction 
+        predictions <- convert_pft_codes(quadrat_df, aggregation_level = aggregation_level, to="string")
+        
+
+        #predictions$z <- change_aggregation(
+        #    predictions$z,
+        #    aggregation_level = aggregation_level,
+        #    pft_key
+        #) %>% as.vector()
+
+
+        
+        # extract the validation data for this quadrat
+        quadrat_validation_df <- get_prediction_distribution(predictions) %>% as.data.frame()
+        #quadrat_validation_df$quadrat <- quadrat_shape$CLASS_NAME
+        #quadrat_validation_df$quadrat_id <- quadrat_shape$CLASS_ID
+
+        filtered_validation_df <- validation_table[validation_table$UID == quadrat_shape$CLASS_NAME, ]
+
+        filtered_validation_df$Plant <- change_aggregation(
+            filtered_validation_df$Plant,
+            aggregation_level = aggregation_level,
+            pft_key
+        ) %>% as.vector()
+
+        # aggregate the predictions and validation using the template
+        aggregated_results <- aggregate_result_template(
+            quadrat_validation_df,
+            validation_table,
+            template)
+        
+        chi_square_results <- chisq.test(
+            aggregated_results$validation_counts,
+            aggregated_results$predicted_counts)
+        
+        results[[i]] <- chi_square_results
+        print(chi_square_results)
     }
+
+    return(results)
  }
 
 
+ aggregate_result_template <- function(df, validation_df, input_template ){
+    num_rows_df <- nrow(df)
+    num_rows_template <- nrow(input_template)
+    num_rows_validation <- nrow(validation_df)
+    num_observations <- sum(df$n)
+    
+    # copy the template
+    template <- data.frame(input_template)
+
+
+
+    #print(df)
+    #print(validation_df)
+
+    # iterate over the template to match the data from the two other inputs
+    for(template_row_idx in 1:num_rows_template){
+        # iterate over the prediction data.frame
+        for(df_row_idx in 1:num_rows_df){
+            if(template[[template_row_idx, "key"]] == df$z[[df_row_idx]]){
+                template[[template_row_idx, "prediction_prop"]] <- df$distribution[[df_row_idx]]
+                template[[template_row_idx, "predicted_counts"]] <- df$n[[df_row_idx]]
+            }
+        }
+        # iterate over validation
+        for(val_row_idx in 1:num_rows_validation){
+            #print(paste0("Template: ", template$key[[template_row_idx]], "\t\t Validation: ", validation_df$Plant[[val_row_idx]], "."))
+            if(tolower(template$key[[template_row_idx]]) == tolower(validation_df$Plant[[val_row_idx]])){
+                template[[template_row_idx, "validation_counts"]] <- (validation_df[[val_row_idx, "cover_prn"]] * num_observations * 0.01)
+                template[[template_row_idx, "validation_prop"]] <- (validation_df[[val_row_idx, "cover_prn"]] * 0.01)
+            }
+        }
+    }
+
+    print(summary(template))
+    return(template)
+ }
+
+
+get_validation_df <- function( base_df ){
+
+}
+
+ validate_quadrat <- function( df ){
+     # use the aggregated results (one data.frame of aggregated results)
+    
+    
+ }
+
+ 
 create_validation_templates <- function(pft_df){
     # chi squared independent assumption might be an issue
     # Bonferoni correction?
@@ -2519,4 +2621,15 @@ create_validation_templates <- function(pft_df){
 
 create_validation_plot <- function(df){
     # ggplot for 
+}
+
+build_validation_template <- function(df, col = 5){
+    pft_template <- df[, col] %>% unique() %>% as.data.frame()
+    colnames(pft_template) <- c("key")
+    pft_template$predicted_counts <- 0
+    pft_template$prediction_prop <- 0
+    pft_template$validation_counts <- 0
+    pft_template$validation_prop <- 0
+
+    return(pft_template) 
 }

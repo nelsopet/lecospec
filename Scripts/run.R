@@ -74,7 +74,6 @@ raster::endCluster()
 species_table <- read.csv("./Data/species_table_new.csv", sep=",", fileEncoding="utf-8")
 print(species_table)
 
-
 functional_group2_levels <- unique(species_table$Functionalgroup2)
 print(functional_group2_levels)
 
@@ -118,4 +117,4 @@ raster::writeRaster(
 
 raster::writeFormats()
 
-key_df <- 1:8 %>% as.data.frame() %>% rename(., z=.) %>% convert_pft_codes(., 1, to="string")
+key_df <- 1:8 %>% as.data.frame() %>% print() %>% rename(., x1=.) %>% convert_pft_codes(., 1, to="string")
