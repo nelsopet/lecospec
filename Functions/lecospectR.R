@@ -1578,32 +1578,32 @@ merge_tiles <- function(input_files, output_path = NULL, target_layer = 1) {
 convert_fg2_int <- function(df) {
     converted_df <- df %>% dplyr::mutate(
         z = dplyr::case_when(
-            z == "Litter" ~ 0L,
-            z == "Mineral" ~ 1L,
-            z == "FernAlly" ~ 2L,
-            z == "ForbFlower" ~ 3L,
-            z == "GraminoidGrass" ~ 4L,
-            z == "GraminoidSedge" ~ 5L,
-            z == "DarkTerrestrialMacrolichen" ~ 6L,
-            z == "LightTerrestrialCrustose" ~ 7L,
-            z == "LightTerrestrialMacrolichen" ~ 8L,
-            z == "YellowTerrestrialCrustose" ~ 9L,
-            z == "YellowTerrestrialMacrolichen" ~ 10L,
-            z == "MossAcrocarp" ~ 11L,
-            z == "MossPleurocarp" ~ 12L,
-            z == "MossSphagnum" ~ 13L,
-            z == "ShrubAlder" ~ 14L,
-            z == "ShrubBetula" ~ 15L,
-            z == "ShrubDecidOther" ~ 16L,
-            z == "ShrubSalix" ~ 17L,
-            z == "ShrubEvergreenNeedle" ~ 18L,
-            z == "ShrubEvergreenBroadleaf" ~ 19L,
-            z == "TreeBetula" ~ 20L,
-            z == "TreeBroadleafOther" ~ 21L,
-            z == "TreePopulus" ~ 22L,
-            z == "TreeConiferOther" ~ 23L,
-            z == "TreeSpruce" ~ 24L,
-            z == "Unknown" ~ 25L,
+            z == 0L ~ "Litter",
+            z == 1L ~ "Mineral",
+            z == 2L ~ "FernAlly",
+            z == 3L ~ "ForbFlower",
+            z == 4L ~ "GraminoidGrass",
+            z == 5L ~ "GraminoidSedge",
+            z == 6L ~ "DarkTerrestrialMacrolichen",
+            z == 7L ~ "LightTerrestrialCrustose",
+            z == 8L ~ "LightTerrestrialMacrolichen",
+            z == 9L ~ "YellowTerrestrialCrustose",
+            z == 10L ~ "YellowTerrestrialMacrolichen",
+            z == 11L ~ "MossAcrocarp",
+            z == 12L ~ "MossPleurocarp",
+            z == 13L ~ "MossSphagnum",
+            z == 14L ~ "ShrubAlder",
+            z == 15L ~ "ShrubBetula",
+            z == 16L ~ "ShrubDecidOther",
+            z == 17L ~ "ShrubSalix",
+            z == 18L ~ "ShrubEvergreenNeedle",
+            z == 19L ~ "ShrubEvergreenBroadleaf",
+            z == 20L ~ "TreeBetula",
+            z == 21L ~ "TreeBroadleafOther",
+            z == 22L ~ "TreePopulus",
+            z == 23L ~ "TreeConiferOther",
+            z == 24L ~ "TreeSpruce",
+            z == 25L ~ "Unknown",
 
         ), .keep = "unused"
     ) %>% 
@@ -2523,6 +2523,7 @@ validate_results <- function(
         predictions <- convert_pft_codes(quadrat_df, aggregation_level = aggregation_level, to="string")
         
 
+
         #predictions$z <- change_aggregation(
         #    predictions$z,
         #    aggregation_level = aggregation_level,
@@ -2599,29 +2600,6 @@ validate_results <- function(
     return(template)
  }
 
-
-get_validation_df <- function( base_df ){
-
-}
-
- validate_quadrat <- function( df ){
-     # use the aggregated results (one data.frame of aggregated results)
-    
-    
- }
-
- 
-create_validation_templates <- function(pft_df){
-    # chi squared independent assumption might be an issue
-    # Bonferoni correction?
-    
-
-
-}
-
-create_validation_plot <- function(df){
-    # ggplot for 
-}
 
 build_validation_template <- function(df, col = 5){
     pft_template <- df[, col] %>% unique() %>% as.data.frame()
