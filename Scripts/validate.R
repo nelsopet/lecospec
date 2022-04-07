@@ -4,7 +4,7 @@ require(sf)
 # Get some results to work with
 
 test_path <- "./Data/Ground_Validation/TwelveMileGulchQuads1.envi"
-model_path <- "C:/Users/kenne/Documents/GitHub/lecospec/Output/E_003_Pred_Model_RandomForest_FncGrp1_1000trees.rda"
+model_path <- "C:/Users/kenne/Documents/GitHub/lecospec/Output/E_003_Pred_Model_RandomForest_FncGrp2_1000trees.rda"
 
 ml_model <- load_model(model_path)
 bandnames <- read.csv("./bands.csv")$x %>% as.vector()
@@ -12,7 +12,7 @@ bandnames <- read.csv("./bands.csv")$x %>% as.vector()
 tile_results <- process_tile(
     test_path, 
     ml_model, 
-    1,
+    2,
     cluster = NULL, 
     return_raster = TRUE, 
     names = bandnames,
@@ -98,7 +98,8 @@ validation_result <- validate_results(
     tm_shapes,
     validation_df,
     rjson::fromJSON(file="./pft_adj_list.json"),
-    "./pft1_template.csv"
+    "./pft2_template.csv",
+    aggregation=2
 )
 
 print(validation_df$Plant)
