@@ -121,3 +121,13 @@ Figures to make:
 Confusion matrix for training and test set (Speclib data from 80/20 split)
 
 Table of KS Statistics by Quadrat (Bold ones that are good for us, hopefully all)
+
+## PAPER TO DOS
+* ML Model with oversampling
+* Build prediction maps, 
+* validation quadrat maps,
+* bar graphs for each quadrat (human vs ML)
+* run predictions at all levels, convert to each higher level
+* Compile chi-squared test results for base and oversampled model
+* confusion matrix and training statistics (ROC?)
+

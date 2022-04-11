@@ -4,7 +4,7 @@ require(sf)
 # Get some results to work with
 
 test_path <- "./Data/Ground_Validation/TwelveMileGulchQuads1.envi"
-model_path <- "C:/Users/kenne/Documents/GitHub/lecospec/Output/E_003_Pred_Model_RandomForest_FncGrp1_1000trees.rda"
+model_path <- "C:/Users/kenne/Documents/GitHub/lecospec/Output/E_003_Pred_Model_RandomForest_FncGrp2_1000trees.rda"
 
 ml_model <- load_model(model_path)
 bandnames <- read.csv("./bands.csv")$x %>% as.vector()
@@ -12,7 +12,7 @@ bandnames <- read.csv("./bands.csv")$x %>% as.vector()
 tile_results <- process_tile(
     test_path, 
     ml_model, 
-    1,
+    2,
     cluster = NULL, 
     return_raster = TRUE, 
     names = bandnames,
@@ -28,6 +28,7 @@ print(raster::crs(tile_results))
 shapefile_path <- "Data/Vectors/TwelveMileQ0_10_20_30_40m.shp"
 tm_shapes <- sf::st_read(shapefile_path)
 tm_shapes$CLASS_NAME <- gsub("0m", "0", tm_shapes$CLASS_NAME)
+print(tm_shapes$CLASS_NAME)
 print(tm_shapes)
 plot(tm_shapes,  add = TRUE)
 extracted_quads <- raster::extract(tile_results, tm_shapes) %>% as.data.frame()
@@ -98,8 +99,8 @@ validation_aggregates <- validate_results(
     tm_shapes,
     validation_df,
     rjson::fromJSON(file="./pft_adj_list.json"),
-    "./pft1_template.csv",
-    aggregation = 1
+    "./pft2_template.csv",
+    aggregation = 2
 )
 
 chi_squared_results <- apply_chi_squared_test(
@@ -117,7 +118,7 @@ change_aggregation(validation_df$Plant, 1, pft_conv)
 
 
 plot_prop_test <- plot_quadrat_proportions(
-    validation_aggregates[[1]], filter_missing = TRUE)
+    validation_aggregates[[2]], filter_missing = TRUE)
 
 windows();plot_prop_test
 
