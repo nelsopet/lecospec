@@ -84,7 +84,7 @@ ALT: There is a difference in the distributions
 
 ## Stats
 * Kolmogorov-Smirnov - make test work in R (done)
-* ADDN: Should probably be Chi Square - 
+* ADDN: Should probably be Chi Square - (done)
 * Think about monthly working group
 
 Link

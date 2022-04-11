@@ -117,7 +117,7 @@ change_aggregation(validation_df$Plant, 1, pft_conv)
 
 
 plot_prop_test <- plot_quadrat_proportions(
-    validation_aggregates[[5]], filter_missing = TRUE)
+    validation_aggregates[[1]], filter_missing = TRUE)
 
 windows();plot_prop_test
 
