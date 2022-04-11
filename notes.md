@@ -68,3 +68,56 @@ preprocess_raster_to_df <- function(raster_obj, model) {
 * 7 minutes for BG Quads with filter step
 * 4 minutes for BG Quads without filter step
 * less than 1 minute as a block (process_tile) with sampling instead of raster::values()
+
+
+## PLots, Paper, Science, etc.
+
+Eight Mile & Bison Gulch are in south of Alaska, Twelve Mile is farther North.  There are several sites where there is no
+
+NULL: No difference between Human dist and ML dist
+ALT: There is a difference in the distributions
+
+### Plots:
+  Within a quadrat: what is
+  * Bar graph of human vs ML prediction counts
+  * Map of Output - Leaflet? base::plot?
+
+## Stats
+* Kolmogorov-Smirnov - make test work in R (done)
+* ADDN: Should probably be Chi Square - 
+* Think about monthly working group
+
+Link
+Hyperspectral ML jobs in SF; Orbital Sidekick
+
+Variable Importance
+Confusion Matrix - from train/test split on speclib, or similar
+Bar plots of Human vs ML distributions (DONE)
+Big Maps of predictions 
+
+Figure with quadrat image, the ML prediction, and the UAV RGB image.
+
+Tables: KS Test for each Quadrat (DATA MADE)
+PFT/Species/etc. Class counts (show class imbalance). 
+
+MAKE ALL THE FIGs!
+
+
+
+15:26:20 From  Peter Nelson  to  Everyone:
+	https://www.linkedin.com/jobs/view/2919090475/?refId=bdf6e33b-18fb-4262-a3b5-161d7fc7c8c7
+15:31:05 From  Peter Nelson  to  Everyone:
+	https://docs.google.com/document/d/1-59adFWLILCFU98shE1v192DMQrfw_2DXGmtV68LfJY/edit?usp=sharing
+
+
+
+Figures to make: 
+    Variable Importance - Peter has code for this I think
+    Confusion Matrix - from train/test split on speclib, or similar (existing code?)
+    Bar plots of Human vs ML distributions (ggplot function, match key to maps)
+    Big Maps - get this working
+    Figure with quadrat image, the ML prediction, and the UAV RGB image. -see example from slideshow
+
+Confusion matrix for training and test set (Speclib data from 80/20 split)
+
+Table of KS Statistics by Quadrat (Bold ones that are good for us, hopefully all)

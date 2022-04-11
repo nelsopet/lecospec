@@ -4,7 +4,7 @@ require(sf)
 # Get some results to work with
 
 test_path <- "./Data/Ground_Validation/TwelveMileGulchQuads1.envi"
-model_path <- "C:/Users/kenne/Documents/GitHub/lecospec/Output/E_003_Pred_Model_RandomForest_FncGrp2_1000trees.rda"
+model_path <- "C:/Users/kenne/Documents/GitHub/lecospec/Output/E_003_Pred_Model_RandomForest_FncGrp1_1000trees.rda"
 
 ml_model <- load_model(model_path)
 bandnames <- read.csv("./bands.csv")$x %>% as.vector()
@@ -12,7 +12,7 @@ bandnames <- read.csv("./bands.csv")$x %>% as.vector()
 tile_results <- process_tile(
     test_path, 
     ml_model, 
-    2,
+    1,
     cluster = NULL, 
     return_raster = TRUE, 
     names = bandnames,
@@ -91,22 +91,39 @@ tm_shapes$CLASS_NAME <- c(
 pft1_template <- build_validation_template(pft_table)
 pft_conv <- build_adjacency_list(pft_path)
 print(pft_conv)
-source("./Functions/lecospectR.R")
 
-validation_result <- validate_results(
+source("./Functions/lecospectR.R")
+validation_aggregates <- validate_results(
     tile_results,
     tm_shapes,
     validation_df,
     rjson::fromJSON(file="./pft_adj_list.json"),
-    "./pft2_template.csv",
-    aggregation=2
+    "./pft1_template.csv",
+    aggregation = 1
 )
 
+chi_squared_results <- apply_chi_squared_test(
+    validation_aggregates = validation_aggregates
+    )
+KS_results <- apply_KS_test(
+    validation_aggregates = validation_aggregates
+    )
+
+print(chi_squared_results)
+print(KS_results)
 print(validation_df$Plant)
 validation_df <- read.csv(validation_data_path, na.strings=c("NA", "n/a"))
 change_aggregation(validation_df$Plant, 1, pft_conv)
 
 
+plot_prop_test <- plot_quadrat_proportions(
+    validation_aggregates[[5]], filter_missing = TRUE)
+
+windows();plot_prop_test
+
+
+
+plot(plot_prop_test)
 print(summary(validation_df))
 
 print(validation_result)

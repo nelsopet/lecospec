@@ -13,6 +13,7 @@ require(rgdal)
 require(gdalUtils)
 require(snow)
 require(doSNOW)
+require(stats)
 
 
 #' Functions returns columns that are bandpasses
@@ -2521,61 +2522,86 @@ validate_results <- function(
 
         # prediction 
         predictions <- convert_pft_codes(quadrat_df, aggregation_level = aggregation_level, to="string")
-        
 
-
-        #predictions$z <- change_aggregation(
-        #    predictions$z,
-        #    aggregation_level = aggregation_level,
-        #    pft_key
-        #) %>% as.vector()
-
-
-        
         # extract the validation data for this quadrat
         quadrat_validation_df <- get_prediction_distribution(predictions) %>% as.data.frame()
-        #quadrat_validation_df$quadrat <- quadrat_shape$CLASS_NAME
-        #quadrat_validation_df$quadrat_id <- quadrat_shape$CLASS_ID
 
         filtered_validation_df <- validation_table[validation_table$UID == quadrat_shape$CLASS_NAME, ]
+        print("Dimensions of Validation Data before changing aggregation")
+        print(dim(filtered_validation_df))
 
+
+        #print(head(filtered_validation_df))
         filtered_validation_df$Plant <- change_aggregation(
             filtered_validation_df$Plant,
             aggregation_level = aggregation_level,
             pft_key
         ) %>% as.vector()
 
+        print("Dimensions of Validation Data after changing aggregation")
+        print(dim(filtered_validation_df))
+
+
+
+        #print(head(filtered_validation_df))
         # aggregate the predictions and validation using the template
         aggregated_results <- aggregate_result_template(
             quadrat_validation_df,
-            validation_table,
+            filtered_validation_df,
             template)
+
+        print(aggregated_results)
         
-        chi_square_results <- chisq.test(
-            aggregated_results$validation_counts,
-            aggregated_results$predicted_counts)
-        
-        results[[i]] <- chi_square_results
-        print(chi_square_results)
+        results[[i]] <- aggregated_results
     }
 
     return(results)
  }
+
+ apply_chi_squared_test <- function(validation_aggregates){
+     results <- lapply(
+         validation_aggregates, 
+         function(aggregated_results){
+            return( chisq.test(
+                aggregated_results$validation_counts,
+                aggregated_results$predicted_counts)
+            )
+         }
+     )
+ }
+
+apply_KS_test <- function(validation_aggregates, type="two.sided", use_monte_carlo = FALSE, exact_p = NULL){
+    
+   return(
+        lapply(
+            validation_aggregates,
+            function(aggregated_results){
+                prediction_cdf <- cumsum(aggregated_results$prediction_prop)
+                validation_cdf <- cumsum(aggregated_results$validation_prop)
+                return( ks.test(
+                    prediction_cdf,
+                    validation_cdf,
+                    alternative=type,
+                    exact = exact_p,
+                    simulate.p.value = use_monte_carlo
+                    )
+                )
+            }
+        )
+    )
+}
 
 
  aggregate_result_template <- function(df, validation_df, input_template ){
     num_rows_df <- nrow(df)
     num_rows_template <- nrow(input_template)
     num_rows_validation <- nrow(validation_df)
+    print("Number of Validation Rows:")
+    print(num_rows_validation)
     num_observations <- sum(df$n)
     
     # copy the template
     template <- data.frame(input_template)
-
-
-
-    #print(df)
-    #print(validation_df)
 
     # iterate over the template to match the data from the two other inputs
     for(template_row_idx in 1:num_rows_template){
@@ -2588,15 +2614,21 @@ validate_results <- function(
         }
         # iterate over validation
         for(val_row_idx in 1:num_rows_validation){
-            #print(paste0("Template: ", template$key[[template_row_idx]], "\t\t Validation: ", validation_df$Plant[[val_row_idx]], "."))
-            if(tolower(template$key[[template_row_idx]]) == tolower(validation_df$Plant[[val_row_idx]])){
-                template[[template_row_idx, "validation_counts"]] <- (validation_df[[val_row_idx, "cover_prn"]] * num_observations * 0.01)
-                template[[template_row_idx, "validation_prop"]] <- (validation_df[[val_row_idx, "cover_prn"]] * 0.01)
+            if(template[[template_row_idx, "key"]] == validation_df[[val_row_idx, "Plant"]]){
+                # store values
+                current_count <- template[[template_row_idx, "validation_counts"]]
+                current_prop <- template[[template_row_idx, "validation_prop"]]
+                validation_raw <- validation_df[[val_row_idx, "cover_prn"]]
+                # convert NAs to 0's
+                additional_prop <- if(!is.na(validation_raw)) (validation_raw * 0.01) else 0.0 # ternary
+                #print(additional_prop)
+                # aggregate
+                template[[template_row_idx, "validation_counts"]] <- current_count + (additional_prop * num_observations)
+                template[[template_row_idx, "validation_prop"]] <- current_prop + additional_prop
             }
         }
     }
 
-    print(summary(template))
     return(template)
  }
 
@@ -2611,3 +2643,68 @@ build_validation_template <- function(df, col = 5){
 
     return(pft_template) 
 }
+
+
+plot_aggregates <- function(validation_aggregates){
+    require(ggplot)
+
+
+
+    return(NULL)
+}
+
+filter_aggregate <- function(quadrat_aggregate){
+    data <- data.frame(quadrat_aggregate)
+    pft_to_exclude <- (data$predicted_counts == 0) & (data$validation_counts == 0)
+    data <- data[!pft_to_exclude,]
+
+    return(data)
+}
+
+to_validation_tibble <- function(df){
+
+}
+
+plot_quadrat_counts <- function(quadrat_aggregate, filter_missing = TRUE){
+    data <- data.frame(quadrat_aggregate)
+    if(filter_missing){
+        data <- filter_aggregate(quadrat_aggregate)
+    }
+
+    plot <- ggplot2::ggplot(data = data, mapping = ggplot2::aes(
+        x=data$key,
+
+
+    ))
+
+    return ( plot )
+}
+
+plot_quadrat_proportions <- function(quadrat_aggregate, filter_missing = TRUE){
+    data <- data.frame(quadrat_aggregate)
+    if(filter_missing){
+        data <- filter_aggregate(data)
+    }
+
+    print("Checking Predicted Proportions (should sum to 1)")
+    print(sum(data$prediction_prop))
+    print("Checking Validation Proportions (should sum to 1)")
+    print(sum(data$validation_prop))
+
+    data_tall <- tidyr::pivot_longer(
+        data = data,
+        cols = ends_with("_prop"),
+        names_to = "Legend",
+        values_to = "Proportion"
+    )
+
+    plot <- ggplot2::ggplot(data = data_tall, mapping = ggplot2::aes(
+        key,
+        Proportion,
+        fill = Legend
+    )) + geom_bar(stat="identity", position = position_dodge())
+
+    return( plot )
+}
+
+
