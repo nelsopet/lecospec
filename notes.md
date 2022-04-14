@@ -131,3 +131,10 @@ Table of KS Statistics by Quadrat (Bold ones that are good for us, hopefully all
 * Compile chi-squared test results for base and oversampled model
 * confusion matrix and training statistics (ROC?)
 
+### Graphics
+* white background
+* Title: will be removed anyway
+* Legend:
+  * set the legend to "Validation" and "Prediction"
+* Axis Labels:
+  * 

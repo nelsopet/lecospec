@@ -1,0 +1,85 @@
+[[1]]
+
+	Pearson's Chi-squared test
+
+data:  aggregated_results$validation_counts and aggregated_results$predicted_counts
+X-squared = 52.19, df = 35, p-value = 0.03092
+
+
+[[2]]
+
+	Pearson's Chi-squared test
+
+data:  aggregated_results$validation_counts and aggregated_results$predicted_counts
+X-squared = 72.982, df = 35, p-value = 0.0001745
+
+
+[[3]]
+
+	Pearson's Chi-squared test
+
+data:  aggregated_results$validation_counts and aggregated_results$predicted_counts
+X-squared = 52.076, df = 42, p-value = 0.1371
+
+
+[[4]]
+
+	Pearson's Chi-squared test
+
+data:  aggregated_results$validation_counts and aggregated_results$predicted_counts
+X-squared = 6.5401, df = 25, p-value = 0.9999
+
+
+[[5]]
+
+	Pearson's Chi-squared test
+
+data:  aggregated_results$validation_counts and aggregated_results$predicted_counts
+X-squared = 64.902, df = 30, p-value = 0.0002258
+
+
+[[1]]
+
+	Two-sample Kolmogorov-Smirnov test
+
+data:  prediction_cdf and validation_cdf
+D = 0.30769, p-value = 0.1705
+alternative hypothesis: two-sided
+
+
+[[2]]
+
+	Two-sample Kolmogorov-Smirnov test
+
+data:  prediction_cdf and validation_cdf
+D = 0.26923, p-value = 0.3027
+alternative hypothesis: two-sided
+
+
+[[3]]
+
+	Two-sample Kolmogorov-Smirnov test
+
+data:  prediction_cdf and validation_cdf
+D = 0.30769, p-value = 0.1705
+alternative hypothesis: two-sided
+
+
+[[4]]
+
+	Two-sample Kolmogorov-Smirnov test
+
+data:  prediction_cdf and validation_cdf
+D = 0.42308, p-value = 0.01905
+alternative hypothesis: two-sided
+
+
+[[5]]
+
+	Two-sample Kolmogorov-Smirnov test
+
+data:  prediction_cdf and validation_cdf
+D = 0.26923, p-value = 0.3027
+alternative hypothesis: two-sided
+
+

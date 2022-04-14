@@ -2702,7 +2702,9 @@ plot_quadrat_proportions <- function(quadrat_aggregate, filter_missing = TRUE){
         key,
         Proportion,
         fill = Legend
-    )) + geom_bar(stat="identity", position = position_dodge())
+    )) + 
+    geom_bar(stat="identity", position = position_dodge()) + 
+    theme(axis.text.x = element_text(angle=90,hjust=1,vjust=1))
 
     return( plot )
 }
