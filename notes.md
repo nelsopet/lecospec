@@ -138,3 +138,36 @@ Table of KS Statistics by Quadrat (Bold ones that are good for us, hopefully all
   * set the legend to "Validation" and "Prediction"
 * Axis Labels:
   * 
+
+
+## Initial validation, sigma-squared = 0/05 (from Python)
+
+--- Test results comparison ---
+Base Model (Class Imbalance):
+Accuracy: 	0.8181818181818182
+F1 Score: 	0.8132308808362528
+Augmented Model (Added noise, No Class Imbalance):
+Accuracy: 	0.8021390374331551
+F1 Score: 	0.8001035646968662
+
+## Initial validation, sigma-squared = 0.01 (from Python)
+--- Test results comparison ---
+Base Model (Class Imbalance):
+Accuracy: 	0.8074866310160428
+F1 Score: 	0.8011627810438554
+Augmented Model (Added noise, No Class Imbalance):
+Accuracy: 	0.8288770053475936
+F1 Score: 	0.8265283365715491
+
+
+
+
+
+# ABoVE Science Meeting 
+
+
+Run functional group 2 models with noise
+
+semivariogram, mean distance between pixels of each plant functional type
+
+facebook is for humans

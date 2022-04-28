@@ -3,8 +3,9 @@ require(sf)
 
 # Get some results to work with
 
-test_path <- "./Data/Ground_Validation/TwelveMileGulchQuads1.envi"
-model_path <- "C:/Users/kenne/Documents/GitHub/lecospec/Output/E_003_Pred_Model_RandomForest_FncGrp1_1000trees.rda"
+test_path <- "./Data/Ground_Validation/TwelveMileGulchQuads2.envi"
+model_path_base <- "C:/Users/kenne/Documents/GitHub/lecospec/Output/E_003_Pred_Model_RandomForest_FncGrp1_1000trees.rda"
+model_path <- "C:/Users/kenne/Documents/GitHub/lecospec/Output/RandomForest_FncGrp1_1000trees_augmented.rda"
 
 ml_model <- load_model(model_path)
 bandnames <- read.csv("./bands.csv")$x %>% as.vector()
@@ -25,18 +26,32 @@ print(tile_results)
 print(raster::crs(tile_results))
 
 # separate the quadrats
-shapefile_path <- "Data/Vectors/TwelveMileQ0_10_20_30_40m.shp"
+EightMileShapes <- "Data/Vectors/EightMile_Quadrats_ALL.shp"
+shapefile_path <- "Data/Vectors/TwelveMileQ70_80_90_100m.shp"
+path <- ""
 tm_shapes <- sf::st_read(shapefile_path)
-tm_shapes$CLASS_NAME <- gsub("0m", "0", tm_shapes$CLASS_NAME)
-tm_shapes$CLASS_NAME <- c(
+print(tm_shapes$CLASS_NAME)
+
+twelve_mile_names_1 <- c(
     "Twelvemile40",
     "Twelvemile30",
     "Twelvemile20",
     "Twelvemile10",
     "Twelvemile0"
 )
+twelve_mile_names_2 <- c(
+    "Twelvemile100",
+    "Twelvemile90",
+    "Twelvemile80",
+    "Twelvemile70"
+)
+tm_shapes$CLASS_NAME <- twelve_mile_names_2
 
+bison_gulch_names <- c(
+    "Eightmile0",
+)
 
+tm_shapes
 # load the validation data
 validation_data_path <- "Data/Ground_Validation/QuadratEstimates/Lab_quadrat_cover_2019_Raw.csv"
 validation_df <- read.csv(validation_data_path, na.strings=c("NA", "n/a"))
@@ -106,22 +121,22 @@ KS_results <- apply_KS_test(
     validation_aggregates = validation_aggregates
     )
 
-sink(file = "./figures/twelveMile1/FG1/testResults.txt", append=TRUE)
+sink(file = "./figures/twelveMile2/FG1/testResults.txt", append=TRUE)
 print(chi_squared_results)
 print(KS_results)
 sink(NULL)
 
 print(validation_df$Plant)
 validation_df <- read.csv(validation_data_path, na.strings=c("NA", "n/a"))
-change_aggregation(validation_df$Plant, 1, pft_conv)
+change_aggregation(validation_df$Plant, 2, pft_conv)
 
 
 plot_prop_test <- plot_quadrat_proportions(
-    validation_aggregates[[5]], filter_missing = TRUE)
+    validation_aggregates[[4]], filter_missing = TRUE)
 
 windows();plot_prop_test
 
-ggsave("fg1_bar_5.png", device=png, path = "./figures/twelveMile1/FG1/")
+ggsave("fg1_bar_4.png", device = png, path = "figures/twelveMile2/FG1/Augmented/")
 
 plot(plot_prop_test)
 print(summary(validation_df))

@@ -2450,6 +2450,7 @@ get_prediction_distribution <- function(prediction_df){
     return(df)
 }
 
+
 separate_quadrats <- function(prediction_ras){
 
 }

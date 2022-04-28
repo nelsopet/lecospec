@@ -7,7 +7,9 @@ library(tidyverse)
 # Spectral Library
 # Output/C_001_SC3_Cleaned_SpectralLib.csv
 #SpecLib_derivs<-read.csv("Output/C_001_SC3_Cleaned_SpectralLib.csv")
-SpecLib_derivs<-read.csv("Output/D_002_SpecLib_Derivs.csv")
+base_data_path <- "Output/D_002_SpecLib_Derivs.csv"
+augmented_data_path <- "./mle/trainingData.csv"
+SpecLib_derivs<-read.csv(base_data_path)
 #SpecLib_derivs<-read.csv("Output/resampled/D_002_SpecLib_Derivs.csv")
 #SpecLib_derivs<-read.csv("Output/resampled/FncGrp2/D_002_SpecLib_Derivs.csv")
 summary(SpecLib_derivs)
@@ -16,7 +18,16 @@ summary(SpecLib_derivs)
 #  dplyr::filter(Functional_group1 == "Shrub_Alder" & `1890`<0.15) %>% dim()
 
 metadata_columns_dropped <- c(
-
+  "ScanID", "Area", "Code_name", "Species_name", "Functional_group1",
+  "Functional_group2", "Species_name_Freq", "Functional_group1_Freq",
+  "Functional_group2_Freq", "Genus", "Version", "File.Name.1", "Instrument",
+  "Detectors", "Measurement", "Date", "Time", "Battery.Voltage.1", "Averages",
+  "Integration1", "Integration2", "Integration3", "Dark.Mode.1", "Foreoptic",
+  "Radiometric.Calibration.1", "Units", "Latitude", "Longitude", "Altitude",
+  "GPS.Time.1", "Satellites", "Calibrated.Reference.Correction.File.1",
+  "Channels", "File.Name", "Battery.Voltage", "Dark.Mode",
+  "Radiometric.Calibration", "GPS.Time",
+  "Calibrated.Reference.Correction.File"
 )
 
 print(colnames(SpecLib_derivs)[1:40])
@@ -57,6 +68,7 @@ rf_mod_ranger_FncGrp1_pred<-ranger::ranger(
   Classes ~ .,
   data = SpecLib_derivs_Fnc1,
   num.trees = 1000)#,local.importance = "impurity_corrected" ) # OOB prediction error:             25.93 %
+
 
 rf_mod_ranger_FncGrp2_pred<-ranger::ranger(
   Classes ~ .,

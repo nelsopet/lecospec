@@ -1,13 +1,13 @@
 [general]
 creator=R package 'raster'
-created=2022-04-14 09:42:05
+created=2022-04-28 10:55:40
 [georeference]
-nrows=193
-ncols=672
-xmin=-145.979013693
-ymin=65.4018077930019
-xmax=-145.978189347014
-ymax=65.401906458
+nrows=164
+ncols=663
+xmin=-145.980242255
+ymin=65.4019587860001
+xmax=-145.979571628001
+ymax=65.402027917
 projection=+proj=longlat +datum=WGS84 +no_defs
 [data]
 datatype=INT2U
@@ -16,7 +16,7 @@ nbands=1
 bandorder=BIL
 categorical=FALSE
 minvalue=1
-maxvalue=8
+maxvalue=6
 nodatavalue=65535
 [legend]
 legendtype=
