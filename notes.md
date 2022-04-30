@@ -171,3 +171,29 @@ Run functional group 2 models with noise
 semivariogram, mean distance between pixels of each plant functional type
 
 facebook is for humans
+
+**plot**:
+Scatterplot, color of the dots are pft
+predicted on y
+validation on x 
+
+From M2: should have something per class (global pooling)
+
+Spatial statistics: average patch size, semivariance in all four directions, omni-directional is best?  This across patch sizes as well.
+
+Histogram of patch size, weighted patch sizes
+
+lecospectR package: part of the presentation should be release of the package
+
+lightning talk remotely instead - example quadrats, aggregate statisics, site map
+
+Look into HPC at NASA Adapt.  
+
+
+## Private Sector stuff
+Practicality of private sector 
+
+
+Need to do tree stuff soon, too.
+R packages for segmentation, 
+shiny app called tree top
