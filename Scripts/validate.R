@@ -3,7 +3,7 @@ require(sf)
 
 # Get some results to work with
 
-test_path <- "./Data/Ground_Validation/TwelveMileGulchQuads2.envi"
+test_path <- "./Data/Ground_Validation/BisonGulchQuads.envi"
 model_path_base <- "C:/Users/kenne/Documents/GitHub/lecospec/Output/E_003_Pred_Model_RandomForest_FncGrp1_1000trees.rda"
 model_path <- "C:/Users/kenne/Documents/GitHub/lecospec/Output/RandomForest_FncGrp1_1000trees_augmented.rda"
 
@@ -20,17 +20,32 @@ tile_results <- process_tile(
     save_path = "./test_raster_save.grd", 
     suppress_output = FALSE)
 
-plot(tile_results)
+
+# plot the shapefiles over the quadrats
+windows();plot(tile_results)
 print(tile_results)
+
+print(tm_shapes[1])
+plot(tm_shapes[2,1], add=TRUE)
 
 print(raster::crs(tile_results))
 
 # separate the quadrats
 EightMileShapes <- "Data/Vectors/EightMile_Quadrats_ALL.shp"
-shapefile_path <- "Data/Vectors/TwelveMileQ70_80_90_100m.shp"
+shapefile_path <- "Data/Vectors/EightMile_Quadrats_ALL.shp"
+bison_gulch_path <- "Data/Vectors/Bisoon_Quadrats.shp"
+#"Data/Vectors/TwelveMileQ70_80_90_100m.shp"
 path <- ""
-tm_shapes <- sf::st_read(shapefile_path)
+tm_shapes <- sf::st_read(bison_gulch_path)
 print(tm_shapes$CLASS_NAME)
+plot(tm_shapes)
+fg1_RAT <- read.csv("fg1Rat.csv")
+print(levels(tile_results))
+print(fg1_RAT)
+levels(tile_results) <- fg1_RAT
+
+plot(tile_results)
+
 
 twelve_mile_names_1 <- c(
     "Twelvemile40",
@@ -45,11 +60,31 @@ twelve_mile_names_2 <- c(
     "Twelvemile80",
     "Twelvemile70"
 )
-tm_shapes$CLASS_NAME <- twelve_mile_names_2
+
+# there is no Eight Mile Validation Data!
+eight_mile_names <- c(
+    "Eightmile60",
+    "Eightmile50",
+    "Eightmile40",
+    "Eightmile30",
+    "Eightmile20",
+    "Eightmile10",
+    "Eightmile0"
+)
 
 bison_gulch_names <- c(
-    "Eightmile0",
+    "Bisongulch0",
+    "Bisongulch70",
+    "Bisongulch80",
+    "Bisongulch10",
+    "Bisongulch90",
+    "Bisongulch20",
+    "Bisongulch50",
+    "Bisongulch30",
+    "Bisongulch40"
 )
+
+tm_shapes$CLASS_NAME <- bison_gulch_names
 
 tm_shapes
 # load the validation data
@@ -74,6 +109,8 @@ write(jsonData, "./pft_adj_list.json")
 
 # filter to 
 head(bison_gulch_quad_validation)
+
+# plot the shapefiles over the quadrats
 
 
 # build a validation template
@@ -121,7 +158,7 @@ KS_results <- apply_KS_test(
     validation_aggregates = validation_aggregates
     )
 
-sink(file = "./figures/twelveMile2/FG1/testResults.txt", append=TRUE)
+sink(file = "./figures/BisonGulch/FG1/Augmented/testResults.txt", append=TRUE)
 print(chi_squared_results)
 print(KS_results)
 sink(NULL)
@@ -130,16 +167,25 @@ print(validation_df$Plant)
 validation_df <- read.csv(validation_data_path, na.strings=c("NA", "n/a"))
 change_aggregation(validation_df$Plant, 2, pft_conv)
 
+#num_quadrats <- length(tm_shapes$CLASS_NAME)
+
+for(i in seq_along(tm_shapes$CLASS_NAME)){
+
+}
+
+windows()
+rasterVis::levelplot(raster::crop(tile_results, tm_shapes[1,1]))
 
 plot_prop_test <- plot_quadrat_proportions(
-    validation_aggregates[[4]], filter_missing = TRUE)
+    validation_aggregates[[1]], filter_missing = TRUE)
 
 windows();plot_prop_test
 
-ggsave("fg1_bar_4.png", device = png, path = "figures/twelveMile2/FG1/Augmented/")
+ggsave("fg1_bar_1.png", device = png, path = "figures/BisonGulch/FG1/Augmented/")
 
 plot(plot_prop_test)
 print(summary(validation_df))
 
 print(validation_result)
 
+windows();rasterVis::levelplot(tile_results)

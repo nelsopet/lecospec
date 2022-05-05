@@ -14,6 +14,7 @@ require(gdalUtils)
 require(snow)
 require(doSNOW)
 require(stats)
+require(rasterVis)
 
 
 #' Functions returns columns that are bandpasses
@@ -2518,6 +2519,8 @@ validate_results <- function(
         png(paste0("./test_plot_", i, ".png"))
         plot(quadrat_ras)
         dev.off()
+
+        windows();rasterVis::levelplot(quadrat_ras)
         
         quadrat_df <- raster::rasterToPoints(quadrat_ras) %>% as.data.frame()
 
@@ -2681,7 +2684,13 @@ plot_quadrat_counts <- function(quadrat_aggregate, filter_missing = TRUE){
     return ( plot )
 }
 
-plot_quadrat_proportions <- function(quadrat_aggregate, filter_missing = TRUE){
+plot_quadrat_proportions <- function(quadrat_aggregate, filter_missing = TRUE, plot_options = list(
+    title = "Prediction and Validation",
+    xLabel = "Plant Functional Type",
+    yLabel = "Proportion",
+    legend = c("Prediction", "Validation"),
+    legendTitle = ""
+)){
     data <- data.frame(quadrat_aggregate)
     if(filter_missing){
         data <- filter_aggregate(data)
@@ -2704,10 +2713,36 @@ plot_quadrat_proportions <- function(quadrat_aggregate, filter_missing = TRUE){
         Proportion,
         fill = Legend
     )) + 
+    theme_minimal() + 
+    #scale_fill_manual(values=c("#8aedff", "#a3000b")) + 
+    labs(title = plot_options$title, x = plot_options$xLabel, y = plot_options$yLabel) + 
+    scale_fill_discrete(name = plot_options$legendTitle, labels = plot_options$legend) +
+
     geom_bar(stat="identity", position = position_dodge()) + 
     theme(axis.text.x = element_text(angle=90,hjust=1,vjust=1))
 
     return( plot )
 }
+
+
+define_plot_options <- function(
+    title = "",
+    xLable = "Plant Functional Type",
+    yLabel = "Proportion",
+    legend = c("Prediction", "Validation"),
+    legendTitle = "Legend",
+    save_location = NULL
+){
+    return( list(
+        title = title,
+        xLabel = yLabel,
+        yLabel = xLabel,
+        legend = legend,
+        legendTitle = legendTitle,
+        saveLocation = saveLocation
+    ))
+}
+
+# plots the raster object wioth ggplot using theme_void
 
 
