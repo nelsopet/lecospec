@@ -4,7 +4,7 @@
     "x_tiles": 2,
     "y_tiles": 2,
     "tile_path": "./tiles/",
-    "model_path": "./Output/E_003_Pred_Model_RandomForest_FncGrp1_1000trees.rda",
+    "model_path": "./mle/RandomForest_FncGrp1_1000trees_augmented.rda",
     "clusterCores": 4,
     "parallelize_by_tiles": false,
     "application": "Not yet implemented",
