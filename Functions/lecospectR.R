@@ -2649,24 +2649,12 @@ build_validation_template <- function(df, col = 5){
 }
 
 
-plot_aggregates <- function(validation_aggregates){
-    require(ggplot)
-
-
-
-    return(NULL)
-}
-
 filter_aggregate <- function(quadrat_aggregate){
     data <- data.frame(quadrat_aggregate)
     pft_to_exclude <- (data$predicted_counts == 0) & (data$validation_counts == 0)
     data <- data[!pft_to_exclude,]
 
     return(data)
-}
-
-to_validation_tibble <- function(df){
-
 }
 
 plot_quadrat_counts <- function(quadrat_aggregate, filter_missing = TRUE){
@@ -2677,8 +2665,6 @@ plot_quadrat_counts <- function(quadrat_aggregate, filter_missing = TRUE){
 
     plot <- ggplot2::ggplot(data = data, mapping = ggplot2::aes(
         x=data$key,
-
-
     ))
 
     return ( plot )
