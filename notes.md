@@ -197,3 +197,15 @@ Practicality of private sector
 Need to do tree stuff soon, too.
 R packages for segmentation, 
 shiny app called tree top
+Welch's heteroscedastic F test, Welch's heteroscedastic F test with trimmed means and Winsorized variances, Brown-Forsythe test, Alexander-Govern test, James second order test and Kruskal-Wallis test,
+
+Aboitic: #ffffff
+Forb: #db2a53
+Graminoid: #c9ae69
+Lichen: #faf87d
+Moss: #7dfaf8
+ShrubDecid: #69876b
+EvergreenShrub: #db2ad2
+TreeConifer: #2ac4db
+TreeBroadleaf: #03fc2c
+Unknown: #000000

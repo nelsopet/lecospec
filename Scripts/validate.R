@@ -5,7 +5,7 @@ require(sf)
 
 test_path <- "./Data/Ground_Validation/BisonGulchQuads.envi"
 model_path_base <- "C:/Users/kenne/Documents/GitHub/lecospec/Output/E_003_Pred_Model_RandomForest_FncGrp1_1000trees.rda"
-model_path <- "C:/Users/kenne/Documents/GitHub/lecospec/Output/RandomForest_FncGrp1_1000trees_augmented.rda"
+model_path <- "C:/Users/kenne/Documents/GitHub/lecospec/mle/RandomForest_FncGrp1_1000trees_augmented.rda"
 
 ml_model <- load_model(model_path)
 bandnames <- read.csv("./bands.csv")$x %>% as.vector()
@@ -158,7 +158,7 @@ KS_results <- apply_KS_test(
     validation_aggregates = validation_aggregates
     )
 
-sink(file = "./figures/BisonGulch/FG1/Augmented/testResults.txt", append=TRUE)
+sink(file = "./figures/BisonGulch/FG1/Augmented/testResults.txt", append = TRUE)
 print(chi_squared_results)
 print(KS_results)
 sink(NULL)
@@ -170,7 +170,16 @@ change_aggregation(validation_df$Plant, 2, pft_conv)
 #num_quadrats <- length(tm_shapes$CLASS_NAME)
 
 for(i in seq_along(tm_shapes$CLASS_NAME)){
+    plot_prop_test <- plot_quadrat_proportions(
+        validation_aggregates[[i]], 
+        filter_missing = TRUE)
 
+    #windows();plot_prop_test
+
+    ggsave(
+        paste0("fg1_bar_", i, ".png"), 
+        device = png, 
+        path = "figures/BisonGulch/FG1/Augmented/")
 }
 
 windows()
@@ -189,3 +198,5 @@ print(summary(validation_df))
 print(validation_result)
 
 windows();rasterVis::levelplot(tile_results)
+
+windows();

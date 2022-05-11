@@ -2321,7 +2321,6 @@ merge_tiles_gdal <- function(
             ot = "UInt16",
             output_raster = return_raster)
     return(output)
-
 }
 
 
@@ -2413,19 +2412,26 @@ build_adjacency_list <- function(filepath) {
 enum_pfts <- function(pft){
     if(pft == 1){
         return("Functional_Group1")
-    } else if(pft == 2){
+    }
+    if(pft == 2){
         return("Functional_Group2")
-    } else if(pft == 3){
+    }
+    if(pft == 3){
         return("Genus")
-    } else if(pft == 4){
+    } 
+    if(pft == 4){
         return("Species")
-    } else if(pft == "Functional_Group1"){
+    } 
+    if(pft == "Functional_Group1"){
         return(1)
-    } else if(pft == "Functional_Group2"){
+    } 
+    if(pft == "Functional_Group2"){
         return(2)
-    } else if( pft == "Genus"){
+    }
+    if( pft == "Genus"){
         return(3)
-    } else if( pft == "Species"){
+    } 
+    if( pft == "Species"){
         return(4)
     }
 }
@@ -2503,8 +2509,6 @@ validate_results <- function(
  ){
     # Need to make keys shared and unique.  Really need the R equivalent of spark's RDD.reduceByKey()
     # store the results
-
-
     results <- list()
        
     for(i in 1:nrow(quadrat_shapefile)){
@@ -2515,12 +2519,28 @@ validate_results <- function(
         quadrat_shape <- quadrat_shapefile[i,]
         quadrat_ras <- raster::crop(prediction_ras, quadrat_shape)
 
+        plot_options <- define_plot_options(
+            title = paste0("Quadrat ", i, " Predictions"),
+            xLabel = "Longitude",
+            yLabel = "Latitude"
+        )
+
 
         png(paste0("./test_plot_", i, ".png"))
         plot(quadrat_ras)
         dev.off()
 
-        windows();rasterVis::levelplot(quadrat_ras)
+        #windows();
+        
+        ggsave(
+            paste0("quadrat_", i, "_plot.png"),
+            plot = plot_categorical_raster(
+                quadrat_ras,
+                colors = fg1_palette,
+                plot_options = plot_options
+            )
+        )
+
         
         quadrat_df <- raster::rasterToPoints(quadrat_ras) %>% as.data.frame()
 
@@ -2713,7 +2733,7 @@ plot_quadrat_proportions <- function(quadrat_aggregate, filter_missing = TRUE, p
 
 define_plot_options <- function(
     title = "",
-    xLable = "Plant Functional Type",
+    xLabel = "Plant Functional Type",
     yLabel = "Proportion",
     legend = c("Prediction", "Validation"),
     legendTitle = "Legend",
@@ -2725,10 +2745,72 @@ define_plot_options <- function(
         yLabel = xLabel,
         legend = legend,
         legendTitle = legendTitle,
-        saveLocation = saveLocation
+        saveLocation = save_location
     ))
 }
 
 # plots the raster object wioth ggplot using theme_void
 
 
+#Aboitic: #ffffff
+#Forb: #db2a53
+#Graminoid: #c9ae69
+#Lichen: #faf87d
+#Moss: #7dfaf8
+#ShrubDecid: #69876b
+#EvergreenShrub: #db2ad2
+#TreeConifer: #2ac4db
+#TreeBroadleaf: #03fc2c
+#Unknown: #000000
+
+
+fg1_palette <- c(
+        "#ffffff",
+        "#db2a53",
+        "#c9ae69",
+        "#faf87d",
+        "#7dfaf8",
+        "#69876b",
+        "#db2ad2",
+        "#2ac4db",
+        "#03fc2c",
+        "#000000"
+)
+
+fg1_names <- c(
+    "Abiotic",
+    "Forb",
+    "Graminoid",
+    "Lichen",
+    "Moss",
+    "ShrubDecid",
+    "ShrubEvergreen",
+    "TreeConifer",
+    "TreeBroadleaf",
+    "Unknown"
+)
+
+fg1_palette_map <- function(index) {
+    return (fg1_palette[[index]])
+}
+
+
+plot_categorical_raster <- function(ras, colors = fg1_palette, plot_options) {
+    ras_plot <- rasterVis::gplot(ras) + 
+        #coord_equal() +
+        theme_classic() +
+        labs(
+            title = plot_options$title,
+            x = plot_options$xLabel,
+            y = plot_options$yLabel,
+            color = "Plant Type"
+            ) + 
+        scale_fill_manual(
+            labels = fg1_names,
+            values = fg1_palette, 
+            ) + 
+        geom_tile(aes(fill = factor(value)))
+
+
+    return(ras_plot)
+}

@@ -12,7 +12,7 @@ medium_test <- "./Data/SubsetDatacube"
 print(date())
 quad_results <- estimate_land_cover(
     test_path, 
-    output_filepath = "./Output/em_outputs_m.grd",
+    output_filepath = "./Output/bg_outputs_m.grd",
     use_external_bands = TRUE)
 closeAllConnections()
 print(date())
