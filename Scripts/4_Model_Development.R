@@ -38,14 +38,16 @@ SpecLib_derivs_species <-
   dplyr::select(Species_name, everything()) %>% #colnames()
   dplyr::select(-ScanID:-Calibrated.Reference.Correction.File) %>% #colnames()
   dplyr::rename(Classes = Species_name) %>%
-  mutate(Classes = as.factor(Classes)) %>% as.data.frame()
+  mutate(Classes = as.factor(Classes)) %>%
+  as.data.frame()
 
 SpecLib_derivs_Fnc1<-
   SpecLib_derivs %>%
   dplyr::select(Functional_group1, everything()) %>% #colnames()
   dplyr::select(-ScanID:-Calibrated.Reference.Correction.File) %>% #colnames()
   dplyr::rename(Classes = Functional_group1) %>%
-  mutate(Classes = as.factor(Classes)) %>% as.data.frame()
+  mutate(Classes = as.factor(Classes)) %>%
+  as.data.frame()
 
 
 SpecLib_derivs_Fnc2<-
@@ -53,7 +55,8 @@ SpecLib_derivs_Fnc2<-
   dplyr::select(Functional_group2, everything()) %>% #colnames()
   dplyr::select(-ScanID:-Calibrated.Reference.Correction.File) %>% #colnames()
   dplyr::rename(Classes = Functional_group2) %>%
-  mutate(Classes = as.factor(Classes)) %>% as.data.frame()
+  mutate(Classes = as.factor(Classes)) %>%
+  as.data.frame()
 
 #Set seed for stable output
 set.seed(123)
@@ -62,23 +65,29 @@ set.seed(123)
 rf_mod_ranger_species_pred<-ranger::ranger(
   Classes ~ .,
   data = SpecLib_derivs_species,
-  num.trees = 1000)#,local.importance = "impurity_corrected" ) # OOB prediction error:             25.93 %
+  num.trees = 1000)#,local.importance = "impurity_corrected" ) 
+  # OOB prediction error:             25.93 %
 
 rf_mod_ranger_FncGrp1_pred<-ranger::ranger(
   Classes ~ .,
   data = SpecLib_derivs_Fnc1,
-  num.trees = 1000)#,local.importance = "impurity_corrected" ) # OOB prediction error:             25.93 %
+  num.trees = 1000)#,local.importance = "impurity_corrected" ) 
+  # OOB prediction error:             25.93 %
 
 
 rf_mod_ranger_FncGrp2_pred<-ranger::ranger(
   Classes ~ .,
   data = SpecLib_derivs_Fnc2,
-  num.trees = 1000)#,local.importance = "impurity_corrected" ) # OOB prediction error:             25.93 %
+  num.trees = 1000)#,local.importance = "impurity_corrected" ) 
+  # OOB prediction error:             25.93 %
 
 #rf_mod_ranger_species_pred
 #rf_mod_ranger_FncGrp1_pred
 
-write.csv(rf_mod_ranger_FncGrp1_pred$confusion.matrix, "./Output/E_003_Ranger_FncGrp1_Confusion_1000trees.csv")
+write.csv(
+  rf_mod_ranger_FncGrp1_pred$confusion.matrix,
+  "./Output/E_003_Ranger_FncGrp1_Confusion_1000trees.csv"
+  )
 
 #rf_mod_randomforest
  # Build models using 0.99 percent cutoff for corelated varibles
