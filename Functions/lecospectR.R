@@ -2369,6 +2369,11 @@ create_labels <- function(filepath, column){
     return( sort(unique(unlist(read.csv(filepath, header = TRUE)[column]))))
 }
 
+crs_from_epsg <- function(epsg_code) {
+    target_wkt <- sf::st_crs(epsg_code)[[2]]
+    target_crs <- sp::CRS(target_wkt)
+}
+
 
 project_to_epsg <- function(raster_obj, epsg_code, categorical_raster = FALSE){
     target_wkt <- sf::st_crs(epsg_code)[[2]]
@@ -2796,7 +2801,7 @@ fg1_palette_map <- function(index) {
 
 
 plot_categorical_raster <- function(ras, colors = fg1_palette, plot_options) {
-    ras_plot <- rasterVis::gplot(ras) + 
+    ras_plot <- rasterVis::gplot(ras, 1000000000) + 
         #coord_equal() +
         theme_classic() +
         labs(
@@ -2809,7 +2814,8 @@ plot_categorical_raster <- function(ras, colors = fg1_palette, plot_options) {
             labels = fg1_names,
             values = fg1_palette, 
             ) + 
-        geom_tile(aes(fill = factor(value)))
+        geom_tile(aes(fill = factor(value))) + 
+        coord_quickmap()
 
 
     return(ras_plot)
