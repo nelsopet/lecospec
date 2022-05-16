@@ -6,6 +6,7 @@ test_path <- "./Data/Ground_Validation/BisonGulchQuads.envi"
 
 test_path_2 <- "tiles/tile_CpDHDDdNOXTuX0G4.tif"
 model_path <- "C:/Users/kenne/Documents/GitHub/lecospec/Output/E_003_Pred_Model_RandomForest_FncGrp1_1000trees.rda"
+
 big_test <- "F:/DataCubes/raw_1511_rd_rf_or"
 medium_test <- "./Data/SubsetDatacube"
 
