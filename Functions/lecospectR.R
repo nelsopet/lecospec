@@ -1319,7 +1319,14 @@ preprocess_raster_to_df <- function(raster_obj, model, names=NULL) {
         })
     }
 
-    df <- raster::rasterToPoints(raster_obj) %>% as.data.frame()
+    imputed_raster <- raster::approxNA(
+        raster_obj,
+        rule = 1
+    )
+
+    rm(raster_obj)
+
+    df <- raster::rasterToPoints(imputed_raster) %>% as.data.frame()
     if(nrow(df) < 1){
         #return df here as filtering fails later
         return (df)
@@ -2204,15 +2211,16 @@ update_filename <- function(prefix){
 #' @export 
 #' @examples Not Yet Implmented
 convert_and_save_output <- function(df, aggregation_level, save_path = NULL, return_raster = TRUE, target_crs = NULL){
-        prediction <- convert_pft_codes(df, aggregation_level = aggregation_level, to = "int")
-        print(paste0("Attempting to save to ", save_path))
-        if(return_raster){
-            prediction <- raster::rasterFromXYZ(prediction, digits=4)
-            print("Converted to Raster")
-            raster::dataType(prediction) <- "INT2U" # set to int datatype (unsigned int // 2 bytes)
-            if(!is.null(target_crs)){
-                raster::crs(prediction) <- target_crs
-            }
+    prediction <- convert_pft_codes(df, aggregation_level = aggregation_level, to = "int")
+    print(paste0("Attempting to save to ", save_path))
+    if(return_raster){
+        prediction <- raster::rasterFromXYZ(prediction, digits=4)
+        print("Converted to Raster")
+        raster::dataType(prediction) <- "INT2U" # set to int datatype (unsigned int // 2 bytes)
+        levels(prediction) <- get_attribute_table(aggregation_level)
+        if(!is.null(target_crs)){
+            raster::crs(prediction) <- target_crs
+        }
         if(!is.null(save_path)){
                 raster::writeRaster(prediction, filename = save_path, datatype='INT2U', overwrite = TRUE)
             } 
@@ -2249,6 +2257,34 @@ postprocess_prediction <- function(prediction_df, base_df){
     prediction_df <- prediction_df %>% dplyr::select(x, y, z)
 
     return(prediction_df)
+}
+
+
+#' loads the attribute table for the output (categorical) raster.  
+#'
+#' Gets the raster attribute table from the 
+#'
+#' @return 
+#' @param aggregation: an integer that specifies the aggregation level for the output raster.  Should be 1 (functional group 1), 2 (functional group 2), 3 (genus), or 4 (species).
+#' @seealso None
+#' @export 
+#' @examples Not Yet Implmented
+get_attribute_table <- function(aggregation) {
+    attribute_table <- data.frame()
+    if(aggregation == 1){
+        attribute_table <- read.csv("fg1RAT.csv")
+    }
+    if(aggregation == 2){
+        attribute_table <- read.csv("fg2RAT.csv")
+        
+    }
+    if(aggregation == 3) {
+        attribute_table <- read.csv("genusRAT.csv")
+
+    }
+    if(aggregation == 4){
+        attribute_table <- read.csv("speciesRAT.csv")
+    }
 }
 
 #' visualizes the output of the pipeline based on a specified colormap.

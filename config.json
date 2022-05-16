@@ -6,7 +6,7 @@
     "tile_path": "./tiles/",
     "model_path": "./mle/RandomForest_FncGrp1_1000trees_augmented.rda",
     "clusterCores": 4,
-    "parallelize_by_tiles": false,
+    "parallelize_by_tiles": true,
     "application": "Not yet implemented",
     "cache_path": "not yet implemented", 
     "key_path": "./fg2key.json",
