@@ -943,7 +943,7 @@ estimate_land_cover <- function(
     config_path = "./config.json",
     cache_filepath = "./",
     output_filepath =  paste("output-",format(Sys.time(), "%a-%b-%d-%H-%M-%S-%Y"), ".envi", sep=""),
-    use_external_bands = FALSE
+    use_external_bands = TRUE
 ) {
 
     path <- getwd()
@@ -1044,7 +1044,7 @@ estimate_land_cover <- function(
                 aggregation = config$aggregation,
                 cluster = NULL,
                 return_raster = TRUE,
-                names = bandnames,
+                band_names = bandnames,
                 return_filename = TRUE,
                 save_path = prediction_filenames[[i]],
                 suppress_output = TRUE)
@@ -1063,7 +1063,7 @@ estimate_land_cover <- function(
                 aggregation = config$aggregation,
                 cluster = cl,
                 return_raster = TRUE,
-                names = bandnames,
+                band_names = bandnames,
                 return_filename = TRUE,
                 save_path = prediction_filenames[[i]],
                 suppress_output = TRUE)
@@ -1161,7 +1161,7 @@ process_tile <- function(
     aggregation,
     cluster = NULL,
     return_raster = TRUE,
-    names=NULL,
+    band_names=NULL,
     return_filename = FALSE,
     save_path = NULL,
     suppress_output = FALSE
@@ -1169,7 +1169,7 @@ process_tile <- function(
     raster_obj <- raster::brick(tile_filename)
     input_crs <- raster::crs(raster_obj)
     print(paste0("preprocessing raster at ", tile_filename))
-    base_df <- preprocess_raster_to_df(raster_obj, ml_model, names=names)
+    base_df <- preprocess_raster_to_df(raster_obj, ml_model, band_names=band_names)
     print(input_crs)
     
     if(nrow(base_df) < 2){
@@ -1285,8 +1285,8 @@ remove_noisy_cols <- function(df, min_index = 1, max_index = 274) {
 #' @examples Not Yet Implmented
 filter_bands <- function(df) {
     # from original code, but sets the values to NA instead of -999 
-    df[-1:-2][df[-1:-2] > 1.5] <- NA
-    df[-1:-2][df[-1:-2] < 0  ] <- NA
+    df[-1:-2][df[-1:-2] > 1] <- 1.0#formerly NA
+    df[-1:-2][df[-1:-2] < 0 ] <- 0.0#formerly NA
     df[-1:-2][sapply(df[-1:-2], is.nan)] <- NA
     df[-1:-2][sapply(df[-1:-2], is.infinite)] <- NA
     return(df)
@@ -1301,7 +1301,7 @@ filter_bands <- function(df) {
 #' @seealso None
 #' @export 
 #' @examples Not Yet Implmented
-preprocess_raster_to_df <- function(raster_obj, model, names=NULL) {
+preprocess_raster_to_df <- function(raster_obj, model, band_names=NULL) {
 
     #unique_levels <- unique(raster::values(raster_obj))
     #mean_of_levels <- mean(unique_levels, na.rm = TRUE)
@@ -1312,17 +1312,26 @@ preprocess_raster_to_df <- function(raster_obj, model, names=NULL) {
         return(data.frame())
     }
 
-    if(!is.null(names)){
-        #try assigning the names to the bands (ignoring extras)
-        try({
-            names(raster_obj) <- names[1:length(names(raster_obj))]
-        })
-    }
+    saved_names <- names(raster_obj)
 
     imputed_raster <- raster::approxNA(
         raster_obj,
         rule = 1
     )
+
+    names(imputed)
+
+
+    if(!is.null(band_names)){
+        #try assigning the names to the bands (ignoring extras)
+        try({
+            names(imputed_raster) <- band_names[1:length(names(imputed_raster))]
+        })
+    } else {
+        names(imputed_raster) <- saved_names
+    }
+
+    #print(names(imputed_raster))
 
     rm(raster_obj)
 
@@ -1333,7 +1342,7 @@ preprocess_raster_to_df <- function(raster_obj, model, names=NULL) {
     }
     print("Converted to Data frame?")
     print(is.data.frame(df))
-    df <- remove_noisy_cols(df, max_index = 300) %>% as.data.frame()
+    df <- remove_noisy_cols(df, max_index = 284) %>% as.data.frame()
     print("Noisy columns removed")
     print(is.data.frame(df))
     df <- filter_bands(df)
