@@ -1319,7 +1319,7 @@ preprocess_raster_to_df <- function(raster_obj, model, band_names=NULL) {
         rule = 1
     )
 
-    names(imputed)
+    #names(imputed)
 
 
     if(!is.null(band_names)){
