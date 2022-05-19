@@ -1312,10 +1312,14 @@ preprocess_raster_to_df <- function(raster_obj, model, band_names=NULL) {
         return(data.frame())
     }
 
+    saved_names <- names(raster_obj)
+
     imputed_raster <- raster::approxNA(
         raster_obj,
         rule = 1
     )
+
+    names(imputed)
 
 
     if(!is.null(band_names)){
@@ -1323,6 +1327,8 @@ preprocess_raster_to_df <- function(raster_obj, model, band_names=NULL) {
         try({
             names(imputed_raster) <- band_names[1:length(names(imputed_raster))]
         })
+    } else {
+        names(imputed_raster) <- saved_names
     }
 
     #print(names(imputed_raster))
@@ -1336,7 +1342,7 @@ preprocess_raster_to_df <- function(raster_obj, model, band_names=NULL) {
     }
     print("Converted to Data frame?")
     print(is.data.frame(df))
-    df <- remove_noisy_cols(df, max_index = 300) %>% as.data.frame()
+    df <- remove_noisy_cols(df, max_index = 284) %>% as.data.frame()
     print("Noisy columns removed")
     print(is.data.frame(df))
     df <- filter_bands(df)
