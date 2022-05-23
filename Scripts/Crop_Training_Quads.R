@@ -31,7 +31,11 @@ TwelveMile_out2<-ImgChopper(TwelveMile_path2, TwelveMile_seg_path2)
 
 #TwelveMile_out<-do.call(merge, TwelveMile_list)
 
+Chatanika_path = "E:/ORNL_DAAC_DATA_ARCHIVE/Chatnika/Chatnika_2018_07_29_20_32_59_0_rd_rf_or"
+Chatanika_seg_path = "M:/lecospec/lecospec/Data/Vectors/ChatanikaQuads.shp"
+Chatanika_out<-ImgChopper(Chatanika_path,Chatanika_seg_path)
 #plot(TwelveMile_out[[2]])
+writeRaster(Chatanika_out, "./Data/Ground_Validation/ChatanikaQuads", format  = "ENVI", overwrite = TRUE)
 writeRaster(EightMile_out, "./Data/Ground_Validation/EightMileQuads", format = "ENVI", overwrite = TRUE)
 writeRaster(TwelveMile_out1, "./Data/Ground_Validation/TwelveMileGulchQuads1", format = "ENVI", overwrite = TRUE)
 writeRaster(TwelveMile_out2, "./Data/Ground_Validation/TwelveMileGulchQuads2", format = "ENVI", overwrite = TRUE)
