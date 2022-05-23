@@ -1085,9 +1085,10 @@ estimate_land_cover <- function(
         RhpcBLASctl::omp_set_num_threads(background_omp_threads)
     }
 
+    # merge and save the results.
     results <- merge_tiles(prediction_filenames, output_path = output_filepath)
-
-    raster::dataType(results) <- "INT2U"
+    # load the results from disk to correct data type issues from float/INT2U (C++ uint16_t) conversion
+    results <- raster::raster(output_filepath)
 
     return(results)
 }
