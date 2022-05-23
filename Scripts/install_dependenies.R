@@ -27,7 +27,14 @@ lecospec_depenencies <- c(
     "leaflet.opacity",
     "leaflegend",
     "naniar",
-    "rasterVis"
+    "rasterVis",
+    "doSNOW",
+    "snow",
+    "gdalUtils",
+    "rjson",
+    "doParallel",
+    "arrow",
+    "RhpcBLASctl"
 )
 
 install.packages(lecospec_depenencies, repos = "http://cran.rstudio.com/")

@@ -1330,7 +1330,6 @@ preprocess_raster_to_df <- function(raster_obj, model, band_names=NULL) {
     )
 
 
-
     if(!is.null(band_names)){
         #try assigning the names to the bands (ignoring extras)
         try({
