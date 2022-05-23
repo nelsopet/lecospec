@@ -1085,9 +1085,10 @@ estimate_land_cover <- function(
         RhpcBLASctl::omp_set_num_threads(background_omp_threads)
     }
 
+    # merge and save the results.
     results <- merge_tiles(prediction_filenames, output_path = output_filepath)
-
-    raster::dataType(results) <- "INT2U"
+    # load the results from disk to correct data type issues from float/INT2U (C++ uint16_t) conversion
+    results <- raster::raster(output_filepath)
 
     return(results)
 }
@@ -1240,8 +1241,11 @@ process_tile <- function(
         prediction <- apply_model(imputed_df_full, ml_model)
         rm(df)
         gc()
-
+        
         prediction <- postprocess_prediction(prediction, imputed_df_full)
+
+
+        
         
 
         prediction <- convert_and_save_output(
@@ -1250,6 +1254,7 @@ process_tile <- function(
             save_path = save_path,
             return_raster = return_raster,
             target_crs = input_crs)
+
         
         raster::crs(prediction) <- input_crs
 
@@ -1318,8 +1323,6 @@ preprocess_raster_to_df <- function(raster_obj, model, band_names=NULL) {
         raster_obj,
         rule = 1
     )
-
-    #names(imputed)
 
 
     if(!is.null(band_names)){
@@ -2221,10 +2224,19 @@ update_filename <- function(prefix){
 #' @examples Not Yet Implmented
 convert_and_save_output <- function(df, aggregation_level, save_path = NULL, return_raster = TRUE, target_crs = NULL){
     prediction <- convert_pft_codes(df, aggregation_level = aggregation_level, to = "int")
+
+    print(head(prediction))
+
+    # convert the precition values to integers
+    prediction$z <- prediction$z %>% round() %>% as.integer()
+
+    print(head(prediction))
+
     print(paste0("Attempting to save to ", save_path))
     if(return_raster){
         prediction <- raster::rasterFromXYZ(prediction, digits=4)
         print("Converted to Raster")
+
         raster::dataType(prediction) <- "INT2U" # set to int datatype (unsigned int // 2 bytes)
         levels(prediction) <- get_attribute_table(aggregation_level)
         if(!is.null(target_crs)){
