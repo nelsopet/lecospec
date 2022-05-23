@@ -19,6 +19,16 @@ quad_results <- estimate_land_cover(
 closeAllConnections()
 print(date())
 
+
+loaded_quad_results <- raster::raster("./Output/bg_outputs_m.grd")
+
+print(loaded_quad_results)
+
+print(quad_results)
+
+windows();hist(quad_results)
+windows();hist(loaded_quad_results)
+
 print(quad_results)
 png("./test_results.png")
 plot(quad_results)

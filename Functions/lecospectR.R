@@ -1241,7 +1241,12 @@ process_tile <- function(
         rm(df)
         gc()
 
+        print(head(prediction))
+        
         prediction <- postprocess_prediction(prediction, imputed_df_full)
+
+        print(head(prediction))
+        
         
 
         prediction <- convert_and_save_output(
@@ -1250,6 +1255,10 @@ process_tile <- function(
             save_path = save_path,
             return_raster = return_raster,
             target_crs = input_crs)
+
+        print(head(prediction))
+        print(prediction)
+
         
         raster::crs(prediction) <- input_crs
 
@@ -1319,7 +1328,6 @@ preprocess_raster_to_df <- function(raster_obj, model, band_names=NULL) {
         rule = 1
     )
 
-    names(imputed)
 
 
     if(!is.null(band_names)){
@@ -2221,10 +2229,19 @@ update_filename <- function(prefix){
 #' @examples Not Yet Implmented
 convert_and_save_output <- function(df, aggregation_level, save_path = NULL, return_raster = TRUE, target_crs = NULL){
     prediction <- convert_pft_codes(df, aggregation_level = aggregation_level, to = "int")
+
+    print(head(prediction))
+
+    # convert the precition values to integers
+    prediction$z <- prediction$z %>% round() %>% as.integer()
+
+    print(head(prediction))
+
     print(paste0("Attempting to save to ", save_path))
     if(return_raster){
         prediction <- raster::rasterFromXYZ(prediction, digits=4)
         print("Converted to Raster")
+
         raster::dataType(prediction) <- "INT2U" # set to int datatype (unsigned int // 2 bytes)
         levels(prediction) <- get_attribute_table(aggregation_level)
         if(!is.null(target_crs)){
