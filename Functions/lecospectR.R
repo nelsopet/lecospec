@@ -1241,12 +1241,10 @@ process_tile <- function(
         prediction <- apply_model(imputed_df_full, ml_model)
         rm(df)
         gc()
-
-        print(head(prediction))
         
         prediction <- postprocess_prediction(prediction, imputed_df_full)
 
-        print(head(prediction))
+
         
         
 
@@ -1256,9 +1254,6 @@ process_tile <- function(
             save_path = save_path,
             return_raster = return_raster,
             target_crs = input_crs)
-
-        print(head(prediction))
-        print(prediction)
 
         
         raster::crs(prediction) <- input_crs
