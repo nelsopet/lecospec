@@ -7,6 +7,14 @@ chatanika_path <- "E:/Lecospec/Quadrat_Shapefiles/ChatanikaQuads.envi"
 eightMile_path <- "Data/Ground_Validation/EightMileQuads.envi"
 model_path_base <- "C:/Users/kenne/Documents/GitHub/lecospec/Output/E_003_Pred_Model_RandomForest_FncGrp1_1000trees.rda"
 model_path <- "C:/Users/kenne/Documents/GitHub/lecospec/mle/RandomForest_FncGrp1_1000trees_augmented.rda"
+# separate the quadrats
+EightMileShapes <- "Data/Vectors/EightMile_Quadrats_revised.shp"
+twelve_mile_path_1 <- "Data/Vectors/TwelveMileQ0_10_20_30_40m.shp"
+twelve_mile_path_2 <- "Data/Vectors/TwelveMileQ70_80_90_100m.shp"
+bison_gulch_path <- "Data/Vectors/Bisoon_Quadrats.shp"
+chat_path <- "Data/Vectors/ChatanikaQuads.shp"
+#"Data/Vectors/TwelveMileQ70_80_90_100m.shp"
+tm_shapes <- sf::st_read(twelve_mile_path_1)
 
 ml_model <- load_model(model_path)
 bandnames <- read.csv("./bands.csv")$x %>% as.vector()
@@ -38,7 +46,6 @@ tm_shapes <- sf::st_read(chatanika_shape_path)
 fg1_RAT <- read.csv("fg1Rat.csv")
 levels(tile_results) <- fg1_RAT
 
-plot(tile_results)
 
 twelve_mile_names_1 <- c(
     "Twelvemile40",
@@ -56,13 +63,17 @@ twelve_mile_names_2 <- c(
 
 # there is no Eight Mile Validation Data!
 eight_mile_names <- c(
+    "Eightmile10",
+    "Eightmile0",
     "Eightmile60",
     "Eightmile50",
     "Eightmile40",
     "Eightmile30",
     "Eightmile20",
-    "Eightmile10",
-    "Eightmile0"
+    "Eightmile100",
+    "Eightmile90",
+    "Eightmile80",
+    "Eightmile70"
 )
 
 bison_gulch_names <- c(
@@ -77,43 +88,75 @@ bison_gulch_names <- c(
     "Bisongulch40"
 )
 
-chatanika_names <- c(# make the quadrat names match the validation data
-    "Chatanika100", "Chatanika90",  "Chatanika70",
-    "Chatanika80",  "Chatanika60",  "Chatanika50",
-    "Chatanika40",  "Chatanika30", "Chatanika20",
-    "Chatanika10", "Chatanika0"
+chatanika_names <- c(
+    "Chatanika100",
+    "Chatanika90",
+    "Chatanika70",
+    "Chatanika80",
+    "Chatanika60",
+    "Chatanika50",
+    "Chatanika40",
+    "Chatanika30",
+    "Chatanika20",
+    "Chatanika10",
+    "Chatanika0"
 )
 
-tm_shapes$CLASS_NAME <- chatanika_names#twelve_mile_names_1# select correct name
+murphy_names <- c(
+    "Murphydome",
+    "Murphydome",
+    "Murphydome",
+    "Murphydome",
+    "Murphydome",
+    "Murphydome",
+    "Murphydome",
+    "Murphydome",
+    "Murphydome",
+    "Murphydome",
+    "Murphydome",
+    "Murphydome",
+)
 
-print(tm_shapes$CLASS_NAME)
+tm_shapes$CLASS_NAME <- twelve_mile_names_1# select correct name
+
 # load the validation data
 validation_data_path <- "Data/Ground_Validation/QuadratEstimates/Lab_quadrat_cover_2019_Raw.csv"
-validation_data_path_2 <- "Data/Ground_Validation/QuadratEstimates/quadrat_cover_2018.csv"
-validation_df <- read.csv(validation_data_path_2, na.strings=c("NA", "n/a"))
+validation_data_path_2 <- "Data/Ground_Validation/QuadratEstimates/2018Raw.csv"
+validation_df <- read.csv(validation_data_path, na.strings=c("NA", "n/a"))
 
+# check extents
+print("Projection of Raster")
+print(raster::crs(tile_results))
+print("Projection of Shapefile")
+print(crs(tm_shapes))
 
-windows();plot(tile_results)
-plot(tm_shapes, add=TRUE)
-print(tile_results)
+projected_shapes <- sf::st_transform(tm_shapes, raster::crs(tile_results))
 
+print(crs(projected_shapes))
 
-# build a validation template
+# check extents
+print("Extent of Raster")
+print(raster::extent(tile_results))
+print("Extent of Shapefile")
+print(extent(projected_shapes))
 
 # fix the shapefile names
+#validation_df <- read.csv(validation_data_path_2, na.strings=c("NA", "n/a"))
 
 source("./Functions/lecospectR.R")
 validation_aggregates <- validate_results(
     tile_results,
-    tm_shapes,
+    projected_shapes,
     validation_df,
     rjson::fromJSON(file = "./pft_adj_list.json"),
     "./pft1_template.csv",
     aggregation = 1
 )
 
+print(validation_aggregates[[2]])
+
 chi_squared_results <- apply_chi_squared_test(
-    validation_aggregates = validation_aggregates
+    validation_aggregates = validation_aggregates[-1]
     )
 KS_results <- apply_KS_test(
     validation_aggregates = validation_aggregates
@@ -124,40 +167,22 @@ print(chi_squared_results)
 print(KS_results)
 sink(NULL)
 
-validation_df <- read.csv(validation_data_path, na.strings=c("NA", "n/a"))
-change_aggregation(validation_df$Plant, 2, pft_conv)
+
+
 
 #num_quadrats <- length(tm_shapes$CLASS_NAME)
 
 for(i in seq_along(tm_shapes$CLASS_NAME)){
-    plot_prop_test <- plot_quadrat_proportions(
-        validation_aggregates[[i]], 
-        filter_missing = TRUE)
+    if(i > 0){
+        plot_prop_test <- plot_quadrat_proportions(
+            validation_aggregates[[i]],
+            filter_missing = TRUE)
 
-    #windows();plot_prop_test
+        #windows();plot_prop_test
 
-    ggsave(
-        paste0("fg1_bar_", i, ".png"),
-        device = png,
-        path = "./")
+        ggsave(
+            paste0("fg1_bar_", i, ".png"),
+            device = png, 
+            path = "./")
+    }
 }
-
-
-
-## Making big maps
-
- plot_options <- define_plot_options(
-            title =  "Bison Gulch Predictions",
-            xLabel = "Longitude",
-            yLabel = "Latitude"
-        )
-
-
-predictions <- raster::raster("./Output/bg_1511_fngrp1_PREDICTIONS_FINAL.grd")
-
-levels(predictions) <- fg1_RAT
-big_plot <- plot_categorical_raster(
-    predictions,
-    plot_options = plot_options
-)
-windows();big_plot

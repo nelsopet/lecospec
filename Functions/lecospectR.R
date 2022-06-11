@@ -2504,7 +2504,7 @@ change_aggregation <- function(prediction_vec, aggregation_level, aggregation_ke
     for(i in seq_along(prediction_vec)){
         aggregation_idx <- 5-aggregation_level
         prediction <- prediction_vec[[i]]
-        #print(prediction)
+        print(prediction)
         updated_predictions[[i]] <- aggregation_key[[prediction]][[aggregation_idx]]
     }
 
@@ -2587,10 +2587,12 @@ validate_results <- function(
             yLabel = "Latitude"
         )
 
+    
 
-        png(paste0("./test_plot_", i, ".png"))
-        plot(quadrat_ras)
+        png(paste0("./test_hist_", i, ".png"))
+        hist(quadrat_ras)
         dev.off()
+        plot_categorical_raster(quadrat_ras, plot_options = plot_options)
 
         #windows();
         
@@ -2602,19 +2604,23 @@ validate_results <- function(
                 plot_options = plot_options
             )
         )
-
         
         quadrat_df <- raster::rasterToPoints(quadrat_ras) %>% as.data.frame()
 
+        print(quadrat_df %>% group_by(z) %>% tally())
+
+
         # prediction 
         predictions <- convert_pft_codes(quadrat_df, aggregation_level = aggregation_level, to="string")
+        print(predictions %>% group_by(z) %>% tally())
+
 
         # extract the validation data for this quadrat
         quadrat_validation_df <- get_prediction_distribution(predictions) %>% as.data.frame()
 
+      
         filtered_validation_df <- validation_table[validation_table$UID == quadrat_shape$CLASS_NAME, ]
-        print("Dimensions of Validation Data before changing aggregation")
-        print(dim(filtered_validation_df))
+
 
 
         #print(head(filtered_validation_df))
@@ -2624,9 +2630,8 @@ validate_results <- function(
             pft_key
         ) %>% as.vector()
 
-        print("Dimensions of Validation Data after changing aggregation")
-        print(dim(filtered_validation_df))
 
+    
 
 
         #print(head(filtered_validation_df))
@@ -2706,8 +2711,11 @@ apply_KS_test <- function(validation_aggregates, type="two.sided", use_monte_car
                 current_prop <- template[[template_row_idx, "validation_prop"]]
                 validation_raw <- validation_df[[val_row_idx, "cover_prn"]]
                 # convert NAs to 0's
+                print(validation_raw)
+                if(is.null(validation_raw)){
+                    validation_raw <- NA
+                }
                 additional_prop <- if(!is.na(validation_raw)) (validation_raw * 0.01) else 0.0 # ternary
-                #print(additional_prop)
                 # aggregate
                 template[[template_row_idx, "validation_counts"]] <- current_count + (additional_prop * num_observations)
                 template[[template_row_idx, "validation_prop"]] <- current_prop + additional_prop
@@ -2852,14 +2860,18 @@ fg1_names <- c(
     "Unknown"
 )
 
-fg1_palette_map <- function(index) {
-    return (fg1_palette[[index]])
+fg1_breaks <- c(
+    '0','1','2','3','4','5','6','7','8','9'
+)
+
+fg1_palette_map <- function(value) {
+    # note: value is 0-indexed and R is 1-indexed
+    return (fg1_palette[[value]])
 }
 
 
 plot_categorical_raster <- function(ras, colors = fg1_palette, plot_options) {
-    ras_plot <- rasterVis::gplot(ras, 1000000000) + 
-        #coord_equal() +
+    ras_plot <- rasterVis::gplot(ras, 100000000) + 
         theme_classic() +
         labs(
             title = plot_options$title,
@@ -2868,10 +2880,15 @@ plot_categorical_raster <- function(ras, colors = fg1_palette, plot_options) {
             color = "Plant Type"
             ) + 
         scale_fill_manual(
+            breaks = fg1_breaks,
             labels = fg1_names,
             values = fg1_palette, 
+            name = "Functional Type"
             ) + 
-        geom_tile(aes(fill = factor(value))) + 
+        geom_tile(aes(
+            fill = factor(
+                value,
+                ordered = FALSE))) + 
         coord_quickmap()
 
 
