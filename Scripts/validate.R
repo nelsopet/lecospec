@@ -1,8 +1,11 @@
 source("./Functions/lecospectR.R")
 require(sf)
 
-# Get some results to work with
+####################################################
+#       Define file locations
+####################################################
 
+# Rasters
 test_path <- "E:/Quads/BisonGulchQuads.envi"
 test_path_2 <- "E:/Lecospec/Quadrat_Shapefiles/ChatanikaQuads.envi"
 test_path_3 <- "./Data/Ground_Validation/TwelveMileGulchQuads1.envi"
@@ -12,9 +15,11 @@ test_path_6 <- "E:/Quads/MurphDomeQuads0_10.envi"
 test_path_7 <- "E:/Quads/MurphDomeQuads20_50.envi"
 test_path_8 <- "E:/Quads/MurphDomeQuads60_100.envi"
 
+# ML models
 model_path_base <- "C:/Users/kenne/Documents/GitHub/lecospec/Output/E_003_Pred_Model_RandomForest_FncGrp1_1000trees.rda"
 model_path <- "C:/Users/kenne/Documents/GitHub/lecospec/mle/RandomForest_FncGrp1_1000trees_augmented.rda"
-# separate the quadrats
+
+# Shapefiles
 EightMileShapes <- "E:/Vectors/EightMile_Quadrats_revised.shp"
 twelve_mile_path_1 <- "Data/Vectors/TwelveMileQ0_10_20_30_40m.shp"
 twelve_mile_path_2 <- "Data/Vectors/TwelveMileQ70_80_90_100m.shp"
@@ -23,12 +28,30 @@ chat_path <- "Data/Vectors/ChatanikaQuads.shp"
 md_path_1 <- "E:/Vectors/MurphyQuads0_10m.shp"
 md_path_2 <- "E:/Vectors/MurphyQuads20_50m.shp"
 md_path_3 <- "E:/Vectors/MurphyQuads60_100m.shp"
-#"Data/Vectors/TwelveMileQ70_80_90_100m.shp"
-tm_shapes <- sf::st_read(md_path_3)
 
+# Validation data
+validation_data_path <- "Data/Ground_Validation/QuadratEstimates/Lab_quadrat_cover_2019_Raw.csv"
+validation_data_path_2 <- "Data/Ground_Validation/QuadratEstimates/2018Raw.csv"
+
+####################################################
+#       Data loads
+####################################################
+
+# Shapefile & check names
+tm_shapes <- sf::st_read(md_path_3)
+print(tm_shapes$CLASS_NAME)
+
+# process_tile inputs
 ml_model <- load_model(model_path)
 bandnames <- read.csv("./bands.csv")$x %>% as.vector()
 
+# load the validation data
+validation_df <- read.csv(validation_data_path_2, na.strings=c("NA", "n/a"))
+
+####################################################
+#       Process the Quadrats 
+####################################################
+#since the images are small-ish, process_tile is faster
 tile_results <- process_tile(
     test_path_8,
     ml_model,
@@ -40,12 +63,13 @@ tile_results <- process_tile(
     suppress_output = FALSE)
 
 
+
+####################################################
+#       Plots as needed
+####################################################
 # plot the shapefiles over the quadrats
 windows();plot(tile_results)
 print(tile_results)
-
-print(tm_shapes$CLASS_NAME)
-
 
 windows();plot(tm_shapes[1])
 plot(tile_results, add=TRUE)
@@ -53,6 +77,11 @@ plot(tile_results, add=TRUE)
 windows();plot(tile_results)
 plot(tm_shapes[1], add=TRUE)
 
+####################################################
+#       Correct names of shapefile entries
+####################################################
+# have to ensure the shapefile entries match the 
+# validation data
 
 md_names_1 <- c(
     "Murphydome10",
@@ -129,28 +158,14 @@ chatanika_names <- c(
     "Chatanika0"
 )
 
-murphy_names <- c(
-    "Murphydome",
-    "Murphydome",
-    "Murphydome",
-    "Murphydome",
-    "Murphydome",
-    "Murphydome",
-    "Murphydome",
-    "Murphydome",
-    "Murphydome",
-    "Murphydome",
-    "Murphydome",
-    "Murphydome",
-)
-
+# assign correct names to shafile
 tm_shapes$CLASS_NAME <- md_names_3
-# select correct name
 
-# load the validation data
-validation_data_path <- "Data/Ground_Validation/QuadratEstimates/Lab_quadrat_cover_2019_Raw.csv"
-validation_data_path_2 <- "Data/Ground_Validation/QuadratEstimates/2018Raw.csv"
-validation_df <- read.csv(validation_data_path_2, na.strings=c("NA", "n/a"))
+
+
+####################################################
+#       Fix projection issues
+####################################################
 
 # check extents
 print("Projection of Raster")
@@ -158,6 +173,7 @@ print(raster::crs(tile_results))
 print("Projection of Shapefile")
 print(crs(tm_shapes))
 
+# project shapefile (faster) to match the raster data
 projected_shapes <- sf::st_transform(tm_shapes, raster::crs(tile_results))
 
 print(crs(projected_shapes))
@@ -168,10 +184,11 @@ print(raster::extent(tile_results))
 print("Extent of Shapefile")
 print(extent(projected_shapes))
 
-# fix the shapefile names
-#validation_df <- read.csv(validation_data_path_2, na.strings=c("NA", "n/a"))
 
-source("./Functions/lecospectR.R")
+####################################################
+#       Run the validation
+####################################################
+
 validation_aggregates <- validate_results(
     tile_results,
     projected_shapes,
@@ -181,10 +198,12 @@ validation_aggregates <- validate_results(
     aggregation = 1
 )
 
+# sanity check
 print(validation_aggregates[[2]])
 
+# Statistical tests & write to file
 chi_squared_results <- apply_chi_squared_test(
-    validation_aggregates = validation_aggregates[-1]
+    validation_aggregates = validation_aggregates
     )
 KS_results <- apply_KS_test(
     validation_aggregates = validation_aggregates
@@ -195,7 +214,7 @@ print(chi_squared_results)
 print(KS_results)
 sink(NULL)
 
-#num_quadrats <- length(tm_shapes$CLASS_NAME)
+# plot bar graphs
 
 for(i in seq_along(tm_shapes$CLASS_NAME)){
     if(i > 0){
