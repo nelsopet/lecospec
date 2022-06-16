@@ -230,3 +230,5 @@ for(i in seq_along(tm_shapes$CLASS_NAME)){
             path = "./")
     }
 }
+
+base_path <- "./Data/"

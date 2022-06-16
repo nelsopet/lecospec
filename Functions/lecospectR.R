@@ -2894,3 +2894,46 @@ plot_categorical_raster <- function(ras,  plot_options, colors = fg1_palette) {
 
     return(ras_plot)
 }
+
+# merge the validation templates 
+merge_validation_dfs <- function(df1, df2){
+    output_df <- data.frame(df1)
+
+    output_df$validation_counts <- df1$validation_counts + df2$validation_counts
+    output_df$validation_prop <- df1$validation_prop + df2$validation_prop
+    output_df$predicted_counts <- df1$predicted_counts + df2$predicted_counts
+    output_df$prediction_prop <- df1$prediction_prop + df2$prediction_prop
+    
+    return(output_df)
+}
+
+# save the validation df to disk
+save_validation <- function(template_dfs, base_filename = "validation"){
+    for(i in seq_along(template_dfs)){
+        write.csv(
+            template_dfs[[i]],
+            paste0(base_filename, "_", i, ".csv"))
+    }
+}
+
+
+
+ImgChopper <- function(img, quad) {
+        tst_img <- brick(img)
+        tst_quads <- readOGR(dsn = quad)
+        tst_crop <- raster::crop(tst_img, tst_quads)
+        tst_mask <- raster::mask(tst_crop, tst_quads)
+        # tst_out<-c(tst_crop,tst_mask)
+        return(tst_mask)
+    }
+
+
+TileAssembler <- function(dir, out) {
+    tiles <- list.files(dir)
+    tiles <- grep("Pred", tiles, value = TRUE)
+    chunks <- lapply(1:length(tiles), function(x) {
+        raster(paste(dir, "/", tiles[x], sep = ""))
+    })
+    pred_merged <- Reduce(merge, chunks)
+    return(pred_merged)
+}
