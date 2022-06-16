@@ -2870,7 +2870,7 @@ fg1_palette_map <- function(value) {
 }
 
 
-plot_categorical_raster <- function(ras, colors = fg1_palette, plot_options) {
+plot_categorical_raster <- function(ras,  plot_options, colors = fg1_palette) {
     ras_plot <- rasterVis::gplot(ras, 100000000) + 
         theme_classic() +
         labs(
