@@ -2293,18 +2293,18 @@ postprocess_prediction <- function(prediction_df, base_df){
 get_attribute_table <- function(aggregation) {
     attribute_table <- data.frame()
     if(aggregation == 1){
-        attribute_table <- read.csv("fg1RAT.csv")
+        attribute_table <- read.csv("assets/fg1RAT.csv")
     }
     if(aggregation == 2){
-        attribute_table <- read.csv("fg2RAT.csv")
+        attribute_table <- read.csv("assets/fg2RAT.csv")
         
     }
     if(aggregation == 3) {
-        attribute_table <- read.csv("genusRAT.csv")
+        attribute_table <- read.csv("assets/genusRAT.csv")
 
     }
     if(aggregation == 4){
-        attribute_table <- read.csv("speciesRAT.csv")
+        attribute_table <- read.csv("assets/speciesRAT.csv")
     }
 }
 
@@ -2904,6 +2904,16 @@ merge_validation_dfs <- function(df1, df2){
     output_df$predicted_counts <- df1$predicted_counts + df2$predicted_counts
     output_df$prediction_prop <- df1$prediction_prop + df2$prediction_prop
     
+    return(output_df)
+}
+
+coalesce_results <- function(df_list, aggregator_df){
+    output_df <- aggregator_df
+    
+    for(i in seq_along(df_list)){
+        output_df <- merge_validation_dfs(output_df, df_list[[i]])
+    }
+
     return(output_df)
 }
 

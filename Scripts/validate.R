@@ -38,7 +38,7 @@ validation_data_path_2 <- "Data/Ground_Validation/QuadratEstimates/2018Raw.csv"
 ####################################################
 
 # Shapefile & check names
-tm_shapes <- sf::st_read(md_path_3)
+tm_shapes <- sf::st_read(EightMileShapes)
 print(tm_shapes$CLASS_NAME)
 
 # process_tile inputs
@@ -53,7 +53,7 @@ validation_df <- read.csv(validation_data_path_2, na.strings=c("NA", "n/a"))
 ####################################################
 #since the images are small-ish, process_tile is faster
 tile_results <- process_tile(
-    test_path_8,
+    test_path_5,
     ml_model,
     1,
     cluster = NULL,
@@ -231,4 +231,31 @@ for(i in seq_along(tm_shapes$CLASS_NAME)){
     }
 }
 
-base_path <- "./Data/"
+
+####################################################
+#       Save the results
+####################################################
+
+save_validation(validation_aggregates, base_filename = "8mile_validation")
+
+####################################################
+#       Run the validation on ALL THE QUADS
+####################################################
+
+quadrats <- c(
+    test_path,
+    test_path_2,
+    test_path_3,
+    test_path_4,
+    test_path_5,
+    test_path_6,
+    test_path_7,
+    test_path_8
+)
+
+# load both validation data sets, so there is no more need to be concerned with which goes where, etc.
+validation_df <- rbind(
+    read.csv(validation_data_path_2, na.strings=c("NA", "n/a")),
+    read.csv(validation_data_path_2, na.strings=c("NA", "n/a"))
+)
+
