@@ -23,7 +23,7 @@ model_path <- "C:/Users/kenne/Documents/GitHub/lecospec/mle/RandomForest_FncGrp1
 EightMileShapes <- "E:/Vectors/EightMile_Quadrats_revised.shp"
 twelve_mile_path_1 <- "Data/Vectors/TwelveMileQ0_10_20_30_40m.shp"
 twelve_mile_path_2 <- "Data/Vectors/TwelveMileQ70_80_90_100m.shp"
-bison_gulch_path <- "Data/Vectors/Bisoon_Quadrats.shp"
+bison_gulch_path <- "Data/Vectors/Bison_Quadrats_renamed_quads.shp"
 chat_path <- "Data/Vectors/ChatanikaQuads.shp"
 md_path_1 <- "E:/Vectors/MurphyQuads0_10m.shp"
 md_path_2 <- "E:/Vectors/MurphyQuads20_50m.shp"
@@ -38,7 +38,7 @@ validation_data_path_2 <- "Data/Ground_Validation/QuadratEstimates/2018Raw.csv"
 ####################################################
 
 # Shapefile & check names
-tm_shapes <- sf::st_read(md_path_3)
+tm_shapes <- sf::st_read(bison_gulch_path)
 print(tm_shapes$CLASS_NAME)
 
 # process_tile inputs
@@ -46,14 +46,14 @@ ml_model <- load_model(model_path)
 bandnames <- read.csv("./bands.csv")$x %>% as.vector()
 
 # load the validation data
-validation_df <- read.csv(validation_data_path_2, na.strings=c("NA", "n/a"))
+validation_df <- read.csv(validation_data_path, na.strings=c("NA", "n/a"))
 
 ####################################################
 #       Process the Quadrats 
 ####################################################
 #since the images are small-ish, process_tile is faster
 tile_results <- process_tile(
-    test_path_8,
+    test_path,
     ml_model,
     1,
     cluster = NULL,
@@ -61,7 +61,7 @@ tile_results <- process_tile(
     band_names = bandnames,
     save_path = "./test_raster_save.grd",
     suppress_output = FALSE)
-
+# ironically, this runs on images up to 1.3GB in just a few minutes.  Something is odd here.
 
 
 ####################################################
@@ -134,10 +134,10 @@ eight_mile_names <- c(
 
 bison_gulch_names <- c(
     "Bisongulch0",
+    "Bisongulch60",
     "Bisongulch70",
-    "Bisongulch80",
     "Bisongulch10",
-    "Bisongulch90",
+    "Bisongulch80",
     "Bisongulch20",
     "Bisongulch50",
     "Bisongulch30",
@@ -159,7 +159,8 @@ chatanika_names <- c(
 )
 
 # assign correct names to shafile
-tm_shapes$CLASS_NAME <- md_names_3
+tm_shapes$CLASS_NAME <- bison_gulch_names
+
 
 
 
