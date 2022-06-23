@@ -2900,9 +2900,14 @@ merge_validation_dfs <- function(df1, df2){
     output_df <- data.frame(df1)
 
     output_df$validation_counts <- df1$validation_counts + df2$validation_counts
-    output_df$validation_prop <- df1$validation_prop + df2$validation_prop
     output_df$predicted_counts <- df1$predicted_counts + df2$predicted_counts
-    output_df$prediction_prop <- df1$prediction_prop + df2$prediction_prop
+
+    num_observations_val <- sum(output_df$validation_counts)
+    num_observations_pred <- sum(output_df$predicted_counts)
+
+    output_df$validation_prop <- output_df$validation_counts / num_observations_val
+    output_df$prediction_prop <- output_df$predicted_counts / num_observations_pred
+
     
     return(output_df)
 }
@@ -2910,8 +2915,13 @@ merge_validation_dfs <- function(df1, df2){
 coalesce_results <- function(df_list, aggregator_df){
     output_df <- aggregator_df
     
+    # merge all the counts
     for(i in seq_along(df_list)){
         output_df <- merge_validation_dfs(output_df, df_list[[i]])
+    }
+
+    for(j in seq_len(nrow(output_df))){
+
     }
 
     return(output_df)
