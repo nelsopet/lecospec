@@ -2,7 +2,6 @@
 
 Cleaned_Speclib<-read.csv( "./Output/C_001_SC3_Cleaned_SpectralLib.csv")
 
-
 # ------------------------------------------ Step 3: Create Plots showing spectral profiles ------------------------------------------------- #
 
 # Creates a vector with the name of all the categories of interest
@@ -79,7 +78,8 @@ write.csv(Cleaned_Speclib_resamp4, "Output/C_001_SC3_Cleaned_SpectralLib4.csv")
 
 ##Tidy version of making the same as above
 Cleaned_Speclib_tall_sp<-Cleaned_Speclib %>% 
-  pivot_longer(cols = `350`:`2500`,  names_to  = "Wavelength", values_to = "Reflectance") %>%
+  pivot_longer(cols = `X350`:`X2500`,  names_to  = "Wavelength", values_to = "Reflectance") %>%
+  mutate(Wavelength = gsub("X","",Wavelength)) %>%
   group_by(Functional_group1,Functional_group2,Species_name,Wavelength) %>%  
   dplyr::summarise(Median_Reflectance = median(Reflectance),
                    Max_Reflectance = max(Reflectance),
@@ -104,7 +104,7 @@ Cleaned_Speclib_tall_Fnc_grp2<-Cleaned_Speclib%>%
                                                   "Tree  (n= 29)",
                                                   "Non-vegetated surface  (n= 57)"))) %>%
   ungroup() %>%
-  pivot_longer(cols = `350`:`2500`,  names_to  = "Wavelength", values_to = "Reflectance") %>%
+  pivot_longer(cols = `X350`:`X2500`,  names_to  = "Wavelength", values_to = "Reflectance") %>%
   mutate(Reflectance = round(Reflectance*100,2)) %>%
   group_by(Functional_group2_wN, Functional_group2,Wavelength) %>%  
   dplyr::summarise(Median_Reflectance = median(Reflectance),
@@ -119,11 +119,23 @@ Cleaned_Speclib_tall_Fnc_grp2<-Cleaned_Speclib%>%
   as.data.frame() #%>%
 #group_by(Species_name, Wavelength)
 
-Cleaned_Speclib_tall_Fnc_grp1<-Cleaned_Speclib %>% 
+Cleaned_Speclib_tall_Fnc_grp1<-
+  Cleaned_Speclib %>% 
+  group_by(Functional_group1, Species_name) %>% 
+  dplyr::select(Functional_group1, Species_name) %>% 
+  unique() %>% 
+  ungroup() %>% 
   group_by(Functional_group1) %>%
-  mutate(Functional_group1_wN = glue('{Functional_group1} {"(n="} {n()})')) %>%
+  tally() %>% 
+  dplyr::rename(species_count = n) %>%
+  inner_join(Cleaned_Speclib, by="Functional_group1") %>% 
+  group_by(Functional_group1) %>% 
+  dplyr::mutate(sample_size = n()) %>% 
+  dplyr::mutate(Functional_group1_wN = glue('{Functional_group1} {"(n="} {sample_size} {"scans,"} {species_count} {"species"})')) %>%
+  #mutate(Functional_group1_wN = Functional_group1) %>% 
   ungroup() %>%
-  pivot_longer(cols = `350`:`2500`,  names_to  = "Wavelength", values_to = "Reflectance") %>%
+  pivot_longer(cols = `X350`:`X2500`,  names_to  = "Wavelength", values_to = "Reflectance") %>%
+  mutate(Wavelength = gsub("X","",Wavelength)) %>%
   group_by(Functional_group1_wN, Functional_group1,Wavelength) %>%  
   dplyr::summarise(Median_Reflectance = median(Reflectance),
                    Max_Reflectance = max(Reflectance),
@@ -135,6 +147,10 @@ Cleaned_Speclib_tall_Fnc_grp1<-Cleaned_Speclib %>%
   mutate(Wavelength = as.numeric(Wavelength))  %>%
   as.data.frame() #%>%
 #group_by(Species_name, Wavelength)
+
+
+
+
 
 Lichen_noCrusts_Cleaned_Speclib_all<- Cleaned_Speclib %>% 
   #dplyr::filter(Functional_group1 != "Lichen_Crustose_Dark"|Functional_group1 !="Lichen_Crustose_Light") %>%
@@ -330,11 +346,11 @@ dev.off()
 
 
 ######## Functional group 1 spectral profiles
-jpeg("Output/Fnc_grp1_spectral_profiles.jpg", height = 12000, width = 9000, res = 350)
+jpeg("Output/Fnc_grp1_spectral_profiles.jpg", height = 10000, width = 9000, res = 350)
 ggplot(Cleaned_Speclib_tall_Fnc_grp1, aes(Wavelength, Median_Reflectance,group = Functional_group1), scales = "fixed")+
   geom_ribbon(aes(Wavelength, ymin = Pct_12_5_Reflectance, ymax = Pct_87_5_Reflectance, alpha = 0.3))+
   geom_ribbon(aes(Wavelength, ymin = Lower_Reflectance, ymax = Upper_Reflectance, alpha = 0.2))+
-  labs(title = c("Reflectance by plant functional group and sample size with median (red), 75% (dark) and \n 90% (grey) quantiles based on 1302 scans"), y="Reflectance")+
+  labs(title = c("Reflectance by plant functional group and sample size with median (red), 75% (dark) and 90% (grey) quantiles based on 1242 scans"), y="Reflectance")+
   theme(panel.background = element_rect(fill = "white", colour = "grey50"), 
         #legend.key.size = unit(0.5, "cm"),legend.text = element_text(size=25),
         legend.position = "none",
@@ -343,7 +359,7 @@ ggplot(Cleaned_Speclib_tall_Fnc_grp1, aes(Wavelength, Median_Reflectance,group =
         axis.text = element_text(size = 20),
         axis.text.x = element_text(angle = 90)) +
   geom_line(aes(Wavelength, Median_Reflectance,color = "red"),size = 2)+
-  facet_wrap(vars(Functional_group1_wN), scales = "fixed", ncol = 4) 
+  facet_wrap(vars(Functional_group1_wN), scales = "fixed", ncol = 3) 
 dev.off()
 
 
