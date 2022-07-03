@@ -8,8 +8,8 @@ require(sf)
 # Rasters
 test_path <- "E:/Quads/BisonGulchQuads.envi"
 test_path_2 <- "E:/Lecospec/Quadrat_Shapefiles/ChatanikaQuads.envi"
-test_path_3 <- "./Data/Ground_Validation/TwelveMileGulchQuads1.envi"
-test_path_4 <- "./Data/Ground_Validation/TwelveMileGulchQuads2.envi"
+test_path_3 <- "E:/Lecospec/Ground_Validation/TwelveMileGulchQuads1.envi"
+test_path_4 <- "E:/Lecospec/Ground_Validation/TwelveMileGulchQuads2.envi"
 test_path_5 <- "E:/Quads/EightMileQuads.envi"
 test_path_6 <- "E:/Quads/MurphDomeQuads0_10.envi"
 test_path_7 <- "E:/Quads/MurphDomeQuads20_50.envi"
@@ -46,14 +46,14 @@ ml_model <- load_model(model_path)
 band_names <- read.csv("./assets/bands.csv")$x %>% as.vector()
 
 # load the validation data
-validation_df <- read.csv(validation_data_path, na.strings=c("NA", "n/a"))
+validation_df <- read.csv(validation_data_path_2, na.strings=c("NA", "n/a"))
 
 ####################################################
 #       Process the Quadrats 
 ####################################################
 #since the images are small-ish, process_tile is faster
 tile_results <- process_tile(
-    test_path_2,
+    test_path_3,
     ml_model,
     1,
     cluster = NULL,
@@ -209,7 +209,7 @@ KS_results <- apply_KS_test(
     validation_aggregates = validation_aggregates
     )
 
-sink(file = "./figures/BisonGulch/stats.txt", append = TRUE)
+sink(file = "./figures/Chatanika/stats.txt", append = TRUE)
 print(chi_squared_results)
 print(KS_results)
 sink(NULL)
@@ -236,7 +236,7 @@ for(i in seq_along(tm_shapes$CLASS_NAME)){
 #       Save the results & aggregate
 ####################################################
 
-save_validation(validation_aggregates, base_filename = "bg_validation")
+save_validation(validation_aggregates, base_filename = "ca_validation")
 
 initial_path <- "./assets/pft1_template.csv"# use if there is to cold start
 aggregation_path <- "figures/aggregator.csv"
