@@ -8,8 +8,8 @@ require(sf)
 # Rasters
 test_path <- "E:/Quads/BisonGulchQuads.envi"
 test_path_2 <- "E:/Lecospec/Quadrat_Shapefiles/ChatanikaQuads.envi"
-test_path_3 <- "./Data/Ground_Validation/TwelveMileGulchQuads1.envi"
-test_path_4 <- "./Data/Ground_Validation/TwelveMileGulchQuads2.envi"
+test_path_3 <- "E:/Lecospec/Ground_Validation/TwelveMileGulchQuads1.envi"
+test_path_4 <- "E:/Lecospec/Ground_Validation/TwelveMileGulchQuads2.envi"
 test_path_5 <- "E:/Quads/EightMileQuads.envi"
 test_path_6 <- "E:/Quads/MurphDomeQuads0_10.envi"
 test_path_7 <- "E:/Quads/MurphDomeQuads20_50.envi"
@@ -23,7 +23,7 @@ model_path <- "C:/Users/kenne/Documents/GitHub/lecospec/mle/RandomForest_FncGrp1
 EightMileShapes <- "E:/Vectors/EightMile_Quadrats_revised.shp"
 twelve_mile_path_1 <- "Data/Vectors/TwelveMileQ0_10_20_30_40m.shp"
 twelve_mile_path_2 <- "Data/Vectors/TwelveMileQ70_80_90_100m.shp"
-bison_gulch_path <- "Data/Vectors/Bisoon_Quadrats.shp"
+bison_gulch_path <- "Data/Vectors/Bison_Quadrats_renamed_quads.shp"
 chat_path <- "Data/Vectors/ChatanikaQuads.shp"
 md_path_1 <- "E:/Vectors/MurphyQuads0_10m.shp"
 md_path_2 <- "E:/Vectors/MurphyQuads20_50m.shp"
@@ -38,12 +38,12 @@ validation_data_path_2 <- "Data/Ground_Validation/QuadratEstimates/2018Raw.csv"
 ####################################################
 
 # Shapefile & check names
-tm_shapes <- sf::st_read(md_path_3)
+tm_shapes <- sf::st_read(chat_path)
 print(tm_shapes$CLASS_NAME)
 
 # process_tile inputs
 ml_model <- load_model(model_path)
-bandnames <- read.csv("./bands.csv")$x %>% as.vector()
+band_names <- read.csv("./assets/bands.csv")$x %>% as.vector()
 
 # load the validation data
 validation_df <- read.csv(validation_data_path_2, na.strings=c("NA", "n/a"))
@@ -53,12 +53,12 @@ validation_df <- read.csv(validation_data_path_2, na.strings=c("NA", "n/a"))
 ####################################################
 #since the images are small-ish, process_tile is faster
 tile_results <- process_tile(
-    test_path_8,
+    test_path_3,
     ml_model,
     1,
     cluster = NULL,
     return_raster = TRUE,
-    band_names = bandnames,
+    band_names = band_names,
     save_path = "./test_raster_save.grd",
     suppress_output = FALSE)
 
@@ -159,8 +159,7 @@ chatanika_names <- c(
 )
 
 # assign correct names to shafile
-tm_shapes$CLASS_NAME <- md_names_3
-
+tm_shapes$CLASS_NAME <- chatanika_names
 
 
 ####################################################
@@ -188,13 +187,14 @@ print(extent(projected_shapes))
 ####################################################
 #       Run the validation
 ####################################################
+validation_df <- read.csv(validation_data_path_2, na.strings=c("NA", "n/a"))
 
 validation_aggregates <- validate_results(
     tile_results,
     projected_shapes,
     validation_df,
-    rjson::fromJSON(file = "./pft_adj_list.json"),
-    "./pft1_template.csv",
+    rjson::fromJSON(file = "./assets/pft_adj_list.json"),
+    "./assets/pft1_template.csv",
     aggregation = 1
 )
 
@@ -209,7 +209,7 @@ KS_results <- apply_KS_test(
     validation_aggregates = validation_aggregates
     )
 
-sink(file = "./figures/BisonGulch/FG1/Augmented/testResults.txt", append = TRUE)
+sink(file = "./figures/Chatanika/stats.txt", append = TRUE)
 print(chi_squared_results)
 print(KS_results)
 sink(NULL)
@@ -231,4 +231,42 @@ for(i in seq_along(tm_shapes$CLASS_NAME)){
     }
 }
 
-base_path <- "./Data/"
+
+####################################################
+#       Save the results & aggregate
+####################################################
+
+save_validation(validation_aggregates, base_filename = "ca_validation")
+
+initial_path <- "./assets/pft1_template.csv"# use if there is to cold start
+aggregation_path <- "figures/aggregator.csv"
+
+# run the 
+aggregator <- read.csv(aggregation_path)
+
+vdf <- coalesce_results(validation_aggregates, aggregator_df = aggregator)
+print(vdf)
+
+write.csv(vdf, aggregation_path)
+
+####################################################
+#       Run the validation on ALL THE QUADS
+####################################################
+
+quadrats <- c(
+    test_path,
+    test_path_2,
+    test_path_3,
+    test_path_4,
+    test_path_5,
+    test_path_6,
+    test_path_7,
+    test_path_8
+)
+
+# load both validation data sets, so there is no more need to be concerned with which goes where, etc.
+validation_df <- rbind(
+    read.csv(validation_data_path_2, na.strings=c("NA", "n/a")),
+    read.csv(validation_data_path_2, na.strings=c("NA", "n/a"))
+)
+

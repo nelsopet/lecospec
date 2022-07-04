@@ -1,0 +1,26 @@
+[general]
+creator=R package 'raster'
+created=2022-06-27 11:01:13
+[georeference]
+nrows=193
+ncols=672
+xmin=-145.979013693
+ymin=65.4018077930019
+xmax=-145.978189347014
+ymax=65.401906458
+projection=+proj=longlat +datum=WGS84 +no_defs
+[data]
+datatype=INT2U
+byteorder=little
+nbands=1
+bandorder=BIL
+categorical=FALSE
+minvalue=1
+maxvalue=8
+nodatavalue=65535
+[legend]
+legendtype=
+values=
+color=
+[description]
+layername=z
