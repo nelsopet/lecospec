@@ -17,7 +17,7 @@ test_path_8 <- "E:/Quads/MurphDomeQuads60_100.envi"
 
 # ML models
 model_path_base <- "C:/Users/kenne/Documents/GitHub/lecospec/Output/E_003_Pred_Model_RandomForest_FncGrp1_1000trees.rda"
-model_path <- "C:/Users/kenne/Documents/GitHub/lecospec/mle/RandomForest_FncGrp1_1000trees_augmented.rda"
+model_path <- "C:/Users/kenne/OneDrive/Documents/GitHub/lecospec/mle/RandomForest_FncGrp1_1000trees_augmented.rda"
 
 # Shapefiles
 EightMileShapes <- "E:/Vectors/EightMile_Quadrats_revised.shp"
@@ -38,7 +38,7 @@ validation_data_path_2 <- "Data/Ground_Validation/QuadratEstimates/2018Raw.csv"
 ####################################################
 
 # Shapefile & check names
-tm_shapes <- sf::st_read(chat_path)
+tm_shapes <- sf::st_read(twelve_mile_path_1)
 print(tm_shapes$CLASS_NAME)
 
 # process_tile inputs
@@ -46,7 +46,7 @@ ml_model <- load_model(model_path)
 band_names <- read.csv("./assets/bands.csv")$x %>% as.vector()
 
 # load the validation data
-validation_df <- read.csv(validation_data_path_2, na.strings=c("NA", "n/a"))
+validation_df <- read.csv(validation_data_path, na.strings=c("NA", "n/a"))
 
 ####################################################
 #       Process the Quadrats 
