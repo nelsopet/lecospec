@@ -1,6 +1,6 @@
 [general]
 creator=R package 'raster'
-created=2022-07-04 11:11:48
+created=2022-07-09 19:25:11
 [data]
 datatype=INT2U
 byteorder=little
@@ -8,7 +8,7 @@ nbands=1
 bandorder=BIL
 categorical=FALSE
 minvalue=1
-maxvalue=6
+maxvalue=8
 nodatavalue=65535
 [legend]
 legendtype=
@@ -17,11 +17,11 @@ color=
 [description]
 layername=z
 [georeference]
-nrows=164
-ncols=663
-xmin=-145.980242255
-ymin=65.4019587860001
-xmax=-145.979571628001
-ymax=65.402027917
+nrows=627
+ncols=557
+xmin=-148.354768258
+ymin=64.9541320960051
+xmax=-148.354178915014
+ymax=64.954413283
 projection=+proj=longlat +datum=WGS84 +no_defs
 wkt=GEOGCRS["GCS_unknown",    DATUM["World Geodetic System 1984",        ELLIPSOID["WGS 84",6378137,298.257223563,            LENGTHUNIT["metre",1]],        ID["EPSG",6326]],    PRIMEM["Greenwich",0,        ANGLEUNIT["Degree",0.0174532925199433]],    CS[ellipsoidal,2],        AXIS["longitude",east,            ORDER[1],            ANGLEUNIT["Degree",0.0174532925199433]],        AXIS["latitude",north,            ORDER[2],            ANGLEUNIT["Degree",0.0174532925199433]]]

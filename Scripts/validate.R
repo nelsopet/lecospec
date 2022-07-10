@@ -16,8 +16,8 @@ test_path_7 <- "E:/Quads/MurphDomeQuads20_50.envi"
 test_path_8 <- "E:/Quads/MurphDomeQuads60_100.envi"
 
 # ML models
-model_path_base <- "C:/Users/kenne/Documents/GitHub/lecospec/Output/E_003_Pred_Model_RandomForest_FncGrp1_1000trees.rda"
-model_path <- "C:/Users/kenne/OneDrive/Documents/GitHub/lecospec/mle/RandomForest_FncGrp1_1000trees_augmented.rda"
+model_path_base <- "Output/E_003_Pred_Model_RandomForest_FncGrp1_1000trees.rda"
+model_path <- "mle/RandomForest_FncGrp1_1000trees_augmented.rda"
 
 # Shapefiles
 EightMileShapes <- "E:/Vectors/EightMile_Quadrats_revised.shp"
@@ -25,20 +25,20 @@ twelve_mile_path_1 <- "Data/Vectors/TwelveMileQ0_10_20_30_40m.shp"
 twelve_mile_path_2 <- "Data/Vectors/TwelveMileQ70_80_90_100m.shp"
 bison_gulch_path <- "Data/Vectors/Bison_Quadrats_renamed_quads.shp"
 chat_path <- "Data/Vectors/ChatanikaQuads.shp"
-md_path_1 <- "E:/Vectors/MurphyQuads0_10m.shp"
-md_path_2 <- "E:/Vectors/MurphyQuads20_50m.shp"
-md_path_3 <- "E:/Vectors/MurphyQuads60_100m.shp"
+md_path_1 <- "Data/Vectors/MurphyQuads0_10m.shp"
+md_path_2 <- "Data/Vectors/MurphyQuads20_50m.shp"
+md_path_3 <- "Data/Vectors/MurphyQuads60_100m.shp"
 
 # Validation data
 validation_data_path <- "Data/Ground_Validation/QuadratEstimates/Lab_quadrat_cover_2019_Raw.csv"
-validation_data_path_2 <- "Data/Ground_Validation/QuadratEstimates/2018Raw.csv"
+validation_data_path_2 <- "Data/Ground_Validation/QuadratEstimates/Lab_quadrat_cover_2018_Raw.csv"
 
 ####################################################
 #       Data loads
 ####################################################
 
 # Shapefile & check names
-tm_shapes <- sf::st_read(twelve_mile_path_1)
+tm_shapes <- sf::st_read(md_path_1)
 print(tm_shapes$CLASS_NAME)
 
 # process_tile inputs
