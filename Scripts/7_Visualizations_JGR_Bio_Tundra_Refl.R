@@ -145,7 +145,8 @@ Cleaned_Speclib_tall_Fnc_grp1<-
                    Upper_Reflectance = quantile(Reflectance, probs = 0.95),
                    Lower_Reflectance = quantile(Reflectance, probs = 0.05))%>%
   mutate(Wavelength = as.numeric(Wavelength))  %>%
-  as.data.frame() #%>%
+  as.data.frame() %>%
+  dplyr::filter(Wavelength>419 & Wavelength<850)
 #group_by(Species_name, Wavelength)
 
 
