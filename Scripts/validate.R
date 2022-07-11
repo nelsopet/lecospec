@@ -311,9 +311,6 @@ save_paths <- c(
     "figures/MurphyDome/Part3/"
 )
 
-base_names <- c(
-    ""
-)
 
 for( i in seq_along(quadrats)){
     # process the tile
@@ -353,13 +350,13 @@ for( i in seq_along(quadrats)){
     for(j in seq_along(tm_shapes$CLASS_NAME)){
         if(j > 0){
             plot_prop_test <- plot_quadrat_proportions(
-                validation_aggregates[[i]],
+                validation_aggregates[[j]],
                 filter_missing = TRUE)
 
             #windows();plot_prop_test
 
             ggsave(
-                paste0(save_paths[[i]], i, "_bar.png"),
+                paste0(save_paths[[i]], j, "_bar.png"),
                 device = png)
         }
     }
