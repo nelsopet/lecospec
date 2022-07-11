@@ -7,9 +7,9 @@ require(sf)
 
 # Rasters
 test_path_1 <- "Data/Quadrats/BisonGulchQuads.envi"
-test_path_2 <- "Data/Quadrats/Quadrat_Shapefiles/ChatanikaQuads.envi"
-test_path_3 <- "Data/Quadrats/Ground_Validation/TwelveMileGulchQuads1.envi"
-test_path_4 <- "Data/Quadrats/Ground_Validation/TwelveMileGulchQuads2.envi"
+test_path_2 <- "Data/Quadrats/ChatanikaQuads.envi"
+test_path_3 <- "Data/Quadrats/TwelveMileGulchQuads1.envi"
+test_path_4 <- "Data/Quadrats/TwelveMileGulchQuads2.envi"
 test_path_5 <- "Data/Quadrats/EightMileQuads.envi"
 test_path_6 <- "Data/Quadrats/MurphDomeQuads0_10.envi"
 test_path_7 <- "Data/Quadrats/MurphDomeQuads20_50.envi"
@@ -20,7 +20,7 @@ model_path_base <- "Output/E_003_Pred_Model_RandomForest_FncGrp1_1000trees.rda"
 model_path <- "mle/RandomForest_FncGrp1_1000trees_augmented.rda"
 
 # Shapefiles
-shape_path_1 <- "Data/Vectors/Bison_Quadrats_renamed_quads.shp"
+shape_path_1 <- "Data/Vectors/Bisoon_Quadrats_renamed_quads.shp"
 shape_path_2 <- "Data/Vectors/ChatanikaQuads.shp"
 shape_path_3 <- "Data/Vectors/TwelveMileQ0_10_20_30_40m.shp"
 shape_path_4 <- "Data/Vectors/TwelveMileQ70_80_90_100m.shp"
@@ -28,6 +28,8 @@ shape_path_5 <- "Data/Vectors/EightMile_Quadrats_revised.shp"
 shape_path_6 <- "Data/Vectors/MurphyQuads0_10m.shp"
 shape_path_7 <- "Data/Vectors/MurphyQuads20_50m.shp"
 shape_path_8 <- "Data/Vectors/MurphyQuads60_100m.shp"
+
+
 
 # Validation data
 validation_data_path <- "Data/Ground_Validation/QuadratEstimates/Lab_quadrat_cover_2019_Raw.csv"
@@ -159,7 +161,7 @@ chatanika_names <- c(
 )
 
 # assign correct names to shafile
-tm_shapes$CLASS_NAME <- md_names_3
+tm_shapes$CLASS_NAME <- bison_gulch_names
 
 ####################################################
 #       Fix projection issues
@@ -186,7 +188,7 @@ print(extent(projected_shapes))
 ####################################################
 #       Run the validation
 ####################################################
-validation_df <- read.csv(validation_data_path_2, na.strings=c("NA", "n/a"))
+validation_df <- read.csv(validation_data_path, na.strings=c("NA", "n/a"))
 
 validation_aggregates <- validate_results(
     tile_results,
@@ -253,7 +255,7 @@ write.csv(vdf, aggregation_path)
 ####################################################
 
 quadrats <- c(
-    test_path,
+    test_path_1,
     test_path_2,
     test_path_3,
     test_path_4,
@@ -263,9 +265,115 @@ quadrats <- c(
     test_path_8
 )
 
+shapes <- c(
+    shape_path_1,
+    shape_path_2,
+    shape_path_3,
+    shape_path_4,
+    shape_path_5,
+    shape_path_6,
+    shape_path_7,
+    shape_path_8
+)
+
+
+names <- c(
+    bison_gulch_names,
+    chatanika_names,
+    twelve_mile_names_1,
+    twelve_mile_names_2,
+    eight_mile_names,
+    md_names_1,
+    md_names_2,
+    md_names_3
+)
+
+# note: murphy dome appears in both; I recently corrected this one though :)
+validation_paths <- c(
+    validation_data_path,
+    validation_data_path,
+    validation_data_path,
+    validation_data_path,
+    validation_data_path_2,
+    validation_data_path_2,
+    validation_data_path_2,
+    validation_data_path_2
+)
+
+save_paths <- c(
+    "figures/BisonGulch/",
+    "figures/Chatanika/",
+    "figures/twelveMile1/",
+    "figures/twelveMile2/",
+    "figures/EightMile/",
+    "figures/MurphyDome/Part1/",
+    "figures/MurphyDome/Part2/",
+    "figures/MurphyDome/Part3/"
+)
+
+base_names <- c(
+    ""
+)
+
+for( i in seq_along(quadrats)){
+    # process the tile
+    tile_results <- process_tile(
+        quadrats[[i]],
+        ml_model,
+        1,
+        cluster = NULL,
+        return_raster = TRUE,
+        band_names = band_names,
+        save_path = "./test_raster_save.grd",
+        suppress_output = FALSE)
+
+    # load shapefile and project to match
+    shape <- sf::st_read(shapes[[i]])
+    shape$CLASS_NAME <- names[[i]]
+    projected_shapes <- sf::st_transform(shape, raster::crs(tile_results))
+
+
+
+
+    # Validation data
+    validation_df <- read.csv(validation_paths[[i]], na.strings=c("NA", "n/a"))
+
+    # run the validation
+    validation_aggregates <- validate_results(
+        tile_results,
+        projected_shapes,
+        validation_df,
+        rjson::fromJSON(file = "./assets/pft_adj_list.json"),
+        "./assets/pft1_template.csv",
+        aggregation = 1,
+        save_path = save_paths[[i]]
+    )
+
+    # bar plots
+    for(j in seq_along(tm_shapes$CLASS_NAME)){
+        if(j > 0){
+            plot_prop_test <- plot_quadrat_proportions(
+                validation_aggregates[[i]],
+                filter_missing = TRUE)
+
+            #windows();plot_prop_test
+
+            ggsave(
+                paste0(save_paths[[i]], i, "_bar.png"),
+                device = png)
+        }
+    }
+
+    save_validation(
+        validation_aggregates,
+        base_filename = paste0(save_paths[[i]], "validation")
+    )
+
+
+}
+
 # load both validation data sets, so there is no more need to be concerned with which goes where, etc.
 validation_df <- rbind(
     read.csv(validation_data_path_2, na.strings=c("NA", "n/a")),
     read.csv(validation_data_path_2, na.strings=c("NA", "n/a"))
 )
-

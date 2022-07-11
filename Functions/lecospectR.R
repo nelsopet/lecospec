@@ -2567,7 +2567,8 @@ validate_results <- function(
     validation_table,
     pft_key,
     template_path,
-    aggregation_level = 1
+    aggregation_level = 1,
+    save_path = "./quadrat_"
  ){
     # Need to make keys shared and unique.  Really need the R equivalent of spark's RDD.reduceByKey()
     # store the results
@@ -2597,7 +2598,7 @@ validate_results <- function(
         #windows();
         
         ggsave(
-            paste0("quadrat_", i, "_plot.png"),
+            paste0(save_path, i, "_plot.png"),
             plot = plot_categorical_raster(
                 quadrat_ras,
                 colors = fg1_palette,
@@ -2705,6 +2706,7 @@ apply_KS_test <- function(validation_aggregates, type="two.sided", use_monte_car
         }
         # iterate over validation
         for(val_row_idx in 1:num_rows_validation){
+            print(validation_df[[val_row_idx, "Plant"]])
             if(template[[template_row_idx, "key"]] == validation_df[[val_row_idx, "Plant"]]){
                 # store values
                 current_count <- template[[template_row_idx, "validation_counts"]]
@@ -2829,8 +2831,8 @@ define_plot_options <- function(
 #Moss: #7dfaf8
 #ShrubDecid: #69876b
 #EvergreenShrub: #db2ad2
-#TreeConifer: #2ac4db
 #TreeBroadleaf: #03fc2c
+#TreeConifer: #2ac4db
 #Unknown: #000000
 
 
@@ -2842,8 +2844,8 @@ fg1_palette <- c(
         "#7dfaf8",
         "#69876b",
         "#db2ad2",
-        "#2ac4db",
         "#03fc2c",
+        "#2ac4db",
         "#000000"
 )
 
@@ -2855,8 +2857,8 @@ fg1_names <- c(
     "Moss",
     "ShrubDecid",
     "ShrubEvergreen",
-    "TreeConifer",
     "TreeBroadleaf",
+    "TreeConifer",
     "Unknown"
 )
 
