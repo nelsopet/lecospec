@@ -6,28 +6,28 @@ require(sf)
 ####################################################
 
 # Rasters
-test_path <- "E:/Quads/BisonGulchQuads.envi"
-test_path_2 <- "E:/Lecospec/Quadrat_Shapefiles/ChatanikaQuads.envi"
-test_path_3 <- "E:/Lecospec/Ground_Validation/TwelveMileGulchQuads1.envi"
-test_path_4 <- "E:/Lecospec/Ground_Validation/TwelveMileGulchQuads2.envi"
-test_path_5 <- "E:/Quads/EightMileQuads.envi"
-test_path_6 <- "E:/Quads/MurphDomeQuads0_10.envi"
-test_path_7 <- "E:/Quads/MurphDomeQuads20_50.envi"
-test_path_8 <- "E:/Quads/MurphDomeQuads60_100.envi"
+test_path_1 <- "Data/Quadrats/BisonGulchQuads.envi"
+test_path_2 <- "Data/Quadrats/Quadrat_Shapefiles/ChatanikaQuads.envi"
+test_path_3 <- "Data/Quadrats/Ground_Validation/TwelveMileGulchQuads1.envi"
+test_path_4 <- "Data/Quadrats/Ground_Validation/TwelveMileGulchQuads2.envi"
+test_path_5 <- "Data/Quadrats/EightMileQuads.envi"
+test_path_6 <- "Data/Quadrats/MurphDomeQuads0_10.envi"
+test_path_7 <- "Data/Quadrats/MurphDomeQuads20_50.envi"
+test_path_8 <- "Data/Quadrats/MurphDomeQuads60_100.envi"
 
 # ML models
 model_path_base <- "Output/E_003_Pred_Model_RandomForest_FncGrp1_1000trees.rda"
 model_path <- "mle/RandomForest_FncGrp1_1000trees_augmented.rda"
 
 # Shapefiles
-EightMileShapes <- "E:/Vectors/EightMile_Quadrats_revised.shp"
-twelve_mile_path_1 <- "Data/Vectors/TwelveMileQ0_10_20_30_40m.shp"
-twelve_mile_path_2 <- "Data/Vectors/TwelveMileQ70_80_90_100m.shp"
-bison_gulch_path <- "Data/Vectors/Bison_Quadrats_renamed_quads.shp"
-chat_path <- "Data/Vectors/ChatanikaQuads.shp"
-md_path_1 <- "Data/Vectors/MurphyQuads0_10m.shp"
-md_path_2 <- "Data/Vectors/MurphyQuads20_50m.shp"
-md_path_3 <- "Data/Vectors/MurphyQuads60_100m.shp"
+shape_path_1 <- "Data/Vectors/Bison_Quadrats_renamed_quads.shp"
+shape_path_2 <- "Data/Vectors/ChatanikaQuads.shp"
+shape_path_3 <- "Data/Vectors/TwelveMileQ0_10_20_30_40m.shp"
+shape_path_4 <- "Data/Vectors/TwelveMileQ70_80_90_100m.shp"
+shape_path_5 <- "Data/Vectors/EightMile_Quadrats_revised.shp"
+shape_path_6 <- "Data/Vectors/MurphyQuads0_10m.shp"
+shape_path_7 <- "Data/Vectors/MurphyQuads20_50m.shp"
+shape_path_8 <- "Data/Vectors/MurphyQuads60_100m.shp"
 
 # Validation data
 validation_data_path <- "Data/Ground_Validation/QuadratEstimates/Lab_quadrat_cover_2019_Raw.csv"
@@ -38,7 +38,7 @@ validation_data_path_2 <- "Data/Ground_Validation/QuadratEstimates/Lab_quadrat_c
 ####################################################
 
 # Shapefile & check names
-tm_shapes <- sf::st_read(md_path_1)
+tm_shapes <- sf::st_read(shape_path_1)
 print(tm_shapes$CLASS_NAME)
 
 # process_tile inputs
@@ -46,14 +46,14 @@ ml_model <- load_model(model_path)
 band_names <- read.csv("./assets/bands.csv")$x %>% as.vector()
 
 # load the validation data
-validation_df <- read.csv(validation_data_path, na.strings=c("NA", "n/a"))
+validation_df <- read.csv(validation_data_path_2, na.strings=c("NA", "n/a"))
 
 ####################################################
 #       Process the Quadrats 
 ####################################################
 #since the images are small-ish, process_tile is faster
 tile_results <- process_tile(
-    test_path_3,
+    test_path_1,
     ml_model,
     1,
     cluster = NULL,
@@ -159,8 +159,7 @@ chatanika_names <- c(
 )
 
 # assign correct names to shafile
-tm_shapes$CLASS_NAME <- chatanika_names
-
+tm_shapes$CLASS_NAME <- md_names_3
 
 ####################################################
 #       Fix projection issues
@@ -236,7 +235,7 @@ for(i in seq_along(tm_shapes$CLASS_NAME)){
 #       Save the results & aggregate
 ####################################################
 
-save_validation(validation_aggregates, base_filename = "ca_validation")
+save_validation(validation_aggregates, base_filename = "md_c_validation")
 
 initial_path <- "./assets/pft1_template.csv"# use if there is to cold start
 aggregation_path <- "figures/aggregator.csv"
