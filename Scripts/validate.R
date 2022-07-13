@@ -55,7 +55,7 @@ validation_df <- read.csv(validation_data_path_2, na.strings=c("NA", "n/a"))
 ####################################################
 #since the images are small-ish, process_tile is faster
 tile_results <- process_tile(
-    test_path_1,
+    test_path_5,
     ml_model,
     1,
     cluster = NULL,
