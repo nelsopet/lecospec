@@ -1,7 +1,7 @@
 source("./Functions/lecospectR.R")
 
 test_log <- "./test/test.log"
-#sink(test_log, append = TRUE)
+#sink(test_log)
 print("test start")
 print(date())
 

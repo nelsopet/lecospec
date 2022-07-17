@@ -1,8 +1,8 @@
 require(tidyverse)
 require(compiler)
 require(raster)
-require(parallel)
-require(doParallel)
+#require(parallel)
+#require(doParallel)
 require(hsdar)
 require(spectrolab)
 require(ranger)
@@ -10,7 +10,11 @@ require(stringr)
 require(stringi)
 require(rjson)
 require(rgdal)
-require(gdalUtils)
+#require(gdalUtils)
+require(snow)
+require(doSNOW)
+require(stats)
+require(rasterVis)
 
 
 #' Functions returns columns that are bandpasses
@@ -249,7 +253,8 @@ resample_df <- function(df) {
     spec_library <- df_to_speclib(df, type="spectrolab")
     speclib_resampled <- spectrolab::resample(
         spec_library,
-        seq(397.593,899.424,5)
+        seq(397.593,899.424,5),
+        parallel = FALSE
     ) 
     
     df_resampled <- speclib_to_df(speclib_resampled) %>% dplyr::select(-sample_name)
@@ -429,8 +434,6 @@ get_vegetation_indices <- function(
     cluster = NULL) {
 
     target_indices <- get_required_veg_indices(ml_model)
-    print("Calulating Vegetation Indices:")
-    print(target_indices)
     # Creates a new model built on important variables
     # Initialize variable
     veg_indices <- NULL
@@ -439,6 +442,7 @@ get_vegetation_indices <- function(
 
     if(!is.null(cluster)){
         # cluster supplied, so use parallel execution
+        #doSNOW::registerDoSNOW(cluster)
         doParallel::registerDoParallel(cluster)
         veg_indices <- foreach(
             i = seq_along(target_indices),
@@ -592,26 +596,7 @@ attach_veg_indices <- function(df) {
 }
 
 
-
-#' Resample the data frame/spectra every distance=5 units
-#'
-#' Long Description here
-#'
-#' @return 
-#' @param df: a dataframe of spectral data
-#' @param distance (default: 5nm): distance to resample bands
-#' @return data frame of resampled data
-#' @seealso None
-#' @export 
-#' @examples Not Yet Implmented
-resample_spectra <- function(spec_lib) {
-    print("Not yet implemented")
-    return(spec_lib)
-}
-
-
-
-#' COmbines derivatives (veg indices) and predictions
+#' Combines derivatives (veg indices) and prediction
 #'
 #' Long Description here
 #'
@@ -695,24 +680,46 @@ load_csv <- function(filepath, output_type = "df") {
 #' @export 
 #' @examples Not Yet Implmented
 #'
-impute_spectra <- function(x, cluster = NULL, method = "missForest") {
+impute_spectra <- function(x, cluster = NULL, method = "missForest", transpose=FALSE) {
+    df <- x 
+    
 
-    df <- x
-
+    # convert to a data.frame if x is a raster
     if (!is.data.frame(x)) {
         df <- x %>%
         rasterToPoints() %>%
+        as.data.frame() 
+    }
+    # save band names in case we need to transpose and restore column names later
+    bands <- colnames(df)
+
+
+    # transpose if needed
+    if(transpose){
+        df <- df %>%
+        as.matrix() %>% 
+        t() %>% 
         as.data.frame()
     }
 
     print("Imputing...")
     if (method == "missForest") {
-        missForest::missForest(df, maxiter = 3)
-        output_data <- df
-    } else {
-        output_data <- useful::simple.impute(df)
+        output_data <- missForest::missForest(df, maxiter = 1,)$ximp
+    } else if(method == "median"){
+        output_data <- useful::simple.impute(df)     
+    } else if( method == "mean"){
+        output_data <- useful::simple.impute(df, fun = mean)
     }
-        
+    
+    if(transpose){
+        output_data <- output_data %>% 
+        as.matrix() %>% 
+        t() %>% 
+        as.data.frame()
+        colnames(output_data) <- bands
+    }
+
+    
     if (!is.data.frame(x)) {
         spectral_matrix <- as.matrix(df)
         output_data <- raster::rasterFromXYZ(
@@ -721,6 +728,7 @@ impute_spectra <- function(x, cluster = NULL, method = "missForest") {
         raster::extent(output_data) <- raster::extent(x)
     }
     gc()
+
     return(output_data)
 }#end impute_spectra
 
@@ -765,7 +773,7 @@ make_tiles <- function(
 
     get_random_filename <- function() {
         random_tile_id <- stringi::stri_rand_strings(1,16)
-        random_filename <- paste0("tile_", random_tile_id, ".grd")
+        random_filename <- paste0("tile_", random_tile_id, ".envi")
         return(random_filename)
     }
 
@@ -829,14 +837,14 @@ apply_pipeline_by_tile <- function(df, functions, cluster) {
 #' @export 
 #' @examples Not Yet Implmented
 #'
-aggregate_results_df <- function(predictions, x, y) {
+aggregate_results_df <- function(prediction, x, y) {
 
     dfx <- data.frame(x)
     colnames(dfx) <- c("x")
     dfxy <- cbind(dfx, y)
     z <- c()
 
-    for (my_prediction in predictions) {
+    for (my_prediction in prediction) {
         prediction_df <- as.data.frame(
         raster::levels(my_prediction)[[1]], xy = TRUE)
         num_pixels <- nrow(prediction_df)
@@ -892,40 +900,6 @@ plot_agg_results <- function(df, save_file = "Output/results.jpeg") {
     return(my_plot)
 }
 
-# 
-#' Function Reads in the data and replace/removes weird values
-#'
-#' Long Description here
-#'
-#' @return 
-#' @param x
-#' @seealso None
-#' @export 
-#' @examples Not Yet Implmented
-#'
-make_speclib_derivs<- function(filename)  {  
-    # Reads in spectral libray as .csv
-    # Right now your spectral library would have already have 
-    # weird values removed/replaced
-    spectral_lib <- read.csv(
-        filename,
-        check.names = F)
-
-    spectral_lib <- Deriv_combine(spectral_lib)
-
-    write.csv(
-        spectral_lib,
-        paste(
-            out_file,
-            "D_002_SpecLib_Derivs",
-            ".csv",
-            sep = ""),
-        row.names = F)
-
-    # Normalize Values here
-    return(spectral_lib)
-}
-
 #' Function Reads in the data and replace/removes weird values
 #'
 #' Long Description here
@@ -968,16 +942,18 @@ estimate_land_cover <- function(
     input_filepath,
     config_path = "./config.json",
     cache_filepath = "./",
-    output_filepath =  paste("output-",format(Sys.time(), "%a-%b-%d-%H-%M-%S-%Y"), ".tif", sep=""),
-    use_external_bands = FALSE
+    output_filepath =  paste("output-",format(Sys.time(), "%a-%b-%d-%H-%M-%S-%Y"), ".envi", sep=""),
+    use_external_bands = TRUE
 ) {
 
+    path <- getwd()
+    #write terminal output to the log file
 
     # Read in the configuration file
     config <- rjson::fromJSON(file = config_path)
 
     # determine the number of cores to use
-    num_cores <- parallel::detectCores() #detect cores on system
+    num_cores <- parallel::detectCores() - 1#detect cores on system
     # see if the number of cores to use is specified in the config
     if(is.integer(config$clusterCores)){
         num_cores <- config$clusterCores
@@ -985,12 +961,14 @@ estimate_land_cover <- function(
     # set up the parallel cluster
     raster::beginCluster(num_cores)
     cl <- raster::getCluster()
+    print(cl)
 
 
-    print(paste0(num_cores, " Cores Detected for processing..."))
+    print(paste0(parallel::detectCores(), " Cores Detected for processing..."))
+    print(paste0("Cluster initialized with ", num_cores, " processes"))
     background_blas_threads <- RhpcBLASctl::get_num_procs()
     background_omp_threads <- RhpcBLASctl::omp_get_max_threads()
-    background_processes <- RhpcBLASctl::get_num_procs()
+
 
 
 
@@ -1000,6 +978,15 @@ estimate_land_cover <- function(
 
     # load the input datacube and split into tiles
     input_raster <- raster::brick(input_filepath)
+    input_crs <- raster::crs(input_raster)
+    input_extent <- raster::extent(input_raster)
+
+    if(is.na(input_crs)){
+        warning("The input raster does not have a CRS specified.")
+    }
+
+    # save the band names since they will be lost now that we are using .envi tiles 
+    bandnames <- names(input_raster)
     if(use_external_bands){
         band_count <- raster::nlayers(input_raster)
         bandnames <- read.csv(config$external_bands)$x[1:band_count] %>% as.vector()
@@ -1010,14 +997,14 @@ estimate_land_cover <- function(
     num_tiles_y <- config$y_tiles
 
     if(config$automatic_tiling){
-        num_tiles_x <- calc_num_tiles(input_filepath)
-        num_tiles_y <- calc_num_tiles(input_filepath)
+        num_tiles_x <- calc_num_tiles(input_filepath, max_size = config$max_size)
+        num_tiles_y <- calc_num_tiles(input_filepath, max_size = config$max_size)
     }
 
     tile_filenames <- make_tiles(
         input_raster,
-        num_x = config$x_tiles,
-        num_y = config$y_tiles,
+        num_x = num_tiles_x,
+        num_y = num_tiles_y,
         save_path = config$tile_path,
         cluster = cl,
         verbose = FALSE
@@ -1034,42 +1021,54 @@ estimate_land_cover <- function(
     }) %>% as.vector()
 
     # initialize the variable for the tilewise results
-    tile_results <- NULL
+    tile_results <- vector("list", length = length(tile_filenames))
     #edge artifacts?
+
+
+    # exports <- c()
+
+
+
     if(config$parallelize_by_tiles){
+        #doSNOW::registerDoSNOW(cl)
         doParallel::registerDoParallel(cl)
         tile_results <- foreach::foreach(
             i = seq_along(tile_filenames),
             .export = as.vector(ls(.GlobalEnv))
         ) %dopar% {
-            RhpcBLASctl::blas_set_num_threads(1L)
-            RhpcBLASctl::omp_set_num_threads(1L)
-            tile_results = unlist(process_tile(
+            gc()
+            sink(get_log_filename(tile_filenames[[i]]))
+            tile_result <- process_tile(
                 tile_filename = tile_filenames[[i]],
                 ml_model = model, 
                 aggregation = config$aggregation,
                 cluster = NULL,
                 return_raster = TRUE,
+                band_names = bandnames,
                 return_filename = TRUE,
                 save_path = prediction_filenames[[i]],
-                suppress_output = TRUE))
-            gc()#garbage collect between iterations
+                suppress_output = TRUE)
+            sink(NULL)
+            return(tile_result)
         }
     } else {
         tile_results <- foreach::foreach(
-            i=seq_along(tile_filenames), 
-            .export = c("model", "cl")
+            i=seq_along(tile_filenames)
         ) %do% {
-           tile_results = unlist(process_tile(
+            gc()
+            sink(get_log_filename(tile_filenames[[i]]))
+            tile_result <- process_tile(
                 tile_filename = tile_filenames[[i]],
                 ml_model = model, 
                 aggregation = config$aggregation,
                 cluster = cl,
                 return_raster = TRUE,
+                band_names = bandnames,
                 return_filename = TRUE,
                 save_path = prediction_filenames[[i]],
-                suppress_output = TRUE))
-            gc()
+                suppress_output = TRUE)
+        sink(NULL)
+        return(tile_result)
         }
     }
     gc() #clean up
@@ -1086,21 +1085,58 @@ estimate_land_cover <- function(
         RhpcBLASctl::omp_set_num_threads(background_omp_threads)
     }
 
+    # merge and save the results.
     results <- merge_tiles(prediction_filenames, output_path = output_filepath)
-
+    # load the results from disk to correct data type issues from float/INT2U (C++ uint16_t) conversion
+    results <- raster::raster(output_filepath)
 
     return(results)
 }
 
-handle_empty_tile <- function(tile_raster, save_path = NULL){
-
+handle_empty_tile <- function(tile_raster, save_path = NULL, target_crs = NULL){
     # convert to a raster
-    if(!is.null(save_path)){
-        raster::writeRaster(tile_raster[[1]], save_path)
+    output_raster <- tile_raster[[1]]
+
+    
+    if(!is.null(target_crs)){
+        raster::crs(output_raster) <- target_crs
     }
+
+    names(output_raster) <- c("predictions")
+    raster::dataType(output_raster) <- "INT2U"
+    
+    print(raster::NAvalue(output_raster))
+    if(!is.null(save_path)){
+        raster::writeRaster(output_raster, save_path, datatype = "INT2U")
+    }
+
+    
+      
+    print("Empty Input Raster")
+    print(tile_raster)
+    print("Output Raster")
+    print(output_raster)
+    return(output_raster)
+}
+
+has_empty_column <- function(df){
+    # chack if there are not enough data in any column for missForest
+    num_na_per_col <- colSums(is.na(df))
+    all_na_column <- (num_na_per_col >= (nrow(df) - 2))
+
+    if(any(all_na_column)){
+        return( TRUE )
+    }
+    return( FALSE )
 }
 
 
+drop_empty_columns <- function(df){
+    num_na_per_col <- colSums(is.na(df))
+    all_na_column <- (num_na_per_col == (nrow(df)))
+    df_no_cols <- df[, !all_na_column]
+    return(df_no_cols)
+}
 #' processes a small raster imarge
 #'
 #' processes the given image in-memory.  This assumes that the image is small enough that tiling is not required.  
@@ -1126,6 +1162,7 @@ process_tile <- function(
     aggregation,
     cluster = NULL,
     return_raster = TRUE,
+    band_names=NULL,
     return_filename = FALSE,
     save_path = NULL,
     suppress_output = FALSE
@@ -1133,69 +1170,99 @@ process_tile <- function(
     raster_obj <- raster::brick(tile_filename)
     input_crs <- raster::crs(raster_obj)
     print(paste0("preprocessing raster at ", tile_filename))
-    base_df <- preprocess_raster_to_df(raster_obj, ml_model)
+    base_df <- preprocess_raster_to_df(raster_obj, ml_model, band_names=band_names)
+    print(input_crs)
     
-    if(nrow(base_df) < 100 ){
-        warning("The tile has fewer than 100 filled pixels")
-        handle_empty_tile(raster_obj, save_path = save_path)
+    if(nrow(base_df) < 2){
+        print("The tile has no rows!")
+        print(dim(base_df))
+        handle_empty_tile(
+            raster_obj,
+            save_path = save_path,
+            target_crs = input_crs)
+
         if(!suppress_output){
             if(return_raster){
                 return(raster_obj)
             } else {
                 return(base_df)
             } 
-        } else {
-            return(save_path)
-        }
-    }
 
-        #if there is no data, return the empty tile in the specified format
-
-    rm(raster_obj)
-    gc()
-
-    target_indices <- get_required_veg_indices(ml_model)
-
-    imputed_df <- impute_spectra(base_df)
-    rm(base_df)
-    gc()
-
-    resampled_df <- resample_df(imputed_df)
-    gc()
-
-    veg_indices <- get_vegetation_indices(resampled_df, ml_model, cluster = cluster)
-
-    print("Resampled Dataframe Dimensions:")
-    print(dim(resampled_df))
-    print("Index Dataframe Dimensions:")
-    print(dim(veg_indices))
-
-    df <- cbind(resampled_df, veg_indices)
-    #df <- df %>% dplyr::select(x, y, dplyr::all_of(target_model_cols)) 
-    # above line should not be needed, testing then deleting
-    rm(veg_indices)
-    rm(resampled_df)
-    gc()
-
-    
-    predictions <- apply_model(df, ml_model)
-    rm(df)
-    gc()
-
-    predictions <- postprocess_predictions(predictions, imputed_df)
-    
-    predictions <- convert_and_save_output(
-        predictions,
-        aggregation,
-        save_path = save_path,
-        return_raster = return_raster)
-    
-    raster::crs(predictions) <- input_crs
-
-    if(suppress_output){
-        return(save_path)
+        } 
+        print(save_path)
+        return(unlist(save_path))
+        # add return value if output is suppressed
     } else {
-        return(predictions)
+        # this runs if and only if there is sufficient data
+    
+
+            #if there is no data, return the empty tile in the specified format
+
+        rm(raster_obj)
+        gc()
+
+        cleaned_df <- drop_zero_rows(base_df)
+        rm(base_df)
+        gc()
+
+
+        cleaned_df_no_empty_cols <- drop_empty_columns(cleaned_df)
+
+        
+        imputed_df <- impute_spectra(cleaned_df_no_empty_cols, cluster = cluster)
+    
+        try(
+            rm(cleaned_df)
+        )# sometimes garbage collection gets there first, which is fine
+        gc()
+
+        # drop rows that are uniformly zero
+      
+        resampled_df <- resample_df(imputed_df)
+        gc()
+
+        veg_indices <- get_vegetation_indices(resampled_df, ml_model, cluster = cluster)
+
+        print("Resampled Dataframe Dimensions:")
+        print(dim(resampled_df))
+        print("Index Dataframe Dimensions:")
+        print(dim(veg_indices))
+
+        df <- cbind(resampled_df, veg_indices)
+        #df <- df %>% dplyr::select(x, y, dplyr::all_of(target_model_cols)) 
+        # above line should not be needed, testing then deleting
+        rm(veg_indices)
+        rm(resampled_df)
+        gc()
+
+        imputed_df_full <- impute_spectra(df, method="median")
+
+        
+        prediction <- apply_model(imputed_df_full, ml_model)
+        rm(df)
+        gc()
+        
+        prediction <- postprocess_prediction(prediction, imputed_df_full)
+
+
+        
+        
+
+        prediction <- convert_and_save_output(
+            prediction,
+            aggregation,
+            save_path = save_path,
+            return_raster = return_raster,
+            target_crs = input_crs)
+
+        
+        raster::crs(prediction) <- input_crs
+
+        if(suppress_output){
+            print(save_path)
+            return(unlist(save_path))
+        }
+        return(prediction)
     }
 }
 
@@ -1223,8 +1290,8 @@ remove_noisy_cols <- function(df, min_index = 1, max_index = 274) {
 #' @examples Not Yet Implmented
 filter_bands <- function(df) {
     # from original code, but sets the values to NA instead of -999 
-    df[-1:-2][df[-1:-2] > 1.5] <- NA
-    df[-1:-2][df[-1:-2] < 0  ] <- NA
+    df[-1:-2][df[-1:-2] > 1] <- 1.0#formerly NA
+    df[-1:-2][df[-1:-2] < 0 ] <- 0.0#formerly NA
     df[-1:-2][sapply(df[-1:-2], is.nan)] <- NA
     df[-1:-2][sapply(df[-1:-2], is.infinite)] <- NA
     return(df)
@@ -1239,11 +1306,52 @@ filter_bands <- function(df) {
 #' @seealso None
 #' @export 
 #' @examples Not Yet Implmented
-preprocess_raster_to_df <- function(raster_obj, model) {
-    df <- raster::rasterToPoints(raster_obj) %>% as.data.frame()
-    df <- remove_noisy_cols(df)
+preprocess_raster_to_df <- function(raster_obj, model, band_names=NULL) {
+
+    #unique_levels <- unique(raster::values(raster_obj))
+    #mean_of_levels <- mean(unique_levels, na.rm = TRUE)
+
+    filter_value <- mean(raster::values(raster_obj), na.rm = TRUE)# NA or 0 is bad
+
+    if( filter_value == 0 | is.na(filter_value)){
+        return(data.frame())
+    }
+
+    saved_names <- names(raster_obj)
+
+    imputed_raster <- raster::approxNA(
+        raster_obj,
+        rule = 1
+    )
+
+
+    if(!is.null(band_names)){
+        #try assigning the names to the bands (ignoring extras)
+        try({
+            names(imputed_raster) <- band_names[1:length(names(imputed_raster))]
+        })
+    } else {
+        names(imputed_raster) <- saved_names
+    }
+
+    #print(names(imputed_raster))
+
+    rm(raster_obj)
+
+    df <- raster::rasterToPoints(imputed_raster) %>% as.data.frame()
+    if(nrow(df) < 1){
+        #return df here as filtering fails later
+        return (df)
+    }
+    print("Converted to Data frame?")
+    print(is.data.frame(df))
+    df <- remove_noisy_cols(df, max_index = 284) %>% as.data.frame()
+    print("Noisy columns removed")
+    print(is.data.frame(df))
     df <- filter_bands(df)
-    df <- filter_empty_points(df) 
+    #df <- filter_empty_points(df)
+    print("Filtered")
+    print(is.data.frame(df))
     gc()
     return(df)
 }
@@ -1302,6 +1410,7 @@ preprocess_raster_to_parquet <- function(
 #' @export 
 #' @examples Not Yet Implmented
 convert_wavelength_strings <- function(wavelengths) {
+    print(wavelengths)
     ncharacters <- nchar(wavelengths)
     corrected_values <- numeric(length = length(wavelengths))
     for (w in seq_along(wavelengths)){
@@ -1358,21 +1467,20 @@ apply_model <- function(df, model, threads = 1, clean_names = TRUE){
                 data = df,
                 type='response',
                 num.threads = threads
-            )$predictions %>% as.data.frame() #(Ranger model)
+            )$prediction %>% as.data.frame() #(Ranger model)
 
     }, 
     error = function(cond){
-        colnames(output_df) <- c("predictions")
         message("Error applying model - likely an empty file:")
         message(cond)
         # return df of NAs
         y <- data.frame()
-        y$predictions <- df[, 1]
+        y$prediction <- df[, 5]
         y
 
     })
 
-    #print(predictions$prediction)
+    #print(prediction$prediction)
 }
 
 #' a quick function based on the original code
@@ -1386,32 +1494,32 @@ apply_model <- function(df, model, threads = 1, clean_names = TRUE){
 #' @examples Not Yet Implmented
 convert_fg2_string <- function(df) {
     df_convert_results <- df %>% dplyr::mutate(z = case_when(
-        z == "Litter" ~ 0,
-        z == "Mineral" ~ 1,
-        z == "FernAlly" ~ 2,
-        z == "ForbFlower" ~ 3,
-        z == "GraminoidGrass" ~ 4,
-        z == "GraminoidSedge" ~ 5,
-        z == "DarkTerrestrialMacrolichen" ~ 6,
-        z == "LightTerrestrialCrustose" ~ 7,
-        z == "LightTerrestrialMacrolichen" ~ 8,
-        z == "YellowTerrestrialCrustose" ~ 9,
-        z == "YellowTerrestrialMacrolichen" ~ 10,
-        z == "MossAcrocarp" ~ 11,
-        z == "MossPleurocarp" ~ 12,
-        z == "MossSphagnum" ~ 13,
-        z == "ShrubAlder" ~ 14,
-        z == "ShrubBetula" ~ 15,
-        z == "ShrubDecidOther" ~ 16,
-        z == "ShrubSalix" ~ 17,
-        z == "ShrubEvergreenNeedle" ~ 18,
-        z == "ShrubEvergreenBroadleaf" ~ 19,
-        z == "TreeBetula" ~ 20,
-        z == "TreeBroadleafOther" ~ 21,
-        z == "TreePopulus" ~ 22,
-        z == "TreeConiferOther" ~ 23,
-        z == "TreeSpruce" ~ 24,
-        z == "Unknown" ~ 25,
+        z == "Litter" ~ 0L,
+        z == "Mineral" ~ 1L,
+        z == "FernAlly" ~ 2L,
+        z == "ForbFlower" ~ 3L,
+        z == "GraminoidGrass" ~ 4L,
+        z == "GraminoidSedge" ~ 5L,
+        z == "DarkTerrestrialMacrolichen" ~ 6L,
+        z == "LightTerrestrialCrustose" ~ 7L,
+        z == "LightTerrestrialMacrolichen" ~ 8L,
+        z == "YellowTerrestrialCrustose" ~ 9L,
+        z == "YellowTerrestrialMacrolichen" ~ 10L,
+        z == "MossAcrocarp" ~ 11L,
+        z == "MossPleurocarp" ~ 12L,
+        z == "MossSphagnum" ~ 13L,
+        z == "ShrubAlder" ~ 14L,
+        z == "ShrubBetula" ~ 15L,
+        z == "ShrubDecidOther" ~ 16L,
+        z == "ShrubSalix" ~ 17L,
+        z == "ShrubEvergreenNeedle" ~ 18L,
+        z == "ShrubEvergreenBroadleaf" ~ 19L,
+        z == "TreeBetula" ~ 20L,
+        z == "TreeBroadleafOther" ~ 21L,
+        z == "TreePopulus" ~ 22L,
+        z == "TreeConiferOther" ~ 23L,
+        z == "TreeSpruce" ~ 24L,
+        z == "Unknown" ~ 25L,
     ), .keep = "unused") %>%
     dplyr::select(x,y,z)
 return(df_convert_results)
@@ -1434,27 +1542,28 @@ assemble_tiles_from_disk <- function(tiles, output_path){
             raster::raster(x)
         })
     pred_merged<-Reduce(raster::merge, chunks)
-    #writeRaster(pred_merged, filename = "Output/Predictions/")
+    #writeRaster(pred_merged, filename = "Output/prediction/")
     return(pred_merged)
 }
 
 merge_tiles <- function(input_files, output_path = NULL, target_layer = 1) {
 
-    master_raster <- as(raster::brick(input_files[[1]])[[target_layer]], "RasterLayer")
-
+    master_raster <- raster::raster(input_files[[1]])
+    raster::dataType(master_raster) <- "INT2U"
     for (input_file in tail(input_files, -1)) {
-        new_raster <- as(raster::brick(input_file)[[target_layer]], "RasterLayer")
+        new_raster <- raster::raster(input_file)
+        raster::dataType(new_raster) <- "INT2U"
         # above is robust against multi-layer images
-        master_raster <- raster::merge(
+        master_raster <- safe_merge(
             master_raster,
-            new_raster,
-            tolerance = 0.5)
-        
+            new_raster
+        )
     }
     if(!is.null(output_path)) {
-        raster::writeRaster(master_raster, output_path, overwrite = TRUE)
+        raster::writeRaster(master_raster, output_path, datatype='INT2U', overwrite = TRUE)
     }
 
+    raster::dataType(master_raster) <- "INT2U"
     return(master_raster)
 }
 
@@ -1490,32 +1599,32 @@ merge_tiles <- function(input_files, output_path = NULL, target_layer = 1) {
 convert_fg2_int <- function(df) {
     converted_df <- df %>% dplyr::mutate(
         z = dplyr::case_when(
-            z == "Litter" ~ 0,
-            z == "Mineral" ~ 1,
-            z == "FernAlly" ~ 2,
-            z == "ForbFlower" ~ 3,
-            z == "GraminoidGrass" ~ 4,
-            z == "GraminoidSedge" ~ 5,
-            z == "DarkTerrestrialMacrolichen" ~ 6,
-            z == "LightTerrestrialCrustose" ~ 7,
-            z == "LightTerrestrialMacrolichen" ~ 8,
-            z == "YellowTerrestrialCrustose" ~ 9,
-            z == "YellowTerrestrialMacrolichen" ~ 10,
-            z == "MossAcrocarp" ~ 11,
-            z == "MossPleurocarp" ~ 12,
-            z == "MossSphagnum" ~ 13,
-            z == "ShrubAlder" ~ 14,
-            z == "ShrubBetula" ~ 15,
-            z == "ShrubDecidOther" ~ 16,
-            z == "ShrubSalix" ~ 17,
-            z == "ShrubEvergreenNeedle" ~ 18,
-            z == "ShrubEvergreenBroadleaf" ~ 19,
-            z == "TreeBetula" ~ 20,
-            z == "TreeBroadleafOther" ~ 21,
-            z == "TreePopulus" ~ 22,
-            z == "TreeConiferOther" ~ 23,
-            z == "TreeSpruce" ~ 24,
-            z == "Unknown" ~ 25,
+            z == 0L ~ "Litter",
+            z == 1L ~ "Mineral",
+            z == 2L ~ "FernAlly",
+            z == 3L ~ "ForbFlower",
+            z == 4L ~ "GraminoidGrass",
+            z == 5L ~ "GraminoidSedge",
+            z == 6L ~ "DarkTerrestrialMacrolichen",
+            z == 7L ~ "LightTerrestrialCrustose",
+            z == 8L ~ "LightTerrestrialMacrolichen",
+            z == 9L ~ "YellowTerrestrialCrustose",
+            z == 10L ~ "YellowTerrestrialMacrolichen",
+            z == 11L ~ "MossAcrocarp",
+            z == 12L ~ "MossPleurocarp",
+            z == 13L ~ "MossSphagnum",
+            z == 14L ~ "ShrubAlder",
+            z == 15L ~ "ShrubBetula",
+            z == 16L ~ "ShrubDecidOther",
+            z == 17L ~ "ShrubSalix",
+            z == 18L ~ "ShrubEvergreenNeedle",
+            z == 19L ~ "ShrubEvergreenBroadleaf",
+            z == 20L ~ "TreeBetula",
+            z == 21L ~ "TreeBroadleafOther",
+            z == 22L ~ "TreePopulus",
+            z == 23L ~ "TreeConiferOther",
+            z == 24L ~ "TreeSpruce",
+            z == 25L ~ "Unknown",
 
         ), .keep = "unused"
     ) %>% 
@@ -1534,18 +1643,19 @@ convert_fg2_int <- function(df) {
 #' @export 
 #' @examples Not Yet Implmented
 convert_fg1_string <- function(df) {
-    converted_df <- df %>% dplyr::mutate(z = case_when(
-            z == "Abiotic" ~ 0,
-            z == "Forb" ~ 1,
-            z == "Graminoid" ~ 2,
-            z == "Lichen" ~ 3,
-            z == "Moss" ~ 4,
-            z == "ShrubDecid" ~ 5,
-            z == "ShrubEvergreen" ~ 6,
-            z == "TreeBroadleaf" ~ 7,
-            z == "TreeConifer" ~ 8,
-            z == "Unknown" ~ 9
-    ), .keep ="unused") %>%
+    converted_df <- df %>% dplyr::mutate(
+        z = case_when(
+            z == "Abiotic" ~ 0L,
+            z == "Forb" ~ 1L,
+            z == "Graminoid" ~ 2L,
+            z == "Lichen" ~ 3L,
+            z == "Moss" ~ 4L,
+            z == "ShrubDecid" ~ 5L,
+            z == "ShrubEvergreen" ~ 6L,
+            z == "TreeBroadleaf" ~ 7L,
+            z == "TreeConifer" ~ 8L,
+            z == "Unknown" ~ 9L
+    ), .keep = "unused") %>%
     dplyr::select(x,y,z)
 
     return(converted_df)
@@ -1590,131 +1700,131 @@ convert_species_string <- function(df){
 
     converted_df <- df %>% dplyr::mutate(
         z = case_when(
-            z == "Dead Salix" ~ 0,
-            z == "Pices (bark)" ~ 1,
-            z == "Bare Rock" ~ 2,
-            z == "Bare Soil" ~ 3,
-            z == "Quartz" ~ 4,
-            z == "Equisetum arvense" ~ 5,
-            z == "Equisetum sylvaticum" ~ 6,
-            z == "Arenaria pseudofrigida" ~ 7,
-            z == "Heracleum lanatum" ~ 8,
-            z == "Hieracium sp." ~ 9,
-            z == "Iris sp." ~ 10,
-            z == "Lupinus sp." ~ 11,
-            z == "Pedicularis racemosa" ~ 12,
-            z == "Pedicularis sudetica" ~ 13,
-            z == "Petasites frigida" ~ 14,
-            z == "Pestasites frigidus" ~ 15,
-            z == "Saxifraga punctata" ~ 16,
-            z == "Toefeldia sp." ~ 17,
-            z == "Arctagrostis latifolia" ~ 18,
-            z == "Arctophila fulva" ~ 19,
-            z == "Calamogrostis sp." ~ 20,
-            z == "Dupontia fisheri" ~ 21,
-            z == "Carex sp." ~ 22,
-            z == "Carex aquatilis" ~ 23,
-            z == "Eriophorum vaginatum" ~ 24,
-            z == "Eriophorum angustifolium" ~ 25,
-            z == "Bryoria sp." ~ 26,
-            z == "Cetraria islandica" ~ 27,
-            z == "Cetraria laevigata" ~ 28,
-            z == "Masonhalea richardsonii" ~ 29,
-            z == "Melanelia sp." ~ 30,
-            z == "Peltigera apthosa" ~ 31,
-            z == "Peltigers leucophlebia" ~ 32,
-            z == "Peltigera malacea" ~ 33,
-            z == "Peltigera scabrata" ~ 34,
-            z == "Porpidia sp." ~ 35,
-            z == "Rhizocarpon sp." ~ 36,
-            z == "Umbilicaria arctica" ~ 37,
-            z == "Umbilicaria hyperborea" ~ 38,
-            z == "Icmadophila ericetorum" ~ 39,
-            z == "Pilophorus acicularis" ~ 40,
-            z == "Stereocaulon sp." ~ 41,
-            z == "Trapelopsis granulosa" ~ 42,
-            z == "Alectoria ochroleuca" ~ 43,
-            z == "Arctocetraria centrifuga" ~ 44,
-            z == "Asahinea chrysantha" ~ 45,
-            z == "Cladonia cornuta" ~ 46,
-            z == "Cladonia gracilis" ~ 47,
-            z == "Cladonia rangiferina" ~ 48,
-            z == "Cladonia stygia" ~ 49,
-            z == "Hypogymnia austerodes" ~ 50,
-            z == "Parmelia omphalodes" ~ 51,
-            z == "Parmelis sulcata" ~ 52,
-            z == "Unknown" ~ 53,
-            z == "Rhizocarpon geographicum" ~ 54,
-            z == "Cladonia amaurocraea" ~ 55,
-            z == "Cladonia mitis" ~ 56,
-            z == "Cladonia steallaris" ~ 57,
-            z == "Cladonia sulphurina" ~ 58,
-            z == "Cladonia uncialis" ~ 59,
-            z == "Dactylina arctica" ~ 60,
-            z == "Evernia mesomorpha" ~ 61,
-            z == "Flavocetraria cucculata" ~ 62,
-            z == "Flavocetraria nivalis" ~ 63,
-            z == "Nephroma arcticum" ~ 64,
-            z == "Parmeliopsis ambigua" ~ 65,
-            z == "Usnea lapponica" ~ 66,
-            z == "Usnea scabrata" ~ 67,
-            z == "Vulpicida pinastri" ~ 68,
-            z == "Aulacomnium palustre" ~ 69,
-            z == "Aulacomnium turgidum" ~ 70,
-            z == "Ceratadon purpureus" ~ 71,
-            z == "Dicranum sp." ~ 72,
-            z == "Plagiomnium sp." ~ 73,
-            z == "Polytrichum juniperinum" ~ 74,
-            z == "Polytrichum strictum" ~ 75,
-            z == "Polytrichum sp." ~ 76,
-            z == "Racomitrium lanoiginosum" ~ 77,
-            z == "Hylocomium splendens" ~ 78,
-            z == "Pleurozium schreberi" ~ 79,
-            z == "Rhytidum rugosum" ~ 80,
-            z == "Tomenthypnum nitens" ~ 81,
-            z == "Sphagnum sp." ~ 82,
-            z == "Sphagnum fuscum" ~ 83,
-            z == "Alnus sp." ~ 84,
-            z == "Betula nana" ~ 85,
-            z == "Arctostaphyllos" ~ 86,
-            z == "Rhus typhina" ~ 87,
-            z == "Rosa acicularis" ~ 88,
-            z == "Rubus sp." ~ 89,
-            z == "Vaccinium uliginosum" ~ 90,
-            z == "Salix alaxensis" ~ 91,
-            z == "Salix arbusculoides" ~ 92,
-            z == "Salix glauca" ~ 93,
-            z == "Salix lanata" ~ 94,
-            z == "Salix ovalifolia" ~ 95,
-            z == "Salix pulchra" ~ 96,
-            z == "Salix richardsonii" ~ 97,
-            z == "Salix (wooly)" ~ 98,
-            z == "Salix phlebophylla" ~ 99,
-            z == "Cassiope tetragona" ~ 100,
-            z == "Dryas sp." ~ 101,
-            z == "Empetrum nigrum" ~ 102,
-            z == "Ledum decumbens" ~ 103,
-            z == "Loisleuria procumbens" ~ 104,
-            z == "Vaccinium vitis-idea" ~ 105,
-            z == "Betula alleghaniensis" ~ 106,
-            z == "Betula neoalaskana" ~ 107,
-            z == "Betula papyrifera" ~ 108,
-            z == "Betula populifolia" ~ 109,
-            z == "Acer rubrum" ~ 110,
-            z == "Acer pensylvanicum" ~ 111,
-            z == "Fagus grandifolia" ~ 112,
-            z == "Fraxinus americana" ~ 113,
-            z == "Prunus pensylvanica" ~ 114,
-            z == "Quercus Rubra" ~ 115,
-            z == "Populus balsamifera" ~ 116,
-            z == "Populus grandidentata" ~ 117,
-            z == "Abies balsamea" ~ 118,
-            z == "Larix larcina" ~ 119,
-            z == "Pinus strobus" ~ 120,
-            z == "Thuja occidentalis" ~ 121,
-            z == "Tsuga canadensis" ~ 122,
-            z == "Picea mariana" ~ 123,
-            z == "Picea rubens" ~ 124,
+            z == "Dead Salix" ~ 0L,
+            z == "Pices (bark)" ~ 1L,
+            z == "Bare Rock" ~ 2L,
+            z == "Bare Soil" ~ 3L,
+            z == "Quartz" ~ 4L,
+            z == "Equisetum arvense" ~ 5L,
+            z == "Equisetum sylvaticum" ~ 6L,
+            z == "Arenaria pseudofrigida" ~ 7L,
+            z == "Heracleum lanatum" ~ 8L,
+            z == "Hieracium sp." ~ 9L,
+            z == "Iris sp." ~ 10L,
+            z == "Lupinus sp." ~ 11L,
+            z == "Pedicularis racemosa" ~ 12L,
+            z == "Pedicularis sudetica" ~ 13L,
+            z == "Petasites frigida" ~ 14L,
+            z == "Pestasites frigidus" ~ 15L,
+            z == "Saxifraga punctata" ~ 16L,
+            z == "Toefeldia sp." ~ 17L,
+            z == "Arctagrostis latifolia" ~ 18L,
+            z == "Arctophila fulva" ~ 19L,
+            z == "Calamogrostis sp." ~ 20L,
+            z == "Dupontia fisheri" ~ 21L,
+            z == "Carex sp." ~ 22L,
+            z == "Carex aquatilis" ~ 23L,
+            z == "Eriophorum vaginatum" ~ 24L,
+            z == "Eriophorum angustifolium" ~ 25L,
+            z == "Bryoria sp." ~ 26L,
+            z == "Cetraria islandica" ~ 27L,
+            z == "Cetraria laevigata" ~ 28L,
+            z == "Masonhalea richardsonii" ~ 29L,
+            z == "Melanelia sp." ~ 30L,
+            z == "Peltigera apthosa" ~ 31L,
+            z == "Peltigers leucophlebia" ~ 32L,
+            z == "Peltigera malacea" ~ 33L,
+            z == "Peltigera scabrata" ~ 34L,
+            z == "Porpidia sp." ~ 35L,
+            z == "Rhizocarpon sp." ~ 36L,
+            z == "Umbilicaria arctica" ~ 37L,
+            z == "Umbilicaria hyperborea" ~ 38L,
+            z == "Icmadophila ericetorum" ~ 39L,
+            z == "Pilophorus acicularis" ~ 40L,
+            z == "Stereocaulon sp." ~ 41L,
+            z == "Trapelopsis granulosa" ~ 42L,
+            z == "Alectoria ochroleuca" ~ 43L,
+            z == "Arctocetraria centrifuga" ~ 44L,
+            z == "Asahinea chrysantha" ~ 45L,
+            z == "Cladonia cornuta" ~ 46L,
+            z == "Cladonia gracilis" ~ 47L,
+            z == "Cladonia rangiferina" ~ 48L,
+            z == "Cladonia stygia" ~ 49L,
+            z == "Hypogymnia austerodes" ~ 50L,
+            z == "Parmelia omphalodes" ~ 51L,
+            z == "Parmelis sulcata" ~ 52L,
+            z == "Unknown" ~ 53L,
+            z == "Rhizocarpon geographicum" ~ 54L,
+            z == "Cladonia amaurocraea" ~ 55L,
+            z == "Cladonia mitis" ~ 56L,
+            z == "Cladonia steallaris" ~ 57L,
+            z == "Cladonia sulphurina" ~ 58L,
+            z == "Cladonia uncialis" ~ 59L,
+            z == "Dactylina arctica" ~ 60L,
+            z == "Evernia mesomorpha" ~ 61L,
+            z == "Flavocetraria cucculata" ~ 62L,
+            z == "Flavocetraria nivalis" ~ 63L,
+            z == "Nephroma arcticum" ~ 64L,
+            z == "Parmeliopsis ambigua" ~ 65L,
+            z == "Usnea lapponica" ~ 66L,
+            z == "Usnea scabrata" ~ 67L,
+            z == "Vulpicida pinastri" ~ 68L,
+            z == "Aulacomnium palustre" ~ 69L,
+            z == "Aulacomnium turgidum" ~ 70L,
+            z == "Ceratadon purpureus" ~ 71L,
+            z == "Dicranum sp." ~ 72L,
+            z == "Plagiomnium sp." ~ 73L,
+            z == "Polytrichum juniperinum" ~ 74L,
+            z == "Polytrichum strictum" ~ 75L,
+            z == "Polytrichum sp." ~ 76L,
+            z == "Racomitrium lanoiginosum" ~ 77L,
+            z == "Hylocomium splendens" ~ 78L,
+            z == "Pleurozium schreberi" ~ 79L,
+            z == "Rhytidum rugosum" ~ 80L,
+            z == "Tomenthypnum nitens" ~ 81L,
+            z == "Sphagnum sp." ~ 82L,
+            z == "Sphagnum fuscum" ~ 83L,
+            z == "Alnus sp." ~ 84L,
+            z == "Betula nana" ~ 85L,
+            z == "Arctostaphyllos" ~ 86L,
+            z == "Rhus typhina" ~ 87L,
+            z == "Rosa acicularis" ~ 88L,
+            z == "Rubus sp." ~ 89L,
+            z == "Vaccinium uliginosum" ~ 90L,
+            z == "Salix alaxensis" ~ 91L,
+            z == "Salix arbusculoides" ~ 92L,
+            z == "Salix glauca" ~ 93L,
+            z == "Salix lanata" ~ 94L,
+            z == "Salix ovalifolia" ~ 95L,
+            z == "Salix pulchra" ~ 96L,
+            z == "Salix richardsonii" ~ 97L,
+            z == "Salix (wooly)" ~ 98L,
+            z == "Salix phlebophylla" ~ 99L,
+            z == "Cassiope tetragona" ~ 100L,
+            z == "Dryas sp." ~ 101L,
+            z == "Empetrum nigrum" ~ 102L,
+            z == "Ledum decumbens" ~ 103L,
+            z == "Loisleuria procumbens" ~ 104L,
+            z == "Vaccinium vitis-idea" ~ 105L,
+            z == "Betula alleghaniensis" ~ 106L,
+            z == "Betula neoalaskana" ~ 107L,
+            z == "Betula papyrifera" ~ 108L,
+            z == "Betula populifolia" ~ 109L,
+            z == "Acer rubrum" ~ 110L,
+            z == "Acer pensylvanicum" ~ 111L,
+            z == "Fagus grandifolia" ~ 112L,
+            z == "Fraxinus americana" ~ 113L,
+            z == "Prunus pensylvanica" ~ 114L,
+            z == "Quercus Rubra" ~ 115L,
+            z == "Populus balsamifera" ~ 116L,
+            z == "Populus grandidentata" ~ 117L,
+            z == "Abies balsamea" ~ 118L,
+            z == "Larix larcina" ~ 119L,
+            z == "Pinus strobus" ~ 120L,
+            z == "Thuja occidentalis" ~ 121L,
+            z == "Tsuga canadensis" ~ 122L,
+            z == "Picea mariana" ~ 123L,
+            z == "Picea rubens" ~ 124L,
 
         ), .keep = "unused"
     ) %>% dplyr::select(x,y,z)
@@ -1860,8 +1970,8 @@ convert_species_int <- function(df){
             z == 122 ~ "Tsuga canadensis",
             z == 123 ~ "Picea mariana",
             z == 124 ~ "Picea rubens",
-                    ), .keep = "unused"
-    ) %>% dplyr::select(x,y,z)
+        ), .keep = "unused") %>%
+        dplyr::select(x,y,z)
     return(converted_df)
 
 }
@@ -1950,9 +2060,8 @@ convert_genus_int <- function(df) {
             z == 78 ~ "Thuja",
             z == 79 ~ "Tsuga",
             z == 80 ~ "Picea",
-            z == 81 ~ "nan",
-
-                        ), .keep = "unused"
+            z == 81 ~ "nan"
+        ), .keep = "unused"
     ) %>% dplyr::select(x,y,z)
     return(converted_df)
 }
@@ -1960,88 +2069,88 @@ convert_genus_int <- function(df) {
 convert_genus_string <- function(df) {
         converted_df <- df %>% dplyr::mutate(
         z = case_when(
-            z == "LeafLitter" ~ 0,
-            z == "Wood" ~ 1,
-            z == "Rock" ~ 2,
-            z == "Soil" ~ 3,
-            z == "Equisetum" ~ 4,
-            z == "Arenia" ~ 5,
-            z == "Heracleum" ~ 6,
-            z == "Hieracium" ~ 7,
-            z == "Iris" ~ 8,
-            z == "Lupinus" ~ 9,
-            z == "Pedicularis" ~ 10,
-            z == "Petasites" ~ 11,
-            z == "Saxifraga" ~ 12,
-            z == "Toefeldia" ~ 13,
-            z == "Arctagrostis" ~ 14,
-            z == "Arctophila" ~ 15,
-            z == "Calamagrostis" ~ 16,
-            z == "Dupontia" ~ 17,
-            z == "Carex" ~ 18,
-            z == "Eriophorum" ~ 19,
-            z == "Bryoria" ~ 20,
-            z == "Cetraria" ~ 21,
-            z == "Masonhalea" ~ 22,
-            z == "Melanelia" ~ 23,
-            z == "Peltigera" ~ 24,
-            z == "Porpidia" ~ 25,
-            z == "Rhizocarpon" ~ 26,
-            z == "Umbilicaria" ~ 27,
-            z == "Icmadophila" ~ 28,
-            z == "Pilophorus" ~ 29,
-            z == "Stereocaulon" ~ 30,
-            z == "Trapeliopsis" ~ 31,
-            z == "Alectoria" ~ 32,
-            z == "Arctocetraria" ~ 33,
-            z == "Asahinea" ~ 34,
-            z == "Cladonia" ~ 35,
-            z == "Hypogymnia" ~ 36,
-            z == "Parmelia" ~ 37,
-            z == "Unknown" ~ 38,
-            z == "Dactylina" ~ 39,
-            z == "Evernia" ~ 40,
-            z == "Flavocetraria" ~ 41,
-            z == "Nephroma" ~ 42,
-            z == "Parmeliopsis" ~ 43,
-            z == "Usnea" ~ 44,
-            z == "Vulpicida" ~ 45,
-            z == "Aulacomnium" ~ 46,
-            z == "Ceratadon" ~ 47,
-            z == "Dicranum" ~ 48,
-            z == "Plagiomnium" ~ 49,
-            z == "Polytrichum" ~ 50,
-            z == "Racomitrium" ~ 51,
-            z == "Hylocomnium" ~ 52,
-            z == "Pleurozium" ~ 53,
-            z == "Rhytidium" ~ 54,
-            z == "Tomenthypnum" ~ 55,
-            z == "Sphagnum" ~ 56,
-            z == "Alnus" ~ 57,
-            z == "Betula" ~ 58,
-            z == "Arctostaphyllos" ~ 59,
-            z == "Rhus" ~ 60,
-            z == "Rosa" ~ 61,
-            z == "Rubus" ~ 62,
-            z == "Vaccinium" ~ 63,
-            z == "Salix" ~ 64,
-            z == "Cassiope" ~ 65,
-            z == "Dryas" ~ 66,
-            z == "Empetrum" ~ 67,
-            z == "Ledum" ~ 68,
-            z == "Loisleuria" ~ 69,
-            z == "Acer" ~ 70,
-            z == "Fagus" ~ 71,
-            z == "Prunus" ~ 72,
-            z == "Quercus" ~ 73,
-            z == "Populus" ~ 74,
-            z == "Abies" ~ 75,
-            z == "Larix" ~ 76,
-            z == "Pinus" ~ 77,
-            z == "Thuja" ~ 78,
-            z == "Tsuga" ~ 79,
-            z == "Picea" ~ 80,
-            z == "nan" ~ 81,
+            z == "LeafLitter" ~ 0L,
+            z == "Wood" ~ 1L,
+            z == "Rock" ~ 2L,
+            z == "Soil" ~ 3L,
+            z == "Equisetum" ~ 4L,
+            z == "Arenia" ~ 5L,
+            z == "Heracleum" ~ 6L,
+            z == "Hieracium" ~ 7L,
+            z == "Iris" ~ 8L,
+            z == "Lupinus" ~ 9L,
+            z == "Pedicularis" ~ 10L,
+            z == "Petasites" ~ 11L,
+            z == "Saxifraga" ~ 12L,
+            z == "Toefeldia" ~ 13L,
+            z == "Arctagrostis" ~ 14L,
+            z == "Arctophila" ~ 15L,
+            z == "Calamagrostis" ~ 16L,
+            z == "Dupontia" ~ 17L,
+            z == "Carex" ~ 18L,
+            z == "Eriophorum" ~ 19L,
+            z == "Bryoria" ~ 20L,
+            z == "Cetraria" ~ 21L,
+            z == "Masonhalea" ~ 22L,
+            z == "Melanelia" ~ 23L,
+            z == "Peltigera" ~ 24L,
+            z == "Porpidia" ~ 25L,
+            z == "Rhizocarpon" ~ 26L,
+            z == "Umbilicaria" ~ 27L,
+            z == "Icmadophila" ~ 28L,
+            z == "Pilophorus" ~ 29L,
+            z == "Stereocaulon" ~ 30L,
+            z == "Trapeliopsis" ~ 31L,
+            z == "Alectoria" ~ 32L,
+            z == "Arctocetraria" ~ 33L,
+            z == "Asahinea" ~ 34L,
+            z == "Cladonia" ~ 35L,
+            z == "Hypogymnia" ~ 36L,
+            z == "Parmelia" ~ 37L,
+            z == "Unknown" ~ 38L,
+            z == "Dactylina" ~ 39L,
+            z == "Evernia" ~ 40L,
+            z == "Flavocetraria" ~ 41L,
+            z == "Nephroma" ~ 42L,
+            z == "Parmeliopsis" ~ 43L,
+            z == "Usnea" ~ 44L,
+            z == "Vulpicida" ~ 45L,
+            z == "Aulacomnium" ~ 46L,
+            z == "Ceratadon" ~ 47L,
+            z == "Dicranum" ~ 48L,
+            z == "Plagiomnium" ~ 49L,
+            z == "Polytrichum" ~ 50L,
+            z == "Racomitrium" ~ 51L,
+            z == "Hylocomnium" ~ 52L,
+            z == "Pleurozium" ~ 53L,
+            z == "Rhytidium" ~ 54L,
+            z == "Tomenthypnum" ~ 55L,
+            z == "Sphagnum" ~ 56L,
+            z == "Alnus" ~ 57L,
+            z == "Betula" ~ 58L,
+            z == "Arctostaphyllos" ~ 59L,
+            z == "Rhus" ~ 60L,
+            z == "Rosa" ~ 61L,
+            z == "Rubus" ~ 62L,
+            z == "Vaccinium" ~ 63L,
+            z == "Salix" ~ 64L,
+            z == "Cassiope" ~ 65L,
+            z == "Dryas" ~ 66L,
+            z == "Empetrum" ~ 67L,
+            z == "Ledum" ~ 68L,
+            z == "Loisleuria" ~ 69L,
+            z == "Acer" ~ 70L,
+            z == "Fagus" ~ 71L,
+            z == "Prunus" ~ 72L,
+            z == "Quercus" ~ 73L,
+            z == "Populus" ~ 74L,
+            z == "Abies" ~ 75L,
+            z == "Larix" ~ 76L,
+            z == "Pinus" ~ 77L,
+            z == "Thuja" ~ 78L,
+            z == "Tsuga" ~ 79L,
+            z == "Picea" ~ 80L,
+            z == "nan" ~ 81L,
 
                         ), .keep = "unused"
     ) %>% dplyr::select(x,y,z)
@@ -2068,9 +2177,11 @@ convert_pft_codes <- function(df, aggregation_level, to="int"){
     )
 
     # split by conversion type, then use the appropriate function based on the aggregation level
-    if( to == "int" || to =="Int" || to == "integer"){
-        return( to_int[[aggregation_level]](df) )
-    } else if( to == "string" || to == "String") {
+    if( to == "int" | to =="Int" | to == "integer"){
+        result <- to_int[[aggregation_level]](df)
+        #result$z <- as.integer(result$z)
+        return( result )
+    } else if( to == "string" | to == "String") {
         return( to_string[[aggregation_level]](df) )
     } else {
         # catch invalid 'to' parameter
@@ -2082,7 +2193,7 @@ convert_pft_codes <- function(df, aggregation_level, to="int"){
 #' @export
 
 
-update_filename <- function(filepath){
+update_filename <- function(prefix){
     if(!file.exists(prefix)){return(prefix)}
     i=1
     repeat {
@@ -2111,19 +2222,34 @@ update_filename <- function(filepath){
 #' @seealso None
 #' @export 
 #' @examples Not Yet Implmented
-convert_and_save_output <- function(df, aggregation_level, save_path = NULL, return_raster = TRUE ){
-        predictions <- convert_pft_codes(df, aggregation_level = aggregation_level, to = "int")
-        print(paste0("Attempting to save to ", save_path))
-        if(return_raster){
-            predictions <- raster::rasterFromXYZ(predictions)
+convert_and_save_output <- function(df, aggregation_level, save_path = NULL, return_raster = TRUE, target_crs = NULL){
+    prediction <- convert_pft_codes(df, aggregation_level = aggregation_level, to = "int")
+
+    print(head(prediction))
+
+    # convert the precition values to integers
+    prediction$z <- prediction$z %>% round() %>% as.integer()
+
+    print(head(prediction))
+
+    print(paste0("Attempting to save to ", save_path))
+    if(return_raster){
+        prediction <- raster::rasterFromXYZ(prediction, digits=4)
+        print("Converted to Raster")
+
+        raster::dataType(prediction) <- "INT2U" # set to int datatype (unsigned int // 2 bytes)
+        levels(prediction) <- get_attribute_table(aggregation_level)
+        if(!is.null(target_crs)){
+            raster::crs(prediction) <- target_crs
+        }
         if(!is.null(save_path)){
-                raster::writeRaster(predictions, filename = save_path, overwrite = TRUE)
+                raster::writeRaster(prediction, filename = save_path, datatype='INT2U', overwrite = TRUE)
             } 
-        return(predictions)
+        return(prediction)
     } else {
         if(!is.null(save_path)){
             if(file.exists(save_path)){
-                write.csv(predictions, save_path, overwrite=TRUE)
+                write.csv(prediction, save_path, overwrite=TRUE)
             }
         }
             return(df)
@@ -2135,23 +2261,51 @@ convert_and_save_output <- function(df, aggregation_level, save_path = NULL, ret
 #' Renames columns and adds the spatial information that is lost at model inference time.
 #'
 #' @return 
-#' @param predictions_df: A data.frame of predictions from the model.  It should have a single column of data.
-#' @param base_df: the base data.frame for creating the predictions; 
+#' @param prediction_df: A data.frame of prediction from the model.  It should have a single column of data.
+#' @param base_df: the base data.frame for creating the prediction; 
 #' it should have columns x and y specifying the spatial coordinates for that row.
 #' @return a data.frame with three columns: 'x', 'y', and 'z'.  'x' and 'y' are the spatial location of the 
-#' prediction in the original CRS, and the 'z' column is predictions. 
+#' prediction in the original CRS, and the 'z' column is prediction. 
 #' @seealso None
 #' @export 
 #' @examples Not Yet Implmented
-postprocess_predictions <- function(predictions_df, base_df){
-    colnames(predictions_df) <- c("z")
-    predictions_df$x <- base_df$x
-    predictions_df$y <- base_df$y
+postprocess_prediction <- function(prediction_df, base_df){
+    colnames(prediction_df) <- c("z")
+    prediction_df$x <- base_df$x
+    prediction_df$y <- base_df$y
     gc()
 
-    predictions_df <- predictions_df %>% dplyr::select(x, y, z)
+    prediction_df <- prediction_df %>% dplyr::select(x, y, z)
 
-    return(predictions_df)
+    return(prediction_df)
+}
+
+
+#' loads the attribute table for the output (categorical) raster.  
+#'
+#' Gets the raster attribute table from the 
+#'
+#' @return 
+#' @param aggregation: an integer that specifies the aggregation level for the output raster.  Should be 1 (functional group 1), 2 (functional group 2), 3 (genus), or 4 (species).
+#' @seealso None
+#' @export 
+#' @examples Not Yet Implmented
+get_attribute_table <- function(aggregation) {
+    attribute_table <- data.frame()
+    if(aggregation == 1){
+        attribute_table <- read.csv("assets/fg1RAT.csv")
+    }
+    if(aggregation == 2){
+        attribute_table <- read.csv("assets/fg2RAT.csv")
+        
+    }
+    if(aggregation == 3) {
+        attribute_table <- read.csv("assets/genusRAT.csv")
+
+    }
+    if(aggregation == 4){
+        attribute_table <- read.csv("assets/speciesRAT.csv")
+    }
 }
 
 #' visualizes the output of the pipeline based on a specified colormap.
@@ -2163,7 +2317,7 @@ postprocess_predictions <- function(predictions_df, base_df){
 #' @seealso None
 #' @export 
 #' @examples Not Yet Implmented
-visualize_predictions <- function(filepath, colormap){
+visualize_prediction <- function(filepath, colormap){
 
 }
 
@@ -2177,14 +2331,29 @@ visualize_predictions <- function(filepath, colormap){
 #' @export 
 #' @examples Not Yet Implmented
 filter_empty_points <- function(df){
+    print("Data summary before filtering")
+    print(dim(df))
     drop_cols <- c("x","y")
-    columns_to_check <- setdiff(colnames(df), drop_cols) 
+    columns_to_check <- setdiff(colnames(df), drop_cols)
+
     df_no_empty_rows <- df %>% 
+        naniar::replace_with_na_all(condition = ~.x == 0) %>%
         dplyr::filter_at(
             .vars = vars(one_of(columns_to_check)),
-            ~ !is.na(.)
-        )
+            ~!is.na(.)
+        ) 
+    print("data summary after filering")
+    print(dim(df_no_empty_rows))
     return(df_no_empty_rows)
+}
+
+
+drop_zero_rows <- function(df) {
+    # sort the columsn to make sure x and y are first before calculating rowsums
+    df_rowsums <- df %>% dplyr::relocate(y) %>% dplyr::relocate(x)
+    num_cols = ncol(df)
+    # return only the rows with rowsums over zero
+    return( df_rowsums[rowSums(df_rowsums[,3:num_cols], na.rm = TRUE) > 0.0001, ])
 }
 
 #' removes empty rows from the data.frame
@@ -2209,7 +2378,6 @@ merge_tiles_gdal <- function(
             ot = "UInt16",
             output_raster = return_raster)
     return(output)
-
 }
 
 
@@ -2222,8 +2390,8 @@ merge_tiles_gdal <- function(
 #' @seealso None
 #' @export 
 #' @examples Not Yet Implmented
-calc_num_tiles <- function(file_path, max_size = 128){
-    file_size <- file.info(file_path)$size
+calc_num_tiles <- function(file_path, max_size = 1024){
+    file_size <- file.info(file_path)$size / (1024 * 1024)
     tile_size <- file_size / max_size
     num_xy <- ceiling(sqrt(tile_size))
     return(num_xy)
@@ -2231,7 +2399,7 @@ calc_num_tiles <- function(file_path, max_size = 128){
 
 # talk to NASA spectral imaging working group r/e gaps
 
-visualize_predictions <- function(filepath, key_file, column){
+visualize_prediction <- function(filepath, key_file, column){
     require(leaflet)
     color_map <- create_color_map(key_file, column)
     labels <- create_labels(key_file, column)
@@ -2258,6 +2426,11 @@ create_labels <- function(filepath, column){
     return( sort(unique(unlist(read.csv(filepath, header = TRUE)[column]))))
 }
 
+crs_from_epsg <- function(epsg_code) {
+    target_wkt <- sf::st_crs(epsg_code)[[2]]
+    target_crs <- sp::CRS(target_wkt)
+}
+
 
 project_to_epsg <- function(raster_obj, epsg_code, categorical_raster = FALSE){
     target_wkt <- sf::st_crs(epsg_code)[[2]]
@@ -2272,3 +2445,515 @@ project_to_epsg <- function(raster_obj, epsg_code, categorical_raster = FALSE){
     return(raster::projectRaster(raster_obj, target_crs))
 }
 
+build_adjacency_list <- function(filepath) {
+    df <- read.csv(filepath, header = TRUE)
+    num_rows <- nrow(df)
+    num_levels <- ncol(df)
+    adjacency_list <- list()
+
+    for(i in seq.int(num_rows)){
+        for( j in seq.int(num_levels)){
+            counter <- 1
+            key <- df[[i,j]]
+            values <- vector(mode = "character", length = num_levels)
+            while(counter <= num_levels){
+                if(counter < j){
+                    values[[counter]] <- NA
+                } else {
+                    values[[counter]] <- df[[i, counter]]
+                }
+                counter <- counter + 1
+            }
+            adjacency_list[[key]] <- values[2:(num_levels)]
+        }
+    }
+
+    return(adjacency_list)
+}
+
+enum_pfts <- function(pft){
+    if(pft == 1){
+        return("Functional_Group1")
+    }
+    if(pft == 2){
+        return("Functional_Group2")
+    }
+    if(pft == 3){
+        return("Genus")
+    } 
+    if(pft == 4){
+        return("Species")
+    } 
+    if(pft == "Functional_Group1"){
+        return(1)
+    } 
+    if(pft == "Functional_Group2"){
+        return(2)
+    }
+    if( pft == "Genus"){
+        return(3)
+    } 
+    if( pft == "Species"){
+        return(4)
+    }
+}
+
+# changes aggregation level
+change_aggregation <- function(prediction_vec, aggregation_level, aggregation_key){
+    updated_predictions <- vector("character", length=length(prediction_vec))
+    for(i in seq_along(prediction_vec)){
+        aggregation_idx <- 5-aggregation_level
+        prediction <- prediction_vec[[i]]
+        print(prediction)
+        updated_predictions[[i]] <- aggregation_key[[prediction]][[aggregation_idx]]
+    }
+
+    return(updated_predictions)
+}
+
+get_prediction_distribution <- function(prediction_df){
+    num_observations <- nrow(prediction_df)
+    df <- prediction_df %>% count(z) %>% as.data.frame()
+    #df$key <- unique(prediction_vec) %>% as.vector()
+    df$distribution <- df$n / num_observations
+    return(df)
+}
+
+
+separate_quadrats <- function(prediction_ras){
+
+}
+
+
+# Note to self: use R JSON to save and load adjacency list
+# write a function that uses the list and the value to get new value
+# then an lapply to the df column to create new level column
+# then assemble into a convenient wrapper
+
+# should take predictions file and map it to target type as a data frame
+
+# then aggregate the df
+# score against hand-labeled data.
+get_log_filename <- function(tile_path) {
+    return( 
+        new_filename <- gsub(
+            ".envi",
+            ".log", 
+            c(tile_path),
+            fixed = TRUE
+            )[[1]]
+    )
+}
+
+
+
+
+safe_merge <- function(raster_one, raster_two, target_crs = NULL){
+    template <- raster::projectRaster(from = raster_two, to= raster_one, alignOnly=TRUE)
+    #template is an empty raster that has the projected extent of r2 but is aligned with r1 (i.e. same resolution, origin, and crs of r1)
+    r2_aligned <- raster::projectRaster(from = raster_two, to= template)
+    return( 
+        raster::merge(
+            raster_one, 
+            r2_aligned,
+            datatype='INT2U',
+            tolerance = 1.0        ) 
+    )
+}
+
+validate_results <- function(
+    prediction_ras, 
+    quadrat_shapefile, 
+    validation_table,
+    pft_key,
+    template_path,
+    aggregation_level = 1
+ ){
+    # Need to make keys shared and unique.  Really need the R equivalent of spark's RDD.reduceByKey()
+    # store the results
+    results <- list()
+       
+    for(i in 1:nrow(quadrat_shapefile)){
+        # load the template 
+        template <- read.csv(file = template_path, row.names = 1)
+
+        # crop the raster to the quadrat
+        quadrat_shape <- quadrat_shapefile[i,]
+        quadrat_ras <- raster::crop(prediction_ras, quadrat_shape)
+
+        plot_options <- define_plot_options(
+            title = paste0("Quadrat ", i, " Predictions"),
+            xLabel = "Longitude",
+            yLabel = "Latitude"
+        )
+
+    
+
+        png(paste0("./test_hist_", i, ".png"))
+        hist(quadrat_ras)
+        dev.off()
+        plot_categorical_raster(quadrat_ras, plot_options = plot_options)
+
+        #windows();
+        
+        ggsave(
+            paste0("quadrat_", i, "_plot.png"),
+            plot = plot_categorical_raster(
+                quadrat_ras,
+                colors = fg1_palette,
+                plot_options = plot_options
+            )
+        )
+        
+        quadrat_df <- raster::rasterToPoints(quadrat_ras) %>% as.data.frame()
+
+        print(quadrat_df %>% group_by(z) %>% tally())
+
+
+        # prediction 
+        predictions <- convert_pft_codes(quadrat_df, aggregation_level = aggregation_level, to="string")
+        print(predictions %>% group_by(z) %>% tally())
+
+
+        # extract the validation data for this quadrat
+        quadrat_validation_df <- get_prediction_distribution(predictions) %>% as.data.frame()
+
+      
+        filtered_validation_df <- validation_table[validation_table$UID == quadrat_shape$CLASS_NAME, ]
+
+
+
+        #print(head(filtered_validation_df))
+        filtered_validation_df$Plant <- change_aggregation(
+            filtered_validation_df$Plant,
+            aggregation_level = aggregation_level,
+            pft_key
+        ) %>% as.vector()
+
+
+    
+
+
+        #print(head(filtered_validation_df))
+        # aggregate the predictions and validation using the template
+        aggregated_results <- aggregate_result_template(
+            quadrat_validation_df,
+            filtered_validation_df,
+            template)
+
+        print(aggregated_results)
+        
+        results[[i]] <- aggregated_results
+    }
+
+    return(results)
+ }
+
+ apply_chi_squared_test <- function(validation_aggregates){
+     results <- lapply(
+         validation_aggregates, 
+         function(aggregated_results){
+            return( chisq.test(
+                aggregated_results$validation_counts,
+                aggregated_results$predicted_counts)
+            )
+         }
+     )
+ }
+
+apply_KS_test <- function(validation_aggregates, type="two.sided", use_monte_carlo = FALSE, exact_p = NULL){
+    
+   return(
+        lapply(
+            validation_aggregates,
+            function(aggregated_results){
+                prediction_cdf <- cumsum(aggregated_results$prediction_prop)
+                validation_cdf <- cumsum(aggregated_results$validation_prop)
+                return( ks.test(
+                    prediction_cdf,
+                    validation_cdf,
+                    alternative=type,
+                    exact = exact_p,
+                    simulate.p.value = use_monte_carlo
+                    )
+                )
+            }
+        )
+    )
+}
+
+
+ aggregate_result_template <- function(df, validation_df, input_template ){
+    num_rows_df <- nrow(df)
+    num_rows_template <- nrow(input_template)
+    num_rows_validation <- nrow(validation_df)
+    print("Number of Validation Rows:")
+    print(num_rows_validation)
+    num_observations <- sum(df$n)
+    
+    # copy the template
+    template <- data.frame(input_template)
+
+    # iterate over the template to match the data from the two other inputs
+    for(template_row_idx in 1:num_rows_template){
+        # iterate over the prediction data.frame
+        for(df_row_idx in 1:num_rows_df){
+            if(template[[template_row_idx, "key"]] == df$z[[df_row_idx]]){
+                template[[template_row_idx, "prediction_prop"]] <- df$distribution[[df_row_idx]]
+                template[[template_row_idx, "predicted_counts"]] <- df$n[[df_row_idx]]
+            }
+        }
+        # iterate over validation
+        for(val_row_idx in 1:num_rows_validation){
+            if(template[[template_row_idx, "key"]] == validation_df[[val_row_idx, "Plant"]]){
+                # store values
+                current_count <- template[[template_row_idx, "validation_counts"]]
+                current_prop <- template[[template_row_idx, "validation_prop"]]
+                validation_raw <- validation_df[[val_row_idx, "cover_prn"]]
+                # convert NAs to 0's
+                print(validation_raw)
+                if(is.null(validation_raw)){
+                    validation_raw <- NA
+                }
+                additional_prop <- if(!is.na(validation_raw)) (validation_raw * 0.01) else 0.0 # ternary
+                # aggregate
+                template[[template_row_idx, "validation_counts"]] <- current_count + (additional_prop * num_observations)
+                template[[template_row_idx, "validation_prop"]] <- current_prop + additional_prop
+            }
+        }
+    }
+
+    return(template)
+ }
+
+
+build_validation_template <- function(df, col = 5){
+    pft_template <- df[, col] %>% unique() %>% as.data.frame()
+    colnames(pft_template) <- c("key")
+    pft_template$predicted_counts <- 0
+    pft_template$prediction_prop <- 0
+    pft_template$validation_counts <- 0
+    pft_template$validation_prop <- 0
+
+    return(pft_template) 
+}
+
+
+filter_aggregate <- function(quadrat_aggregate){
+    data <- data.frame(quadrat_aggregate)
+    pft_to_exclude <- (data$predicted_counts == 0) & (data$validation_counts == 0)
+    data <- data[!pft_to_exclude,]
+
+    return(data)
+}
+
+plot_quadrat_counts <- function(quadrat_aggregate, filter_missing = TRUE){
+    data <- data.frame(quadrat_aggregate)
+    if(filter_missing){
+        data <- filter_aggregate(quadrat_aggregate)
+    }
+
+    plot <- ggplot2::ggplot(data = data, mapping = ggplot2::aes(
+        x=data$key,
+    ))
+
+    return ( plot )
+}
+
+plot_quadrat_proportions <- function(quadrat_aggregate, filter_missing = TRUE, plot_options = list(
+    title = "Prediction and Validation",
+    xLabel = "Plant Functional Type",
+    yLabel = "Proportion",
+    legend = c("Prediction", "Validation"),
+    legendTitle = ""
+)){
+    data <- data.frame(quadrat_aggregate)
+    if(filter_missing){
+        data <- filter_aggregate(data)
+    }
+
+    print("Checking Predicted Proportions (should sum to 1)")
+    print(sum(data$prediction_prop))
+    print("Checking Validation Proportions (should sum to 1)")
+    print(sum(data$validation_prop))
+
+    data_tall <- tidyr::pivot_longer(
+        data = data,
+        cols = ends_with("_prop"),
+        names_to = "Legend",
+        values_to = "Proportion"
+    )
+
+    plot <- ggplot2::ggplot(data = data_tall, mapping = ggplot2::aes(
+        key,
+        Proportion,
+        fill = Legend
+    )) + 
+    theme_minimal() + 
+    #scale_fill_manual(values=c("#8aedff", "#a3000b")) + 
+    labs(title = plot_options$title, x = plot_options$xLabel, y = plot_options$yLabel) + 
+    scale_fill_discrete(name = plot_options$legendTitle, labels = plot_options$legend) +
+
+    geom_bar(stat="identity", position = position_dodge()) + 
+    theme(axis.text.x = element_text(angle=90,hjust=1,vjust=1))
+
+    return( plot )
+}
+
+
+define_plot_options <- function(
+    title = "",
+    xLabel = "Plant Functional Type",
+    yLabel = "Proportion",
+    legend = c("Prediction", "Validation"),
+    legendTitle = "Legend",
+    save_location = NULL
+){
+    return( list(
+        title = title,
+        xLabel = yLabel,
+        yLabel = xLabel,
+        legend = legend,
+        legendTitle = legendTitle,
+        saveLocation = save_location
+    ))
+}
+
+# plots the raster object wioth ggplot using theme_void
+
+
+#Aboitic: #ffffff
+#Forb: #db2a53
+#Graminoid: #c9ae69
+#Lichen: #faf87d
+#Moss: #7dfaf8
+#ShrubDecid: #69876b
+#EvergreenShrub: #db2ad2
+#TreeConifer: #2ac4db
+#TreeBroadleaf: #03fc2c
+#Unknown: #000000
+
+
+fg1_palette <- c(
+        "#ffffff",
+        "#db2a53",
+        "#c9ae69",
+        "#faf87d",
+        "#7dfaf8",
+        "#69876b",
+        "#db2ad2",
+        "#2ac4db",
+        "#03fc2c",
+        "#000000"
+)
+
+fg1_names <- c(
+    "Abiotic",
+    "Forb",
+    "Graminoid",
+    "Lichen",
+    "Moss",
+    "ShrubDecid",
+    "ShrubEvergreen",
+    "TreeConifer",
+    "TreeBroadleaf",
+    "Unknown"
+)
+
+fg1_breaks <- c(
+    '0','1','2','3','4','5','6','7','8','9'
+)
+
+fg1_palette_map <- function(value) {
+    # note: value is 0-indexed and R is 1-indexed
+    return (fg1_palette[[value]])
+}
+
+
+plot_categorical_raster <- function(ras,  plot_options, colors = fg1_palette) {
+    ras_plot <- rasterVis::gplot(ras, 100000000) + 
+        theme_classic() +
+        labs(
+            title = plot_options$title,
+            x = plot_options$xLabel,
+            y = plot_options$yLabel,
+            color = "Plant Type"
+            ) + 
+        scale_fill_manual(
+            breaks = fg1_breaks,
+            labels = fg1_names,
+            values = fg1_palette, 
+            name = "Functional Type"
+            ) + 
+        geom_tile(aes(
+            fill = factor(
+                value,
+                ordered = FALSE))) + 
+        coord_quickmap()
+
+
+    return(ras_plot)
+}
+
+# merge the validation templates 
+merge_validation_dfs <- function(df1, df2){
+    output_df <- data.frame(df1)
+
+    output_df$validation_counts <- df1$validation_counts + df2$validation_counts
+    output_df$predicted_counts <- df1$predicted_counts + df2$predicted_counts
+
+    num_observations_val <- sum(output_df$validation_counts)
+    num_observations_pred <- sum(output_df$predicted_counts)
+
+    output_df$validation_prop <- output_df$validation_counts / num_observations_val
+    output_df$prediction_prop <- output_df$predicted_counts / num_observations_pred
+
+    
+    return(output_df)
+}
+
+coalesce_results <- function(df_list, aggregator_df){
+    output_df <- aggregator_df
+    
+    # merge all the counts
+    for(i in seq_along(df_list)){
+        output_df <- merge_validation_dfs(output_df, df_list[[i]])
+    }
+
+    for(j in seq_len(nrow(output_df))){
+
+    }
+
+    return(output_df)
+}
+
+# save the validation df to disk
+save_validation <- function(template_dfs, base_filename = "validation"){
+    for(i in seq_along(template_dfs)){
+        write.csv(
+            template_dfs[[i]],
+            paste0(base_filename, "_", i, ".csv"))
+    }
+}
+
+
+
+ImgChopper <- function(img, quad) {
+        tst_img <- brick(img)
+        tst_quads <- readOGR(dsn = quad)
+        tst_crop <- raster::crop(tst_img, tst_quads)
+        tst_mask <- raster::mask(tst_crop, tst_quads)
+        # tst_out<-c(tst_crop,tst_mask)
+        return(tst_mask)
+    }
+
+
+TileAssembler <- function(dir, out) {
+    tiles <- list.files(dir)
+    tiles <- grep("Pred", tiles, value = TRUE)
+    chunks <- lapply(1:length(tiles), function(x) {
+        raster(paste(dir, "/", tiles[x], sep = ""))
+    })
+    pred_merged <- Reduce(merge, chunks)
+    return(pred_merged)
+}

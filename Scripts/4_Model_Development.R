@@ -7,7 +7,9 @@ library(tidyverse)
 # Spectral Library
 # Output/C_001_SC3_Cleaned_SpectralLib.csv
 #SpecLib_derivs<-read.csv("Output/C_001_SC3_Cleaned_SpectralLib.csv")
-SpecLib_derivs<-read.csv("Output/D_002_SpecLib_Derivs.csv")
+base_data_path <- "Output/D_002_SpecLib_Derivs.csv"
+augmented_data_path <- "./mle/trainingData.csv"
+SpecLib_derivs<-read.csv(base_data_path)
 #SpecLib_derivs<-read.csv("Output/resampled/D_002_SpecLib_Derivs.csv")
 #SpecLib_derivs<-read.csv("Output/resampled/FncGrp2/D_002_SpecLib_Derivs.csv")
 summary(SpecLib_derivs)
@@ -16,7 +18,16 @@ summary(SpecLib_derivs)
 #  dplyr::filter(Functional_group1 == "Shrub_Alder" & `1890`<0.15) %>% dim()
 
 metadata_columns_dropped <- c(
-
+  "ScanID", "Area", "Code_name", "Species_name", "Functional_group1",
+  "Functional_group2", "Species_name_Freq", "Functional_group1_Freq",
+  "Functional_group2_Freq", "Genus", "Version", "File.Name.1", "Instrument",
+  "Detectors", "Measurement", "Date", "Time", "Battery.Voltage.1", "Averages",
+  "Integration1", "Integration2", "Integration3", "Dark.Mode.1", "Foreoptic",
+  "Radiometric.Calibration.1", "Units", "Latitude", "Longitude", "Altitude",
+  "GPS.Time.1", "Satellites", "Calibrated.Reference.Correction.File.1",
+  "Channels", "File.Name", "Battery.Voltage", "Dark.Mode",
+  "Radiometric.Calibration", "GPS.Time",
+  "Calibrated.Reference.Correction.File"
 )
 
 print(colnames(SpecLib_derivs)[1:40])
@@ -27,14 +38,16 @@ SpecLib_derivs_species <-
   dplyr::select(Species_name, everything()) %>% #colnames()
   dplyr::select(-ScanID:-Calibrated.Reference.Correction.File) %>% #colnames()
   dplyr::rename(Classes = Species_name) %>%
-  mutate(Classes = as.factor(Classes)) %>% as.data.frame()
+  mutate(Classes = as.factor(Classes)) %>%
+  as.data.frame()
 
 SpecLib_derivs_Fnc1<-
   SpecLib_derivs %>%
   dplyr::select(Functional_group1, everything()) %>% #colnames()
   dplyr::select(-ScanID:-Calibrated.Reference.Correction.File) %>% #colnames()
   dplyr::rename(Classes = Functional_group1) %>%
-  mutate(Classes = as.factor(Classes)) %>% as.data.frame()
+  mutate(Classes = as.factor(Classes)) %>%
+  as.data.frame()
 
 
 SpecLib_derivs_Fnc2<-
@@ -42,7 +55,8 @@ SpecLib_derivs_Fnc2<-
   dplyr::select(Functional_group2, everything()) %>% #colnames()
   dplyr::select(-ScanID:-Calibrated.Reference.Correction.File) %>% #colnames()
   dplyr::rename(Classes = Functional_group2) %>%
-  mutate(Classes = as.factor(Classes)) %>% as.data.frame()
+  mutate(Classes = as.factor(Classes)) %>%
+  as.data.frame()
 
 #Set seed for stable output
 set.seed(123)
@@ -51,21 +65,30 @@ set.seed(123)
 rf_mod_ranger_species_pred<-ranger::ranger(
   Classes ~ .,
   data = SpecLib_derivs_species,
-  num.trees = 1000)#,local.importance = "impurity_corrected" ) # OOB prediction error:             25.93 %
+  num.trees = 1000)#,local.importance = "impurity_corrected" ) 
+  # OOB prediction error:             25.93 %
 
 rf_mod_ranger_FncGrp1_pred<-ranger::ranger(
   Classes ~ .,
   data = SpecLib_derivs_Fnc1,
-  num.trees = 1000)#,local.importance = "impurity_corrected" ) # OOB prediction error:             25.93 %
+  num.trees = 1000)#,local.importance = "impurity_corrected" ) 
+  # OOB prediction error:             25.93 %
+
 
 rf_mod_ranger_FncGrp2_pred<-ranger::ranger(
   Classes ~ .,
   data = SpecLib_derivs_Fnc2,
-  num.trees = 1000)#,local.importance = "impurity_corrected" ) # OOB prediction error:             25.93 %
+  num.trees = 1000)#,local.importance = "impurity_corrected" ) 
+  # OOB prediction error:             25.93 %
 
 #rf_mod_ranger_species_pred
 #rf_mod_ranger_FncGrp1_pred
-write.csv(rf_mod_ranger_FncGrp1_pred$confusion.matrix, "./Output/E_003_Ranger_FncGrp1_Confusion_1000trees.csv")
+
+write.csv(
+  rf_mod_ranger_FncGrp1_pred$confusion.matrix,
+  "./Output/E_003_Ranger_FncGrp1_Confusion_1000trees.csv"
+  )
+
 #rf_mod_randomforest
  # Build models using 0.99 percent cutoff for corelated varibles
 

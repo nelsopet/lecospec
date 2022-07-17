@@ -1,0 +1,253 @@
+[[1]]
+
+	Pearson's Chi-squared test
+
+data:  aggregated_results$validation_counts and aggregated_results$predicted_counts
+X-squared = 31, df = 25, p-value = 0.189
+
+
+[[2]]
+
+	Pearson's Chi-squared test
+
+data:  aggregated_results$validation_counts and aggregated_results$predicted_counts
+X-squared = 30.4, df = 20, p-value = 0.06363
+
+
+[[3]]
+
+	Pearson's Chi-squared test
+
+data:  aggregated_results$validation_counts and aggregated_results$predicted_counts
+X-squared = 20.5, df = 18, p-value = 0.3054
+
+
+[[4]]
+
+	Pearson's Chi-squared test
+
+data:  aggregated_results$validation_counts and aggregated_results$predicted_counts
+X-squared = 41, df = 30, p-value = 0.0869
+
+
+[[5]]
+
+	Pearson's Chi-squared test
+
+data:  aggregated_results$validation_counts and aggregated_results$predicted_counts
+X-squared = 30, df = 16, p-value = 0.018
+
+
+[[6]]
+
+	Pearson's Chi-squared test
+
+data:  aggregated_results$validation_counts and aggregated_results$predicted_counts
+X-squared = 35, df = 25, p-value = 0.0882
+
+
+[[7]]
+
+	Pearson's Chi-squared test
+
+data:  aggregated_results$validation_counts and aggregated_results$predicted_counts
+X-squared = 35, df = 25, p-value = 0.0882
+
+
+[[8]]
+
+	Pearson's Chi-squared test
+
+data:  aggregated_results$validation_counts and aggregated_results$predicted_counts
+X-squared = 35, df = 25, p-value = 0.0882
+
+
+[[9]]
+
+	Pearson's Chi-squared test
+
+data:  aggregated_results$validation_counts and aggregated_results$predicted_counts
+X-squared = 35, df = 25, p-value = 0.0882
+
+
+[[10]]
+
+	Pearson's Chi-squared test
+
+data:  aggregated_results$validation_counts and aggregated_results$predicted_counts
+X-squared = 17, df = 15, p-value = 0.3189
+
+
+[[11]]
+
+	Pearson's Chi-squared test
+
+data:  aggregated_results$validation_counts and aggregated_results$predicted_counts
+X-squared = 18.125, df = 18, p-value = 0.4474
+
+
+[[1]]
+
+	Two-sample Kolmogorov-Smirnov test
+
+data:  prediction_cdf and validation_cdf
+D = 0.2, p-value = 0.9883
+alternative hypothesis: two-sided
+
+
+[[2]]
+
+	Two-sample Kolmogorov-Smirnov test
+
+data:  prediction_cdf and validation_cdf
+D = 0.4, p-value = 0.4005
+alternative hypothesis: two-sided
+
+
+[[3]]
+
+	Two-sample Kolmogorov-Smirnov test
+
+data:  prediction_cdf and validation_cdf
+D = 0.2, p-value = 0.9883
+alternative hypothesis: two-sided
+
+
+[[4]]
+
+	Two-sample Kolmogorov-Smirnov test
+
+data:  prediction_cdf and validation_cdf
+D = 0.2, p-value = 0.9883
+alternative hypothesis: two-sided
+
+
+[[5]]
+
+	Two-sample Kolmogorov-Smirnov test
+
+data:  prediction_cdf and validation_cdf
+D = 0.3, p-value = 0.7591
+alternative hypothesis: two-sided
+
+
+[[6]]
+
+	Two-sample Kolmogorov-Smirnov test
+
+data:  prediction_cdf and validation_cdf
+D = 0.2, p-value = 0.9883
+alternative hypothesis: two-sided
+
+
+[[7]]
+
+	Two-sample Kolmogorov-Smirnov test
+
+data:  prediction_cdf and validation_cdf
+D = 0.3, p-value = 0.7591
+alternative hypothesis: two-sided
+
+
+[[8]]
+
+	Two-sample Kolmogorov-Smirnov test
+
+data:  prediction_cdf and validation_cdf
+D = 0.5, p-value = 0.1641
+alternative hypothesis: two-sided
+
+
+[[9]]
+
+	Two-sample Kolmogorov-Smirnov test
+
+data:  prediction_cdf and validation_cdf
+D = 0.2, p-value = 0.9883
+alternative hypothesis: two-sided
+
+
+[[10]]
+
+	Two-sample Kolmogorov-Smirnov test
+
+data:  prediction_cdf and validation_cdf
+D = 0.2, p-value = 0.9883
+alternative hypothesis: two-sided
+
+
+[[11]]
+
+	Two-sample Kolmogorov-Smirnov test
+
+data:  prediction_cdf and validation_cdf
+D = 0.2, p-value = 0.9883
+alternative hypothesis: two-sided
+
+
+[1] "Checking Predicted Proportions (should sum to 1)"
+[1] 1
+[1] "Checking Validation Proportions (should sum to 1)"
+[1] 1
+[1] "Checking Predicted Proportions (should sum to 1)"
+[1] 1
+[1] "Checking Validation Proportions (should sum to 1)"
+[1] 1
+[1] "Checking Predicted Proportions (should sum to 1)"
+[1] 1
+[1] "Checking Validation Proportions (should sum to 1)"
+[1] 1
+[1] "Checking Predicted Proportions (should sum to 1)"
+[1] 1
+[1] "Checking Validation Proportions (should sum to 1)"
+[1] 1
+[1] "Checking Predicted Proportions (should sum to 1)"
+[1] 1
+[1] "Checking Validation Proportions (should sum to 1)"
+[1] 1
+[1] "Checking Predicted Proportions (should sum to 1)"
+[1] 1
+[1] "Checking Validation Proportions (should sum to 1)"
+[1] 1
+[1] "Checking Predicted Proportions (should sum to 1)"
+[1] 1
+[1] "Checking Validation Proportions (should sum to 1)"
+[1] 1
+[1] "Checking Predicted Proportions (should sum to 1)"
+[1] 1
+[1] "Checking Validation Proportions (should sum to 1)"
+[1] 1.2
+[1] "Checking Predicted Proportions (should sum to 1)"
+[1] 1
+[1] "Checking Validation Proportions (should sum to 1)"
+[1] 1
+[1] "Checking Predicted Proportions (should sum to 1)"
+[1] 1
+[1] "Checking Validation Proportions (should sum to 1)"
+[1] 1
+[1] "Checking Predicted Proportions (should sum to 1)"
+[1] 1
+[1] "Checking Validation Proportions (should sum to 1)"
+[1] 1
+    X            key predicted_counts prediction_prop validation_counts
+1   1        Abiotic                0     0.000000000            974.35
+2   2           Forb              272     0.466575025              0.00
+3   3      Graminoid             2217     3.599488644           1322.30
+4   4         Lichen              249     0.375559884            751.76
+5   5           Moss             3446     5.408381570            914.69
+6   6     ShrubDecid                1     0.001730104           1497.30
+7   7 ShrubEvergreen              714     1.144975714           1530.60
+8   8  TreeBroadleaf                0     0.000000000              0.00
+9   9    TreeConifer                2     0.003289058              0.00
+10 10        Unknown                0     0.000000000              0.00
+   validation_prop
+1             1.70
+2             0.00
+3             2.15
+4             1.12
+5             1.39
+6             2.35
+7             2.49
+8             0.00
+9             0.00
+10            0.00

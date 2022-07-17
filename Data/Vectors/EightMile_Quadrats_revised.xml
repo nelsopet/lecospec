@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RegionsOfInterest version="1.1">
+  <Region name="EightMileQuad100m" color="0,255,0">
+    <GeometryDef>
+      <CoordSysStr>GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137.0,298.257223563]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]]</CoordSysStr>
+      <Polygon>
+        <Exterior>
+          <LinearRing>
+            <Coordinates>
+-149.25289632 63.87684992 -149.25290058 63.87685719 -149.25288097 63.87685917 -149.25287625 63.87685156 -149.25288515 63.87685059 -149.25288697 63.87685049 -149.25288766 63.87685096 -149.25288925 63.87685089 -149.25288963 63.87685059 -149.25289138 63.87685092 -149.25289252 63.87685045 -149.25289214 63.87684982 -149.25289442 63.87685005 -149.25289632 63.87684992
+            </Coordinates>
+          </LinearRing>
+        </Exterior>
+      </Polygon>
+    </GeometryDef>
+  </Region>
+  <Region name="EightMileQuad90m" color="128,0,0">
+    <GeometryDef>
+      <CoordSysStr>GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137.0,298.257223563]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]]</CoordSysStr>
+      <Polygon>
+        <Exterior>
+          <LinearRing>
+            <Coordinates>
+-149.25308969 63.87682474 -149.25309504 63.87683328 -149.2530746 63.87683606 -149.25306854 63.87682731 -149.25307258 63.87682694 -149.25307543 63.87682647 -149.25307888 63.876826 -149.25308268 63.87682553 -149.25308636 63.876825 -149.25308969 63.87682474
+            </Coordinates>
+          </LinearRing>
+        </Exterior>
+      </Polygon>
+    </GeometryDef>
+  </Region>
+  <Region name="EightMileQuad80m" color="255,255,0">
+    <GeometryDef>
+      <CoordSysStr>GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137.0,298.257223563]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]]</CoordSysStr>
+      <Polygon>
+        <Exterior>
+          <LinearRing>
+            <Coordinates>
+-149.25329014 63.87680167 -149.25329616 63.87681096 -149.25327589 63.87681308 -149.25326932 63.87680367 -149.25328625 63.87680219 -149.25329014 63.87680167
+            </Coordinates>
+          </LinearRing>
+        </Exterior>
+      </Polygon>
+    </GeometryDef>
+  </Region>
+  <Region name="EightMileQuad70m" color="0,128,128">
+    <GeometryDef>
+      <CoordSysStr>GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137.0,298.257223563]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]]</CoordSysStr>
+      <Polygon>
+        <Exterior>
+          <LinearRing>
+            <Coordinates>
+-149.25348172 63.87677726 -149.25348811 63.87678586 -149.25346689 63.8767886 -149.25346107 63.87677991 -149.25347084 63.87677833 -149.2534744 63.87677833 -149.25347647 63.87677742 -149.25348172 63.87677726
+            </Coordinates>
+          </LinearRing>
+        </Exterior>
+      </Polygon>
+    </GeometryDef>
+  </Region>
+  <Region name="EightMileQuad60m" color="128,128,0">
+    <GeometryDef>
+      <CoordSysStr>GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137.0,298.257223563]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]]</CoordSysStr>
+      <Polygon>
+        <Exterior>
+          <LinearRing>
+            <Coordinates>
+-149.25367486 63.87675451 -149.25368307 63.87676435 -149.25366176 63.87676764 -149.25365373 63.87675743 -149.25367486 63.87675451
+            </Coordinates>
+          </LinearRing>
+        </Exterior>
+      </Polygon>
+    </GeometryDef>
+  </Region>
+  <Region name="EightMileQuads50m" color="255,0,255">
+    <GeometryDef>
+      <CoordSysStr>GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137.0,298.257223563]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]]</CoordSysStr>
+      <Polygon>
+        <Exterior>
+          <LinearRing>
+            <Coordinates>
+-149.25387497 63.87673354 -149.25387925 63.87674192 -149.25385776 63.87674385 -149.2538513 63.87673521 -149.25385786 63.87673421 -149.25386394 63.87673412 -149.25386679 63.87673392 -149.25387193 63.87673283 -149.25387459 63.87673245 -149.25387497 63.87673354
+            </Coordinates>
+          </LinearRing>
+        </Exterior>
+      </Polygon>
+    </GeometryDef>
+  </Region>
+  <Region name="EightMileQuads40m" color="0,255,255">
+    <GeometryDef>
+      <CoordSysStr>GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137.0,298.257223563]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]]</CoordSysStr>
+      <Polygon>
+        <Exterior>
+          <LinearRing>
+            <Coordinates>
+-149.25406945 63.87671738 -149.25407074 63.87672723 -149.25404871 63.87672755 -149.25404734 63.8767178 -149.25405337 63.87671731 -149.25405651 63.87671773 -149.25405723 63.87671734 -149.25406182 63.87671727 -149.25406487 63.87671685 -149.25406712 63.87671656 -149.25406945 63.87671738
+            </Coordinates>
+          </LinearRing>
+        </Exterior>
+      </Polygon>
+    </GeometryDef>
+  </Region>
+  <Region name="EightMileQuad30m" color="255,255,0">
+    <GeometryDef>
+      <CoordSysStr>GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137.0,298.257223563]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]]</CoordSysStr>
+      <Polygon>
+        <Exterior>
+          <LinearRing>
+            <Coordinates>
+-149.25426768 63.87670567 -149.25426965 63.87671761 -149.25424059 63.876719 -149.25423922 63.87670878 -149.25423883 63.87670766 -149.25424472 63.87670723 -149.25424786 63.87670671 -149.254251 63.87670653 -149.25425316 63.87670628 -149.25425532 63.87670662 -149.25425865 63.87670636 -149.25425865 63.87670628 -149.25426258 63.87670593 -149.25426768 63.87670567
+            </Coordinates>
+          </LinearRing>
+        </Exterior>
+      </Polygon>
+    </GeometryDef>
+  </Region>
+  <Region name="EightMileQuad20m" color="0,0,255">
+    <GeometryDef>
+      <CoordSysStr>GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137.0,298.257223563]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]]</CoordSysStr>
+      <Polygon>
+        <Exterior>
+          <LinearRing>
+            <Coordinates>
+-149.25447075 63.87669238 -149.25447222 63.87670292 -149.25444741 63.87670359 -149.254445 63.8766937 -149.25444594 63.87669328 -149.25444876 63.87669335 -149.25444924 63.87669301 -149.25445332 63.87669301 -149.2544563 63.87669308 -149.25446086 63.87669287 -149.25446572 63.87669301 -149.25446588 63.87669301 -149.25447075 63.87669238
+            </Coordinates>
+          </LinearRing>
+        </Exterior>
+      </Polygon>
+    </GeometryDef>
+  </Region>
+  <Region name="EightMileQuad10m" color="0,128,0">
+    <GeometryDef>
+      <CoordSysStr>GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137.0,298.257223563]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]]</CoordSysStr>
+      <Polygon>
+        <Exterior>
+          <LinearRing>
+            <Coordinates>
+-149.2546704 63.87667425 -149.2546758 63.8766835 -149.25465193 63.87668616 -149.25464678 63.87667647 -149.25464992 63.87667652 -149.25465381 63.87667591 -149.25465746 63.87667613 -149.25465884 63.87667547 -149.25466135 63.87667536 -149.25466273 63.87667497 -149.25466512 63.87667475 -149.25466851 63.87667486 -149.2546704 63.87667425
+            </Coordinates>
+          </LinearRing>
+        </Exterior>
+      </Polygon>
+    </GeometryDef>
+  </Region>
+  <Region name="EightMleQuad0m" color="255,0,0">
+    <GeometryDef>
+      <CoordSysStr>GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137.0,298.257223563]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]]</CoordSysStr>
+      <Polygon>
+        <Exterior>
+          <LinearRing>
+            <Coordinates>
+-149.2548667 63.8766555 -149.25487122 63.87666436 -149.25484899 63.87666635 -149.25484405 63.87665781 -149.25484698 63.87665733 -149.25484999 63.87665727 -149.25485263 63.87665711 -149.25485401 63.87665672 -149.2548559 63.87665666 -149.25485967 63.87665666 -149.25486293 63.87665616 -149.25486469 63.87665578 -149.2548667 63.8766555
+            </Coordinates>
+          </LinearRing>
+        </Exterior>
+      </Polygon>
+    </GeometryDef>
+  </Region>
+</RegionsOfInterest>

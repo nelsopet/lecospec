@@ -1,11 +1,11 @@
 {
     "automatic_tiling": false,
-    "max_size": 1024,
+    "max_size": 200,
     "x_tiles": 2,
     "y_tiles": 2,
     "tile_path": "./tiles/",
-    "model_path": "./Output/E_003_Pred_Model_RandomForest_FncGrp1_1000trees.rda",
-    "clusterCores": null,
+    "model_path": "./mle/RandomForest_FncGrp1_1000trees_augmented.rda",
+    "clusterCores": 4,
     "parallelize_by_tiles": true,
     "application": "Not yet implemented",
     "cache_path": "not yet implemented", 
@@ -14,5 +14,5 @@
     "install_path": "./",
     "external_bands": "./bands.csv",
     "output_format": "grd",
-    "aggregation": "FncGrp1"
+    "aggregation": 1
 }
