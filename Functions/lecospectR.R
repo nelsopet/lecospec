@@ -2691,10 +2691,20 @@ apply_KS_test <- function(validation_aggregates, type="two.sided", use_monte_car
     print("Number of Validation Rows:")
     print(num_rows_validation)
     num_observations <- sum(df$n)
+    if(num_rows_df == 0){
+        warning(
+            "Input (Prediction) Data is empty"
+        )
+    }
+
     
     # copy the template
     template <- data.frame(input_template)
-
+ if(num_rows_validation == 0){
+        warning(
+            "Input (Validation) Data is empty"
+        )
+    }
     # iterate over the template to match the data from the two other inputs
     for(template_row_idx in 1:num_rows_template){
         # iterate over the prediction data.frame

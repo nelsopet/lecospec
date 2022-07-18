@@ -40,7 +40,7 @@ validation_data_path_2 <- "Data/Ground_Validation/QuadratEstimates/Lab_quadrat_c
 ####################################################
 
 # Shapefile & check names
-tm_shapes <- sf::st_read(shape_path_1)
+tm_shapes <- sf::st_read(shape_path_5)
 print(tm_shapes$CLASS_NAME)
 
 # process_tile inputs
@@ -161,7 +161,7 @@ chatanika_names <- c(
 )
 
 # assign correct names to shafile
-tm_shapes$CLASS_NAME <- bison_gulch_names
+tm_shapes$CLASS_NAME <- eight_mile_names
 
 ####################################################
 #       Fix projection issues
@@ -188,7 +188,7 @@ print(extent(projected_shapes))
 ####################################################
 #       Run the validation
 ####################################################
-validation_df <- read.csv(validation_data_path, na.strings=c("NA", "n/a"))
+validation_df <- read.csv(validation_data_path_2, na.strings=c("NA", "n/a"))
 
 validation_aggregates <- validate_results(
     tile_results,
@@ -329,9 +329,6 @@ for( i in seq_along(quadrats)){
     shape$CLASS_NAME <- names[[i]]
     projected_shapes <- sf::st_transform(shape, raster::crs(tile_results))
 
-
-
-
     # Validation data
     validation_df <- read.csv(validation_paths[[i]], na.strings=c("NA", "n/a"))
 
@@ -347,8 +344,7 @@ for( i in seq_along(quadrats)){
     )
 
     # bar plots
-    for(j in seq_along(tm_shapes$CLASS_NAME)){
-        if(j > 0){
+    for(j in seq_along(validation_aggregates)){
             plot_prop_test <- plot_quadrat_proportions(
                 validation_aggregates[[j]],
                 filter_missing = TRUE)
@@ -358,7 +354,6 @@ for( i in seq_along(quadrats)){
             ggsave(
                 paste0(save_paths[[i]], j, "_bar.png"),
                 device = png)
-        }
     }
 
     save_validation(
@@ -374,3 +369,5 @@ validation_df <- rbind(
     read.csv(validation_data_path_2, na.strings=c("NA", "n/a")),
     read.csv(validation_data_path_2, na.strings=c("NA", "n/a"))
 )
+
+print(raster::extent(tile_results))

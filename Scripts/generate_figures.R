@@ -72,7 +72,7 @@ validation_paths <- list(
 
 parse_path <- function(path){
     split_path <- strsplit(path, split="/", fixed = TRUE)
-    return(split_path[[1]])
+    return(split_path[[1]][[2]])
 }
 
 print(parse_path("figures/twelveMile2/tm2_validation_4.csv"))
@@ -108,7 +108,6 @@ big_plot <- ggplot2::ggplot(data = merged_validation) +
     ggplot2::theme_classic() +
     ggplot2::labs(
         title = "Proportions of Human and Machine Label data by Plant Functional type",
-
     )
 
 windows();big_plot
