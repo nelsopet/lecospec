@@ -40,7 +40,7 @@ validation_data_path_2 <- "Data/Ground_Validation/QuadratEstimates/Lab_quadrat_c
 ####################################################
 
 # Shapefile & check names
-tm_shapes <- sf::st_read(shape_path_5)
+tm_shapes <- sf::st_read(shape_path_1)
 print(tm_shapes$CLASS_NAME)
 
 # process_tile inputs
@@ -48,14 +48,14 @@ ml_model <- load_model(model_path)
 band_names <- read.csv("./assets/bands.csv")$x %>% as.vector()
 
 # load the validation data
-validation_df <- read.csv(validation_data_path_2, na.strings=c("NA", "n/a"))
+validation_df <- read.csv(validation_data_path, na.strings=c("NA", "n/a"))
 
 ####################################################
 #       Process the Quadrats 
 ####################################################
 #since the images are small-ish, process_tile is faster
 tile_results <- process_tile(
-    test_path_5,
+    test_path_1,
     ml_model,
     1,
     cluster = NULL,
@@ -63,8 +63,6 @@ tile_results <- process_tile(
     band_names = band_names,
     save_path = "./test_raster_save.grd",
     suppress_output = FALSE)
-
-
 
 ####################################################
 #       Plots as needed
@@ -161,7 +159,7 @@ chatanika_names <- c(
 )
 
 # assign correct names to shafile
-tm_shapes$CLASS_NAME <- eight_mile_names
+tm_shapes$CLASS_NAME <- bison_gulch_names
 
 ####################################################
 #       Fix projection issues
@@ -188,7 +186,7 @@ print(extent(projected_shapes))
 ####################################################
 #       Run the validation
 ####################################################
-validation_df <- read.csv(validation_data_path_2, na.strings=c("NA", "n/a"))
+validation_df <- read.csv(validation_data_path, na.strings=c("NA", "n/a"))
 
 validation_aggregates <- validate_results(
     tile_results,
@@ -330,7 +328,7 @@ for( i in seq_along(quadrats)){
     projected_shapes <- sf::st_transform(shape, raster::crs(tile_results))
 
     # Validation data
-    validation_df <- read.csv(validation_paths[[i]], na.strings=c("NA", "n/a"))
+    #validation_df <- read.csv(validation_paths[[i]], na.strings=c("NA", "n/a"))
 
     # run the validation
     validation_aggregates <- validate_results(
@@ -339,8 +337,7 @@ for( i in seq_along(quadrats)){
         validation_df,
         rjson::fromJSON(file = "./assets/pft_adj_list.json"),
         "./assets/pft1_template.csv",
-        aggregation = 1,
-        save_path = save_paths[[i]]
+        aggregation = 1
     )
 
     # bar plots
@@ -363,11 +360,13 @@ for( i in seq_along(quadrats)){
 
 
 }
-
+ 
 # load both validation data sets, so there is no more need to be concerned with which goes where, etc.
 validation_df <- rbind(
-    read.csv(validation_data_path_2, na.strings=c("NA", "n/a")),
+    read.csv(validation_data_path, na.strings=c("NA", "n/a")),
     read.csv(validation_data_path_2, na.strings=c("NA", "n/a"))
 )
+
+head(validation_df)
 
 print(raster::extent(tile_results))

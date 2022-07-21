@@ -2619,9 +2619,12 @@ validate_results <- function(
         # extract the validation data for this quadrat
         quadrat_validation_df <- get_prediction_distribution(predictions) %>% as.data.frame()
 
-      
+        print("Quadrat Names")
+        print(quadrat_shape$CLASS_NAME)
+        print("Keys in validation")
+        print(validation_table$UID %>% unique())
         filtered_validation_df <- validation_table[validation_table$UID == quadrat_shape$CLASS_NAME, ]
-
+        print(head(filtered_validation_df))
 
 
         #print(head(filtered_validation_df))
@@ -2700,7 +2703,7 @@ apply_KS_test <- function(validation_aggregates, type="two.sided", use_monte_car
     
     # copy the template
     template <- data.frame(input_template)
- if(num_rows_validation == 0){
+    if(num_rows_validation == 0){
         warning(
             "Input (Validation) Data is empty"
         )
