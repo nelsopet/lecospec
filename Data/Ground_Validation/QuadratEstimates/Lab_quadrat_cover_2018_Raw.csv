@@ -1,4 +1,4 @@
-Plot,Meters,Plant,Cover,UID,PFT,Cover_prn
+Plot,meters,Plant,cover,UID,PFT,cover_prn
 F_1_2_P4_1_First_Attempt,0,Betula nana,40,F_1_2_P4_1_First_Attempt0,Shrub,50
 F_1_2_P4_1_First_Attempt,0,Vaccinium uliginosum,30,F_1_2_P4_1_First_Attempt0,Shrub,25
 F_1_2_P4_1_First_Attempt,0,Ledum decumbens,10,F_1_2_P4_1_First_Attempt0,Shrub,15
@@ -8,7 +8,7 @@ F_1_2_P4_1_First_Attempt,0,Vaccinium vitis-idea,10,F_1_2_P4_1_First_Attempt0,Shr
 F_1_2_P4_1_First_Attempt,0,Peltigera,n/a,F_1_2_P4_1_First_Attempt0,Lichen,1
 F_1_2_P4_1_First_Attempt,0,Pleurozium schreberi,5,F_1_2_P4_1_First_Attempt0,Moss,1
 F_1_2_P4_1_First_Attempt,10,Eriophorum vaginatum,35,F_1_2_P4_1_First_Attempt10,Graminoid,35
-F_1_2_P4_1_First_Attempt,10,MossPleurocarp ,12,F_1_2_P4_1_First_Attempt10,Moss,3
+F_1_2_P4_1_First_Attempt,10,MossPleurocarp,12,F_1_2_P4_1_First_Attempt10,Moss,3
 F_1_2_P4_1_First_Attempt,10,Betula nana,30,F_1_2_P4_1_First_Attempt10,Shrub,20
 F_1_2_P4_1_First_Attempt,10,Vaccinium uliginosum,10,F_1_2_P4_1_First_Attempt10,Shrub,15
 F_1_2_P4_1_First_Attempt,10,Litter,10,F_1_2_P4_1_First_Attempt10,Litter,20
@@ -55,16 +55,16 @@ F_1_2_P4_1_First_Attempt,70,Ledum decumbens,30,F_1_2_P4_1_First_Attempt70,Shrub,
 F_1_2_P4_1_First_Attempt,70,Betula nana,15,F_1_2_P4_1_First_Attempt70,Shrub,5
 F_1_2_P4_1_First_Attempt,70,Vaccinium uliginosum,10,F_1_2_P4_1_First_Attempt70,Shrub,8
 F_1_2_P4_1_First_Attempt,70,Sphagnum,n/a,F_1_2_P4_1_First_Attempt70,Moss,5
-F_1_2_P4_1_First_Attempt,70,MossPleurocarp ,15,F_1_2_P4_1_First_Attempt70,Moss,5
+F_1_2_P4_1_First_Attempt,70,MossPleurocarp,15,F_1_2_P4_1_First_Attempt70,Moss,5
 F_1_2_P4_1_First_Attempt,70,Graminoid,10,F_1_2_P4_1_First_Attempt70,Graminoid,40
 F_1_2_P4_1_First_Attempt,70,Litter,15,F_1_2_P4_1_First_Attempt70,Litter,9
-F_1_2_P4_1_First_Attempt,70,Flavocetraia cucculata,n/a,F_1_2_P4_1_First_Attempt70,Lichen,1
+F_1_2_P4_1_First_Attempt,70,Flavocetraria cucculata,n/a,F_1_2_P4_1_First_Attempt70,Lichen,1
 F_1_2_P4_1_First_Attempt,70,Rubus,5,F_1_2_P4_1_First_Attempt70,Dwarf shrub,2
 F_1_2_P4_1_First_Attempt,80,Ledum decumbens,40,F_1_2_P4_1_First_Attempt80,Shrub,40
 F_1_2_P4_1_First_Attempt,80,Rubus,25,F_1_2_P4_1_First_Attempt80,Dwarf shrub,20
 F_1_2_P4_1_First_Attempt,80,Betula nana,15,F_1_2_P4_1_First_Attempt80,Shrub,15
 F_1_2_P4_1_First_Attempt,80,Vaccinium uliginosum,15,F_1_2_P4_1_First_Attempt80,Shrub,5
-F_1_2_P4_1_First_Attempt,80,MossPleurocarp ,n/a,F_1_2_P4_1_First_Attempt80,Moss,5
+F_1_2_P4_1_First_Attempt,80,MossPleurocarp,n/a,F_1_2_P4_1_First_Attempt80,Moss,5
 F_1_2_P4_1_First_Attempt,80,Eriophorum vaginatum,3,F_1_2_P4_1_First_Attempt80,Graminoid,7
 F_1_2_P4_1_First_Attempt,80,Litter,2,F_1_2_P4_1_First_Attempt80,Litter,8
 F_1_2_P4_1_First_Attempt,90,Betula nana,25,F_1_2_P4_1_First_Attempt90,Shrub,20
@@ -73,13 +73,13 @@ F_1_2_P4_1_First_Attempt,90,Ledum decumbens,25,F_1_2_P4_1_First_Attempt90,Shrub,
 F_1_2_P4_1_First_Attempt,90,Petasites fridigidus,2,F_1_2_P4_1_First_Attempt90,Forb,2
 F_1_2_P4_1_First_Attempt,90,Peltigera,5,F_1_2_P4_1_First_Attempt90,Lichen,7
 F_1_2_P4_1_First_Attempt,90,Vaccinium vitis-idea,n/a,F_1_2_P4_1_First_Attempt90,Shrub,2
-F_1_2_P4_1_First_Attempt,90,MossPleurocarp ,3,F_1_2_P4_1_First_Attempt90,Moss,1
+F_1_2_P4_1_First_Attempt,90,MossPleurocarp,3,F_1_2_P4_1_First_Attempt90,Moss,1
 F_1_2_P4_1_First_Attempt,90,LightTerrestrialMacrolichen,n/a,F_1_2_P4_1_First_Attempt90,Lichens,5
 F_1_2_P4_1_First_Attempt,90,Litter,2,F_1_2_P4_1_First_Attempt90,Litter,6
 F_1_2_P4_1_First_Attempt,90,Graminoid,3,F_1_2_P4_1_First_Attempt90,Graminoid,7
 F_1_2_P4_1_First_Attempt,100,Eriophorum vaginatum,5,F_1_2_P4_1_First_Attempt100,Graminoid,30
 F_1_2_P4_1_First_Attempt,100,Vaccinium uliginosum,10,F_1_2_P4_1_First_Attempt100,Shrub,10
-F_1_2_P4_1_First_Attempt,100,MossPleurocarp ,20,F_1_2_P4_1_First_Attempt100,Moss,20
+F_1_2_P4_1_First_Attempt,100,MossPleurocarp,20,F_1_2_P4_1_First_Attempt100,Moss,20
 F_1_2_P4_1_First_Attempt,100,Betula nana,5,F_1_2_P4_1_First_Attempt100,Shrub,5
 F_1_2_P4_1_First_Attempt,100,Ledum decumbens,30,F_1_2_P4_1_First_Attempt100,Shrub,15
 F_1_2_P4_1_First_Attempt,100,Rubus,10,F_1_2_P4_1_First_Attempt100,Dwarf shrub,10
@@ -143,7 +143,7 @@ UK728_6246,70,Litter,10,UK728_624670,Litter,
 UK728_6246,70,Ledum decumbens,25,UK728_624670,Shrub,
 UK728_6246,80,Light fruticose lichen,15,UK728_624680,Lichen,
 UK728_6246,80,Betula nana,20,UK728_624680,Shrub,
-UK728_6246,80,Pleurocarp ,10,UK728_624680,Moss,
+UK728_6246,80,MossPleurocarp,10,UK728_624680,Moss,
 UK728_6246,80,Vaccinium uliginosum,10,UK728_624680,Shrub,
 UK728_6246,80,Rubus sp.,2,UK728_624680,Dwarf shrub,
 UK728_6246,80,Sphagnum,3,UK728_624680,Moss,
@@ -167,7 +167,7 @@ UK728_6246,100,Acrocarp,5,UK728_6246100,Moss,
 UK730_6321,0,Picea sp.,5,UK730_63210,Tree,
 UK730_6321,0,Vaccinium uliginosum,20,UK730_63210,Shrub,
 UK730_6321,0,Betula nana,5,UK730_63210,Shrub,
-UK730_6321,0,Pleurocarp ,25,UK730_63210,Moss,
+UK730_6321,0,MossPleurocarp,25,UK730_63210,Moss,
 UK730_6321,0,Ledum sp.,15,UK730_63210,Shrub,
 UK730_6321,0,Graminoid,10,UK730_63210,Graminoid,
 UK730_6321,0,Litter,15,UK730_63210,Litter,
@@ -251,7 +251,7 @@ UK730_6324,60,Vaccinium uliginosum,10,UK730_632460,Shrub,
 UK730_6324,70,Litter,55,UK730_632470,Litter,
 UK730_6324,70,Graminoid,20,UK730_632470,Graminoid,
 UK730_6324,70,Sphagnum,25,UK730_632470,Moss,
-UK730_6324,80,Forb ,15,UK730_632480,Forb,
+UK730_6324,80,Forb,15,UK730_632480,Forb,
 UK730_6324,80,Sphagnum,45,UK730_632480,Moss,
 UK730_6324,80,Graminoid,25,UK730_632480,Graminoid,
 UK730_6324,80,Litter,15,UK730_632480,Litter,
@@ -259,206 +259,230 @@ UK730_6324,90,Dead bryophyte,10,UK730_632490,Moss,
 UK730_6324,90,Sphagnum,65,UK730_632490,Moss,
 UK730_6324,90,Litter,10,UK730_632490,Litter,
 UK730_6324,90,Graminoid,10,UK730_632490,Graminoid,
-UK730_6324,90,Forb ,5,UK730_632490,Forb,
-UK730_6324,100,Forb ,30,UK730_6324100,Forb,
+UK730_6324,90,Forb,5,UK730_632490,Forb,
+UK730_6324,100,Forb,30,UK730_6324100,Forb,
 UK730_6324,100,Sphagnum,50,UK730_6324100,Moss,
 UK730_6324,100,Graminoid,15,UK730_6324100,Graminoid,
 UK730_6324,100,Dead bryophyte,5,UK730_6324100,Moss,
-7_31_18_Murphy_Dome,0,Ledum decumbens,25,7_31_18_Murphy_Dome0,Shrub,
-7_31_18_Murphy_Dome,0,Betula nana,25,7_31_18_Murphy_Dome0,Shrub,
-7_31_18_Murphy_Dome,0,Vaccinium vitis-idea,30,7_31_18_Murphy_Dome0,Shrub,
-7_31_18_Murphy_Dome,0,Litter,15,7_31_18_Murphy_Dome0,Litter,
-7_31_18_Murphy_Dome,0,Light fruticose lichen,5,7_31_18_Murphy_Dome0,Lichen,
-7_31_18_Murphy_Dome,10,Ledum decumbens,30,7_31_18_Murphy_Dome10,Shrub,
-7_31_18_Murphy_Dome,10,Vaccinium vitis-idea,10,7_31_18_Murphy_Dome10,Shrub,
-7_31_18_Murphy_Dome,10,Betula nana,45,7_31_18_Murphy_Dome10,Shrub,
-7_31_18_Murphy_Dome,10,Pleurocarp ,5,7_31_18_Murphy_Dome10,Moss,
-7_31_18_Murphy_Dome,10,Vaccinium uliginosum,10,7_31_18_Murphy_Dome10,Shrub,
-7_31_18_Murphy_Dome,20,Light fruticose lichen,35,7_31_18_Murphy_Dome20,Lichen,
-7_31_18_Murphy_Dome,20,Betula nana,25,7_31_18_Murphy_Dome20,Shrub,
-7_31_18_Murphy_Dome,20,Ledum decumbens,30,7_31_18_Murphy_Dome20,Shrub,
-7_31_18_Murphy_Dome,20,Vaccinium vitis-idea,10,7_31_18_Murphy_Dome20,Shrub,
-7_31_18_Murphy_Dome,30,Betula nana,90,7_31_18_Murphy_Dome30,Shrub,
-7_31_18_Murphy_Dome,30,Light fruticose lichen,5,7_31_18_Murphy_Dome30,Lichen,
-7_31_18_Murphy_Dome,30,Pleurocarp ,5,7_31_18_Murphy_Dome30,Moss,
-7_31_18_Murphy_Dome,40,Betula nana,45,7_31_18_Murphy_Dome40,Shrub,
-7_31_18_Murphy_Dome,40,Vaccinium vitis-idea,15,7_31_18_Murphy_Dome40,Shrub,
-7_31_18_Murphy_Dome,40,Ledum decumbens,35,7_31_18_Murphy_Dome40,Shrub,
-7_31_18_Murphy_Dome,40,Graminoid,5,7_31_18_Murphy_Dome40,Graminoid,
-7_31_18_Murphy_Dome,50,Light fruticose lichen,30,7_31_18_Murphy_Dome50,Lichen,
-7_31_18_Murphy_Dome,50,Betula nana,25,7_31_18_Murphy_Dome50,Shrub,
-7_31_18_Murphy_Dome,50,Ledum decumbens,35,7_31_18_Murphy_Dome50,Shrub,
-7_31_18_Murphy_Dome,50,Vaccinium vitis-idea,10,7_31_18_Murphy_Dome50,Shrub,
-7_31_18_Murphy_Dome,60,Pleurozium schreberi,25,7_31_18_Murphy_Dome60,Moss,
-7_31_18_Murphy_Dome,60,Vaccinium vitis-idea,40,7_31_18_Murphy_Dome60,Shrub,
-7_31_18_Murphy_Dome,60,Betula nana,15,7_31_18_Murphy_Dome60,Shrub,
-7_31_18_Murphy_Dome,60,Dwarf shrub,5,7_31_18_Murphy_Dome60,Dwarf shrub,
-7_31_18_Murphy_Dome,60,Light fruticose lichen,5,7_31_18_Murphy_Dome60,Lichen,
-7_31_18_Murphy_Dome,60,Ledum decumbens,10,7_31_18_Murphy_Dome60,Shrub,
-7_31_18_Murphy_Dome,70,Betula nana,45,7_31_18_Murphy_Dome70,Shrub,
-7_31_18_Murphy_Dome,70,Light fruticose lichen,25,7_31_18_Murphy_Dome70,Lichen,
-7_31_18_Murphy_Dome,70,Pleurocarp ,5,7_31_18_Murphy_Dome70,Moss,
-7_31_18_Murphy_Dome,70,Dwarf shrub,5,7_31_18_Murphy_Dome70,Dwarf shrub,
-7_31_18_Murphy_Dome,70,Ledum decumbens,20,7_31_18_Murphy_Dome70,Shrub,
-7_31_18_Murphy_Dome,80,Betula nana,55,7_31_18_Murphy_Dome80,Shrub,
-7_31_18_Murphy_Dome,80,Light fruticose lichen,30,7_31_18_Murphy_Dome80,Lichen,
-7_31_18_Murphy_Dome,80,Graminoid,10,7_31_18_Murphy_Dome80,Graminoid,
-7_31_18_Murphy_Dome,80,Vaccinium vitis-idea,5,7_31_18_Murphy_Dome80,Shrub,
-7_31_18_Murphy_Dome,90,Ledum decumbens,50,7_31_18_Murphy_Dome90,Shrub,
-7_31_18_Murphy_Dome,90,Graminoid,15,7_31_18_Murphy_Dome90,Graminoid,
-7_31_18_Murphy_Dome,90,Light fruticose lichen,10,7_31_18_Murphy_Dome90,Lichen,
-7_31_18_Murphy_Dome,90,Betula nana,20,7_31_18_Murphy_Dome90,Shrub,
-7_31_18_Murphy_Dome,90,Vaccinium vitis-idea,5,7_31_18_Murphy_Dome90,Shrub,
-7_31_18_Murphy_Dome,100,Ledum decumbens,35,7_31_18_Murphy_Dome100,Shrub,
-7_31_18_Murphy_Dome,100,Betula nana,15,7_31_18_Murphy_Dome100,Shrub,
-7_31_18_Murphy_Dome,100,Light fruticose lichen,5,7_31_18_Murphy_Dome100,Lichen,
-7_31_18_Murphy_Dome,100,Vaccinium vitis-idea,20,7_31_18_Murphy_Dome100,Shrub,
-7_31_18_Murphy_Dome,100,Graminoid,15,7_31_18_Murphy_Dome100,Graminoid,
-7_31_18_Murphy_Dome,100,Litter,10,7_31_18_Murphy_Dome100,Litter,
-F_1_2_P4_1_SecondAttempt_use_this,0,Betula nana,40,F_1_2_P4_1_SecondAttempt_use_this0,Shrub,10
-F_1_2_P4_1_SecondAttempt_use_this,0,Vaccinium uliginosum,30,F_1_2_P4_1_SecondAttempt_use_this0,Shrub,10
-F_1_2_P4_1_SecondAttempt_use_this,0,Ledum decumbens,10,F_1_2_P4_1_SecondAttempt_use_this0,Shrub,25
-F_1_2_P4_1_SecondAttempt_use_this,0,Rubus,3,F_1_2_P4_1_SecondAttempt_use_this0,Dwarf shrub,5
-F_1_2_P4_1_SecondAttempt_use_this,0,Eriophorum vaginatum,2,F_1_2_P4_1_SecondAttempt_use_this0,Graminoid,5
-F_1_2_P4_1_SecondAttempt_use_this,0,Vaccinium vitis-idea,10,F_1_2_P4_1_SecondAttempt_use_this0,Shrub,25
-F_1_2_P4_1_SecondAttempt_use_this,0,Litter,n/a,F_1_2_P4_1_SecondAttempt_use_this0,Litter,15
-F_1_2_P4_1_SecondAttempt_use_this,0,Pleurozium schreberi,5,F_1_2_P4_1_SecondAttempt_use_this0,Moss,5
-F_1_2_P4_1_SecondAttempt_use_this,10,Eriophorum vaginatum,35,F_1_2_P4_1_SecondAttempt_use_this10,Graminoid,25
-F_1_2_P4_1_SecondAttempt_use_this,10,MossPleurocarp ,12,F_1_2_P4_1_SecondAttempt_use_this10,Moss,25
-F_1_2_P4_1_SecondAttempt_use_this,10,Betula nana,30,F_1_2_P4_1_SecondAttempt_use_this10,Shrub,5
-F_1_2_P4_1_SecondAttempt_use_this,10,Vaccinium uliginosum,10,F_1_2_P4_1_SecondAttempt_use_this10,Shrub,5
-F_1_2_P4_1_SecondAttempt_use_this,10,Vaccinium vitis-idea,n/a,F_1_2_P4_1_SecondAttempt_use_this10,Shrub,30
-F_1_2_P4_1_SecondAttempt_use_this,10,Litter,10,F_1_2_P4_1_SecondAttempt_use_this10,Litter,8
-F_1_2_P4_1_SecondAttempt_use_this,10,Flavocetraia cucculata,n/a,F_1_2_P4_1_SecondAttempt_use_this10,Lichen,2
-F_1_2_P4_1_SecondAttempt_use_this,20,Betula nana,45,F_1_2_P4_1_SecondAttempt_use_this20,Shrub,20
-F_1_2_P4_1_SecondAttempt_use_this,20,Vaccinium uliginosum,n/a,F_1_2_P4_1_SecondAttempt_use_this20,Shrub,20
-F_1_2_P4_1_SecondAttempt_use_this,20,Rubus,25,F_1_2_P4_1_SecondAttempt_use_this20,Dwarf shrub,5
-F_1_2_P4_1_SecondAttempt_use_this,20,Eriophorum vaginatum,10,F_1_2_P4_1_SecondAttempt_use_this20,Graminoid,10
-F_1_2_P4_1_SecondAttempt_use_this,20,Ledum decumbens,5,F_1_2_P4_1_SecondAttempt_use_this20,Shrub,25
-F_1_2_P4_1_SecondAttempt_use_this,20,Flavocetraia cucculata,n/a,F_1_2_P4_1_SecondAttempt_use_this20,Lichen,2
-F_1_2_P4_1_SecondAttempt_use_this,20,Sphagnum,n/a,F_1_2_P4_1_SecondAttempt_use_this20,Moss,2
-F_1_2_P4_1_SecondAttempt_use_this,20,Nephroma arctica,n/a,F_1_2_P4_1_SecondAttempt_use_this20,Lichen,7
-F_1_2_P4_1_SecondAttempt_use_this,20,Litter,10,F_1_2_P4_1_SecondAttempt_use_this20,Litter,9
-F_1_2_P4_1_SecondAttempt_use_this,30,Sphagnum,5,F_1_2_P4_1_SecondAttempt_use_this30,Moss,30
-F_1_2_P4_1_SecondAttempt_use_this,30,Rubus,35,F_1_2_P4_1_SecondAttempt_use_this30,Dwarf shrub,1
-F_1_2_P4_1_SecondAttempt_use_this,30,Vaccinium uliginosum,30,F_1_2_P4_1_SecondAttempt_use_this30,Shrub,15
-F_1_2_P4_1_SecondAttempt_use_this,30,Betula nana,30,F_1_2_P4_1_SecondAttempt_use_this30,Shrub,4
-F_1_2_P4_1_SecondAttempt_use_this,30,Ledum decumbens,10,F_1_2_P4_1_SecondAttempt_use_this30,Shrub,10
-F_1_2_P4_1_SecondAttempt_use_this,30,Flavocetraia cucculata,10,F_1_2_P4_1_SecondAttempt_use_this30,Lichen,20
-F_1_2_P4_1_SecondAttempt_use_this,30,Eriophorum vaginatum,8,F_1_2_P4_1_SecondAttempt_use_this30,Graminoid,15
-F_1_2_P4_1_SecondAttempt_use_this,30,Litter,10,F_1_2_P4_1_SecondAttempt_use_this30,Litter,5
-F_1_2_P4_1_SecondAttempt_use_this,40,Eriophorum vaginatum,20,F_1_2_P4_1_SecondAttempt_use_this40,Graminoid,30
-F_1_2_P4_1_SecondAttempt_use_this,40,Litter,40,F_1_2_P4_1_SecondAttempt_use_this40,Litter,10
-F_1_2_P4_1_SecondAttempt_use_this,40,Ledum decumbens,15,F_1_2_P4_1_SecondAttempt_use_this40,Shrub,10
-F_1_2_P4_1_SecondAttempt_use_this,40,Vaccinium vitis-idea,n/a,F_1_2_P4_1_SecondAttempt_use_this40,Shrub,5
-F_1_2_P4_1_SecondAttempt_use_this,40,Vaccinium uliginosum,15,F_1_2_P4_1_SecondAttempt_use_this40,Shrub,5
-F_1_2_P4_1_SecondAttempt_use_this,40,Betula nana,n/a,F_1_2_P4_1_SecondAttempt_use_this40,Shrub,5
-F_1_2_P4_1_SecondAttempt_use_this,40,Sphagnum,n/a,F_1_2_P4_1_SecondAttempt_use_this40,Moss,15
-F_1_2_P4_1_SecondAttempt_use_this,40,LightTerrestrialMacrolichen,5,F_1_2_P4_1_SecondAttempt_use_this40,Lichen,20
-F_1_2_P4_1_SecondAttempt_use_this,50,Sphagnum,30,F_1_2_P4_1_SecondAttempt_use_this50,Moss,20
-F_1_2_P4_1_SecondAttempt_use_this,50,Rubus,10,F_1_2_P4_1_SecondAttempt_use_this50,Dwarf shrub,3
-F_1_2_P4_1_SecondAttempt_use_this,50,Vaccinium vitis-idea,n/a,F_1_2_P4_1_SecondAttempt_use_this50,Shrub,25
-F_1_2_P4_1_SecondAttempt_use_this,50,Vaccinium uliginosum,5,F_1_2_P4_1_SecondAttempt_use_this50,Shrub,7
-F_1_2_P4_1_SecondAttempt_use_this,50,Betula nana,15,F_1_2_P4_1_SecondAttempt_use_this50,Shrub,2
-F_1_2_P4_1_SecondAttempt_use_this,50,Ledum decumbens,5,F_1_2_P4_1_SecondAttempt_use_this50,Shrub,5
-F_1_2_P4_1_SecondAttempt_use_this,50,Flavocetraia cucculata,n/a,F_1_2_P4_1_SecondAttempt_use_this50,Lichen,3
-F_1_2_P4_1_SecondAttempt_use_this,50,Eriophorum vaginatum,n/a,F_1_2_P4_1_SecondAttempt_use_this50,Graminoid,25
-F_1_2_P4_1_SecondAttempt_use_this,50,Litter,20,F_1_2_P4_1_SecondAttempt_use_this50,Litter,10
-F_1_2_P4_1_SecondAttempt_use_this,60,Ledum decumbens,50,F_1_2_P4_1_SecondAttempt_use_this60,Shrub,15
-F_1_2_P4_1_SecondAttempt_use_this,60,Betula nana,15,F_1_2_P4_1_SecondAttempt_use_this60,Shrub,5
-F_1_2_P4_1_SecondAttempt_use_this,60,Rubus,20,F_1_2_P4_1_SecondAttempt_use_this60,Dwarf shrub,10
-F_1_2_P4_1_SecondAttempt_use_this,60,Eriophorum vaginatum,2,F_1_2_P4_1_SecondAttempt_use_this60,Graminoid,25
-F_1_2_P4_1_SecondAttempt_use_this,60,Flavocetraia cucculata,3,F_1_2_P4_1_SecondAttempt_use_this60,Lichen,15
-F_1_2_P4_1_SecondAttempt_use_this,60,Litter,n/a,F_1_2_P4_1_SecondAttempt_use_this60,Litter,15
-F_1_2_P4_1_SecondAttempt_use_this,60,Vaccinium vitis-idea,n/a,F_1_2_P4_1_SecondAttempt_use_this60,Shrub,5
-F_1_2_P4_1_SecondAttempt_use_this,60,Vaccinium uliginosum,10,F_1_2_P4_1_SecondAttempt_use_this60,Shrub,10
-F_1_2_P4_1_SecondAttempt_use_this,70,Ledum decumbens,30,F_1_2_P4_1_SecondAttempt_use_this70,Shrub,20
-F_1_2_P4_1_SecondAttempt_use_this,70,Betula nana,15,F_1_2_P4_1_SecondAttempt_use_this70,Shrub,10
-F_1_2_P4_1_SecondAttempt_use_this,70,Vaccinium uliginosum,10,F_1_2_P4_1_SecondAttempt_use_this70,Shrub,5
-F_1_2_P4_1_SecondAttempt_use_this,70,Sphagnum,n/a,F_1_2_P4_1_SecondAttempt_use_this70,Moss,2
-F_1_2_P4_1_SecondAttempt_use_this,70,Eriophorum vaginatum,10,F_1_2_P4_1_SecondAttempt_use_this70,Graminoid,20
-F_1_2_P4_1_SecondAttempt_use_this,70,Litter,15,F_1_2_P4_1_SecondAttempt_use_this70,Litter,18
-F_1_2_P4_1_SecondAttempt_use_this,70,Stereocaulon,n/a,F_1_2_P4_1_SecondAttempt_use_this70,Lichen,5
-F_1_2_P4_1_SecondAttempt_use_this,70,Flavocetraia cucculata,n/a,F_1_2_P4_1_SecondAttempt_use_this70,Lichen,15
-F_1_2_P4_1_SecondAttempt_use_this,70,Rubus,5,F_1_2_P4_1_SecondAttempt_use_this70,Dwarf shrub,5
-F_1_2_P4_1_SecondAttempt_use_this,80,Ledum decumbens,40,F_1_2_P4_1_SecondAttempt_use_this80,Shrub,15
-F_1_2_P4_1_SecondAttempt_use_this,80,Rubus,25,F_1_2_P4_1_SecondAttempt_use_this80,Dwarf shrub,10
-F_1_2_P4_1_SecondAttempt_use_this,80,Betula nana,15,F_1_2_P4_1_SecondAttempt_use_this80,Shrub,10
-F_1_2_P4_1_SecondAttempt_use_this,80,Vaccinium uliginosum,15,F_1_2_P4_1_SecondAttempt_use_this80,Shrub,10
-F_1_2_P4_1_SecondAttempt_use_this,80,MossPleurocarp ,n/a,F_1_2_P4_1_SecondAttempt_use_this80,Moss,15
-F_1_2_P4_1_SecondAttempt_use_this,80,Eriophorum vaginatum,3,F_1_2_P4_1_SecondAttempt_use_this80,Graminoid,10
-F_1_2_P4_1_SecondAttempt_use_this,80,Flavocetraia cucculata,n/a,F_1_2_P4_1_SecondAttempt_use_this80,Lichen,15
-F_1_2_P4_1_SecondAttempt_use_this,80,Litter,2,F_1_2_P4_1_SecondAttempt_use_this80,Litter,15
-F_1_2_P4_1_SecondAttempt_use_this,90,Betula nana,25,F_1_2_P4_1_SecondAttempt_use_this90,Shrub,3
-F_1_2_P4_1_SecondAttempt_use_this,90,Vaccinium uliginosum,35,F_1_2_P4_1_SecondAttempt_use_this90,Shrub,15
-F_1_2_P4_1_SecondAttempt_use_this,90,Ledum decumbens,25,F_1_2_P4_1_SecondAttempt_use_this90,Shrub,10
-F_1_2_P4_1_SecondAttempt_use_this,90,Vaccinium vitis-idea,n/a,F_1_2_P4_1_SecondAttempt_use_this90,Shrub,10
-F_1_2_P4_1_SecondAttempt_use_this,90,MossPleurocarp ,3,F_1_2_P4_1_SecondAttempt_use_this90,Moss,5
-F_1_2_P4_1_SecondAttempt_use_this,90,Flavocetraia cucculata,n/a,F_1_2_P4_1_SecondAttempt_use_this90,Lichen,7
-F_1_2_P4_1_SecondAttempt_use_this,90,Litter,2,F_1_2_P4_1_SecondAttempt_use_this90,Litter,25
-F_1_2_P4_1_SecondAttempt_use_this,90,Eriophorum vaginatum,3,F_1_2_P4_1_SecondAttempt_use_this90,Graminoid,25
-F_1_2_P4_1_SecondAttempt_use_this,100,Eriophorum vaginatum,5,F_1_2_P4_1_SecondAttempt_use_this100,Graminoid,25
-F_1_2_P4_1_SecondAttempt_use_this,100,Vaccinium uliginosum,10,F_1_2_P4_1_SecondAttempt_use_this100,Shrub,5
-F_1_2_P4_1_SecondAttempt_use_this,100,Vaccinium vitis-idea,n/a,F_1_2_P4_1_SecondAttempt_use_this100,Shrub,4
-F_1_2_P4_1_SecondAttempt_use_this,100,MossPleurocarp ,20,F_1_2_P4_1_SecondAttempt_use_this100,Moss,20
-F_1_2_P4_1_SecondAttempt_use_this,100,Betula nana,5,F_1_2_P4_1_SecondAttempt_use_this100,Shrub,15
-F_1_2_P4_1_SecondAttempt_use_this,100,Ledum decumbens,30,F_1_2_P4_1_SecondAttempt_use_this100,Shrub,10
-F_1_2_P4_1_SecondAttempt_use_this,100,Flavocetraia cucculata,n/a,F_1_2_P4_1_SecondAttempt_use_this100,Lichen,1
-F_1_2_P4_1_SecondAttempt_use_this,100,Litter,20,F_1_2_P4_1_SecondAttempt_use_this100,Litter,20
-T1_729,0,Salix,10,T1_7290,Shrub,20
-T1_729,0,Vaccinium uliginosum,25,T1_7290,Shrub,10
-T1_729,0,Betula neoalaskana,15,T1_7290,Shrub,10
-T1_729,0,Eriophorum vaginatum,40,T1_7290,Graminoid,50
-T1_729,0,Ledum decumbens,10,T1_7290,Shrub,5
-T1_729,0,Picea ,,T1_7290,,1
-T1_729,0,Wood,,T1_7290,,4
-T1_729,10,Betula nana,25,T1_72910,Shrub,25
-T1_729,10,Eriophorum vaginatum,40,T1_72910,Graminoid,60
-T1_729,10,Litter,35,T1_72910,Litter,15
-T1_729,20,Betula nana,15,T1_72920,Shrub,10
-T1_729,20,Eriophorum vaginatum,30,T1_72920,Graminoid,70
-T1_729,20,Ledum,10,T1_72920,Shrub,10
-T1_729,20,Sphagnum,5,T1_72920,Moss,3
-T1_729,20,Vaccinium uliginosum,20,T1_72920,Shrub,2
-T1_729,20,Litter,20,T1_72920,Litter,5
-T1_729,30,Eriophorum vaginatum,60,T1_72930,Graminoid,70
-T1_729,30,Litter,10,T1_72930,Litter,7
-T1_729,30,Ledum,20,T1_72930,Shrub,20
-T1_729,30,Betula nana,5,T1_72930,Shrub,3
-T1_729,40,Eriophorum vaginatum,50,T1_72940,Graminoid,55
-T1_729,40,Litter,15,T1_72940,Litter,15
-T1_729,40,Vaccinium uliginosum,25,T1_72940,Shrub,15
-T1_729,40,Betula neoalaskana,10,T1_72940,Tree,15
-T1_729,50,Spirea ,25,T1_72950,Shrub,10
-T1_729,50,Eriophorum vaginatum,55,T1_72950,Graminoid,70
-T1_729,50,Ledum decumbens,5,T1_72950,Shrub,3
-T1_729,50,Litter,15,T1_72950,Litter,10
-T1_729,50,Betula neoalaskana,,T1_72950,,5
-T1_729,50,Wood,,T1_72950,,2
-T1_729,60,Ledum decumbens,15,T1_72960,Shrub,20
-T1_729,60,Eriophorum vaginatum,40,T1_72960,Graminoid,45
-T1_729,60,Rubus,5,T1_72960,Dwarf shrub,5
-T1_729,60,Betula nana,5,T1_72960,Shrub,5
-T1_729,60,Litter,25,T1_72960,Litter,25
-T1_729,70,Ledum decumbens,30,T1_72970,Shrub,22
-T1_729,70,Betula nana,20,T1_72970,Shrub,15
-T1_729,70,Spirea ,,T1_72970,,5
-T1_729,70,Eriophorum vaginatum,35,T1_72970,Graminoid,40
-T1_729,70,Litter,10,T1_72970,Litter,15
-T1_729,70,Picea ,,T1_72970,,3
-T1_729,80,Betula nana,30,T1_72980,Shrub,20
-T1_729,80,Ledum decumbens,45,T1_72980,Shrub,35
-T1_729,80,Litter,,T1_72980,,10
-T1_729,80,Graminoid,20,T1_72980,Graminoid,35
-T1_729,90,Vaccinium uliginosum,20,T1_72990,Shrub,10
-T1_729,90,Betula nana,20,T1_72990,Shrub,25
-T1_729,90,Populus tremuloides,,T1_72990,Tree,10
-T1_729,90,Betula neoalaskana,,T1_72990,Tree,5
-T1_729,90,Eriophorum vaginatum,20,T1_72990,Graminoid,30
-T1_729,90,Litter,10,T1_72990,Litter,10
-T1_729,90,Ledum decumbens,15,T1_72990,Shrub,10
-T1_729,100,Graminoid,50,T1_729100,Graminoid,
-T1_729,100,Litter,20,T1_729100,Litter,
-T1_729,100,Acrocarp,10,T1_729100,Moss,
-T1_729,100,Ledum decumbens,5,T1_729100,Shrub,
-T1_729,100,Vaccinium uliginosum,15,T1_729100,Shrub,
+Murphydome,0,Ledum decumbens,25,Murphydome0,Murphy_Dome,40
+Murphydome,0,Betula nana,25,Murphydome0,Murphy_Dome,25
+Murphydome,0,Vaccinium vitis-idea,30,Murphydome0,Murphy_Dome,8
+Murphydome,0,Litter,15,Murphydome0,Murphy_Dome,10
+Murphydome,0,LightTerrestrialMacrolichen,5,Murphydome0,Murphy_Dome,2
+Murphydome,0,Salix,,Murphydome0,Murphy_Dome,3
+Murphydome,0,Carex,,Murphydome0,Murphy_Dome,10
+Murphydome,0,Petasites frigida,,Murphydome0,Murphy_Dome,2
+Murphydome,10,Ledum decumbens,30,Murphydome10,Murphy_Dome,45
+Murphydome,10,Vaccinium vitis-idea,10,Murphydome10,Murphy_Dome,3
+Murphydome,10,Betula nana,45,Murphydome10,Murphy_Dome,40
+Murphydome,10,Carex,,Murphydome10,Murphy_Dome,5
+Murphydome,10,MossPleurocarp,5,Murphydome10,Murphy_Dome,1
+Murphydome,10,Litter,,Murphydome10,Murphy_Dome,3
+Murphydome,10,LightTerrestrialMacrolichen,,Murphydome10,Murphy_Dome,2
+Murphydome,10,Vaccinium uliginosum,10,Murphydome10,Murphy_Dome,1
+Murphydome,20,LightTerrestrialMacrolichen,35,Murphydome20,Murphy_Dome,4
+Murphydome,20,YellowTerrestrialMacrolichen,,Murphydome20,Murphy_Dome,25
+Murphydome,20,DarkTerrestrialMacrolichen,,Murphydome20,Murphy_Dome,1
+Murphydome,20,Betula nana,25,Murphydome20,Murphy_Dome,20
+Murphydome,20,Ledum decumbens,30,Murphydome20,Murphy_Dome,40
+Murphydome,20,Carex,,Murphydome20,Murphy_Dome,5
+Murphydome,20,Vaccinium vitis-idea,10,Murphydome20,Murphy_Dome,3
+Murphydome,20,Litter,,Murphydome20,Murphy_Dome,2
+Murphydome,30,Betula nana,90,Murphydome30,Murphy_Dome,92
+Murphydome,30,LightTerrestrialMacrolichen,5,Murphydome30,Murphy_Dome,3
+Murphydome,30,Litter,2,Murphydome30,Murphy_Dome,2
+Murphydome,30,MossPleurocarp,5,Murphydome30,Murphy_Dome,3
+Murphydome,40,Betula nana,45,Murphydome40,Murphy_Dome,35
+Murphydome,40,Vaccinium vitis-idea,15,Murphydome40,Murphy_Dome,6
+Murphydome,40,Ledum decumbens,35,Murphydome40,Murphy_Dome,45
+Murphydome,40,LightTerrestrialMacrolichen,,Murphydome40,Murphy_Dome,1
+Murphydome,40,YellowTerrestrialMacrolichen,,Murphydome40,Murphy_Dome,2
+Murphydome,40,Litter,,Murphydome40,Murphy_Dome,3
+Murphydome,40,MossPleurocarp,5,Murphydome40,Murphy_Dome,1
+Murphydome,40,Graminoid,5,Murphydome40,Murphy_Dome,7
+Murphydome,50,LightTerrestrialMacrolichen,30,Murphydome50,Murphy_Dome,20
+Murphydome,50,Betula nana,25,Murphydome50,Murphy_Dome,25
+Murphydome,50,Ledum decumbens,35,Murphydome50,Murphy_Dome,40
+Murphydome,50,Litter,,Murphydome50,Murphy_Dome,4
+Murphydome,50,Carex,,Murphydome50,Murphy_Dome,3
+Murphydome,50,MossPleurocarp,,Murphydome50,Murphy_Dome,3
+Murphydome,50,Vaccinium vitis-idea,10,Murphydome50,Murphy_Dome,5
+Murphydome,60,MossPleurocarp,25,Murphydome60,Murphy_Dome,25
+Murphydome,60,Vaccinium vitis-idea,40,Murphydome60,Murphy_Dome,15
+Murphydome,60,Betula nana,15,Murphydome60,Murphy_Dome,15
+Murphydome,60,Salix,5,Murphydome60,Murphy_Dome,7
+Murphydome,60,LightTerrestrialMacrolichen,5,Murphydome60,Murphy_Dome,5
+Murphydome,60,Litter,,Murphydome60,Murphy_Dome,3
+Murphydome,60,Carex,,Murphydome60,Murphy_Dome,5
+Murphydome,60,Ledum decumbens,10,Murphydome60,Murphy_Dome,25
+Murphydome,70,Betula nana,45,Murphydome70,Murphy_Dome,50
+Murphydome,70,YellowTerrestrialMacrolichen,25,Murphydome70,Murphy_Dome,3
+Murphydome,70,Salix,5,Murphydome70,Murphy_Dome,5
+Murphydome,70,Litter,,Murphydome70,Murphy_Dome,5
+Murphydome,70,Carex,,Murphydome70,Murphy_Dome,2
+Murphydome,70,Ledum decumbens,20,Murphydome70,Murphy_Dome,35
+Murphydome,80,Betula nana,55,Murphydome80,Murphy_Dome,70
+Murphydome,80,LightTerrestrialMacrolichen,30,Murphydome80,Murphy_Dome,5
+Murphydome,80,YellowTerrestrialMacrolichen,,Murphydome80,Murphy_Dome,5
+Murphydome,80,Graminoid,10,Murphydome80,Murphy_Dome,5
+Murphydome,80,Litter,,Murphydome80,Murphy_Dome,10
+Murphydome,80,MossPleurocarp,,Murphydome80,Murphy_Dome,5
+Murphydome,90,Ledum decumbens,50,Murphydome90,Murphy_Dome,65
+Murphydome,90,Graminoid,15,Murphydome90,Murphy_Dome,10
+Murphydome,90,Litter,,Murphydome90,Murphy_Dome,3
+Murphydome,90,LightTerrestrialMacrolichen,10,Murphydome90,Murphy_Dome,5
+Murphydome,90,Betula nana,20,Murphydome90,Murphy_Dome,15
+Murphydome,90,Vaccinium vitis-idea,5,Murphydome90,Murphy_Dome,2
+Murphydome,100,Ledum decumbens,35,Murphydome100,Murphy_Dome,45
+Murphydome,100,Betula nana,15,Murphydome100,Murphy_Dome,15
+Murphydome,100,LightTerrestrialMacrolichen,5,Murphydome100,Murphy_Dome,1
+Murphydome,100,Vaccinium vitis-idea,20,Murphydome100,Murphy_Dome,4
+Murphydome,100,Graminoid,15,Murphydome100,Murphy_Dome,15
+Murphydome,100,Litter,10,Murphydome100,Murphy_Dome,20
+Eightmile,0,Betula nana,40,Eightmile0,Shrub,10
+Eightmile,0,Vaccinium uliginosum,30,Eightmile0,Shrub,10
+Eightmile,0,Ledum decumbens,10,Eightmile0,Shrub,25
+Eightmile,0,Rubus sp.,3,Eightmile0,Dwarf shrub,5
+Eightmile,0,GraminoidSedge,2,Eightmile0,Graminoid,5
+Eightmile,0,Vaccinium vitis-idea,10,Eightmile0,Shrub,25
+Eightmile,0,Litter,n/a,Eightmile0,Litter,15
+Eightmile,0,Pleurozium schreberi,5,Eightmile0,Moss,5
+Eightmile,10,GraminoidSedge,35,Eightmile10,Graminoid,25
+Eightmile,10,MossPleurocarp,12,Eightmile10,Moss,25
+Eightmile,10,Betula nana,30,Eightmile10,Shrub,5
+Eightmile,10,Vaccinium uliginosum,10,Eightmile10,Shrub,5
+Eightmile,10,Vaccinium vitis-idea,n/a,Eightmile10,Shrub,30
+Eightmile,10,Litter,10,Eightmile10,Litter,8
+Eightmile,10,Flavocetraria cucculata,n/a,Eightmile10,Lichen,2
+Eightmile,20,Betula nana,45,Eightmile20,Shrub,20
+Eightmile,20,Vaccinium uliginosum,n/a,Eightmile20,Shrub,20
+Eightmile,20,Rubus sp.,25,Eightmile20,Dwarf shrub,5
+Eightmile,20,GraminoidSedge,10,Eightmile20,Graminoid,10
+Eightmile,20,Ledum decumbens,5,Eightmile20,Shrub,25
+Eightmile,20,Flavocetraria cucculata,n/a,Eightmile20,Lichen,2
+Eightmile,20,Sphagnum,n/a,Eightmile20,Moss,2
+Eightmile,20,Nephroma arcticum,n/a,Eightmile20,Lichen,7
+Eightmile,20,Litter,10,Eightmile20,Litter,9
+Eightmile,30,Sphagnum,5,Eightmile30,Moss,30
+Eightmile,30,Rubus,35,Eightmile30,Dwarf shrub,1
+Eightmile,30,Vaccinium uliginosum,30,Eightmile30,Shrub,15
+Eightmile,30,Betula nana,30,Eightmile30,Shrub,4
+Eightmile,30,Ledum decumbens,10,Eightmile30,Shrub,10
+Eightmile,30,Flavocetraria cucculata,10,Eightmile30,Lichen,20
+Eightmile,30,Eriophorum vaginatum,8,Eightmile30,Graminoid,15
+Eightmile,30,Litter,10,Eightmile30,Litter,5
+Eightmile,40,Eriophorum vaginatum,20,Eightmile40,Graminoid,30
+Eightmile,40,Litter,40,Eightmile40,Litter,10
+Eightmile,40,Ledum decumbens,15,Eightmile40,Shrub,10
+Eightmile,40,Vaccinium vitis-idea,n/a,Eightmile40,Shrub,5
+Eightmile,40,Vaccinium uliginosum,15,Eightmile40,Shrub,5
+Eightmile,40,Betula nana,n/a,Eightmile40,Shrub,5
+Eightmile,40,Sphagnum,n/a,Eightmile40,Moss,15
+Eightmile,40,LightTerrestrialMacrolichen,5,Eightmile40,Lichen,20
+Eightmile,50,Sphagnum,30,Eightmile50,Moss,20
+Eightmile,50,Rubus,10,Eightmile50,Dwarf shrub,3
+Eightmile,50,Vaccinium vitis-idea,n/a,Eightmile50,Shrub,25
+Eightmile,50,Vaccinium uliginosum,5,Eightmile50,Shrub,7
+Eightmile,50,Betula nana,15,Eightmile50,Shrub,2
+Eightmile,50,Ledum decumbens,5,Eightmile50,Shrub,5
+Eightmile,50,Flavocetraria cucculata,n/a,Eightmile50,Lichen,3
+Eightmile,50,Eriophorum vaginatum,n/a,Eightmile50,Graminoid,25
+Eightmile,50,Litter,20,Eightmile50,Litter,10
+Eightmile,60,Ledum decumbens,50,Eightmile60,Shrub,15
+Eightmile,60,Betula nana,15,Eightmile60,Shrub,5
+Eightmile,60,Rubus,20,Eightmile60,Dwarf shrub,10
+Eightmile,60,Eriophorum vaginatum,2,Eightmile60,Graminoid,25
+Eightmile,60,Flavocetraria cucculata,3,Eightmile60,Lichen,15
+Eightmile,60,Litter,n/a,Eightmile60,Litter,15
+Eightmile,60,Vaccinium vitis-idea,n/a,Eightmile60,Shrub,5
+Eightmile,60,Vaccinium uliginosum,10,Eightmile60,Shrub,10
+Eightmile,70,Ledum decumbens,30,Eightmile70,Shrub,20
+Eightmile,70,Betula nana,15,Eightmile70,Shrub,10
+Eightmile,70,Vaccinium uliginosum,10,Eightmile70,Shrub,5
+Eightmile,70,Sphagnum,n/a,Eightmile70,Moss,2
+Eightmile,70,Eriophorum vaginatum,10,Eightmile70,Graminoid,20
+Eightmile,70,Litter,15,Eightmile70,Litter,18
+Eightmile,70,Stereocaulon,n/a,Eightmile70,Lichen,5
+Eightmile,70,Flavocetraria cucculata,n/a,Eightmile70,Lichen,15
+Eightmile,70,Rubus,5,Eightmile70,Dwarf shrub,5
+Eightmile,80,Ledum decumbens,40,Eightmile80,Shrub,15
+Eightmile,80,Rubus,25,Eightmile80,Dwarf shrub,10
+Eightmile,80,Betula nana,15,Eightmile80,Shrub,10
+Eightmile,80,Vaccinium uliginosum,15,Eightmile80,Shrub,10
+Eightmile,80,MossPleurocarp,n/a,Eightmile80,Moss,15
+Eightmile,80,Eriophorum vaginatum,3,Eightmile80,Graminoid,10
+Eightmile,80,Flavocetraria cucculata,n/a,Eightmile80,Lichen,15
+Eightmile,80,Litter,2,Eightmile80,Litter,15
+Eightmile,90,Betula nana,25,Eightmile90,Shrub,3
+Eightmile,90,Vaccinium uliginosum,35,Eightmile90,Shrub,15
+Eightmile,90,Ledum decumbens,25,Eightmile90,Shrub,10
+Eightmile,90,Vaccinium vitis-idea,n/a,Eightmile90,Shrub,10
+Eightmile,90,MossPleurocarp,3,Eightmile90,Moss,5
+Eightmile,90,Flavocetraria cucculata,n/a,Eightmile90,Lichen,7
+Eightmile,90,Litter,2,Eightmile90,Litter,25
+Eightmile,90,Eriophorum vaginatum,3,Eightmile90,Graminoid,25
+Eightmile,100,Eriophorum vaginatum,5,Eightmile100,Graminoid,25
+Eightmile,100,Vaccinium uliginosum,10,Eightmile100,Shrub,5
+Eightmile,100,Vaccinium vitis-idea,n/a,Eightmile100,Shrub,4
+Eightmile,100,MossPleurocarp,20,Eightmile100,Moss,20
+Eightmile,100,Betula nana,5,Eightmile100,Shrub,15
+Eightmile,100,Ledum decumbens,30,Eightmile100,Shrub,10
+Eightmile,100,Flavocetraria cucculata,n/a,Eightmile100,Lichen,1
+Eightmile,100,Litter,20,Eightmile100,Litter,20
+Chatanika,0,Salix,10,Chatanika0,Shrub,20
+Chatanika,0,Vaccinium uliginosum,25,Chatanika0,Shrub,10
+Chatanika,0,Betula neoalaskana,15,Chatanika0,Shrub,10
+Chatanika,0,Eriophorum vaginatum,40,Chatanika0,Graminoid,50
+Chatanika,0,Ledum decumbens,10,Chatanika0,Shrub,5
+Chatanika,0,Picea,,Chatanika0,,1
+Chatanika,0,Wood,,Chatanika0,,4
+Chatanika,10,Betula nana,25,Chatanika10,Shrub,25
+Chatanika,10,Eriophorum vaginatum,40,Chatanika10,Graminoid,60
+Chatanika,10,Litter,35,Chatanika10,Litter,15
+Chatanika,20,Betula nana,15,Chatanika20,Shrub,10
+Chatanika,20,Eriophorum vaginatum,30,Chatanika20,Graminoid,70
+Chatanika,20,Ledum,10,Chatanika20,Shrub,10
+Chatanika,20,Sphagnum,5,Chatanika20,Moss,3
+Chatanika,20,Vaccinium uliginosum,20,Chatanika20,Shrub,2
+Chatanika,20,Litter,20,Chatanika20,Litter,5
+Chatanika,30,Eriophorum vaginatum,60,Chatanika30,Graminoid,70
+Chatanika,30,Litter,10,Chatanika30,Litter,7
+Chatanika,30,Ledum,20,Chatanika30,Shrub,20
+Chatanika,30,Betula nana,5,Chatanika30,Shrub,3
+Chatanika,40,Eriophorum vaginatum,50,Chatanika40,Graminoid,55
+Chatanika,40,Litter,15,Chatanika40,Litter,15
+Chatanika,40,Vaccinium uliginosum,25,Chatanika40,Shrub,15
+Chatanika,40,Betula neoalaskana,10,Chatanika40,Tree,15
+Chatanika,50,ShrubDecid,25,Chatanika50,Shrub,10
+Chatanika,50,Eriophorum vaginatum,55,Chatanika50,Graminoid,70
+Chatanika,50,Ledum decumbens,5,Chatanika50,Shrub,3
+Chatanika,50,Litter,15,Chatanika50,Litter,10
+Chatanika,50,Betula neoalaskana,,Chatanika50,,5
+Chatanika,50,Wood,,Chatanika50,,2
+Chatanika,60,Ledum decumbens,15,Chatanika60,Shrub,20
+Chatanika,60,Eriophorum vaginatum,40,Chatanika60,Graminoid,45
+Chatanika,60,Rubus,5,Chatanika60,Dwarf shrub,5
+Chatanika,60,Betula nana,5,Chatanika60,Shrub,5
+Chatanika,60,Litter,25,Chatanika60,Litter,25
+Chatanika,70,Ledum decumbens,30,Chatanika70,Shrub,22
+Chatanika,70,Betula nana,20,Chatanika70,Shrub,15
+Chatanika,70,ShrubDecid,,Chatanika70,,5
+Chatanika,70,Eriophorum vaginatum,35,Chatanika70,Graminoid,40
+Chatanika,70,Litter,10,Chatanika70,Litter,15
+Chatanika,70,Picea,,Chatanika70,,3
+Chatanika,80,Betula nana,30,Chatanika80,Shrub,20
+Chatanika,80,Ledum decumbens,45,Chatanika80,Shrub,35
+Chatanika,80,Litter,,Chatanika80,,10
+Chatanika,80,Graminoid,20,Chatanika80,Graminoid,35
+Chatanika,90,Vaccinium uliginosum,20,Chatanika90,Shrub,10
+Chatanika,90,Betula nana,20,Chatanika90,Shrub,25
+Chatanika,90,Populus tremuloides,,Chatanika90,Tree,10
+Chatanika,90,Betula neoalaskana,,Chatanika90,Tree,5
+Chatanika,90,Eriophorum vaginatum,20,Chatanika90,Graminoid,30
+Chatanika,90,Litter,10,Chatanika90,Litter,10
+Chatanika,90,Ledum decumbens,15,Chatanika90,Shrub,10
+Chatanika,100,Graminoid,50,Chatanika100,Graminoid,
+Chatanika,100,Litter,20,Chatanika100,Litter,
+Chatanika,100,Acrocarp,10,Chatanika100,Moss,
+Chatanika,100,Ledum decumbens,5,Chatanika100,Shrub,
+Chatanika,100,Vaccinium uliginosum,15,Chatanika100,Shrub,
