@@ -18,7 +18,7 @@ library(glue)
 mypath = "./Output/"
 
 # Reads in species and functional level groups dataframe creatd in script 1
-Species_groups<-read.csv("./Data/species_table_new.csv", encoding = 'UTF-8')
+Species_groups<-read.csv("./Data/SpeciesTable_20220125.csv", encoding = 'UTF-8')
 
 print(colnames(Species_groups))
 

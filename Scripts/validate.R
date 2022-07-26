@@ -44,7 +44,7 @@ tm_shapes <- sf::st_read(shape_path_1)
 print(tm_shapes$CLASS_NAME)
 
 # process_tile inputs
-ml_model <- load_model(model_path)
+ml_model <- load_model(model_path_base)
 band_names <- read.csv("./assets/bands.csv")$x %>% as.vector()
 
 # load the validation data
@@ -275,7 +275,7 @@ shapes <- c(
 )
 
 
-names <- c(
+shape_names <- c(
     bison_gulch_names,
     chatanika_names,
     twelve_mile_names_1,
@@ -309,6 +309,12 @@ save_paths <- c(
     "figures/MurphyDome/Part3/"
 )
 
+# load both validation data sets, so there is no more need to be concerned with which goes where, etc.
+validation_df <- rbind(
+    read.csv(validation_data_path, na.strings=c("NA", "n/a")),
+    read.csv(validation_data_path_2, na.strings=c("NA", "n/a"))
+)
+
 
 for( i in seq_along(quadrats)){
     # process the tile
@@ -324,7 +330,7 @@ for( i in seq_along(quadrats)){
 
     # load shapefile and project to match
     shape <- sf::st_read(shapes[[i]])
-    shape$CLASS_NAME <- names[[i]]
+    shape$CLASS_NAME <- shape_names[[i]]
     projected_shapes <- sf::st_transform(shape, raster::crs(tile_results))
 
     # Validation data
@@ -339,6 +345,8 @@ for( i in seq_along(quadrats)){
         "./assets/pft1_template.csv",
         aggregation = 1
     )
+
+    print(names(tile_results))
 
     # bar plots
     for(j in seq_along(validation_aggregates)){
@@ -355,17 +363,13 @@ for( i in seq_along(quadrats)){
 
     save_validation(
         validation_aggregates,
-        base_filename = paste0(save_paths[[i]], "validation")
+        base_filename = paste0(save_paths[[i]], "validation_noNoise")
     )
 
 
 }
  
-# load both validation data sets, so there is no more need to be concerned with which goes where, etc.
-validation_df <- rbind(
-    read.csv(validation_data_path, na.strings=c("NA", "n/a")),
-    read.csv(validation_data_path_2, na.strings=c("NA", "n/a"))
-)
+
 
 head(validation_df)
 

@@ -2513,7 +2513,8 @@ change_aggregation <- function(prediction_vec, aggregation_level, aggregation_ke
 
 get_prediction_distribution <- function(prediction_df){
     num_observations <- nrow(prediction_df)
-    df <- prediction_df %>% count(z) %>% as.data.frame()
+    print(colnames(prediction_df))
+    df <- prediction_df %>% dplyr::group_by(z) %>% tally() %>% as.data.frame()
     #df$key <- unique(prediction_vec) %>% as.vector()
     df$distribution <- df$n / num_observations
     return(df)
@@ -2617,7 +2618,7 @@ validate_results <- function(
 
 
         # extract the validation data for this quadrat
-        quadrat_validation_df <- get_prediction_distribution(predictions) %>% as.data.frame()
+        quadrat_validation_df <- get_prediction_distribution(predictions)
 
         print("Quadrat Names")
         print(quadrat_shape$CLASS_NAME)
