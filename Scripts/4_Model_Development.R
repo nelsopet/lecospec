@@ -8,8 +8,8 @@ library(tidyverse)
 # Output/C_001_SC3_Cleaned_SpectralLib.csv
 #SpecLib_derivs<-read.csv("Output/C_001_SC3_Cleaned_SpectralLib.csv")
 base_data_path <- "Output/D_002_SpecLib_Derivs.csv"
-augmented_data_path <- "./mle/trainingData.csv"
-SpecLib_derivs<-read.csv(base_data_path)
+augmented_data_path <- "./mle/trainingData_noNoise.csv"
+SpecLib_derivs<-read.csv(augmented_data_path)
 #SpecLib_derivs<-read.csv("Output/resampled/D_002_SpecLib_Derivs.csv")
 #SpecLib_derivs<-read.csv("Output/resampled/FncGrp2/D_002_SpecLib_Derivs.csv")
 summary(SpecLib_derivs)
@@ -65,20 +65,20 @@ set.seed(123)
 rf_mod_ranger_species_pred<-ranger::ranger(
   Classes ~ .,
   data = SpecLib_derivs_species,
-  num.trees = 1000)#,local.importance = "impurity_corrected" ) 
+  num.trees = 128)#,local.importance = "impurity_corrected" ) 
   # OOB prediction error:             25.93 %
 
 rf_mod_ranger_FncGrp1_pred<-ranger::ranger(
   Classes ~ .,
   data = SpecLib_derivs_Fnc1,
-  num.trees = 1000)#,local.importance = "impurity_corrected" ) 
+  num.trees = 128)#,local.importance = "impurity_corrected" ) 
   # OOB prediction error:             25.93 %
 
 
 rf_mod_ranger_FncGrp2_pred<-ranger::ranger(
   Classes ~ .,
   data = SpecLib_derivs_Fnc2,
-  num.trees = 1000)#,local.importance = "impurity_corrected" ) 
+  num.trees = 128)#,local.importance = "impurity_corrected" ) 
   # OOB prediction error:             25.93 %
 
 #rf_mod_ranger_species_pred
@@ -86,7 +86,7 @@ rf_mod_ranger_FncGrp2_pred<-ranger::ranger(
 
 write.csv(
   rf_mod_ranger_FncGrp1_pred$confusion.matrix,
-  "./Output/E_003_Ranger_FncGrp1_Confusion_1000trees.csv"
+  "./Output/E_003_Ranger_FncGrp1_Confusion_128trees.csv"
   )
 
 #rf_mod_randomforest
@@ -129,10 +129,10 @@ write.csv(
 
 
 # saves the model with the lowest error
-save(rf_mod_ranger_species_pred, file = "Output/E_003_Pred_Model_RandomForest_species_1000trees.rda")
-save(rf_mod_ranger_FncGrp1_pred, file = "Output/E_003_Pred_Model_RandomForest_FncGrp1_1000trees.rda")
+save(rf_mod_ranger_species_pred, file = "Output/E_003_Pred_Model_RandomForest_species_128trees.rda")
+save(rf_mod_ranger_FncGrp1_pred, file = "Output/E_003_Pred_Model_RandomForest_FncGrp1_128trees.rda")
 #save(rf_mod_ranger_FncGrp2_pred, file = "Output/E_003_Pred_Model_RandomForest_FncGrp2_resamp29_1000trees.rda")
-save(rf_mod_ranger_FncGrp2_pred, file = "Output/E_003_Pred_Model_RandomForest_FncGrp2_1000trees.rda")
+save(rf_mod_ranger_FncGrp2_pred, file = "Output/E_003_Pred_Model_RandomForest_FncGrp2_128trees.rda")
 
 #------------------------------ Select Important varibles -----------------------------------
 # Creates a dataframe with all varibles and their imoportance
