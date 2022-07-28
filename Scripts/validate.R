@@ -18,6 +18,8 @@ test_path_8 <- "Data/Quadrats/MurphDomeQuads60_100.envi"
 # ML models
 model_path_base <- "Output/E_003_Pred_Model_RandomForest_FncGrp1_1000trees.rda"
 model_path <- "mle/RandomForest_FncGrp1_1000trees_augmented.rda"
+model_path_128 <- "Output/E_003_Pred_Model_RandomForest_FncGrp1_128trees.rda"
+model_path_64 <- "Output/E_003_Pred_Model_RandomForest_FncGrp1_64trees.rda"
 
 # Shapefiles
 shape_path_1 <- "Data/Vectors/Bisoon_Quadrats_renamed_quads.shp"
@@ -44,7 +46,7 @@ tm_shapes <- sf::st_read(shape_path_1)
 print(tm_shapes$CLASS_NAME)
 
 # process_tile inputs
-ml_model <- load_model(model_path_base)
+ml_model <- load_model(model_path_128)
 band_names <- read.csv("./assets/bands.csv")$x %>% as.vector()
 
 # load the validation data
@@ -325,7 +327,7 @@ for( i in seq_along(quadrats)){
         cluster = NULL,
         return_raster = TRUE,
         band_names = band_names,
-        save_path = "./test_raster_save.grd",
+        save_path = "./test_raster_save_128.grd",
         suppress_output = FALSE)
 
     # load shapefile and project to match
@@ -357,13 +359,13 @@ for( i in seq_along(quadrats)){
             #windows();plot_prop_test
 
             ggsave(
-                paste0(save_paths[[i]], j, "_bar.png"),
+                paste0(save_paths[[i]], j, "_a128_bar.png"),
                 device = png)
     }
 
     save_validation(
         validation_aggregates,
-        base_filename = paste0(save_paths[[i]], "validation_noNoise")
+        base_filename = paste0(save_paths[[i]], "validation_a128")
     )
 
 
