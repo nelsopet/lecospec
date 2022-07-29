@@ -46,7 +46,7 @@ tm_shapes <- sf::st_read(shape_path_1)
 print(tm_shapes$CLASS_NAME)
 
 # process_tile inputs
-ml_model <- load_model(model_path_128)
+ml_model <- load_model(model_path_64)
 band_names <- read.csv("./assets/bands.csv")$x %>% as.vector()
 
 # load the validation data
@@ -327,7 +327,7 @@ for( i in seq_along(quadrats)){
         cluster = NULL,
         return_raster = TRUE,
         band_names = band_names,
-        save_path = "./test_raster_save_128.grd",
+        save_path = "./test_raster_save_64.grd",
         suppress_output = FALSE)
 
     # load shapefile and project to match
@@ -359,13 +359,13 @@ for( i in seq_along(quadrats)){
             #windows();plot_prop_test
 
             ggsave(
-                paste0(save_paths[[i]], j, "_a128_bar.png"),
+                paste0(save_paths[[i]], j, "_s64_bar.png"),
                 device = png)
     }
 
     save_validation(
         validation_aggregates,
-        base_filename = paste0(save_paths[[i]], "validation_a128")
+        base_filename = paste0(save_paths[[i]], "validation_s64")
     )
 
 
