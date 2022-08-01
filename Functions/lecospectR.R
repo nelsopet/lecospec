@@ -2636,10 +2636,11 @@ validate_results <- function(
         ) %>% as.vector()
 
 
+
     
 
 
-        #print(head(filtered_validation_df))
+        print(head(filtered_validation_df, 20L))
         # aggregate the predictions and validation using the template
         aggregated_results <- aggregate_result_template(
             quadrat_validation_df,

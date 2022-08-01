@@ -188,7 +188,10 @@ print(extent(projected_shapes))
 ####################################################
 #       Run the validation
 ####################################################
-validation_df <- read.csv(validation_data_path, na.strings=c("NA", "n/a"))
+validation_df <- rbind(
+    read.csv(validation_data_path, na.strings=c("NA", "n/a")),
+    read.csv(validation_data_path_2, na.strings=c("NA", "n/a"))
+)
 
 validation_aggregates <- validate_results(
     tile_results,
@@ -200,7 +203,17 @@ validation_aggregates <- validate_results(
 )
 
 # sanity check
-print(validation_aggregates[[2]])
+print(validation_aggregates[[3]])
+
+for(i in seq_along(validation_aggregates)){
+    write.csv(
+        validation_aggregates[[i]], 
+        paste0(
+            "figures/BisonGulch/validation_redux_",
+            i,
+            ".csv"
+        ))
+}
 
 # Statistical tests & write to file
 chi_squared_results <- apply_chi_squared_test(
@@ -209,6 +222,8 @@ chi_squared_results <- apply_chi_squared_test(
 KS_results <- apply_KS_test(
     validation_aggregates = validation_aggregates
     )
+
+save_validation()
 
 sink(file = "./figures/Chatanika/stats.txt", append = TRUE)
 print(chi_squared_results)
@@ -237,7 +252,7 @@ for(i in seq_along(tm_shapes$CLASS_NAME)){
 #       Save the results & aggregate
 ####################################################
 
-save_validation(validation_aggregates, base_filename = "md_c_validation")
+save_validation(validation_aggregates, base_filename = "validation")
 
 initial_path <- "./assets/pft1_template.csv"# use if there is to cold start
 aggregation_path <- "figures/aggregator.csv"

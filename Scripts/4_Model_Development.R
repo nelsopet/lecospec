@@ -87,7 +87,7 @@ rf_mod_ranger_FncGrp2_pred<-ranger::ranger(
 
 write.csv(
   rf_mod_ranger_FncGrp1_pred$confusion.matrix,
-  "./Output/E_003_Ranger_FncGrp1_Confusion_64trees.csv"
+  "./Output/E_003_Ranger_FncGrp1_Confusion_64trees_stratified.csv"
   )
 
 #rf_mod_randomforest
