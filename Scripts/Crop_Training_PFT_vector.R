@@ -3,9 +3,6 @@ require(terra)
 require(raster)
 require(rgdal)
 
-
-
-
 Bison_path = "F:/ORNL_DAAC_DATA_ARCHIVE/BisonGulch/BisonGulch_2019_08_12_01_07_28_1511_rd_rf_or"
 Bison_img = brick(Bison_path)
 Bison_pft_path = "./Data/Vectors/BisonGulchPFT_ROIs.shp"
