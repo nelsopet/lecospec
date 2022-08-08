@@ -47,7 +47,7 @@ tm_shapes <- sf::st_read(shape_path_1)
 print(tm_shapes$CLASS_NAME)
 
 # process_tile inputs
-ml_model <- load_model(model_path)
+ml_model <- load_model(model_path_rf)
 band_names <- read.csv("./assets/bands.csv")$x %>% as.vector()
 
 # load the validation data
@@ -369,28 +369,26 @@ for( i in seq_along(quadrats)){
 
     # bar plots
     for(j in seq_along(validation_aggregates)){
-            plot_prop_test <- plot_quadrat_proportions(
-                validation_aggregates[[j]],
-                filter_missing = TRUE)
+        plot_prop_test <- plot_quadrat_proportions(
+            validation_aggregates[[j]],
+            filter_missing = TRUE)
 
             #windows();plot_prop_test
 
-            ggsave(
-                paste0(save_paths[[i]], j, "_redux.png"),
-                device = png)
-    }
+        ggsave(
+            paste0(save_paths[[i]], j, "_redux.png"),
+            device = png)
 
-    for(k in seq_along(validation_aggregates)){
-        #print(validation_aggregates[[k]])
-    write.csv(
-        validation_aggregates[[k]], 
-        paste0(
-            save_paths[[i]],
-            "validation_redux_",
-            j,
-            ".csv"
+        write.csv(
+            validation_aggregates[[j]], 
+            paste0(
+                save_paths[[i]],
+                "validation_redux_",
+                j,
+                ".csv"
         ))
-}} 
+    }
+} 
 
 
 head(validation_df)

@@ -74,7 +74,7 @@ parse_path <- function(path){
     return(split_path[[1]][[2]])
 }
 
-print(parse_path("figures/twelveMile2/tm2_validation_4.csv"))
+#print(parse_path("figures/twelveMile2/tm2_validation_4.csv"))
 
 load_and_label_data <- function(path){
     label <- parse_path(path)
@@ -84,7 +84,9 @@ load_and_label_data <- function(path){
 }
 
 loaded_validation <- purrr::map(validation_paths, load_and_label_data)
-print(is.data.frame(loaded_validation[[1]]))
+
+print(head(load_and_label_data("figures/BisonGulch/validation_redux_1.csv"), 10))
+print(head(load_and_label_data("figures/BisonGulch/validation_redux_2.csv"), 10))
 
 merged_validation <- Reduce(rbind, loaded_validation)
 print(merged_validation)
@@ -94,7 +96,7 @@ summary(merged_validation)
 head(merged_validation, 20)
 
 
-write.csv(merged_validation, "figures/merged_validation.csv")
+write.csv(merged_validation, "figures/merged_validation_r.csv")
 
 big_plot <- ggplot2::ggplot(data = merged_validation) +
     geom_point(
