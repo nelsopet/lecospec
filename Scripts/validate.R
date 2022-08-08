@@ -20,6 +20,7 @@ model_path_base <- "Output/E_003_Pred_Model_RandomForest_FncGrp1_1000trees.rda"
 model_path <- "mle/RandomForest_FncGrp1_1000trees_augmented.rda"
 model_path_128 <- "Output/E_003_Pred_Model_RandomForest_FncGrp1_128trees.rda"
 model_path_64 <- "Output/E_003_Pred_Model_RandomForest_FncGrp1_64trees.rda"
+model_path_rf <- "mle/fg1_model.rda"
 
 # Shapefiles
 shape_path_1 <- "Data/Vectors/Bisoon_Quadrats_renamed_quads.shp"
@@ -46,7 +47,7 @@ tm_shapes <- sf::st_read(shape_path_1)
 print(tm_shapes$CLASS_NAME)
 
 # process_tile inputs
-ml_model <- load_model(model_path_64)
+ml_model <- load_model(model_path)
 band_names <- read.csv("./assets/bands.csv")$x %>% as.vector()
 
 # load the validation data
@@ -269,7 +270,7 @@ write.csv(vdf, aggregation_path)
 #       Run the validation on ALL THE QUADS
 ####################################################
 
-quadrats <- c(
+quadrats <- list(
     test_path_1,
     test_path_2,
     test_path_3,
@@ -280,7 +281,7 @@ quadrats <- c(
     test_path_8
 )
 
-shapes <- c(
+shapes <- list(
     shape_path_1,
     shape_path_2,
     shape_path_3,
@@ -292,7 +293,7 @@ shapes <- c(
 )
 
 
-shape_names <- c(
+shape_names <- list(
     bison_gulch_names,
     chatanika_names,
     twelve_mile_names_1,
@@ -304,7 +305,7 @@ shape_names <- c(
 )
 
 # note: murphy dome appears in both; I recently corrected this one though :)
-validation_paths <- c(
+validation_paths <- list(
     validation_data_path,
     validation_data_path,
     validation_data_path,
@@ -315,7 +316,7 @@ validation_paths <- c(
     validation_data_path_2
 )
 
-save_paths <- c(
+save_paths <- list(
     "figures/BisonGulch/",
     "figures/Chatanika/",
     "figures/twelveMile1/",
@@ -347,6 +348,7 @@ for( i in seq_along(quadrats)){
 
     # load shapefile and project to match
     shape <- sf::st_read(shapes[[i]])
+    print(shape_names[[i]])
     shape$CLASS_NAME <- shape_names[[i]]
     projected_shapes <- sf::st_transform(shape, raster::crs(tile_results))
 
@@ -374,18 +376,21 @@ for( i in seq_along(quadrats)){
             #windows();plot_prop_test
 
             ggsave(
-                paste0(save_paths[[i]], j, "_s64_bar.png"),
+                paste0(save_paths[[i]], j, "_redux.png"),
                 device = png)
     }
 
-    save_validation(
-        validation_aggregates,
-        base_filename = paste0(save_paths[[i]], "validation_s64")
-    )
-
-
-}
- 
+    for(k in seq_along(validation_aggregates)){
+        #print(validation_aggregates[[k]])
+    write.csv(
+        validation_aggregates[[k]], 
+        paste0(
+            save_paths[[i]],
+            "validation_redux_",
+            j,
+            ".csv"
+        ))
+}} 
 
 
 head(validation_df)
