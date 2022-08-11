@@ -1460,26 +1460,7 @@ clean_names <- function(variables){
 #' @examples Not Yet Implmented
 apply_model <- function(df, model, threads = 1, clean_names = TRUE){
 
-    prediction <- tryCatch(
-        {
-            predict(
-                model,
-                data = df,
-                type='response',
-                num.threads = threads
-            )$prediction %>% as.data.frame() #(Ranger model)
-
-    }, 
-    error = function(cond){
-        message("Error applying model - likely an empty file:")
-        message(cond)
-        # return df of NAs
-        y <- data.frame()
-        y$prediction <- df[, 5]
-        y
-
-    })
-
+   return(UseMethod("apply_model", model))
     #print(prediction$prediction)
 }
 
@@ -2575,12 +2556,13 @@ validate_results <- function(
     # store the results
     results <- list()
        
-    for(i in 1:nrow(quadrat_shapefile)){
+    for(i in seq_along(quadrat_shapefile)){
         # load the template 
         template <- read.csv(file = template_path, row.names = 1)
 
         # crop the raster to the quadrat
         quadrat_shape <- quadrat_shapefile[i,]
+        print(quadrat_shape)
         quadrat_ras <- raster::crop(prediction_ras, quadrat_shape)
 
         plot_options <- define_plot_options(
@@ -2973,4 +2955,54 @@ TileAssembler <- function(dir, out) {
     })
     pred_merged <- Reduce(merge, chunks)
     return(pred_merged)
+}
+
+
+setClass("LSModel", slots = list(
+    model = "S4",
+    apply = "function" 
+))
+
+
+# bind together a model and the function to complete inference
+# into a single S3 Object
+LSModel <- function(model, apply_function){
+    output <- list(
+        model = model,
+        application = apply_function
+    )
+    class(output) <- "LSModel"
+    return(output)
+}
+
+apply_model.LSModel <- function(model, df){
+    return(
+        model$application(model$model, df)
+    )
+}
+
+apply_model.ranger <- function(){
+    prediction <- tryCatch(
+        {
+            predict(
+                model,
+                data = df,
+                type='response',
+                num.threads = threads
+            )$prediction %>% as.data.frame() #(Ranger model)
+
+    }, 
+    error = function(cond){
+        message("Error applying model - likely an empty file:")
+        message(cond)
+        # return df of NAs
+        y <- data.frame()
+        y$prediction <- df[, 5]
+        y
+
+    })
+}
+
+apply_model.xgboost <- function(){
+
 }
