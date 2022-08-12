@@ -1,10 +1,8 @@
 source("Functions/Image_Chopper.R")
+source("Functions/lecospectR.R")
 require(terra)
 require(raster)
 require(rgdal)
-
-
-
 
 Bison_path = "F:/ORNL_DAAC_DATA_ARCHIVE/BisonGulch/BisonGulch_2019_08_12_01_07_28_1511_rd_rf_or"
 Bison_img = brick(Bison_path)
@@ -44,13 +42,39 @@ lapply(1:length(EighMile_pft_vec),
 
 
 
-#TwelveMile_path = "F:/TwelveMile/TwelveMile_2019_08_09_21_28_52_0_rd_rf_or"
-#TwelveMile_pft_path = "F:/TwelveMile/TwelveMileQ0_10_20_30_40m.shp"
-#TwelveMile_pft_out1<-ImgChopper(TwelveMile_path, TwelveMile_pft_path)
+TwelveMile_path = "F:/ORNL_DAAC_DATA_ARCHIVE/TwelveMile/TwelveMile_2019_08_09_21_28_52_0_rd_rf_or"
+TwelveMile_pft_path = "./Data/Vectors/TwelveMileQ0_10_20_30_40m.shp"
+TwelveMile_pft_vec=readOGR(dsn=TwelveMile_pft_path)
 
-#TwelveMile_path2 = "F:/TwelveMile/TwelveMile_2019_08_09_21_10_22_2000_rd_rf_or"
-#TwelveMile_pft_path2 = "F:/TwelveMile/TwelveMileQ70_80_90_100m.shp"
-#TwelveMile_pft_out2<-ImgChopper(TwelveMile_path2, TwelveMile_pft_path2)
+TwelveMile_pft_out1<-ImgChopper(TwelveMile_path, TwelveMile_pft_path)
+lapply(1:length(TwelveMile_pft_vec),  
+       function(x) {
+         tst_img <- brick(TwelveMile_path)
+         tst_quads<-TwelveMile_pft_vec[x,]
+         tst_crop <- raster::crop(tst_img, tst_quads)
+         tst_mask <- raster::mask(tst_crop, tst_quads)
+         # tst_out<-c(tst_crop,tst_mask)
+         writeRaster(tst_mask, paste("./Data/Ground_Validation/Imagery/TwelveMilePFT/TwelveMilePFTs", TwelveMile_pft_vec[x,]$CLASS_NAME, sep=""), format = "ENVI", overwrite = TRUE)
+         #return(tst_mask)
+       })
+
+TwelveMile_path2 = "F:/ORNL_DAAC_DATA_ARCHIVE/TwelveMile/TwelveMile_2019_08_09_21_10_22_2000_rd_rf_or"
+TwelveMile_pft_path2 = "./Data/Vectors/TwelveMileQ70_80_90_100m.shp"
+TwelveMile_pft_path2_vec=readOGR(dsn=TwelveMile_pft_path2)
+
+TwelveMile_pft_out2<-ImgChopper(TwelveMile_path2, TwelveMile_pft_path2)
+
+lapply(1:length(TwelveMile_pft_path2_vec),  
+       function(x) {
+         tst_img <- brick(TwelveMile_path2)
+         tst_quads<-TwelveMile_pft_path2_vec[x,]
+         tst_crop <- raster::crop(tst_img, tst_quads)
+         tst_mask <- raster::mask(tst_crop, tst_quads)
+         # tst_out<-c(tst_crop,tst_mask)
+         writeRaster(tst_mask, paste("./Data/Ground_Validation/Imagery/TwelveMilePFT/TwelveMilePFTs", TwelveMile_pft_path2_vec[x,]$CLASS_NAME, sep=""), format = "ENVI", overwrite = TRUE)
+         #return(tst_mask)
+       })
+
 
 #MurphyDome_path1 = "E:/ORNL_DAAC_DATA_ARCHIVE/MurphyDome/MurphyDome_2018_07_31_19_47_11_10350_rd_rf_or"
 #MurphyDome_path2 = "E:/ORNL_DAAC_DATA_ARCHIVE/MurphyDome/MurphyDome_2018_07_31_19_47_11_16674_rd_rf_or"
