@@ -1,5 +1,4 @@
 #Unit test of reading in each image of pixels from a PFT and converting it to a spectral library
-
 path<-("Data/Ground_Validation/Imagery/BisonPFT/")
 allfiles<-list.files(path) 
 imgs = grep(".envi$", allfiles, value = TRUE)
@@ -14,9 +13,10 @@ imgs_names<-str_match(imgs[x], "PFTs\\s*(.*?)\\s*.envi") %>%
 tst<-brick(paste(path,imgs[x], sep=""))
 plot(tst)
 band_count<-names(tst) %>% length()
-bandnames <- read.csv("./assets/bands.csv")$x[1:band_count] %>% as.vector()
+band_names <- read.csv("./assets/bands.csv")$x[1:band_count] %>% as.vector()
 
-names(tst)<-bandnames
+names(tst)<-band_names
+
 df <- raster::rasterToPoints(tst) %>% 
   as.data.frame() %>%
   dplyr::select(-x,-y)
@@ -49,82 +49,156 @@ meta(df)
 
 
 
-#
+#Parse metadata and add to each raster of a single PFT
+#Bison Gulch
 path<-("Data/Ground_Validation/Imagery/BisonPFT/")
 allfiles<-list.files(path) 
 imgs = grep(".envi$", allfiles, value = TRUE)
 
 BisonPFT_labeled<-lapply(1:length(imgs), function(x){ 
+imgs_names<-str_match(imgs[x], "PFTs\\s*(.*?)\\s*.envi") %>%
+  as.data.frame() %>% 
+  dplyr::select(V2) %>% 
+  as.data.frame()
+
 tst<-brick(paste(path,imgs[x], sep=""))
 band_count<-names(tst) %>% length()
-names(tst)<-bandnames
+names(tst)<-band_names
 df <- raster::rasterToPoints(tst) %>% 
   as.data.frame()%>%
   dplyr::select(-x,-y)
 new_names<-extract_bands(df)
 names(df)<-new_names
-df <- remove_noisy_cols(df, max_index = 284) %>% as.data.frame()
 df <- filter_bands(df)
 df <- df_to_speclib(df, type="spectrolab")
-meta(df)<-imgs_names[x,]
+PFT<-separate(data.frame(A = imgs_names), col = "V2" , into = c("PFT", "ScanNum"), sep = "(?<=[a-zA-Z])\\s*(?=[0-9])")
+
+PFT$ScanNum<-ifelse(is.na(PFT$ScanNum)==TRUE,1,PFT$ScanNum)
+PFT<-as.data.frame(PFT)
+
+PFT$UID<-str_match(imgs[x], "(.*?)\\s*.envi") %>%
+  as.data.frame() %>% 
+  dplyr::select(V2) %>%
+  dplyr::rename(PFT_UID=V2)
+#  as.data.frame() #%>%
+
+meta(df)<-rep(PFT,length(df))
 return(df)
 })
 
+#Chatanika
 path<-("Data/Ground_Validation/Imagery/ChatanikaPFT/")
 allfiles<-list.files(path) 
 imgs = grep(".envi$", allfiles, value = TRUE)
 
 ChatanikaPFT_labeled<-lapply(1:length(imgs), function(x){ 
+  imgs_names<-str_match(imgs[x], "PFTs\\s*(.*?)\\s*.envi") %>%
+    as.data.frame() %>% 
+    dplyr::select(V2) %>% 
+    as.data.frame()
+  
   tst<-brick(paste(path,imgs[x], sep=""))
   band_count<-names(tst) %>% length()
-  names(tst)<-bandnames
+  names(tst)<-band_names
   df <- raster::rasterToPoints(tst) %>% 
     as.data.frame()%>%
     dplyr::select(-x,-y)
   new_names<-extract_bands(df)
   names(df)<-new_names
-  df <- remove_noisy_cols(df, max_index = 284) %>% as.data.frame()
   df <- filter_bands(df)
   df <- df_to_speclib(df, type="spectrolab")
-  meta(df)<-imgs_names[x,]
+  PFT<-separate(data.frame(A = imgs_names), col = "V2" , into = c("PFT", "ScanNum"), sep = "(?<=[a-zA-Z])\\s*(?=[0-9])")
+  
+  PFT$ScanNum<-ifelse(is.na(PFT$ScanNum)==TRUE,1,PFT$ScanNum)
+  PFT<-as.data.frame(PFT)
+  
+  PFT$UID<-str_match(imgs[x], "(.*?)\\s*.envi") %>%
+    as.data.frame() %>% 
+    dplyr::select(V2) %>%
+    dplyr::rename(PFT_UID=V2)
+  #  as.data.frame() #%>%
+  
+  meta(df)<-rep(PFT,length(df))
   return(df)
 })
 
+#Eight Mile
 path<-("Data/Ground_Validation/Imagery/EightMilePFT/")
 allfiles<-list.files(path) 
 imgs = grep(".envi$", allfiles, value = TRUE)
 
+
 EightMilePFT_labeled<-lapply(1:length(imgs), function(x){ 
+  imgs_names<-str_match(imgs[x], "PFTs\\s*(.*?)\\s*.envi") %>%
+    as.data.frame() %>% 
+    dplyr::select(V2) %>% 
+    as.data.frame()
+  
   tst<-brick(paste(path,imgs[x], sep=""))
   band_count<-names(tst) %>% length()
-  names(tst)<-bandnames
+  names(tst)<-band_names
   df <- raster::rasterToPoints(tst) %>% 
     as.data.frame()%>%
     dplyr::select(-x,-y)
   new_names<-extract_bands(df)
   names(df)<-new_names
-  df <- remove_noisy_cols(df, max_index = 284) %>% as.data.frame()
   df <- filter_bands(df)
   df <- df_to_speclib(df, type="spectrolab")
-  meta(df)<-imgs_names[x,]
+  PFT<-separate(data.frame(A = imgs_names), col = "V2" , into = c("PFT", "ScanNum"), sep = "(?<=[a-zA-Z])\\s*(?=[0-9])")
+  
+  PFT$ScanNum<-ifelse(is.na(PFT$ScanNum)==TRUE,1,PFT$ScanNum)
+  PFT<-as.data.frame(PFT)
+  
+  PFT$UID<-str_match(imgs[x], "(.*?)\\s*.envi") %>%
+    as.data.frame() %>% 
+    dplyr::select(V2) %>%
+    dplyr::rename(PFT_UID=V2)
+  #  as.data.frame() #%>%
+  
+  meta(df)<-rep(PFT,length(df))
   return(df)
+  
 })
 
 path<-("Data/Ground_Validation/Imagery/TwelveMilePFT/")
 allfiles<-list.files(path) 
 imgs = grep(".envi$", allfiles, value = TRUE)
 TwelveMilePFT_labeled<-lapply(1:length(imgs), function(x){ 
+  imgs_names<-str_match(imgs[x], "PFTs\\s*(.*?)\\s*.envi") %>%
+    as.data.frame() %>% 
+    dplyr::select(V2) %>% 
+    as.data.frame()
+  
   tst<-brick(paste(path,imgs[x], sep=""))
   band_count<-names(tst) %>% length()
-  names(tst)<-bandnames
+  names(tst)<-band_names
   df <- raster::rasterToPoints(tst) %>% 
     as.data.frame()%>%
     dplyr::select(-x,-y)
   new_names<-extract_bands(df)
   names(df)<-new_names
-  df <- remove_noisy_cols(df, max_index = 284) %>% as.data.frame()
   df <- filter_bands(df)
   df <- df_to_speclib(df, type="spectrolab")
-  meta(df)<-imgs_names[x,]
+  PFT<-separate(data.frame(A = imgs_names), col = "V2" , into = c("PFT", "ScanNum"), sep = "(?<=[a-zA-Z])\\s*(?=[0-9])")
+  
+  PFT$ScanNum<-ifelse(is.na(PFT$ScanNum)==TRUE,1,PFT$ScanNum)
+  PFT<-as.data.frame(PFT)
+  
+  PFT$UID<-str_match(imgs[x], "(.*?)\\s*.envi") %>%
+    as.data.frame() %>% 
+    dplyr::select(V2) %>%
+    dplyr::rename(PFT_UID=V2)
+  #  as.data.frame() #%>%
+  
+  meta(df)<-rep(PFT,length(df))
   return(df)
 })
+
+
+speclib_list<-c(BisonPFT_labeled,ChatanikaPFT_labeled,EightMilePFT_labeled,TwelveMilePFT_labeled)
+PFT_image_spectra<-Reduce(spectrolab::combine,speclib_list)
+
+
+write.csv(as.data.frame(PFT_image_spectra), "./Output/PFT_Image_SpectralLib.csv")
+
+saveRDS(PFT_image_spectra,"./Output/PFT_Image_SpectralLib.rds")
