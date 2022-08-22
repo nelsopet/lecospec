@@ -199,6 +199,6 @@ speclib_list<-c(BisonPFT_labeled,ChatanikaPFT_labeled,EightMilePFT_labeled,Twelv
 PFT_image_spectra<-Reduce(spectrolab::combine,speclib_list)
 
 
-write.csv(as.data.frame(PFT_image_spectra), "./Output/PFT_Image_SpectralLib.csv")
+write.csv(as.data.frame(PFT_image_spectra), "./Data/Ground_Validation/PFT_Image_spectra/PFT_Image_SpectralLib.csv")
 
-saveRDS(PFT_image_spectra,"./Output/PFT_Image_SpectralLib.rds")
+saveRDS(PFT_image_spectra,"./Data/Ground_Validation/PFT_Image_spectra/PFT_Image_SpectralLib.rds")
