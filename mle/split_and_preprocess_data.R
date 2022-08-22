@@ -8,7 +8,7 @@ library(ranger)
 library(tidyverse)
 
 # define hyperparameters
-NOISE_POWER <- 0.01
+NOISE_POWER <- 0.00
 TRAINING_PROPORTION <- 0.8
 
 
@@ -34,6 +34,9 @@ data <- caret::createDataPartition(
 print(names(data))
 
 training_data <- speclib[data$Resample1,]
+
+count_data <- training_data %>% group_by(Functional_group1) %>% tally()
+
 test_data <- speclib[-data$Resample1,]
 print(head(training_data))
 print(head(test_data))
@@ -103,12 +106,9 @@ gb_data <- lightgbm::lgb.Dataset(
     as.matrix(training_data[,data_cols]), 
     label = training_data[, "Functional_group1"]
 )
-data_file <- tempfile(fileext = ".data")
+data_file <- base::tempfile(fileext = ".data")
 lightgbm::lgb.Dataset.save(gb_data, data_file)
-dtrain <- lightgbm::lgb.Dataset(data_file)
-lightgbm::lgb.Dataset.construct(dtrain)
+dtrain <- lightgbm::lgb.Dataset(data_file, colnames = data_cols)
+lightgbm::lgb.Dataset.construct(gb_data)
 
-gb_model <- lightgbm::lightgbm(dtrain,
-    params = {
-        "objective": "multiclass"
-    })
+gb_model <- lightgbm::lightgbm(dtrain, objective = 'multiclass')

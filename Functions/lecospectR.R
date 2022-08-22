@@ -66,10 +66,15 @@ resample_spectral_dataframe <- function(
     df, 
     wavelength=5,
     start = 397.593,
-    end = 899.424) {
+    end = 899.424,
+    normalize = TRUE) {
     #Separate out data columns & convert to spectal object
     df_no_metadata <- remove_meta_column(df)
     speclib_df <- spectrolab::as_spectra(df_no_metadata)
+
+    if(normalize){
+        speclib_df <- spectrolab::normalize(speclib_df)
+    }
 
     # resample to new data frame
     resampled_df_no_metadata <- spectrolab::resample(
@@ -2981,14 +2986,14 @@ apply_model.LSModel <- function(model, df){
     )
 }
 
-apply_model.ranger <- function(){
-    prediction <- tryCatch(
+apply_model.ranger <- function(df, model){
+    predictions <- tryCatch(
         {
             predict(
                 model,
                 data = df,
                 type='response',
-                num.threads = threads
+                num.threads = 2L
             )$prediction %>% as.data.frame() #(Ranger model)
 
     }, 
@@ -3001,6 +3006,8 @@ apply_model.ranger <- function(){
         y
 
     })
+
+    return(predictions)
 }
 
 apply_model.xgboost <- function(){
