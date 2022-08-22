@@ -1,4 +1,3 @@
-source("Functions/Image_Chopper.R")
 source("Functions/lecospectR.R")
 require(terra)
 require(raster)
@@ -6,7 +5,7 @@ require(rgdal)
 
 Bison_path = "F:/ORNL_DAAC_DATA_ARCHIVE/BisonGulch/BisonGulch_2019_08_12_01_07_28_1511_rd_rf_or"
 Bison_img = brick(Bison_path)
-Bison_pft_path = "./Data/Vectors/BisonGulchPFT_ROIs.shp"
+Bison_pft_path = "./Data/Vectors/PFTs/BisonGulchPFT_ROIs.shp"
 Bison_pft_vec<-readOGR(dsn=Bison_pft_path)
 
 #Bison_pft_out<-ImgChopper(Bison_path, Bison_pft_path)
@@ -25,7 +24,7 @@ lapply(1:length(Bison_pft_vec),
 
 
 EightMile_path ="F:/ORNL_DAAC_DATA_ARCHIVE/EightMile/EightMile_2018_07_28_22_56_17_5968_rd_rf_or"
-EighMile_pft_path = "./Data/Vectors/EightmilePFT_ROIs.shp"
+EighMile_pft_path = "./Data/Vectors/PFTs/EightmilePFT_ROIs.shp"
 EighMile_pft_vec<-readOGR(dsn=EighMile_pft_path)
 #EightMile_pft_out<-ImgChopper(EightMile_path, EighMile_pft_path)
 
@@ -43,7 +42,7 @@ lapply(1:length(EighMile_pft_vec),
 
 
 TwelveMile_path = "F:/ORNL_DAAC_DATA_ARCHIVE/TwelveMile/TwelveMile_2019_08_09_21_28_52_0_rd_rf_or"
-TwelveMile_pft_path = "./Data/Vectors/TwelveMileQ0_10_20_30_40m.shp"
+TwelveMile_pft_path = "./Data/Vectors/PFTs/TwelveMilePFT_ROIs_52_0.shp"
 TwelveMile_pft_vec=readOGR(dsn=TwelveMile_pft_path)
 
 TwelveMile_pft_out1<-ImgChopper(TwelveMile_path, TwelveMile_pft_path)
@@ -59,10 +58,10 @@ lapply(1:length(TwelveMile_pft_vec),
        })
 
 TwelveMile_path2 = "F:/ORNL_DAAC_DATA_ARCHIVE/TwelveMile/TwelveMile_2019_08_09_21_10_22_2000_rd_rf_or"
-TwelveMile_pft_path2 = "./Data/Vectors/TwelveMileQ70_80_90_100m.shp"
+TwelveMile_pft_path2 = "./Data/Vectors/PFTs/TwelveMilePFT_ROIs_22_2000.shp"
 TwelveMile_pft_path2_vec=readOGR(dsn=TwelveMile_pft_path2)
 
-TwelveMile_pft_out2<-ImgChopper(TwelveMile_path2, TwelveMile_pft_path2)
+#TwelveMile_pft_out2<-ImgChopper(TwelveMile_path2, TwelveMile_pft_path2)
 
 lapply(1:length(TwelveMile_pft_path2_vec),  
        function(x) {
@@ -111,14 +110,5 @@ lapply(1:length(Chatanika_pft_vec),
        })
 
 
-
-writeRaster(Bison_pft_sep_out,       "./Data/Ground_Validation/Imagery/BisonGulchPFTs", format = "ENVI", overwrite = TRUE)
-writeRaster(Chatanika_pft_out,   "./Data/Ground_Validation/Imagery/ChatanikaPFTs", format  = "ENVI", overwrite = TRUE)
-writeRaster(EightMile_pft_out,   "./Data/Ground_Validation/Imagery/EightMilePFTs", format = "ENVI", overwrite = TRUE)
-#writeRaster(MurphyDome_pft_out1, "./Data/Ground_Validation/Imagery/TwelveMileGulchQuads1", format = "ENVI", overwrite = TRUE)
-#writeRaster(TwelveMile_pft_out2, "./Data/Ground_Validation/Imagery/TwelveMileGulchQuads2", format = "ENVI", overwrite = TRUE)
-#writeRaster(MurphyDome_pft_out1, "./Data/Ground_Validation/Imagery/MurphDomeQuads0_10", format = "ENVI", overwrite = TRUE)
-#writeRaster(MurphyDome_pft_out2, "./Data/Ground_Validation/Imagery/MurphDomeQuads20_50", format = "ENVI", overwrite = TRUE)
-#writeRaster(MurphyDome_pft_out3, "./Data/Ground_Validation/Imagery/MurphDomeQuads60_100", format = "ENVI", overwrite = TRUE)
 
 
