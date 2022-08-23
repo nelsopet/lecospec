@@ -6,11 +6,11 @@ require(sf)
 ####################################################
 
 # Rasters
-test_path_1 <- "Data/Quadrats/BisonGulchQuads.envi"
-test_path_2 <- "Data/Quadrats/ChatanikaQuads.envi"
-test_path_3 <- "Data/Quadrats/TwelveMileGulchQuads1.envi"
-test_path_4 <- "Data/Quadrats/TwelveMileGulchQuads2.envi"
-test_path_5 <- "Data/Quadrats/EightMileQuads.envi"
+test_path_1 <- "Data/Quads/BisonGulchQuads.envi"
+test_path_2 <- "Data/Quads/ChatanikaQuads.envi"
+test_path_3 <- "Data/Quads/TwelveMileGulchQuads1.envi"
+test_path_4 <- "Data/Quads/TwelveMileGulchQuads2.envi"
+test_path_5 <- "Data/Quads/EightMileQuads.envi"
 test_path_6 <- "Data/Quadrats/MurphDomeQuads0_10.envi"
 test_path_7 <- "Data/Quadrats/MurphDomeQuads20_50.envi"
 test_path_8 <- "Data/Quadrats/MurphDomeQuads60_100.envi"
@@ -376,14 +376,14 @@ for( i in seq_along(quadrats)){
             #windows();plot_prop_test
 
         ggsave(
-            paste0(save_paths[[i]], j, "_redux.png"),
+            paste0(save_paths[[i]], j, "_new_quads.png"),
             device = png)
 
         write.csv(
             validation_aggregates[[j]], 
             paste0(
                 save_paths[[i]],
-                "validation_redux_",
+                "validation_new_quads_",
                 j,
                 ".csv"
         ))

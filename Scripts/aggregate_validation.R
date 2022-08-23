@@ -180,7 +180,7 @@ create_plot <- function(df, pft, legend = FALSE){
                 yaxis = list(
                     title = "Predicted Proportion"
                 ),
-                annotations = list(x = 0.0 , y = 1.1, text = pft, showarrow = F, 
+                annotations = list(x = 0.0 , y = 1.075, text = pft, showarrow = F, 
                     xref='paper', yref='paper')
 
             )
@@ -218,20 +218,4 @@ fig <- fig %>% plotly::layout(
 fig_save_loc <- paste(tempfile('plotly_fig'), 'html', sep = '.')
 htmlwidgets::saveWidget(fig, fig_save_loc, selfcontained = FALSE)
 browseURL(fig_save_loc)
-
-
-build_table <- function(df){
-    csv_text <- ""
-    header <- ""
-    filtered_df <- df[df$key == pft,]
-    for(col_name in colnames(df)){
-        header <- paste(header, col_name, sep = ",")
-    }
-    csv_text <- paste0(header, "\n")
-
-    for(pft in df %>% unique()){
-        
-    }
-}
-
 

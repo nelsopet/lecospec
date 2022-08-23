@@ -2328,7 +2328,7 @@ filter_empty_points <- function(df){
             .vars = vars(one_of(columns_to_check)),
             ~!is.na(.)
         ) 
-    print("data summary after filering")
+    print("data summary after filtering")
     print(dim(df_no_empty_rows))
     return(df_no_empty_rows)
 }
@@ -2490,7 +2490,7 @@ change_aggregation <- function(prediction_vec, aggregation_level, aggregation_ke
     for(i in seq_along(prediction_vec)){
         aggregation_idx <- 5-aggregation_level
         prediction <- prediction_vec[[i]]
-        print(prediction)
+        #print(prediction)
         updated_predictions[[i]] <- aggregation_key[[prediction]][[aggregation_idx]]
     }
 
@@ -2499,7 +2499,7 @@ change_aggregation <- function(prediction_vec, aggregation_level, aggregation_ke
 
 get_prediction_distribution <- function(prediction_df){
     num_observations <- nrow(prediction_df)
-    print(colnames(prediction_df))
+    #print(colnames(prediction_df))
     df <- prediction_df %>% dplyr::group_by(z) %>% tally() %>% as.data.frame()
     #df$key <- unique(prediction_vec) %>% as.vector()
     df$distribution <- df$n / num_observations
@@ -2561,7 +2561,7 @@ validate_results <- function(
     # store the results
     results <- list()
        
-    for(i in seq_along(quadrat_shapefile)){
+    for(i in seq(nrow(quadrat_shapefile))){
         # load the template 
         template <- read.csv(file = template_path, row.names = 1)
 
@@ -2578,9 +2578,9 @@ validate_results <- function(
 
     
 
-        png(paste0("./test_hist_", i, ".png"))
-        hist(quadrat_ras)
-        dev.off()
+        #png(paste0("./test_hist_", i, ".png"))
+        #hist(quadrat_ras)
+        #dev.off()
         plot_categorical_raster(quadrat_ras, plot_options = plot_options)
 
         #windows();
@@ -2596,23 +2596,23 @@ validate_results <- function(
         
         quadrat_df <- raster::rasterToPoints(quadrat_ras) %>% as.data.frame()
 
-        print(quadrat_df %>% group_by(z) %>% tally())
+        #print(quadrat_df %>% group_by(z) %>% tally())
 
 
         # prediction 
         predictions <- convert_pft_codes(quadrat_df, aggregation_level = aggregation_level, to="string")
-        print(predictions %>% group_by(z) %>% tally())
+        #print(predictions %>% group_by(z) %>% tally())
 
 
         # extract the validation data for this quadrat
         quadrat_validation_df <- get_prediction_distribution(predictions)
 
-        print("Quadrat Names")
-        print(quadrat_shape$CLASS_NAME)
-        print("Keys in validation")
-        print(validation_table$UID %>% unique())
+        #print("Quadrat Names")
+        #print(quadrat_shape$CLASS_NAME)
+        #print("Keys in validation")
+        #print(validation_table$UID %>% unique())
         filtered_validation_df <- validation_table[validation_table$UID == quadrat_shape$CLASS_NAME, ]
-        print(head(filtered_validation_df))
+        #print(head(filtered_validation_df))
 
 
         #print(head(filtered_validation_df))
@@ -2627,14 +2627,14 @@ validate_results <- function(
     
 
 
-        print(head(filtered_validation_df, 20L))
+        #print(head(filtered_validation_df, 20L))
         # aggregate the predictions and validation using the template
         aggregated_results <- aggregate_result_template(
             quadrat_validation_df,
             filtered_validation_df,
             template)
 
-        print(aggregated_results)
+        #print(aggregated_results)
         
         results[[i]] <- aggregated_results
     }
@@ -2680,8 +2680,8 @@ apply_KS_test <- function(validation_aggregates, type="two.sided", use_monte_car
     num_rows_df <- nrow(df)
     num_rows_template <- nrow(input_template)
     num_rows_validation <- nrow(validation_df)
-    print("Number of Validation Rows:")
-    print(num_rows_validation)
+    #print("Number of Validation Rows:")
+    #print(num_rows_validation)
     num_observations <- sum(df$n)
     if(num_rows_df == 0){
         warning(
@@ -2708,14 +2708,14 @@ apply_KS_test <- function(validation_aggregates, type="two.sided", use_monte_car
         }
         # iterate over validation
         for(val_row_idx in 1:num_rows_validation){
-            print(validation_df[[val_row_idx, "Plant"]])
+            #print(validation_df[[val_row_idx, "Plant"]])
             if(template[[template_row_idx, "key"]] == validation_df[[val_row_idx, "Plant"]]){
                 # store values
                 current_count <- template[[template_row_idx, "validation_counts"]]
                 current_prop <- template[[template_row_idx, "validation_prop"]]
                 validation_raw <- validation_df[[val_row_idx, "cover_prn"]]
                 # convert NAs to 0's
-                print(validation_raw)
+                #print(validation_raw)
                 if(is.null(validation_raw)){
                     validation_raw <- NA
                 }
@@ -2776,10 +2776,10 @@ plot_quadrat_proportions <- function(quadrat_aggregate, filter_missing = TRUE, p
         data <- filter_aggregate(data)
     }
 
-    print("Checking Predicted Proportions (should sum to 1)")
-    print(sum(data$prediction_prop))
-    print("Checking Validation Proportions (should sum to 1)")
-    print(sum(data$validation_prop))
+    #print("Checking Predicted Proportions (should sum to 1)")
+    #print(sum(data$prediction_prop))
+    #print("Checking Validation Proportions (should sum to 1)")
+    #print(sum(data$validation_prop))
 
     data_tall <- tidyr::pivot_longer(
         data = data,
