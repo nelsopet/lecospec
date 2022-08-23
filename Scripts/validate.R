@@ -6,11 +6,11 @@ require(sf)
 ####################################################
 
 # Rasters
-test_path_1 <- "Data/Quadrats/BisonGulchQuads.envi"
-test_path_2 <- "Data/Quadrats/ChatanikaQuads.envi"
-test_path_3 <- "Data/Quadrats/TwelveMileGulchQuads1.envi"
-test_path_4 <- "Data/Quadrats/TwelveMileGulchQuads2.envi"
-test_path_5 <- "Data/Quadrats/EightMileQuads.envi"
+test_path_1 <- "Data/Quads/BisonGulchQuads.envi"
+test_path_2 <- "Data/Quads/ChatanikaQuads.envi"
+test_path_3 <- "Data/Quads/TwelveMileGulchQuads1.envi"
+test_path_4 <- "Data/Quads/TwelveMileGulchQuads2.envi"
+test_path_5 <- "Data/Quads/EightMileQuads.envi"
 test_path_6 <- "Data/Quadrats/MurphDomeQuads0_10.envi"
 test_path_7 <- "Data/Quadrats/MurphDomeQuads20_50.envi"
 test_path_8 <- "Data/Quadrats/MurphDomeQuads60_100.envi"
@@ -20,6 +20,7 @@ model_path_base <- "Output/E_003_Pred_Model_RandomForest_FncGrp1_1000trees.rda"
 model_path <- "mle/RandomForest_FncGrp1_1000trees_augmented.rda"
 model_path_128 <- "Output/E_003_Pred_Model_RandomForest_FncGrp1_128trees.rda"
 model_path_64 <- "Output/E_003_Pred_Model_RandomForest_FncGrp1_64trees.rda"
+model_path_rf <- "mle/fg1_model.rda"
 
 # Shapefiles
 shape_path_1 <- "Data/Vectors/Bisoon_Quadrats_renamed_quads.shp"
@@ -46,7 +47,7 @@ tm_shapes <- sf::st_read(shape_path_1)
 print(tm_shapes$CLASS_NAME)
 
 # process_tile inputs
-ml_model <- load_model(model_path_128)
+ml_model <- load_model(model_path_rf)
 band_names <- read.csv("./assets/bands.csv")$x %>% as.vector()
 
 # load the validation data
@@ -188,7 +189,10 @@ print(extent(projected_shapes))
 ####################################################
 #       Run the validation
 ####################################################
-validation_df <- read.csv(validation_data_path, na.strings=c("NA", "n/a"))
+validation_df <- rbind(
+    read.csv(validation_data_path, na.strings=c("NA", "n/a")),
+    read.csv(validation_data_path_2, na.strings=c("NA", "n/a"))
+)
 
 validation_aggregates <- validate_results(
     tile_results,
@@ -200,7 +204,17 @@ validation_aggregates <- validate_results(
 )
 
 # sanity check
-print(validation_aggregates[[2]])
+print(validation_aggregates[[3]])
+
+for(i in seq_along(validation_aggregates)){
+    write.csv(
+        validation_aggregates[[i]], 
+        paste0(
+            "figures/BisonGulch/validation_redux_",
+            i,
+            ".csv"
+        ))
+}
 
 # Statistical tests & write to file
 chi_squared_results <- apply_chi_squared_test(
@@ -209,6 +223,8 @@ chi_squared_results <- apply_chi_squared_test(
 KS_results <- apply_KS_test(
     validation_aggregates = validation_aggregates
     )
+
+save_validation()
 
 sink(file = "./figures/Chatanika/stats.txt", append = TRUE)
 print(chi_squared_results)
@@ -237,7 +253,7 @@ for(i in seq_along(tm_shapes$CLASS_NAME)){
 #       Save the results & aggregate
 ####################################################
 
-save_validation(validation_aggregates, base_filename = "md_c_validation")
+save_validation(validation_aggregates, base_filename = "validation")
 
 initial_path <- "./assets/pft1_template.csv"# use if there is to cold start
 aggregation_path <- "figures/aggregator.csv"
@@ -254,7 +270,7 @@ write.csv(vdf, aggregation_path)
 #       Run the validation on ALL THE QUADS
 ####################################################
 
-quadrats <- c(
+quadrats <- list(
     test_path_1,
     test_path_2,
     test_path_3,
@@ -265,7 +281,7 @@ quadrats <- c(
     test_path_8
 )
 
-shapes <- c(
+shapes <- list(
     shape_path_1,
     shape_path_2,
     shape_path_3,
@@ -277,7 +293,7 @@ shapes <- c(
 )
 
 
-shape_names <- c(
+shape_names <- list(
     bison_gulch_names,
     chatanika_names,
     twelve_mile_names_1,
@@ -289,7 +305,7 @@ shape_names <- c(
 )
 
 # note: murphy dome appears in both; I recently corrected this one though :)
-validation_paths <- c(
+validation_paths <- list(
     validation_data_path,
     validation_data_path,
     validation_data_path,
@@ -300,7 +316,7 @@ validation_paths <- c(
     validation_data_path_2
 )
 
-save_paths <- c(
+save_paths <- list(
     "figures/BisonGulch/",
     "figures/Chatanika/",
     "figures/twelveMile1/",
@@ -327,11 +343,12 @@ for( i in seq_along(quadrats)){
         cluster = NULL,
         return_raster = TRUE,
         band_names = band_names,
-        save_path = "./test_raster_save_128.grd",
+        save_path = "./test_raster_save_64.grd",
         suppress_output = FALSE)
 
     # load shapefile and project to match
     shape <- sf::st_read(shapes[[i]])
+    print(shape_names[[i]])
     shape$CLASS_NAME <- shape_names[[i]]
     projected_shapes <- sf::st_transform(shape, raster::crs(tile_results))
 
@@ -352,25 +369,26 @@ for( i in seq_along(quadrats)){
 
     # bar plots
     for(j in seq_along(validation_aggregates)){
-            plot_prop_test <- plot_quadrat_proportions(
-                validation_aggregates[[j]],
-                filter_missing = TRUE)
+        plot_prop_test <- plot_quadrat_proportions(
+            validation_aggregates[[j]],
+            filter_missing = TRUE)
 
             #windows();plot_prop_test
 
-            ggsave(
-                paste0(save_paths[[i]], j, "_a128_bar.png"),
-                device = png)
+        ggsave(
+            paste0(save_paths[[i]], j, "_new_quads.png"),
+            device = png)
+
+        write.csv(
+            validation_aggregates[[j]], 
+            paste0(
+                save_paths[[i]],
+                "validation_new_quads_",
+                j,
+                ".csv"
+        ))
     }
-
-    save_validation(
-        validation_aggregates,
-        base_filename = paste0(save_paths[[i]], "validation_a128")
-    )
-
-
-}
- 
+} 
 
 
 head(validation_df)
