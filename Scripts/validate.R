@@ -23,8 +23,8 @@ model_path_64 <- "Output/E_003_Pred_Model_RandomForest_FncGrp1_64trees.rda"
 model_path_rf <- "mle/fg1_model.rda"
 
 # Shapefiles
-shape_path_1 <- "Data/Vectors/Bisoon_Quadrats_renamed_quads.shp"
-shape_path_2 <- "Data/Vectors/ChatanikaQuads.shp"
+shape_path_1 <- "Data/Vectors/Bisoon_Quadrats_georeferenced.shp"
+shape_path_2 <- "Data/Vectors/ChatanikaQuads_georeferenced.shp"
 shape_path_3 <- "Data/Vectors/TwelveMileQ0_10_20_30_40m.shp"
 shape_path_4 <- "Data/Vectors/TwelveMileQ70_80_90_100m.shp"
 shape_path_5 <- "Data/Vectors/EightMile_Quadrats_revised.shp"
@@ -47,7 +47,7 @@ tm_shapes <- sf::st_read(shape_path_1)
 print(tm_shapes$CLASS_NAME)
 
 # process_tile inputs
-ml_model <- load_model(model_path_rf)
+ml_model <- load_model(model_path)
 band_names <- read.csv("./assets/bands.csv")$x %>% as.vector()
 
 # load the validation data
@@ -194,6 +194,8 @@ validation_df <- rbind(
     read.csv(validation_data_path_2, na.strings=c("NA", "n/a"))
 )
 
+print(projected_shapes)
+
 validation_aggregates <- validate_results(
     tile_results,
     projected_shapes,
@@ -202,6 +204,8 @@ validation_aggregates <- validate_results(
     "./assets/pft1_template.csv",
     aggregation = 1
 )
+print(nrow(projected_shapes))
+print(length(validation_aggregates))
 
 # sanity check
 print(validation_aggregates[[3]])
