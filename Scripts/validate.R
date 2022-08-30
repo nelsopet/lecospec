@@ -21,6 +21,7 @@ model_path <- "mle/RandomForest_FncGrp1_1000trees_augmented.rda"
 model_path_128 <- "Output/E_003_Pred_Model_RandomForest_FncGrp1_128trees.rda"
 model_path_64 <- "Output/E_003_Pred_Model_RandomForest_FncGrp1_64trees.rda"
 model_path_rf <- "mle/fg1_model.rda"
+dummy_model_path <- "mle/dummy.rda"
 
 # Shapefiles
 shape_path_1 <- "Data/Vectors/Bisoon_Quadrats_georeferenced.shp"
@@ -47,7 +48,7 @@ tm_shapes <- sf::st_read(shape_path_1)
 print(tm_shapes$CLASS_NAME)
 
 # process_tile inputs
-ml_model <- load_model(model_path)
+ml_model <- load_model(dummy_model_path)
 band_names <- read.csv("./assets/bands.csv")$x %>% as.vector()
 
 # load the validation data
@@ -343,7 +344,7 @@ for( i in seq_along(quadrats)){
     tile_results <- process_tile(
         quadrats[[i]],
         ml_model,
-        1,
+        3,
         cluster = NULL,
         return_raster = TRUE,
         band_names = band_names,
@@ -365,8 +366,8 @@ for( i in seq_along(quadrats)){
         projected_shapes,
         validation_df,
         rjson::fromJSON(file = "./assets/pft_adj_list.json"),
-        "./assets/pft1_template.csv",
-        aggregation = 1
+        "./assets/genus_template.csv",
+        aggregation = 3
     )
 
     print(names(tile_results))
@@ -380,14 +381,14 @@ for( i in seq_along(quadrats)){
             #windows();plot_prop_test
 
         ggsave(
-            paste0(save_paths[[i]], j, "_new_quads.png"),
+            paste0(save_paths[[i]], j, "_genus.png"),
             device = png)
 
         write.csv(
             validation_aggregates[[j]], 
             paste0(
                 save_paths[[i]],
-                "validation_new_quads_",
+                "dummy_genus_",
                 j,
                 ".csv"
         ))

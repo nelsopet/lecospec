@@ -18,57 +18,57 @@ bar_graph
 
 
 validation_paths <- list(
-    "figures/BisonGulch/validation_new_quads_1.csv",
-    "figures/BisonGulch/validation_new_quads_2.csv",
-    "figures/BisonGulch/validation_new_quads_3.csv",
-    "figures/BisonGulch/validation_new_quads_4.csv",
-    "figures/BisonGulch/validation_new_quads_5.csv",
-    "figures/BisonGulch/validation_new_quads_6.csv",
-    "figures/BisonGulch/validation_new_quads_7.csv",
-    "figures/BisonGulch/validation_new_quads_8.csv",
-    "figures/BisonGulch/validation_new_quads_9.csv",
-    # "figures/Chatanika/validation_new_quads_1.csv",
-    "figures/Chatanika/validation_new_quads_2.csv",
-    "figures/Chatanika/validation_new_quads_3.csv",
-    "figures/Chatanika/validation_new_quads_4.csv",
-    "figures/Chatanika/validation_new_quads_5.csv",
-    "figures/Chatanika/validation_new_quads_6.csv",
-    "figures/Chatanika/validation_new_quads_7.csv",
-    "figures/Chatanika/validation_new_quads_8.csv",
-    "figures/Chatanika/validation_new_quads_9.csv",
-    "figures/Chatanika/validation_new_quads_10.csv",
-    "figures/Chatanika/validation_new_quads_11.csv",
-    "figures/EightMile/validation_new_quads_1.csv",
-    "figures/EightMile/validation_new_quads_2.csv",
-    "figures/EightMile/validation_new_quads_3.csv",
-    "figures/EightMile/validation_new_quads_4.csv",
-    #"figures/EightMile/validation_new_quads_5.csv",
-    #"figures/EightMile/validation_new_quads_6.csv",
-    #"figures/EightMile/validation_new_quads_7.csv",
-    #"figures/EightMile/validation_new_quads_8.csv",
-    #"figures/EightMile/validation_new_quads_9.csv",
-    #"figures/EightMile/validation_new_quads_10.csv",
-    #"figures/EightMile/validation_new_quads_11.csv",
-    # "figures/MurphyDome/Part1/validation_new_quads_1.csv",
-    # "figures/MurphyDome/Part1/validation_new_quads_2.csv",
-    # "figures/MurphyDome/Part2/validation_new_quads_1.csv",
-    # "figures/MurphyDome/Part2/validation_new_quads_2.csv",
-    # "figures/MurphyDome/Part2/validation_new_quads_3.csv",
-    # "figures/MurphyDome/Part2/validation_new_quads_4.csv",
-    # "figures/MurphyDome/Part3/validation_new_quads_1.csv",
-    # "figures/MurphyDome/Part3/validation_new_quads_2.csv",
-    # "figures/MurphyDome/Part3/validation_new_quads_3.csv",
-    # "figures/MurphyDome/Part3/validation_new_quads_4.csv",
-    # "figures/MurphyDome/Part3/validation_new_quads_5.csv",
-    "figures/twelveMile1/validation_new_quads_1.csv",
-    "figures/twelveMile1/validation_new_quads_2.csv",
-    "figures/twelveMile1/validation_new_quads_3.csv",
-    "figures/twelveMile1/validation_new_quads_4.csv",
-    "figures/twelveMile1/validation_new_quads_5.csv",
-    "figures/twelveMile2/validation_new_quads_1.csv",
-    "figures/twelveMile2/validation_new_quads_2.csv",
-    "figures/twelveMile2/validation_new_quads_3.csv",
-    "figures/twelveMile2/validation_new_quads_4.csv"
+    "figures/BisonGulch/dummy_genus_1.csv",
+    "figures/BisonGulch/dummy_genus_2.csv",
+    "figures/BisonGulch/dummy_genus_3.csv",
+    "figures/BisonGulch/dummy_genus_4.csv",
+    "figures/BisonGulch/dummy_genus_5.csv",
+    "figures/BisonGulch/dummy_genus_6.csv",
+    "figures/BisonGulch/dummy_genus_7.csv",
+    "figures/BisonGulch/dummy_genus_8.csv",
+    "figures/BisonGulch/dummy_genus_9.csv",
+    # "figures/Chatanika/dummy_genus_1.csv",
+    "figures/Chatanika/dummy_genus_2.csv",
+    "figures/Chatanika/dummy_genus_3.csv",
+    "figures/Chatanika/dummy_genus_4.csv",
+    "figures/Chatanika/dummy_genus_5.csv",
+    "figures/Chatanika/dummy_genus_6.csv",
+    "figures/Chatanika/dummy_genus_7.csv",
+    "figures/Chatanika/dummy_genus_8.csv",
+    "figures/Chatanika/dummy_genus_9.csv",
+    "figures/Chatanika/dummy_genus_10.csv",
+    "figures/Chatanika/dummy_genus_11.csv",
+    "figures/EightMile/dummy_genus_1.csv",
+    "figures/EightMile/dummy_genus_2.csv",
+    "figures/EightMile/dummy_genus_3.csv",
+    "figures/EightMile/dummy_genus_4.csv",
+    "figures/EightMile/dummy_genus_5.csv",
+    "figures/EightMile/dummy_genus_6.csv",
+    "figures/EightMile/dummy_genus_7.csv",
+    "figures/EightMile/dummy_genus_8.csv",
+    "figures/EightMile/dummy_genus_9.csv",
+    "figures/EightMile/dummy_genus_10.csv",
+    "figures/EightMile/dummy_genus_11.csv",
+    # "figures/MurphyDome/Part1/dummy_genus_1.csv",
+    # "figures/MurphyDome/Part1/dummy_genus_2.csv",
+    # "figures/MurphyDome/Part2/dummy_genus_1.csv",
+    # "figures/MurphyDome/Part2/dummy_genus_2.csv",
+    # "figures/MurphyDome/Part2/dummy_genus_3.csv",
+    # "figures/MurphyDome/Part2/dummy_genus_4.csv",
+    # "figures/MurphyDome/Part3/dummy_genus_1.csv",
+    # "figures/MurphyDome/Part3/dummy_genus_2.csv",
+    # "figures/MurphyDome/Part3/dummy_genus_3.csv",
+    # "figures/MurphyDome/Part3/dummy_genus_4.csv",
+    # "figures/MurphyDome/Part3/dummy_genus_5.csv",
+    "figures/twelveMile1/dummy_genus_1.csv",
+    "figures/twelveMile1/dummy_genus_2.csv",
+    "figures/twelveMile1/dummy_genus_3.csv",
+    "figures/twelveMile1/dummy_genus_4.csv",
+    "figures/twelveMile1/dummy_genus_5.csv",
+    "figures/twelveMile2/dummy_genus_1.csv",
+    "figures/twelveMile2/dummy_genus_2.csv",
+    "figures/twelveMile2/dummy_genus_3.csv",
+    "figures/twelveMile2/dummy_genus_4.csv"
 )
 
 
@@ -88,8 +88,8 @@ load_and_label_data <- function(path) {
 
 loaded_validation <- purrr::map(validation_paths, load_and_label_data)
 
-print(head(load_and_label_data("figures/BisonGulch/validation_new_quads_1.csv"), 10))
-print(head(load_and_label_data("figures/BisonGulch/validation_new_quads_2.csv"), 10))
+print(head(load_and_label_data("figures/BisonGulch/dummy_genus_1.csv"), 10))
+print(head(load_and_label_data("figures/BisonGulch/dummy_genus_2.csv"), 10))
 
 merged_validation <- Reduce(rbind, loaded_validation)
 print(merged_validation)
@@ -119,7 +119,7 @@ big_plot
 
 
 
-build_table <- function(df, path = "./figures/validation_table.csv"){
+build_table <- function(df, path = "./figures/validation_table_new.csv"){
     csv_text <- ""
     site_names <- unique(df$site)
     pfts <- unique(df$key)
@@ -151,7 +151,7 @@ print(colnames(merged_validation))
 
 build_table(merged_validation)
 
-table_df <- read.csv("./figures/validation_table.csv", header = TRUE)
+table_df <- read.csv("./figures/validation_table_new.csv", header = TRUE)
 print(table_df)
 summary(table_df)
 

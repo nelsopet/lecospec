@@ -367,7 +367,15 @@ get_var_names <- function(ml_model) {
     return( gsub("^X", "", Vars_names))
 }
 
-get_required_veg_indices <- function(ml_model) {
+get_required_veg_indices <- function(ml_model){
+    return(UseMethod("get_required_veg_indices", ml_model))
+}
+
+get_required_veg_indices.LSModel <- function(ml_model, ...){
+    return(ml_model$indices)
+}
+
+get_required_veg_indices.ranger <- function(ml_model, ...) {
     var_names <- get_var_names(ml_model)
      av <- sort(
                 c(
@@ -2485,6 +2493,16 @@ enum_pfts <- function(pft){
 }
 
 # changes aggregation level
+
+#' visualizes the output of the pipeline based on a specified colormap.
+#'
+#' Long Description here
+#'
+#' @return 
+#' @param df: A data.frame
+#' @seealso None
+#' @export 
+#' @examples Not Yet Implmented
 change_aggregation <- function(prediction_vec, aggregation_level, aggregation_key){
     updated_predictions <- vector("character", length=length(prediction_vec))
     for(i in seq_along(prediction_vec)){
@@ -2505,12 +2523,6 @@ get_prediction_distribution <- function(prediction_df){
     df$distribution <- df$n / num_observations
     return(df)
 }
-
-
-separate_quadrats <- function(prediction_ras){
-
-}
-
 
 # Note to self: use R JSON to save and load adjacency list
 # write a function that uses the list and the value to get new value
@@ -2963,26 +2975,24 @@ TileAssembler <- function(dir, out) {
 }
 
 
-setClass("LSModel", slots = list(
-    model = "S4",
-    apply = "function" 
-))
-
-
 # bind together a model and the function to complete inference
 # into a single S3 Object
-LSModel <- function(model, apply_function){
+LSModel <- function(
+    model, 
+    apply_function, 
+    indices = read.csv("assets/vegIndicesUsed.csv", header = TRUE)$x){
     output <- list(
         model = model,
-        application = apply_function
+        application = apply_function,
+        indices = indices
     )
     class(output) <- "LSModel"
     return(output)
 }
 
-apply_model.LSModel <- function(model, df){
+apply_model.LSModel <- function(df, model){
     return(
-        model$application(model$model, df)
+        as.data.frame(model$application(model$model, df))
     )
 }
 

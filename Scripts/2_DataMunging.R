@@ -7,9 +7,10 @@ library(tidyverse)
 # ------------------------------------------- 12mile ---------------------------------------------------------------- #
 #### Read in data as spectra (all scans collected at this location)
 TwelveMile_spectra <- read_spectra(
-  "./Data/SpectraByLocation/12_Mile/original_samples", 
-  format = "sed", 
-  extract_metadata = TRUE)
+  "./Data/SpectraByLocation/12_Mile/original_samples",
+  format = "sed",
+  extract_metadata = TRUE
+)
 
 ## Plots all spectral objects withing this location (scans of individuals)
 ## plot_interactive(TwelveMile_spectra)
