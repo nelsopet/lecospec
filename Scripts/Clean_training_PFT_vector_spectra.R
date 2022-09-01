@@ -24,6 +24,6 @@ setdiff(list1,list2)
 #Change aggregation level to Functional Group 1 and add to metadata
 PFT_IMG_SPEC$FncGrp1<-change_aggregation(as.vector(PFT_IMG_SPEC$PFT), 1, PFT_ADJ)
 
-write.csv(PFT_IMG_SPEC, "./Data/Ground_Validation/PFT_Image_spectra/PFT_Image_SpectralLib_Clean.csv")
+write.csv(PFT_IMG_SPEC, "./Data/Ground_Validation/PFT_Image_spectra/PFT_Image_SpectralLib_Clean_unsmoothed.csv")
 
 
