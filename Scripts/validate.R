@@ -22,6 +22,7 @@ model_path_128 <- "Output/E_003_Pred_Model_RandomForest_FncGrp1_128trees.rda"
 model_path_64 <- "Output/E_003_Pred_Model_RandomForest_FncGrp1_64trees.rda"
 model_path_rf <- "mle/fg1_model.rda"
 dummy_model_path <- "mle/dummy.rda"
+sample_weighted <- "mle/sample_weighted_model.rda"
 
 # Shapefiles
 shape_path_1 <- "Data/Vectors/Bisoon_Quadrats_georeferenced.shp"
@@ -48,7 +49,7 @@ tm_shapes <- sf::st_read(shape_path_1)
 print(tm_shapes$CLASS_NAME)
 
 # process_tile inputs
-ml_model <- load_model(dummy_model_path)
+ml_model <- load_model(sample_weighted)
 band_names <- read.csv("./assets/bands.csv")$x %>% as.vector()
 
 # load the validation data
@@ -344,11 +345,11 @@ for( i in seq_along(quadrats)){
     tile_results <- process_tile(
         quadrats[[i]],
         ml_model,
-        3,
+        1,
         cluster = NULL,
         return_raster = TRUE,
         band_names = band_names,
-        save_path = "./test_raster_save_64.grd",
+        save_path = "./test_raster_save_128.grd",
         suppress_output = FALSE)
 
     # load shapefile and project to match
@@ -366,8 +367,8 @@ for( i in seq_along(quadrats)){
         projected_shapes,
         validation_df,
         rjson::fromJSON(file = "./assets/pft_adj_list.json"),
-        "./assets/genus_template.csv",
-        aggregation = 3
+        "./assets/pft1_template.csv",
+        aggregation = 1
     )
 
     print(names(tile_results))
@@ -381,14 +382,14 @@ for( i in seq_along(quadrats)){
             #windows();plot_prop_test
 
         ggsave(
-            paste0(save_paths[[i]], j, "_genus.png"),
+            paste0(save_paths[[i]], j, "_genus_weighted.png"),
             device = png)
 
         write.csv(
             validation_aggregates[[j]], 
             paste0(
                 save_paths[[i]],
-                "dummy_genus_",
+                "genus_weighted_",
                 j,
                 ".csv"
         ))
@@ -399,3 +400,5 @@ for( i in seq_along(quadrats)){
 head(validation_df)
 
 print(raster::extent(tile_results))
+
+plot(terra::rast("test_raster_save_64.grd"))

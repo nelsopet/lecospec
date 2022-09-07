@@ -1,7 +1,7 @@
 library(plotly)
 library(dplyr)
 
-data_path <- "figures/merged_validation_s.csv"
+data_path <- "figures/merged_validation_sw.csv"
 
 df <- read.csv(data_path, header = TRUE)
 
@@ -58,7 +58,7 @@ fig <- plotly::subplot(
     margin = 0.05)
 fig <- fig %>% plotly::layout(
     title = "Prediction and Ground Truth Labels",
-    hovermode = FALSE
+    hovermode = TRUE
 )
 
 fig_save_loc <- paste(tempfile('plotly_fig'), 'html', sep = '.')
@@ -67,10 +67,17 @@ browseURL(fig_save_loc)
 
 
 build_table <- function(df){
-
-    for 
+    csv_text <- ""
+    header <- ""
     filtered_df <- df[df$key == pft,]
+    for(col_name in colnames(df)){
+        header <- paste(header, col_name, sep = ",")
+    }
+    csv_text <- paste0(header, "\n")
 
+    for(pft in df %>% unique()){
+        
+    }
 }
 
 

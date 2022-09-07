@@ -18,57 +18,57 @@ bar_graph
 
 
 validation_paths <- list(
-    "figures/BisonGulch/dummy_genus_1.csv",
-    "figures/BisonGulch/dummy_genus_2.csv",
-    "figures/BisonGulch/dummy_genus_3.csv",
-    "figures/BisonGulch/dummy_genus_4.csv",
-    "figures/BisonGulch/dummy_genus_5.csv",
-    "figures/BisonGulch/dummy_genus_6.csv",
-    "figures/BisonGulch/dummy_genus_7.csv",
-    "figures/BisonGulch/dummy_genus_8.csv",
-    "figures/BisonGulch/dummy_genus_9.csv",
-    # "figures/Chatanika/dummy_genus_1.csv",
-    "figures/Chatanika/dummy_genus_2.csv",
-    "figures/Chatanika/dummy_genus_3.csv",
-    "figures/Chatanika/dummy_genus_4.csv",
-    "figures/Chatanika/dummy_genus_5.csv",
-    "figures/Chatanika/dummy_genus_6.csv",
-    "figures/Chatanika/dummy_genus_7.csv",
-    "figures/Chatanika/dummy_genus_8.csv",
-    "figures/Chatanika/dummy_genus_9.csv",
-    "figures/Chatanika/dummy_genus_10.csv",
-    "figures/Chatanika/dummy_genus_11.csv",
-    "figures/EightMile/dummy_genus_1.csv",
-    "figures/EightMile/dummy_genus_2.csv",
-    "figures/EightMile/dummy_genus_3.csv",
-    "figures/EightMile/dummy_genus_4.csv",
-    "figures/EightMile/dummy_genus_5.csv",
-    "figures/EightMile/dummy_genus_6.csv",
-    "figures/EightMile/dummy_genus_7.csv",
-    "figures/EightMile/dummy_genus_8.csv",
-    "figures/EightMile/dummy_genus_9.csv",
-    "figures/EightMile/dummy_genus_10.csv",
-    "figures/EightMile/dummy_genus_11.csv",
-    # "figures/MurphyDome/Part1/dummy_genus_1.csv",
-    # "figures/MurphyDome/Part1/dummy_genus_2.csv",
-    # "figures/MurphyDome/Part2/dummy_genus_1.csv",
-    # "figures/MurphyDome/Part2/dummy_genus_2.csv",
-    # "figures/MurphyDome/Part2/dummy_genus_3.csv",
-    # "figures/MurphyDome/Part2/dummy_genus_4.csv",
-    # "figures/MurphyDome/Part3/dummy_genus_1.csv",
-    # "figures/MurphyDome/Part3/dummy_genus_2.csv",
-    # "figures/MurphyDome/Part3/dummy_genus_3.csv",
-    # "figures/MurphyDome/Part3/dummy_genus_4.csv",
-    # "figures/MurphyDome/Part3/dummy_genus_5.csv",
-    "figures/twelveMile1/dummy_genus_1.csv",
-    "figures/twelveMile1/dummy_genus_2.csv",
-    "figures/twelveMile1/dummy_genus_3.csv",
-    "figures/twelveMile1/dummy_genus_4.csv",
-    "figures/twelveMile1/dummy_genus_5.csv",
-    "figures/twelveMile2/dummy_genus_1.csv",
-    "figures/twelveMile2/dummy_genus_2.csv",
-    "figures/twelveMile2/dummy_genus_3.csv",
-    "figures/twelveMile2/dummy_genus_4.csv"
+    "figures/BisonGulch/genus_weighted_1.csv",
+    "figures/BisonGulch/genus_weighted_2.csv",
+    "figures/BisonGulch/genus_weighted_3.csv",
+    "figures/BisonGulch/genus_weighted_4.csv",
+    "figures/BisonGulch/genus_weighted_5.csv",
+    "figures/BisonGulch/genus_weighted_6.csv",
+    "figures/BisonGulch/genus_weighted_7.csv",
+    "figures/BisonGulch/genus_weighted_8.csv",
+    "figures/BisonGulch/genus_weighted_9.csv",
+    "figures/Chatanika/genus_weighted_1.csv",
+    "figures/Chatanika/genus_weighted_2.csv",
+    "figures/Chatanika/genus_weighted_3.csv",
+    "figures/Chatanika/genus_weighted_4.csv",
+    "figures/Chatanika/genus_weighted_5.csv",
+    "figures/Chatanika/genus_weighted_6.csv",
+    "figures/Chatanika/genus_weighted_7.csv",
+    "figures/Chatanika/genus_weighted_8.csv",
+    "figures/Chatanika/genus_weighted_9.csv",
+    "figures/Chatanika/genus_weighted_10.csv",
+    "figures/Chatanika/genus_weighted_11.csv",
+    "figures/EightMile/genus_weighted_1.csv",
+    "figures/EightMile/genus_weighted_2.csv",
+    "figures/EightMile/genus_weighted_3.csv",
+    "figures/EightMile/genus_weighted_4.csv",
+    "figures/EightMile/genus_weighted_5.csv",
+    "figures/EightMile/genus_weighted_6.csv",
+    "figures/EightMile/genus_weighted_7.csv",
+    "figures/EightMile/genus_weighted_8.csv",
+    "figures/EightMile/genus_weighted_9.csv",
+    "figures/EightMile/genus_weighted_10.csv",
+    "figures/EightMile/genus_weighted_11.csv",
+    "figures/MurphyDome/Part1/genus_weighted_1.csv",
+    "figures/MurphyDome/Part1/genus_weighted_2.csv",
+    "figures/MurphyDome/Part2/genus_weighted_1.csv",
+    "figures/MurphyDome/Part2/genus_weighted_2.csv",
+    "figures/MurphyDome/Part2/genus_weighted_3.csv",
+    "figures/MurphyDome/Part2/genus_weighted_4.csv",
+    "figures/MurphyDome/Part3/genus_weighted_1.csv",
+    "figures/MurphyDome/Part3/genus_weighted_2.csv",
+    "figures/MurphyDome/Part3/genus_weighted_3.csv",
+    "figures/MurphyDome/Part3/genus_weighted_4.csv",
+    "figures/MurphyDome/Part3/genus_weighted_5.csv",
+    "figures/twelveMile1/genus_weighted_1.csv",
+    "figures/twelveMile1/genus_weighted_2.csv",
+    "figures/twelveMile1/genus_weighted_3.csv",
+    "figures/twelveMile1/genus_weighted_4.csv",
+    "figures/twelveMile1/genus_weighted_5.csv",
+    "figures/twelveMile2/genus_weighted_1.csv",
+    "figures/twelveMile2/genus_weighted_2.csv",
+    "figures/twelveMile2/genus_weighted_3.csv",
+    "figures/twelveMile2/genus_weighted_4.csv"
 )
 
 
@@ -88,8 +88,8 @@ load_and_label_data <- function(path) {
 
 loaded_validation <- purrr::map(validation_paths, load_and_label_data)
 
-print(head(load_and_label_data("figures/BisonGulch/dummy_genus_1.csv"), 10))
-print(head(load_and_label_data("figures/BisonGulch/dummy_genus_2.csv"), 10))
+print(head(load_and_label_data("figures/BisonGulch/genus_weighted_1.csv"), 10))
+print(head(load_and_label_data("figures/BisonGulch/genus_weighted_2.csv"), 10))
 
 merged_validation <- Reduce(rbind, loaded_validation)
 print(merged_validation)
@@ -99,7 +99,7 @@ summary(merged_validation)
 head(merged_validation, 20)
 
 
-write.csv(merged_validation, "figures/merged_validation_t.csv")
+write.csv(merged_validation, "figures/merged_validation_sw.csv")
 
 big_plot <- ggplot2::ggplot(data = merged_validation) +
     geom_point(
@@ -155,7 +155,7 @@ table_df <- read.csv("./figures/validation_table_new.csv", header = TRUE)
 print(table_df)
 summary(table_df)
 
-data_path <- "figures/merged_validation_s.csv"
+data_path <- "figures/merged_validation_t.csv"
 
 df <- read.csv(data_path, header = TRUE)
 

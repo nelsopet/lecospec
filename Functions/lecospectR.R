@@ -254,8 +254,13 @@ calculate_aviris_veg_index <- function(spec_library) {
     return(indices)
 }
 
-resample_df <- function(df) {
+resample_df <- function(df, normalize = TRUE) {
     spec_library <- df_to_speclib(df, type="spectrolab")
+    
+    if(normalize){
+        spec_library <- spectrolab::normalize(spec_library)
+    }
+
     speclib_resampled <- spectrolab::resample(
         spec_library,
         seq(397.593,899.424,5),
@@ -3023,3 +3028,4 @@ apply_model.ranger <- function(df, model){
 apply_model.xgboost <- function(){
 
 }
+
