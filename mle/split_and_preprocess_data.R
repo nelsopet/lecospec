@@ -3,9 +3,8 @@ source("Functions/lecospectR.R")
 
 # Add libraries for model training
 library(caret)
-library(sf)
 library(ranger)
-library(tidyverse)
+
 
 # define hyperparameters
 NOISE_POWER <- 0.00
@@ -64,7 +63,7 @@ write.csv(test_data, test_filepath)
 fg1_model <- ranger::ranger(
     #data = training_data[data_cols],
     num.trees = 128,
-    importance = "impurity_corrected",
+    importance = "impurity",
     replace = TRUE,
     #verbose = TRUE,
     classification = TRUE,

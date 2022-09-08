@@ -5,6 +5,8 @@ library(xgboost)
 
 
 genus_validation_df <- read.csv("figures/merged_validation_t.csv", header = TRUE)
+
+
 total_observations <- sum(genus_validation_df$validation_counts)
 weights <- (1/ genus_validation_df$validation_prop)
 print(genus_validation_df$validation_prop)

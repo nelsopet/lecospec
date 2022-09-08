@@ -1,7 +1,7 @@
 library(plotly)
 library(dplyr)
 
-data_path <- "figures/merged_validation_sw.csv"
+data_path <- "figures/merged_validation_an.csv"
 
 df <- read.csv(data_path, header = TRUE)
 
