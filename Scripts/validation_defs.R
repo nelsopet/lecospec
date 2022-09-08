@@ -16,6 +16,7 @@ model_path_64 <- "Output/E_003_Pred_Model_RandomForest_FncGrp1_64trees.rda"
 model_path_rf <- "mle/fg1_model.rda"
 dummy_model_path <- "mle/dummy.rda"
 sample_weighted <- "mle/sample_weighted_model.rda"
+model_normed_training_weighted <- "mle/fg1_model_normed_weighted.rda"
 
 # Shapefiles
 shape_path_1 <- "Data/Vectors/Bisoon_Quadrats_georeferenced.shp"
@@ -154,3 +155,11 @@ save_paths <- list(
     "figures/MurphyDome/Part2/",
     "figures/MurphyDome/Part3/"
 )
+
+
+validation_df <- rbind(
+    read.csv(validation_data_path, na.strings=c("NA", "n/a")),
+    read.csv(validation_data_path_2, na.strings=c("NA", "n/a"))
+)
+
+band_names <- read.csv("./assets/bands.csv")$x %>% as.vector()

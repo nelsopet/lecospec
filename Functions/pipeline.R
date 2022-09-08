@@ -11,3 +11,14 @@ PipelineStage <- function(
         additional_data = additional_data
     )
 }
+
+Pipeline <- function(
+    pipeline_stages, 
+    pipeline_options = NULL
+){
+    pipeline <- list(
+        stages = pipeline_stages,
+        options = pipeline_options
+    )
+}
+

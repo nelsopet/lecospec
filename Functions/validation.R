@@ -256,3 +256,65 @@ save_validation <- function(template_dfs, base_filename = "validation"){
             paste0(base_filename, "_", i, ".csv"))
     }
 }
+
+
+validate_model <- function(ml_model, save_directory){
+    source("Scripts/validation_defs.R")
+
+
+        for( i in seq_along(quadrats)){
+        # process the tile
+        tile_results <- process_tile(
+            quadrats[[i]],
+            ml_model,
+            1,
+            cluster = NULL,
+            return_raster = TRUE,
+            band_names = band_names,
+            save_path = "./validation_saved_output.grd",
+            suppress_output = FALSE)
+
+        # load shapefile and project to match
+        shape <- sf::st_read(shapes[[i]])
+        print(shape_names[[i]])
+        shape$CLASS_NAME <- shape_names[[i]]
+        projected_shapes <- sf::st_transform(shape, raster::crs(tile_results))
+
+        # Validation data
+        #validation_df <- read.csv(validation_paths[[i]], na.strings=c("NA", "n/a"))
+
+        # run the validation
+        validation_aggregates <- validate_results(
+            tile_results,
+            projected_shapes,
+            validation_df,
+            rjson::fromJSON(file = "./assets/pft_adj_list.json"),
+            "./assets/pft1_template.csv",
+            aggregation = 1
+        )
+
+        print(names(tile_results))
+
+        # bar plots
+        for(j in seq_along(validation_aggregates)){
+            plot_prop_test <- plot_quadrat_proportions(
+                validation_aggregates[[j]],
+                filter_missing = TRUE)
+
+                #windows();plot_prop_test
+
+            ggsave(
+                paste0(save_paths[[i]], j, "_bar.png"),
+                device = png)
+
+            write.csv(
+                validation_aggregates[[j]], 
+                paste0(
+                    save_paths[[i]],
+                    "actually_normed_",
+                    j,
+                    ".csv"
+            ))
+        }
+    } 
+}
