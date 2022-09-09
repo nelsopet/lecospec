@@ -18,57 +18,57 @@ bar_graph
 
 
 validation_paths <- list(
-    "figures/BisonGulch/validation_redux_1.csv",
-    "figures/BisonGulch/validation_redux_2.csv",
-    "figures/BisonGulch/validation_redux_3.csv",
-    "figures/BisonGulch/validation_redux_4.csv",
-    "figures/BisonGulch/validation_redux_5.csv",
-    "figures/BisonGulch/validation_redux_6.csv",
-    "figures/BisonGulch/validation_redux_7.csv",
-    "figures/BisonGulch/validation_redux_8.csv",
-    "figures/BisonGulch/validation_redux_9.csv",
-    # "figures/Chatanika/validation_redux_1.csv",
-    "figures/Chatanika/validation_redux_2.csv",
-    "figures/Chatanika/validation_redux_3.csv",
-    "figures/Chatanika/validation_redux_4.csv",
-    "figures/Chatanika/validation_redux_5.csv",
-    "figures/Chatanika/validation_redux_6.csv",
-    "figures/Chatanika/validation_redux_7.csv",
-    "figures/Chatanika/validation_redux_8.csv",
-    "figures/Chatanika/validation_redux_9.csv",
-    "figures/Chatanika/validation_redux_10.csv",
-    "figures/Chatanika/validation_redux_11.csv",
-    "figures/EightMile/validation_redux_1.csv",
-    "figures/EightMile/validation_redux_2.csv",
-    "figures/EightMile/validation_redux_3.csv",
-    "figures/EightMile/validation_redux_4.csv",
-    "figures/EightMile/validation_redux_5.csv",
-    "figures/EightMile/validation_redux_6.csv",
-    "figures/EightMile/validation_redux_7.csv",
-    "figures/EightMile/validation_redux_8.csv",
-    "figures/EightMile/validation_redux_9.csv",
-    "figures/EightMile/validation_redux_10.csv",
-    "figures/EightMile/validation_redux_11.csv",
-    # "figures/MurphyDome/Part1/validation_redux_1.csv",
-    # "figures/MurphyDome/Part1/validation_redux_2.csv",
-    # "figures/MurphyDome/Part2/validation_redux_1.csv",
-    # "figures/MurphyDome/Part2/validation_redux_2.csv",
-    # "figures/MurphyDome/Part2/validation_redux_3.csv",
-    # "figures/MurphyDome/Part2/validation_redux_4.csv",
-    # "figures/MurphyDome/Part3/validation_redux_1.csv",
-    # "figures/MurphyDome/Part3/validation_redux_2.csv",
-    # "figures/MurphyDome/Part3/validation_redux_3.csv",
-    # "figures/MurphyDome/Part3/validation_redux_4.csv",
-    # "figures/MurphyDome/Part3/validation_redux_5.csv",
-    "figures/twelveMile1/validation_redux_1.csv",
-    "figures/twelveMile1/validation_redux_2.csv",
-    "figures/twelveMile1/validation_redux_3.csv",
-    "figures/twelveMile1/validation_redux_4.csv",
-    "figures/twelveMile1/validation_redux_5.csv",
-    "figures/twelveMile2/validation_redux_1.csv",
-    "figures/twelveMile2/validation_redux_2.csv",
-    "figures/twelveMile2/validation_redux_3.csv",
-    "figures/twelveMile2/validation_redux_4.csv"
+    "figures/BisonGulch/actually_normed_1.csv",
+    "figures/BisonGulch/actually_normed_2.csv",
+    "figures/BisonGulch/actually_normed_3.csv",
+    "figures/BisonGulch/actually_normed_4.csv",
+    "figures/BisonGulch/actually_normed_5.csv",
+    "figures/BisonGulch/actually_normed_6.csv",
+    "figures/BisonGulch/actually_normed_7.csv",
+    "figures/BisonGulch/actually_normed_8.csv",
+    "figures/BisonGulch/actually_normed_9.csv",
+    "figures/Chatanika/actually_normed_1.csv",
+    "figures/Chatanika/actually_normed_2.csv",
+    "figures/Chatanika/actually_normed_3.csv",
+    "figures/Chatanika/actually_normed_4.csv",
+    "figures/Chatanika/actually_normed_5.csv",
+    "figures/Chatanika/actually_normed_6.csv",
+    "figures/Chatanika/actually_normed_7.csv",
+    "figures/Chatanika/actually_normed_8.csv",
+    "figures/Chatanika/actually_normed_9.csv",
+    "figures/Chatanika/actually_normed_10.csv",
+    "figures/Chatanika/actually_normed_11.csv",
+    "figures/EightMile/actually_normed_1.csv",
+    "figures/EightMile/actually_normed_2.csv",
+    "figures/EightMile/actually_normed_3.csv",
+    "figures/EightMile/actually_normed_4.csv",
+    "figures/EightMile/actually_normed_5.csv",
+    "figures/EightMile/actually_normed_6.csv",
+    "figures/EightMile/actually_normed_7.csv",
+    "figures/EightMile/actually_normed_8.csv",
+    "figures/EightMile/actually_normed_9.csv",
+    "figures/EightMile/actually_normed_10.csv",
+    "figures/EightMile/actually_normed_11.csv",
+    "figures/MurphyDome/Part1/actually_normed_1.csv",
+    "figures/MurphyDome/Part1/actually_normed_2.csv",
+    "figures/MurphyDome/Part2/actually_normed_1.csv",
+    "figures/MurphyDome/Part2/actually_normed_2.csv",
+    "figures/MurphyDome/Part2/actually_normed_3.csv",
+    "figures/MurphyDome/Part2/actually_normed_4.csv",
+    "figures/MurphyDome/Part3/actually_normed_1.csv",
+    "figures/MurphyDome/Part3/actually_normed_2.csv",
+    "figures/MurphyDome/Part3/actually_normed_3.csv",
+    "figures/MurphyDome/Part3/actually_normed_4.csv",
+    "figures/MurphyDome/Part3/actually_normed_5.csv",
+    "figures/twelveMile1/actually_normed_1.csv",
+    "figures/twelveMile1/actually_normed_2.csv",
+    "figures/twelveMile1/actually_normed_3.csv",
+    "figures/twelveMile1/actually_normed_4.csv",
+    "figures/twelveMile1/actually_normed_5.csv",
+    "figures/twelveMile2/actually_normed_1.csv",
+    "figures/twelveMile2/actually_normed_2.csv",
+    "figures/twelveMile2/actually_normed_3.csv",
+    "figures/twelveMile2/actually_normed_4.csv"
 )
 
 
@@ -88,8 +88,8 @@ load_and_label_data <- function(path) {
 
 loaded_validation <- purrr::map(validation_paths, load_and_label_data)
 
-print(head(load_and_label_data("figures/BisonGulch/validation_redux_1.csv"), 10))
-print(head(load_and_label_data("figures/BisonGulch/validation_redux_2.csv"), 10))
+print(head(load_and_label_data("figures/BisonGulch/actually_normed_1.csv"), 10))
+print(head(load_and_label_data("figures/BisonGulch/actually_normed_2.csv"), 10))
 
 merged_validation <- Reduce(rbind, loaded_validation)
 print(merged_validation)
@@ -99,7 +99,7 @@ summary(merged_validation)
 head(merged_validation, 20)
 
 
-write.csv(merged_validation, "figures/merged_validation_t.csv")
+write.csv(merged_validation, "figures/merged_validation_an.csv")
 
 big_plot <- ggplot2::ggplot(data = merged_validation) +
     geom_point(
@@ -119,7 +119,7 @@ big_plot
 
 
 
-build_table <- function(df, path = "./figures/validation_table.csv"){
+build_table <- function(df, path = "./figures/validation_table_new.csv"){
     csv_text <- ""
     site_names <- unique(df$site)
     pfts <- unique(df$key)
@@ -151,11 +151,11 @@ print(colnames(merged_validation))
 
 build_table(merged_validation)
 
-table_df <- read.csv("./figures/validation_table.csv", header = TRUE)
+table_df <- read.csv("./figures/validation_table_new.csv", header = TRUE)
 print(table_df)
+summary(table_df)
 
-
-data_path <- "figures/merged_validation_s.csv"
+data_path <- "figures/merged_validation_t.csv"
 
 df <- read.csv(data_path, header = TRUE)
 
