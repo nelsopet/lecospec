@@ -18,7 +18,13 @@ Pipeline <- function(
 ){
     pipeline <- list(
         stages = pipeline_stages,
-        options = pipeline_options
+        options = pipeline_options,
+        length = length(pipeline_stages)
     )
 }
 
+add_stage <- function(pipeline, state){
+    
+}
+
+apply_stage

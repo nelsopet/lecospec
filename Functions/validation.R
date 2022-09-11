@@ -290,7 +290,8 @@ validate_model <- function(ml_model, save_directory){
             validation_df,
             rjson::fromJSON(file = "./assets/pft_adj_list.json"),
             "./assets/pft1_template.csv",
-            aggregation = 1
+            aggregation = 1, 
+            save_path = paste0(save_directory, "quadrat_")
         )
 
         print(names(tile_results))
@@ -304,14 +305,14 @@ validate_model <- function(ml_model, save_directory){
                 #windows();plot_prop_test
 
             ggsave(
-                paste0(save_paths[[i]], j, "_bar.png"),
+                paste0(save_directory, j, "_bar.png"),
                 device = png)
 
             write.csv(
                 validation_aggregates[[j]], 
                 paste0(
-                    save_paths[[i]],
-                    "actually_normed_",
+                    save_directory,
+                    "validation_",
                     j,
                     ".csv"
             ))

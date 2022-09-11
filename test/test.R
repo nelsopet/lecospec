@@ -1,5 +1,8 @@
 source("./Functions/lecospectR.R")
 
+## NOTE: complete other test files and source them here instead,
+# in the order outlined in test_to_dos.md
+
 test_log <- "./test/test.log"
 #sink(test_log)
 print("test start")

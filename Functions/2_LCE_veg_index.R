@@ -117,7 +117,7 @@ Func_Resamp <- function(Resamp) {
   # Converts the dataframe to a spectral object and normalizes it
   SpeclibObj <- spectrolab::as_spectra(df)
 
-  SpeclibObj <- spectrolab::normalize(SpeclibObj)
+  #SpeclibObj <- spectrolab::normalize(SpeclibObj)
 
   print("Resampling spectra every 5nm")
 

@@ -1,7 +1,24 @@
 
-get_var_names <- function(ml_model) {
+get_var_names <- function(ml_model, ...) {
+    return(UseMethod("get_var_names", ml_model))
+}
+
+get_var_names.default <- function(ml_model, ...){
+    return(
+        read.csv(
+            "assets/vegIndicesUsed.csv",
+            header = TRUE
+        )$x %>% 
+            as.character())
+}
+
+get_var_names.ranger <- function(ml_model, ...){
     Vars_names <- c(ml_model$forest$independent.variable.names)
     return( gsub("^X", "", Vars_names))
+}
+
+get_var_names.LSModel <- function(ml_model, ...){
+    return(ml_model$indices)
 }
 
 get_required_veg_indices <- function(ml_model){
