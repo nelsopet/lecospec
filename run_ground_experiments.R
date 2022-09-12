@@ -33,7 +33,7 @@ exp_save_paths <- c(
 print(length(model_paths))
 print(length(save_paths))
 
-for(index in seq_along(model_paths)){
+for(index in 6:length(model_paths)){
     print(paste0("Processing Model ", index))
     model <- load_model(model_paths[[index]])
     save_path <- exp_save_paths[[index]]
