@@ -320,7 +320,7 @@ validate_model <- function(ml_model, save_directory){
                     save_directory,
                     "validation_site_",
                     i, 
-                    "quadrat_"
+                    "quadrat_",
                     j,
                     ".csv"
             ))

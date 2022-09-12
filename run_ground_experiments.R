@@ -15,14 +15,13 @@ model_paths <- c(
     "mle/models/no_norm_no_noise_prior.rda"
 )
 
-save_paths <- c(
+exp_save_paths <- c(
     "mle/experiments/ground_trained/normed_noised_val_weighted/",
     "mle/experiments/ground_trained/normed_noised_unweighted/",
     "mle/experiments/ground_trained/normed_noised_weighted/",
     "mle/experiments/ground_trained/unnormed_noised_val_weighted/",
     "mle/experiments/ground_trained/unnormed_noised_unweighted/",
     "mle/experiments/ground_trained/unnormed_noised_weighted/",
-    "mle/experiments/ground_trained/unnormed_noised_val_weighted/",
     "mle/experiments/ground_trained/normed_unnoised_val_weighted/",
     "mle/experiments/ground_trained/normed_unnoised_unweighted/",
     "mle/experiments/ground_trained/normed_unnoised_weighted/",
@@ -31,8 +30,12 @@ save_paths <- c(
     "mle/experiments/ground_trained/unnormed_unnoised_weighted/"
 )
 
-for(i in seq_along(model_paths)){
-    model <- load_model(model_paths[[i]])
-    save_path <- save_paths[[i]]
+print(length(model_paths))
+print(length(save_paths))
+
+for(index in seq_along(model_paths)){
+    print(paste0("Processing Model ", index))
+    model <- load_model(model_paths[[index]])
+    save_path <- exp_save_paths[[index]]
     validate_model(model, save_path)
 }
