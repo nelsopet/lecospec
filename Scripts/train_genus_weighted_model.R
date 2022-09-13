@@ -5,23 +5,26 @@ library(xgboost)
 
 
 genus_validation_df <- read.csv("figures/merged_validation_t.csv", header = TRUE)
-
+print(head(genus_validation_df))
 
 total_observations <- sum(genus_validation_df$validation_counts)
+print(total_observations)
 weights <- (1/ genus_validation_df$validation_prop)
 print(genus_validation_df$validation_prop)
 
-total_by_genus <- genus_validation_df %>% group_by(key) %>% 
-    summarise(., total = sum(validation_counts))
-
-total_by_genus$weights <- (5 + total_by_genus$total) / total_observations
+total_by_genus <- aggregate(
+    x = genus_validation_df$validation_counts,
+    by = list(genus_validation_df$key),
+    FUN = sum
+)
 print(total_by_genus)
-total_by_genus %>% do(.,function(x){})
 
+total_by_genus$weights <- (5 + total_by_genus$x) / total_observations
+print(dim(total_by_genus))
 
 genus_weights <- list()
 for(row_idx in seq(nrow(total_by_genus))){
-    genus_i <- stringr::str_to_lower(total_by_genus$key[[row_idx]]) 
+    genus_i <- stringr::str_to_lower(total_by_genus$Group.1[[row_idx]]) 
     genus_weights[genus_i] <- total_by_genus$weights[[row_idx]]
 }
 print(genus_weights)
@@ -38,7 +41,7 @@ adjancy_list <- rjson::fromJSON(file = "./assets/pft_adj_list.json")
 
 base_data_path <- "Output/D_002_SpecLib_Derivs.csv"
 augmented_data_path <- "./mle/validation100_stratified.csv"
-spec_lib <- read.csv(augmented_data_path)
+spec_lib <- read.csv(base_data_path)
 
 metadata_columns_dropped <- c(
   "ScanID", "Area", "Code_name", "Species_name", "Functional_group1",
@@ -55,6 +58,9 @@ metadata_columns_dropped <- c(
 
 
 weights <- lapply(X = spec_lib$Genus, FUN = get_weight_by_genus)
+print(weights)
+write.csv(weights, "mle/pweights.csv")
+
 used_cols <- setdiff(colnames(spec_lib), metadata_columns_dropped)
 training_data <- spec_lib[, used_cols]
 print(colnames(training_data))

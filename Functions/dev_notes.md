@@ -11,7 +11,8 @@
 * functional programming operations are not so nice - 
     * e.g. apply/purrr::map are not guaranteed to respect order
     * difficult to use many functional programming patterns (e.g. Monads)
-    * objects are mutable, always.  WHY U NO HAS 'const' or 'mut'?
+    * objects are immutable (in that everything is passed by value, which is good).  
+    * Objects, however, can always be reassigned.  WHY U NO HAS 'const' or 'mut'?
 * encapsulation is more difficult than it needs to be
 * parallelism and asynchronous programming support is limited
 * namespace masking is a real problem
@@ -21,7 +22,8 @@
     * change without respect for backwards compatability
     * install.packages() works, but package version control is not ideal
     * often poor algorithms - e.g. HSDAR, lidR
-* No Tensors - no arrays with more than 2 dimensions (matrix only)
+* No Tensors - no arrays with more than 2 dimensions (matrix only!)
+* testing is awkard (compared to something like jest or even junit) - package integration is good, but testing other products is awkward. 
 
 In contrast, the advantages are few:
 * Lots of niche packages (e.g. lidR, spectrolab, hsdar) because of use in research
