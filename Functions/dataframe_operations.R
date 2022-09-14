@@ -1,0 +1,467 @@
+
+#' Functions returns columns that are bandpasses
+#' 
+#' @inheritParams None
+#' @return a dataframe without non-bandpass columns
+#' @param x: a dataframe
+#' @seealso remove_band_column
+#' @export 
+#' @examples Not Yet Implmented
+remove_meta_column <- function(x) {
+    meta <- c(grep(
+        "[0-9][0-9][0-9]",
+        colnames(x),
+        value = FALSE,
+        invert = FALSE))
+    colremove <- x[, meta]
+    return(colremove)
+}
+  
+#' Functions returns columns that are NOT bandpasses
+#' 
+#' Long Description here
+#' 
+#' @inheritParams None
+#' @return explanation
+#' @param x: a dataframe
+#' @seealso remove_meta_column
+#' @export 
+#' @examples Not Yet Implmented
+#' 
+remove_band_column <- function(x) {   
+    meta <- c(grep("[a-z A-Z]", colnames(x)))
+    colremove <- x[, meta]
+    return(colremove)
+}
+
+#' Combines derivatives (veg indices) and prediction
+#'
+#' Long Description here
+#'
+#' @return 
+#' @param filepath (optional): A parallel computing framework
+#' @seealso None
+#' @export 
+#' @examples Not Yet Implmented
+#'
+deriv_combine <- function(x, veg_index){
+
+# Resampling Dataset
+resampled_data <- resample_spectral_dataframe(x)
+output_df <- cbind(veg_index, remove_meta_column(resampled_data))
+
+return(output_df)
+} # deriv_combine ends
+
+
+#' Cleans the column names of all spaces
+#' and other punctuation
+#'
+#' Long Description here
+#'
+#' @return a dataframe with the same contents 
+#' but modified column neams
+#' @param df: data.frame to have column names modified
+#' @seealso None
+#' @export 
+#' @examples Not Yet Implmented
+clean_df_colnames <- function(df) {
+    new_names <- stringr::str_remove_all(
+        names(df),
+        "[[:punct:]]| "
+        )
+    return(new_names)
+}
+
+clean_colnames <- function(x_strs){
+    return(
+        stringr::str_remove_all(
+            x_strs, 
+            "[[:punct:]]| "
+        )
+    )
+}
+
+
+
+#' Lone line explanation
+#'
+#' Long Description here
+#'
+#' @return 
+#' @param x
+#' @seealso None
+#' @export 
+#' @examples Not Yet Implmented
+#'
+load_csv <- function(filepath, output_type = "df") {
+     spectral_lib <- read.csv(filepath, check.names = F)
+    
+    spectral_lib <- deriv_combine(spectral_lib)
+    
+    write.csv(
+        spectral_lib,
+        paste(out_file,"D_002_SpecLib_Derivs",".csv", sep=""),
+        row.names = F
+        )
+    
+    # Normalize Values here
+    return(spectral_lib)
+}
+
+
+
+# function to fill in missing values using partial mean matching
+#' Lone line explanation
+#'
+#' Long Description here
+#'
+#' @return a dataframe with missing values filled
+#' @param x: a dataframe to be imputed
+#' @seealso None
+#' @export 
+#' @examples Not Yet Implmented
+#'
+impute_spectra <- function(x, cluster = NULL, method = "missForest", transpose=FALSE) {
+    df <- x 
+    
+
+    # convert to a data.frame if x is a raster
+    if (!is.data.frame(x)) {
+        df <- x %>%
+        rasterToPoints() %>%
+        as.data.frame() 
+    }
+    # save band names in case we need to transpose and restore column names later
+    bands <- colnames(df)
+
+
+    # transpose if needed
+    if(transpose){
+        df <- df %>%
+        as.matrix() %>% 
+        t() %>% 
+        as.data.frame()
+    }
+
+    print("Imputing...")
+    if (method == "missForest") {
+        output_data <- missForest::missForest(df, maxiter = 1,)$ximp
+    } else if(method == "median"){
+        output_data <- useful::simple.impute(df)     
+    } else if( method == "mean"){
+        output_data <- useful::simple.impute(df, fun = mean)
+    }
+    
+    if(transpose){
+        output_data <- output_data %>% 
+        as.matrix() %>% 
+        t() %>% 
+        as.data.frame()
+        colnames(output_data) <- bands
+    }
+
+    
+    if (!is.data.frame(x)) {
+        spectral_matrix <- as.matrix(df)
+        output_data <- raster::rasterFromXYZ(
+            spectral_matrix,
+            crs = raster::crs(x))
+        raster::extent(output_data) <- raster::extent(x)
+    }
+    gc()
+
+    return(output_data)
+}#end impute_spectra
+
+
+#' Lone line explanation
+#'
+#' Long Description here
+#'
+#' @return 
+#' @param x
+#' @seealso None
+#' @export 
+#' @examples Not Yet Implmented
+#'
+save_to_raster <- function(df, filepath) {
+    rasterized_data <- df_to_speclib(df)
+    raster::writeRaster(
+        rasterized_data,
+        filename = filepath,
+        overwrite = TRUE
+    )
+}
+
+
+
+#' Lone line explanation
+#'
+#' Long Description here
+#'
+#' @return 
+#' @param x
+#' @seealso None
+#' @export 
+#' @examples Not Yet Implmented
+#'
+aggregate_results_df <- function(prediction, x, y) {
+
+    dfx <- data.frame(x)
+    colnames(dfx) <- c("x")
+    dfxy <- cbind(dfx, y)
+    z <- c()
+
+    for (my_prediction in prediction) {
+        prediction_df <- as.data.frame(
+        raster::levels(my_prediction)[[1]], xy = TRUE)
+        num_pixels <- nrow(prediction_df)
+        for (iter_idx in seq_len(num_pixels)) {
+            if (!is.na(prediction_df[iter_idx, 2])) {
+                z <- append(z, prediction_df[iter_idx, 2])
+            }
+        }
+    }
+
+    if (length(z) > nrow(dfxy)) {
+        z <- z[seq_len(dfxy)]
+    } else if (length(z) < nrow(dfxy)) {
+        dfxy <- head(dfxy, n = length(z))
+    } 
+    df <- cbind(dfxy, z)
+    return(df)
+}
+
+
+
+has_empty_column <- function(df){
+    # chack if there are not enough data in any column for missForest
+    num_na_per_col <- colSums(is.na(df))
+    all_na_column <- (num_na_per_col >= (nrow(df) - 2))
+
+    if(any(all_na_column)){
+        return( TRUE )
+    }
+    return( FALSE )
+}
+
+
+
+drop_empty_columns <- function(df){
+    num_na_per_col <- colSums(is.na(df))
+    all_na_column <- (num_na_per_col == (nrow(df)))
+    df_no_cols <- df[, !all_na_column]
+    return(df_no_cols)
+}
+
+
+#' removes columns outside the min and max indicies
+#'
+#' Long Description here
+#'
+#' @return 
+#' @param df: A data.frame
+#' @seealso None
+#' @export 
+#' @examples Not Yet Implmented
+remove_noisy_cols <- function(df, min_index = 1, max_index = 274) {
+    return(df[min_index:max_index])
+}
+
+
+##### THIS IS A SPECTRAL OPERATION TAKING A DATA.FRAME AS AN INPUT
+#' a quick function based on the original code
+#'
+#' Long Description here
+#'
+#' @return 
+#' @param df: A data.frame
+#' @seealso None
+#' @export 
+#' @examples Not Yet Implmented
+filter_bands <- function(df) {
+    # from original code, but sets the values to NA instead of -999 
+    df[-1:-2][df[-1:-2] > 1] <- 1.0#formerly NA
+    df[-1:-2][df[-1:-2] < 0 ] <- 0.0#formerly NA
+    df[-1:-2][sapply(df[-1:-2], is.nan)] <- NA
+    df[-1:-2][sapply(df[-1:-2], is.infinite)] <- NA
+    return(df)
+}
+
+
+
+#' aconverts the output to the correct data type (base::data.frame or raster::rasterLayer) and save it to disk
+#'
+#' In addition to converting the file, it saves the file to disk.  
+#' In order to avoid issues with overwriting files, the function will 
+#' adjoin 16 random characters to the filename to avoid collision.
+#'
+#' @return 
+#' @param df: A data.frame
+#' @param save_path: the file path for saving the converted file.  
+#' If NULL (default), no file is saved.  
+#' @param return_raster: If TRUE, the function converts 'df' to a
+#'  raster before saving and returning the converted data. 
+#' If FALSE, the data.frame is saved to disk, but no coversion is made.
+#' @seealso None
+#' @export 
+#' @examples Not Yet Implmented
+convert_and_save_output <- function(
+    df, 
+    aggregation_level,
+    save_path = NULL,
+    return_raster = TRUE,
+    target_crs = NULL
+){
+    prediction <- convert_pft_codes(
+        df,
+        aggregation_level = aggregation_level,
+        to = "int")
+
+    print(head(prediction))
+
+    # convert the precition values to integers
+    prediction$z <- prediction$z %>% round() %>% as.integer()
+
+    print(head(prediction))
+
+    print(paste0("Attempting to save to ", save_path))
+    if(return_raster){
+        prediction <- raster::rasterFromXYZ(prediction, digits=4)
+        print("Converted to Raster")
+
+        # set to int datatype (unsigned int // 2 bytes)
+        raster::dataType(prediction) <- "INT2U" 
+        levels(prediction) <- get_attribute_table(aggregation_level)
+        if(!is.null(target_crs)){
+            raster::crs(prediction) <- target_crs
+        }
+        if(!is.null(save_path)){
+                raster::writeRaster(
+                    prediction,
+                    filename = save_path,
+                    datatype='INT2U',
+                    overwrite = TRUE)
+            } 
+        return(prediction)
+    } else {
+        if(!is.null(save_path)){
+            if(file.exists(save_path)){
+                write.csv(prediction, save_path, overwrite=TRUE)
+            }
+        }
+            return(df)
+    }
+}
+
+
+
+
+#' removes empty rows from the data.frame
+#'
+#' Long Description here
+#'
+#' @return 
+#' @param df: A data.frame
+#' @seealso None
+#' @export 
+#' @examples Not Yet Implmented
+filter_empty_points <- function(df){
+    print("Data summary before filtering")
+    print(dim(df))
+    drop_cols <- c("x","y")
+    columns_to_check <- setdiff(colnames(df), drop_cols)
+
+    df_no_empty_rows <- df %>% 
+        naniar::replace_with_na_all(condition = ~.x == 0) %>%
+        dplyr::filter_at(
+            .vars = vars(one_of(columns_to_check)),
+            ~!is.na(.)
+        ) 
+    print("data summary after filtering")
+    print(dim(df_no_empty_rows))
+    return(df_no_empty_rows)
+}
+
+
+drop_zero_rows <- function(df) {
+    # sort the columsn to make sure x and y are first before calculating rowsums
+    df_rowsums <- df %>% dplyr::relocate(y) %>% dplyr::relocate(x)
+    num_cols = ncol(df)
+    # return only the rows with rowsums over zero
+    return( df_rowsums[rowSums(df_rowsums[,3:num_cols], na.rm = TRUE) > 0.0001, ])
+}
+
+
+
+#' Performs post-processing for the process_tile function
+#'
+#' Renames columns and adds the spatial information that is lost at model inference time.
+#'
+#' @return 
+#' @param prediction_df: A data.frame of prediction from the model.  
+#' It should have a single column of data.
+#' @param base_df: the base data.frame for creating the prediction; 
+#' it should have columns x and y specifying the spatial coordinates for that row.
+#' @return a data.frame with three columns: 'x', 'y', and 'z'.  'x' and 'y' 
+#' are the spatial location of the prediction in the original CRS, 
+#' and the 'z' column is prediction. 
+#' @seealso None
+#' @export 
+#' @examples Not Yet Implmented
+postprocess_prediction <- function(prediction_df, base_df){
+    colnames(prediction_df) <- c("z")
+    prediction_df$x <- base_df$x
+    prediction_df$y <- base_df$y
+    gc()
+
+    prediction_df <- prediction_df %>% dplyr::select(x, y, z)
+
+    return(prediction_df)
+}
+
+
+#' Extracts indices from data frame column names
+#' 
+#' Long Description here
+#' 
+#' @inheritParams None
+#' @return explanation
+#' @param df: A dataframe containing spectral data
+#' @seealso None
+#' @export 
+#' @examples Not Yet Implmented
+extract_bands <- function(df){
+    bands <- remove_meta_column(df) %>% colnames()
+    bands <- gsub(".nm", "", bands)
+    bands <- gsub("_5", "", bands)
+    bands <- gsub("_", "", bands)
+    bands <- gsub("X","", bands) %>% convert_wavelength_strings()
+    bands <- bands[!is.na(bands)]#remove NAs
+    return(bands)
+}
+
+resample_df <- function(df, normalize = TRUE) {
+    spec_library <- df_to_speclib(df, type="spectrolab")
+    
+    if(normalize){
+        spec_library <- spectrolab::normalize(spec_library)
+    }
+
+    speclib_resampled <- spectrolab::resample(
+        spec_library,
+        seq(397.593,899.424,5),
+        parallel = FALSE
+    ) 
+    
+    df_resampled <- speclib_to_df(speclib_resampled) %>% dplyr::select(-sample_name)
+
+    colnames(df_resampled) <- paste0(
+        "X",
+        colnames(df_resampled),
+        "_5nm"
+    )
+    combined_df <- cbind(remove_band_column(df), df_resampled)
+    return(combined_df)
+}
