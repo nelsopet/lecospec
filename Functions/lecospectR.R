@@ -230,6 +230,7 @@ process_tile <- function(
     cluster = NULL,
     return_raster = TRUE,
     band_names=NULL,
+    normalize_input = TRUE,
     return_filename = FALSE,
     save_path = NULL,
     suppress_output = FALSE
@@ -285,7 +286,7 @@ process_tile <- function(
 
         # drop rows that are uniformly zero
       
-        resampled_df <- resample_df(imputed_df)
+        resampled_df <- resample_df(imputed_df, normalize = normalize_input)
         gc()
 
         veg_indices <- get_vegetation_indices(resampled_df, ml_model, cluster = cluster)

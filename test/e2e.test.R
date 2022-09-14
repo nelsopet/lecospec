@@ -10,7 +10,3 @@ testthat::test_that("Validation runs", {
         ml_model, "test/e2e"
     )
 })
-
-
-
-

@@ -258,7 +258,7 @@ save_validation <- function(template_dfs, base_filename = "validation"){
 }
 
 
-validate_model <- function(ml_model, save_directory){
+validate_model <- function(ml_model, save_directory, normalize_input = TRUE){
     source("Scripts/validation_defs.R")
 
 
