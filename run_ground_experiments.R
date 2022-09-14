@@ -30,12 +30,31 @@ exp_save_paths <- c(
     "mle/experiments/ground_trained/unnormed_unnoised_weighted/"
 )
 
-print(length(model_paths))
-print(length(save_paths))
+normalization_scheme <- c(
+    TRUE,
+    TRUE, 
+    TRUE,
+    FALSE, 
+    FALSE, 
+    FALSE,
+    TRUE,
+    TRUE,
+    TRUE,
+    FALSE,
+    FALSE, 
+    FALSE
+)
 
-for(index in 6:length(model_paths)){
+print(length(model_paths))
+print(length(exp_save_paths))
+print(length(normalization_scheme))
+
+for(index in c(4,5,6,10,11,12)){
     print(paste0("Processing Model ", index))
     model <- load_model(model_paths[[index]])
     save_path <- exp_save_paths[[index]]
-    validate_model(model, save_path)
+    validate_model(
+        model, 
+        save_path, 
+        normalize_input = normalization_scheme[[index]])
 }

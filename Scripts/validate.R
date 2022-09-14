@@ -12,9 +12,9 @@ tm_shapes <- sf::st_read(shape_path_1)
 print(tm_shapes$CLASS_NAME)
 
 # process_tile inputs
-ml_model <- load_model(model_normed_training_weighted)
+ml_model <- load_model("mle/models/norm_noise_post.rda")
 band_names <- read.csv("./assets/bands.csv")$x %>% as.vector()
-
+print(ml_model$forest$independent.variable.names)
 # load the validation data
 validation_df <- read.csv(validation_data_path, na.strings=c("NA", "n/a"))
 

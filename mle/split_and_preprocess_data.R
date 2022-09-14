@@ -65,7 +65,10 @@ metadata_columns_dropped <- c(
 
 
 weights <- lapply(X = speclib$Genus, FUN = get_weight_by_genus)
-write.csv(weights, "mle/weights.csv")
+print(weights)
+json_weights_str <- rjson::toJSON(weights)
+write(json_weights_str, file = "mle/weights.json")
+write.table(weights, "mle/weights.csv")
 used_cols <- setdiff(colnames(speclib), metadata_columns_dropped)
 training_data <- speclib[, used_cols]
 
