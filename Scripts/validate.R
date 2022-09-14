@@ -12,7 +12,7 @@ tm_shapes <- sf::st_read(shape_path_1)
 print(tm_shapes$CLASS_NAME)
 
 # process_tile inputs
-ml_model <- load_model(model_path_rf)
+ml_model <- load_model(model_normed_training_weighted)
 band_names <- read.csv("./assets/bands.csv")$x %>% as.vector()
 
 # load the validation data
@@ -226,6 +226,8 @@ for( i in seq_along(quadrats)){
         ))
     }
 } 
+
+validate_model()
 
 
 head(validation_df)
