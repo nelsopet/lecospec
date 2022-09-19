@@ -327,3 +327,42 @@ validate_model <- function(ml_model, save_directory, normalize_input = TRUE){
         }
     } 
 }
+
+
+aggregate_results <- function(
+    directory,
+    template = "assets/pft1_template.json", 
+    aggregation_level = 1){
+
+    files <- list.files(
+        directory,
+        pattern = "*.csv",
+        full.names = TRUE,
+    )
+
+    
+    # load & merge data
+    loaded_validation <- purrr::map(files, load_and_label_data)
+    return(Reduce(rbind, loaded_validation))
+
+
+
+
+
+}
+
+
+
+parse_path <- function(path) {
+    split_path <- strsplit(path, split = "/", fixed = TRUE)
+    return(split_path[[1]][[2]])
+}
+
+# print(parse_path("figures/twelveMile2/tm2_validation_4.csv"))
+
+load_and_label_data <- function(path) {
+    label <- parse_path(path)
+    df <- read.csv(path, header = TRUE) %>% as.data.frame()
+    df$site <- label
+    return(df %>% as.data.frame())
+}
