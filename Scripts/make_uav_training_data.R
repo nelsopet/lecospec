@@ -56,8 +56,8 @@ scaled_veg_indices <- get_vegetation_indices(
 
 # combine spectra and veg indices
 scaled_training_data <- cbind(min_max_scaled, scaled_veg_indices)
-training_normed_joined <- cbind(training_data_normed ,veg_indices_normed)
-training_base_joined <- cbind(training_data_no_norm ,vegetation_indices_no_norm)
+training_normed_joined <- cbind(training_data_normed, veg_indices_normed)
+training_base_joined <- cbind(training_data_no_norm, vegetation_indices_no_norm)
 
 write.csv(training_base_joined, "Data/Ground_Validation/training/base.csv")
 write.csv(training_normed_joined, "Data/Ground_Validation/training/normed.csv")

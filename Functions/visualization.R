@@ -257,3 +257,4 @@ plot_by_pft <- function(df){
     htmlwidgets::saveWidget(fig, fig_save_loc, selfcontained = FALSE)
     browseURL(fig_save_loc)
 }
+

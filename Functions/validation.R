@@ -343,12 +343,8 @@ aggregate_results <- function(
     
     # load & merge data
     loaded_validation <- purrr::map(files, load_and_label_data)
+    
     return(Reduce(rbind, loaded_validation))
-
-
-
-
-
 }
 
 
@@ -366,3 +362,4 @@ load_and_label_data <- function(path) {
     df$site <- label
     return(df %>% as.data.frame())
 }
+

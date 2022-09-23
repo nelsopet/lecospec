@@ -35,12 +35,12 @@ exp_save_paths <- c(
     "mle/experiments/ground_trained/unnormed_unnoised_val_weighted/",
     "mle/experiments/ground_trained/unnormed_unnoised_unweighted/",
     "mle/experiments/ground_trained/unnormed_unnoised_weighted/",
-    "mle/experiments/ground_trained/totally_unnormed_noised_unweighted",
-    "mle/experiments/ground_trained/totally_unnormed_noised_val_weighted",
-    "mle/experiments/ground_trained/totally_unnormed_noised_weighted",
-    "mle/experiments/ground_trained/totally_unnormed_unnoised_unweighted",
-    "mle/experiments/ground_trained/totally_unnormed_unnoised_val_weighted",
-    "mle/experiments/ground_trained/totally_unnormed_unnoised_weighted"
+    "mle/experiments/ground_trained/totally_unnormed_noised_unweighted/",
+    "mle/experiments/ground_trained/totally_unnormed_noised_val_weighted/",
+    "mle/experiments/ground_trained/totally_unnormed_noised_weighted/",
+    "mle/experiments/ground_trained/totally_unnormed_unnoised_unweighted/",
+    "mle/experiments/ground_trained/totally_unnormed_unnoised_val_weighted/",
+    "mle/experiments/ground_trained/totally_unnormed_unnoised_weighted/"
 )
 
 normalization_scheme <- c(
