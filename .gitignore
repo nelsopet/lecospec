@@ -36,3 +36,6 @@ tiles/*
 prediction*
 test/test_data/*
 lecospec.Rproj
+
+# forced includes
+!/Data/Ground_Validation/training/*
