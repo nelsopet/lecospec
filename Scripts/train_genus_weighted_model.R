@@ -29,6 +29,9 @@ for(row_idx in seq(nrow(total_by_genus))){
 }
 print(genus_weights)
 
+genus_weights_json <- rjson::toJSON(genus_weights)
+write(genus_weights_json, file = "mle/fg1_weights.json")
+
 get_weight_by_genus <- function(genus_name){
     return(genus_weights[[stringr::str_to_lower(genus_name)]])
 }
