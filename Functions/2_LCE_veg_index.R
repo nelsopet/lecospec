@@ -113,6 +113,7 @@ Func_Resamp <- function(Resamp) {
 
   # Removes metadata before function can be applied
   df <- metaRemove(Resamp)
+  print(colnames(df))
 
   # Converts the dataframe to a spectral object and normalizes it
   SpeclibObj <- spectrolab::as_spectra(df)

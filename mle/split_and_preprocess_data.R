@@ -18,7 +18,7 @@ model_filepath <- "mle/fg1_model_normed_weighted.rda"
 training_filepath <- "mle/training_data_redux.csv"
 test_filepath <- "mle/test_data_redux.csv"
 
-target_path <- "mle/y.csv"
+target_path <- "Data/Ground_Validation/training/labels.json"
 n4path <- "mle/no_noise_no_norm.csv"
 n2path <- "mle/training_data_noise_norm.csv"
 noise_no_norm_path <- "mle/noise_no_norm.csv"
@@ -63,13 +63,22 @@ metadata_columns_dropped <- c(
     "weights"
 )
 
+metadata_cols <- c(
+    "X",
+    "UID",
+    "ScanNum",
+    "sample_name",
+    "PFT",
+    "FncGrp1"
+)
+
 
 weights <- lapply(X = speclib$Genus, FUN = get_weight_by_genus)
 print(weights)
 json_weights_str <- rjson::toJSON(weights)
-write(json_weights_str, file = "mle/weights.json")
-write.table(weights, "mle/weights.csv")
-used_cols <- setdiff(colnames(speclib), metadata_columns_dropped)
+write(json_weights_str, file = "mle/img_weights.json")
+write.table(weights, "mle/img_weights.csv")
+used_cols <- setdiff(colnames(speclib), metadata_columns)
 training_data <- speclib[, used_cols]
 
 
@@ -111,7 +120,6 @@ if (ADD_NOISE) {
         training_data[, active_column] <- training_data[, active_column] +
             rnorm(total_observations, 0, NOISE_POWER)
     }
-
     print(head(training_data))
 }
 

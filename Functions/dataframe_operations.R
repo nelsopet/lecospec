@@ -465,3 +465,34 @@ resample_df <- function(df, normalize = TRUE) {
     combined_df <- cbind(remove_band_column(df), df_resampled)
     return(combined_df)
 }
+
+global_min_max_scale <- function(df, ignore_cols = NULL){
+    used_cols <- colnames(df)
+    if(!is.null(ignore_cols)){
+        used_cols <- setdiff(colnames(df), ignore_cols)
+    }
+
+    target_df <- df[,used_cols]
+
+    global_min <- min(target_df)
+    global_max <- max(target_df)
+
+    scaled_df <- base::scale(
+        target_df, 
+        center = rep(global_min, ncol(target_df)),
+        scale = rep((global_max - global_min), ncol(target_df))
+    )
+
+    rm(target_df)
+    gc()
+
+    return( cbind(df[, ignore_cols], scaled_df))
+}
+
+
+
+standardize <- function(df){
+    return(
+        df
+    )
+}
