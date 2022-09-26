@@ -231,6 +231,7 @@ process_tile <- function(
     return_raster = TRUE,
     band_names=NULL,
     normalize_input = TRUE,
+    scale_input = FALSE,
     return_filename = FALSE,
     save_path = NULL,
     suppress_output = FALSE
@@ -276,6 +277,12 @@ process_tile <- function(
 
         cleaned_df_no_empty_cols <- drop_empty_columns(cleaned_df)
 
+        if(scale_input){
+            cleaned_df_no_empty_cols <- global_min_max_scale(
+                cleaned_df_no_empty_cols, 
+                ignore_cols = c("x", "y")) %>%
+                as.data.frame()
+        }
         
         imputed_df <- impute_spectra(cleaned_df_no_empty_cols, cluster = cluster)
     
