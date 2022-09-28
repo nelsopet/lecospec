@@ -349,11 +349,40 @@ aggregate_results <- function(
     return(Reduce(rbind, loaded_validation))
 }
 
-
+site_indices <- c(
+    "BisonGulch",
+    "Chatanika",
+    "TwelveMile",
+    "TwelveMile",
+    "EightMile",
+    "MurphyDome",
+    "MurphyDome",
+    "MurphyDome"
+)
 
 parse_path <- function(path) {
     split_path <- strsplit(path, split = "/", fixed = TRUE)
-    return(split_path[[1]][[2]])
+    if(stringr::str_detect(path, "experiments")[1]){
+        if(stringr::str_detect(path, "site_1")[1]){
+            return("BisonGulch")
+        } else if(stringr::str_detect(path, "site_2")[1]){
+            return("Chatanika")
+        } else if(stringr::str_detect(path, "site_3")[1]){
+            return("TwelveMile")
+        } else if(stringr::str_detect(path, "site_4")[1]){
+            return("TwelveMile")
+        } else if(stringr::str_detect(path, "site_5")[1]){
+            return("EightMile")
+        } else if(stringr::str_detect(path, "site_6")[1]){
+            return("MurphyDome")
+        } else if(stringr::str_detect(path, "site_7")[1]){
+            return("MurphyDome")
+        } else if(stringr::str_detect(path, "site_8")[1]){
+            return("MurphyDome")
+    } else {
+        return(split_path[[1]][[2]])
+    }
+}
 }
 
 # print(parse_path("figures/twelveMile2/tm2_validation_4.csv"))

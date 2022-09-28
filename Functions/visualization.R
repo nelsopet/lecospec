@@ -1,4 +1,4 @@
-
+library(plotly)
 # talk to NASA spectral imaging working group r/e gaps
 
 visualize_prediction <- function(filepath, key_file, column){
@@ -203,7 +203,7 @@ create_plot <- function(df, pft, legend = FALSE){
     filtered_df <- df[df$key == pft,]
     return(
         plot_ly(filtered_df) %>%
-            add_markers(
+            plotly::add_markers(
                 x = ~validation_prop,
                 y = ~prediction_prop,
                 color = ~site,
@@ -224,7 +224,7 @@ create_plot <- function(df, pft, legend = FALSE){
     )
 }
 
-plot_by_pft <- function(df){
+plot_by_pft <- function(df, save_path = NULL, open = TRUE){
     df <- df %>% group_by(site)
     plot_abiotic <- create_plot(df, "Abiotic", legend = TRUE)
     plot_forb <- create_plot(df, "Forb")
@@ -254,7 +254,12 @@ plot_by_pft <- function(df){
     )
 
     fig_save_loc <- paste(tempfile('plotly_fig'), 'html', sep = '.')
+    if(!is.null(save_path)){
+        fig_save_loc <- save_path
+    }
     htmlwidgets::saveWidget(fig, fig_save_loc, selfcontained = FALSE)
-    browseURL(fig_save_loc)
+    if(open){
+        browseURL(fig_save_loc)
+    }
 }
 
