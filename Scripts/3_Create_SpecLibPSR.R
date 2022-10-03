@@ -15,7 +15,7 @@ library(glue)
 # In this step we will combine all our spectral profiles to form one spectral library
 
 # Creates a file path to where our spectral libraries for each site is loacated
-mypath = "./Output/"
+mypath <- "./Data/Ground_Validation/training/"
 
 # Reads in species and functional level groups dataframe creatd in script 1
 Species_groups<-read.csv("./Data/SpeciesTable_20220125.csv", encoding = 'UTF-8')
@@ -590,9 +590,13 @@ Cleaned_Speclib %>%
 ###Run LandCoverEstimator to generate Spectral Derivatives.
 #source("Functions/1_Simple_LandCoverEstimator.R")
 #source("Functions/2_Simple_LandCoverEstimator.R")
+source("Functions/1_LCE_derivs.R")
+source("Functions/2_LCE_veg_index.R")
 source("Functions/lecospectR.R")
 
-Make_Speclib_Derivs("Output/C_001_SC3_Cleaned_SpectralLib.csv", out_file)
+out_file <- ""
+
+Make_Speclib_Derivs("Data/Ground_Validation/PFT_Image_spectra/PFT_Image_SpectralLib_Clean.csv", mypath)
 #Make_Speclib_Derivs("Output/C_001_SC3_Cleaned_SpectralLib.csv",out_file="Output/")
 #Make_Speclib_Derivs("Output/C_001_SC3_Cleaned_SpectralLib4.csv", out_file = "Output/resampled/")
 #Make_Speclib_Derivs("Output/C_001_SC3_Cleaned_SpectralLib29.csv", out_file = "Output/resampled/FncGrp2/")
