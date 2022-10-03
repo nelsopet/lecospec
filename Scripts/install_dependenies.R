@@ -34,7 +34,8 @@ lecospec_depenencies <- c(
     "rjson",
     "doParallel",
     "arrow",
-    "RhpcBLASctl"
+    "RhpcBLASctl",
+    "plotly"
 )
 
 install.packages(lecospec_depenencies, repos = "http://cran.rstudio.com/")

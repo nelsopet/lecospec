@@ -212,10 +212,13 @@ create_plot <- function(df, pft, legend = FALSE){
             ) %>% plotly::layout(
                 title = pft,
                 xaxis = list(
-                    title = "Ground Truth Proportion"
+                    title = "Ground Truth Proportion",
+                    range = c(0,1)
                 ),
                 yaxis = list(
-                    title = "Predicted Proportion"
+                    title = "Predicted Proportion",
+                    range = c(0,1)
+
                 ),
                 annotations = list(x = 0.0 , y = 1.1, text = pft, showarrow = F, 
                     xref='paper', yref='paper')
