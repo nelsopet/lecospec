@@ -138,13 +138,13 @@ Cleaned_Speclib_tall_Fnc_grp1<-
   Cleaned_Speclib %>% 
   #Comment line below if data should be used before rescaling
   #global_min_max_scale(ignore_cols = ignore) %>%  
-  group_by(Functional_group1, Species_name) %>% 
-  dplyr::select(Functional_group1, Species_name) %>% 
-  unique() %>% 
-  ungroup() %>% 
-  group_by(Functional_group1) %>%
-  tally() %>% 
-  dplyr::rename(species_count = n) %>%
+      group_by(Functional_group1, Species_name) %>% 
+      dplyr::select(Functional_group1, Species_name) %>% 
+      unique() %>% 
+      ungroup() %>% 
+      group_by(Functional_group1) %>%
+      tally() %>% 
+      dplyr::rename(species_count = n) %>%
   inner_join(Cleaned_Speclib, by="Functional_group1") %>% 
   group_by(Functional_group1) %>% 
   dplyr::mutate(sample_size = n()) %>% 

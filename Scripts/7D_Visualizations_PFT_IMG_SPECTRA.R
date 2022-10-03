@@ -1,4 +1,4 @@
-PFT_IMG_SPEC_clean <- read.csv("./Data/Ground_Validation/PFT_Image_spectra/PFT_Image_SpectralLib_Clean_unsmoothed.csv")
+PFT_IMG_SPEC_clean <- read.csv("./Data/Ground_Validation/PFT_Image_spectra/PFT_Image_SpectralLib_Clean.csv")
 
 names_drop<-c("PFT.1",
               "PFT.2",
@@ -13,7 +13,11 @@ names_drop<-c("PFT.1",
               "ScanNum.3")
 cols_to_keep <- setdiff(colnames(PFT_IMG_SPEC_clean), names_drop)
 
-
+names_ignore<-c("UID",
+                "sample_name", 
+                "ScanNum",
+                "PFT",
+                "Functional_group1")
 PFT_IMG_SPEC_clean<-
 PFT_IMG_SPEC_clean %>% 
 dplyr::select(cols_to_keep) %>%
@@ -23,15 +27,31 @@ dplyr::select(cols_to_keep) %>%
                 FncGrp1, 
                  everything()
                 ) %>% 
-  dplyr::rename (Functional_group1 = FncGrp1) %>%
+  dplyr::rename (Functional_group1 = FncGrp1) %>% #colnames()
+  global_min_max_scale(ignore_cols = names_ignore) %>%
+      #group_by(Functional_group1) %>% 
+      dplyr::select(Functional_group1, PFT) %>% 
+      unique() %>% 
+      ungroup() %>% 
+      group_by(Functional_group1) %>%
+      tally() %>% 
+      dplyr::rename(species_count = n) %>%
+  inner_join(PFT_IMG_SPEC_clean, by=c("Functional_group1"="FncGrp1")) %>% 
+  group_by(Functional_group1) %>% 
+  dplyr::mutate(sample_size = n()) %>% 
+  dplyr::mutate(Functional_group1_wN = glue('{Functional_group1} {"(n="} {sample_size} {"pixels,"} {species_count} {"PFTs"})')) %>%
+  
+  
   #Use line below for unsmoothed spectra
-  pivot_longer(cols = `X397.593`:`X999.42`,  names_to  = "Wavelength", values_to = "Reflectance") %>%
+  #pivot_longer(cols = `X397.593`:`X999.42`,  names_to  = "Wavelength", values_to = "Reflectance") %>%
   #Uncomment line below for smoothed spectra
-  #pivot_longer(cols = `X450`:`X850`,  names_to  = "Wavelength", values_to = "Reflectance") %>%
-  mutate(Wavelength = gsub("X","",Wavelength)) %>%
+  pivot_longer(cols = `X398`:`X998`,  names_to  = "Wavelength", values_to = "Reflectance") %>%
+  mutate(Wavelength = gsub("X","",Wavelength)) %>% #colnames()
   #mutate(Reflectance = round(Reflectance*100,2)) %>%
-  group_by(Functional_group1,Wavelength) %>%  
-  dplyr::summarise(Median_Reflectance = median(Reflectance),
+  #group_by(Functional_group1,Wavelength) %>% 
+  group_by(Functional_group1_wN, Functional_group1,Wavelength) %>%  
+  
+   dplyr::summarise(Median_Reflectance = median(Reflectance),
                    Max_Reflectance = max(Reflectance),
                    Min_Reflectance = min(Reflectance),
                    Pct_87_5_Reflectance = quantile(Reflectance, probs = 0.875),
@@ -42,7 +62,7 @@ dplyr::select(cols_to_keep) %>%
   as.data.frame() 
 
 ######## Functional group 1 spectral profiles
-jpeg("Output/Fnc_grp1_spectral_profiles_PFT_IMG_SPECTRA_unsmoothed.jpg", height = 10000, width = 9000, res = 350)
+jpeg("Output/Fnc_grp1_spectral_profiles_PFT_IMG_SPECTRA_minmax.jpg", height = 10000, width = 9000, res = 350)
 ggplot(PFT_IMG_SPEC_clean, aes(Wavelength, Median_Reflectance,group = Functional_group1), scales = "fixed")+
   geom_ribbon(aes(Wavelength, ymin = Pct_12_5_Reflectance, ymax = Pct_87_5_Reflectance, alpha = 0.3))+
   geom_ribbon(aes(Wavelength, ymin = Lower_Reflectance, ymax = Upper_Reflectance, alpha = 0.2))+
@@ -55,8 +75,8 @@ ggplot(PFT_IMG_SPEC_clean, aes(Wavelength, Median_Reflectance,group = Functional
         axis.text = element_text(size = 20),
         axis.text.x = element_text(angle = 90)) +
   geom_line(aes(Wavelength, Median_Reflectance,color = "red"),size = 2)+
-  #facet_wrap(vars(Functional_group1_wN), scales = "fixed", ncol = 3) 
-  facet_wrap(vars(Functional_group1), scales = "fixed", ncol = 3) 
+  facet_wrap(vars(Functional_group1_wN), scales = "fixed", ncol = 3) 
+  #facet_wrap(vars(Functional_group1), scales = "fixed", ncol = 3) 
 
 dev.off()
 

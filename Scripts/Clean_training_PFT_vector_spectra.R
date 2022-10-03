@@ -2,7 +2,7 @@
 source("Functions/lecospectR.R")
 PFT_ADJ<-rjson::fromJSON(file = "./assets/pft_adj_list.json")
 Species_groups<-read.csv("./Data/SpeciesTable_20220125.csv", encoding = 'UTF-8')
-PFT_IMG_SPEC<- read.csv("Data/Ground_Validation/PFT_image_spectra/PFT_Image_SpectralLib.csv")
+PFT_IMG_SPEC<- read.csv("./Data/Ground_Validation/PFT_Image_spectra/PFT_Image_SpectralLib_smooth.csv")
 
 #Clean out all values not in key or add new value to key
 
