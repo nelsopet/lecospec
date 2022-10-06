@@ -7,11 +7,12 @@ library(ranger)
 
 USE_CAL_VAL_SPLIT <- FALSE
 ADD_NOISE <- TRUE
-
+MIN_MAX_SCALE <- TRUE
 
 # define hyperparameters
 NOISE_POWER <- 0.01
 TRAINING_PROPORTION <- 0.8
+
 
 
 model_filepath <- "mle/fg1_model_normed_weighted.rda"
@@ -23,6 +24,10 @@ n4path <- "mle/no_noise_no_norm.csv"
 n2path <- "mle/training_data_noise_norm.csv"
 noise_no_norm_path <- "mle/noise_no_norm.csv"
 no_noise_norm_path <- "mle/no_noise_norm.csv"
+
+scaled_clean_path <- "mle/scaled_ground_no_noise.csv"
+scaled_noise_path <- "mle/scaled_ground_noise.csv"
+
 
 speclib_filepath <- "Output/D_002_SpecLib_Derivs.csv"
 speclib <- read.csv(speclib_filepath, header = TRUE)
@@ -78,7 +83,7 @@ print(weights)
 json_weights_str <- rjson::toJSON(weights)
 write(json_weights_str, file = "mle/img_weights.json")
 write.table(weights, "mle/img_weights.csv")
-used_cols <- setdiff(colnames(speclib), metadata_columns)
+used_cols <- setdiff(colnames(speclib), metadata_columns_dropped)
 training_data <- speclib[, used_cols]
 
 
@@ -113,12 +118,16 @@ if (USE_CAL_VAL_SPLIT) {
 
 write.csv(training_data, n4path)
 
+scaled_data <- global_min_max_scale(training_data)
+
 
 if (ADD_NOISE) {
     for (col_index in seq_along(used_cols)) {
         active_column <- used_cols[col_index]
-        training_data[, active_column] <- training_data[, active_column] +
-            rnorm(total_observations, 0, NOISE_POWER)
+        noise <- rnorm(total_observations, 0, NOISE_POWER)
+        training_data[, active_column] <- training_data[, active_column] + noise
+            
+        scaled_data[, active_column] <- scaled_data[, active_column] + noise
     }
     print(head(training_data))
 }
@@ -127,6 +136,8 @@ write.csv(training_data, noise_no_norm_path)
 write.csv(test_data, test_filepath)
 
 speclib$weights <- as.numeric(weights)
+
+if
 
 # the data is now noised   We can move on to build some models
 ###############################
