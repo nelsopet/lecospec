@@ -2,7 +2,8 @@ source("Functions/lecospectR.R")
 
 results <- c(
     dir("mle/experiments/uav_trained/", full.names = TRUE),
-    dir("mle/experiments/ground_trained/", full.names = TRUE)
+    dir("mle/experiments/ground_trained/", full.names = TRUE),
+    dir("mle/experiments/uav_expanded/", full.names = TRUE)
 )
 
 
