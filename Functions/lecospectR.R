@@ -293,7 +293,7 @@ process_tile <- function(
 
         # drop rows that are uniformly zero
       
-        resampled_df <- resample_df(imputed_df, normalize = normalize_input)
+        resampled_df <- resample_df(imputed_df, normalize = normalize_input, max_wavelength = 995.716)
         gc()
 
         veg_indices <- get_vegetation_indices(resampled_df, ml_model, cluster = cluster)

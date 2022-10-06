@@ -24,12 +24,14 @@ colnames(training_spectra) <- extract_bands(training_spectra)
 
 training_data_normed <- resample_df(
     training_spectra,
-    normalize = TRUE
+    normalize = TRUE,
+    max_wavelength = 995.716
 )
 
 training_data_no_norm <- resample_df(
     training_spectra,
-    normalize = FALSE
+    normalize = FALSE,
+    max_wavelength = 995.716
 )
 min_max_scaled <- global_min_max_scale(training_data_no_norm)
 
@@ -59,9 +61,9 @@ scaled_training_data <- cbind(min_max_scaled, scaled_veg_indices)
 training_normed_joined <- cbind(training_data_normed, veg_indices_normed)
 training_base_joined <- cbind(training_data_no_norm, vegetation_indices_no_norm)
 
-write.csv(training_base_joined, "Data/Ground_Validation/training/base.csv")
-write.csv(training_normed_joined, "Data/Ground_Validation/training/normed.csv")
-write.csv(scaled_training_data, "Data/Ground_Validation/training/scaled.csv")
+write.csv(training_base_joined, "Data/Ground_Validation/training/base_exp.csv")
+write.csv(training_normed_joined, "Data/Ground_Validation/training/normed_exp.csv")
+write.csv(scaled_training_data, "Data/Ground_Validation/training/scaled_exp.csv")
 
 # write the training labels (as JSON)
 json_targets <- rjson::toJSON(uav_speclib_df$FncGrp1)

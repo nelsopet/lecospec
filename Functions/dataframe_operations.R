@@ -442,7 +442,13 @@ extract_bands <- function(df){
     return(bands)
 }
 
-resample_df <- function(df, normalize = TRUE) {
+resample_df <- function(
+    df,
+    normalize = TRUE,
+    min_wavelength = 397.593,
+    max_wavelength = 995.716,
+    delta = 5
+    ) {
     spec_library <- df_to_speclib(df, type="spectrolab")
     
     if(normalize){
@@ -451,11 +457,12 @@ resample_df <- function(df, normalize = TRUE) {
 
     speclib_resampled <- spectrolab::resample(
         spec_library,
-        seq(397.593,899.424,5),
+        seq(min_wavelength, max_wavelength, delta),
         parallel = FALSE
-    ) 
+    )
     
-    df_resampled <- speclib_to_df(speclib_resampled) %>% dplyr::select(-sample_name)
+    df_resampled <- speclib_to_df(speclib_resampled) %>%
+        dplyr::select(-sample_name)
 
     colnames(df_resampled) <- paste0(
         "X",

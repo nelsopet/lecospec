@@ -3,45 +3,45 @@ source("Functions/lecospectR.R")
 
 # set all the paths for saving the data, etc.
 model_paths <- c(
-    "mle/models/norm_img.rda",
-    "mle/models/norm_img_pw.rda",
-    "mle/models/norm_img_w.rda",
-    "mle/models/base_img.rda",
-    "mle/models/base_img_pw.rda",
-    "mle/models/base_img_w.rda",
-    "mle/models/scale_img.rda",
-    "mle/models/scale_img_pw.rda",
-    "mle/models/scale_img_w.rda",
-    "mle/models/norm_noise_img.rda",
-    "mle/models/norm_noise_img_pw.rda",
-    "mle/models/norm_noise_img_w.rda",
-    "mle/models/base_noise_img.rda",
-    "mle/models/base_noise_img_pw.rda",
-    "mle/models/base_noise_img_w.rda",
-    "mle/models/scale_noise_img.rda",
-    "mle/models/scale_noise_img_pw.rda",
-    "mle/models/scale_noise_img_w.rda"
+    "mle/models/norm_img_exp.rda",
+    "mle/models/norm_img_pw_exp.rda",
+    "mle/models/norm_img_w_exp.rda",
+    "mle/models/base_img_exp.rda",
+    "mle/models/base_img_pw_exp.rda",
+    "mle/models/base_img_w_exp.rda",
+    "mle/models/scale_img_exp.rda",
+    "mle/models/scale_img_pw_exp.rda",
+    "mle/models/scale_img_w_exp.rda",
+    "mle/models/norm_noise_img_exp.rda",
+    "mle/models/norm_noise_img_pw_exp.rda",
+    "mle/models/norm_noise_img_w_exp.rda",
+    "mle/models/base_noise_img_exp.rda",
+    "mle/models/base_noise_img_pw_exp.rda",
+    "mle/models/base_noise_img_w_exp.rda",
+    "mle/models/scale_noise_img_exp.rda",
+    "mle/models/scale_noise_img_pw_exp.rda",
+    "mle/models/scale_noise_img_w_exp.rda"
 )
 
 experiment_save_paths <- c(
-    "mle/experiments/uav_trained/normed_unnoised_unweighted/",
-    "mle/experiments/uav_trained/normed_unnoised_val_weighted/",
-    "mle/experiments/uav_trained/normed_unnoised_weighted/",
-    "mle/experiments/uav_trained/unnormed_unnoised_unweighted/",
-    "mle/experiments/uav_trained/unnormed_unnoised_val_weighted/",
-    "mle/experiments/uav_trained/unnormed_unnoised_weighted/",
-    "mle/experiments/uav_trained/scaled_no_noise_unweighted/",
-    "mle/experiments/uav_trained/scaled_no_noise_val_weighted/",
-    "mle/experiments/uav_trained/scaled_no_noise_weighted/",
-    "mle/experiments/uav_trained/normed_noised_unweighted/",
-    "mle/experiments/uav_trained/normed_noised_val_weighted/",
-    "mle/experiments/uav_trained/normed_noised_weighted/",
-    "mle/experiments/uav_trained/unnormed_noised_unweighted/",
-    "mle/experiments/uav_trained/unnormed_noised_val_weighted/",
-    "mle/experiments/uav_trained/unnormed_noised_weighted/",
-    "mle/experiments/uav_trained/scaled_noise_unweighted/",
-    "mle/experiments/uav_trained/scaled_noise_weighted/",
-    "mle/experiments/uav_trained/scaled_noised_val_weighted/"
+    "mle/experiments/uav_expanded/normed_unnoised_unweighted/",
+    "mle/experiments/uav_expanded/normed_unnoised_val_weighted/",
+    "mle/experiments/uav_expanded/normed_unnoised_weighted/",
+    "mle/experiments/uav_expanded/unnormed_unnoised_unweighted/",
+    "mle/experiments/uav_expanded/unnormed_unnoised_val_weighted/",
+    "mle/experiments/uav_expanded/unnormed_unnoised_weighted/",
+    "mle/experiments/uav_expanded/scaled_no_noise_unweighted/",
+    "mle/experiments/uav_expanded/scaled_no_noise_val_weighted/",
+    "mle/experiments/uav_expanded/scaled_no_noise_weighted/",
+    "mle/experiments/uav_expanded/normed_noised_unweighted/",
+    "mle/experiments/uav_expanded/normed_noised_val_weighted/",
+    "mle/experiments/uav_expanded/normed_noised_weighted/",
+    "mle/experiments/uav_expanded/unnormed_noised_unweighted/",
+    "mle/experiments/uav_expanded/unnormed_noised_val_weighted/",
+    "mle/experiments/uav_expanded/unnormed_noised_weighted/",
+    "mle/experiments/uav_expanded/scaled_noise_unweighted/",
+    "mle/experiments/uav_expanded/scaled_noise_weighted/",
+    "mle/experiments/uav_expanded/scaled_noised_val_weighted/"
 )
 
 normalize_flags <- c(
@@ -88,7 +88,7 @@ scale_flags <- c(
 
 
 # run the experiments
-for(model_idx in seq_along(model_paths)){
+for(model_idx in 7:length(model_paths)){
     model <- load_model(model_paths[[model_idx]])
     results <- validate_model(
         model, 

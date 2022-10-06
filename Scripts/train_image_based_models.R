@@ -3,10 +3,11 @@ source("Functions/lecospectR.R")
 NOISE_POWER <- 0.01
 target_path <- "Data/Ground_Validation/training/labels.json"
 
-train_base_path <- "Data/Ground_Validation/training/base.csv"
-train_norm_path <- "Data/Ground_Validation/training/normed.csv"
-train_scale_path <- "Data/Ground_Validation/training/scaled.csv"
+train_base_path <- "Data/Ground_Validation/training/base_exp.csv"
+train_norm_path <- "Data/Ground_Validation/training/normed_exp.csv"
+train_scale_path <- "Data/Ground_Validation/training/scaled_exp.csv"
 
+targets <- rjson::fromJSON(file = target_path) %>% as.factor()
 base_weights <- rjson::fromJSON(file = "mle/fg1_weights.json") %>% as.list()
 posterior_weights <- purrr::map(targets, function(x){
     return(1 / base_weights[[x]])
@@ -17,7 +18,6 @@ train_base <- read.csv(train_base_path)
 train_norm <- read.csv(train_norm_path)
 train_scale <- read.csv(train_scale_path)
 
-targets <- rjson::fromJSON(file = target_path) %>% as.factor()
 print(targets)
 
 counts <- targets %>% table() %>% as.list()
@@ -52,7 +52,7 @@ norm <- ranger::ranger(
     x = train_norm[, data_cols],
     y = targets
 )
-save(norm,file = "mle/models/norm_img.rda")
+save(norm,file = "mle/models/norm_img_exp.rda")
 
 
 # 3 models with norm and noise
@@ -63,7 +63,7 @@ norm_pw <- ranger::ranger(
     x = train_norm[, data_cols],
     y = targets
 )
-save(norm_pw,file = "mle/models/norm_img_pw.rda")
+save(norm_pw,file = "mle/models/norm_img_pw_exp.rda")
 
 # 3 models with norm and noise
 norm_w <- ranger::ranger(
@@ -73,7 +73,7 @@ norm_w <- ranger::ranger(
     x = train_norm[, data_cols],
     y = targets
 )
-save(norm_w, file = "mle/models/norm_img_w.rda")
+save(norm_w, file = "mle/models/norm_img_w_exp.rda")
 
 ###################################################
 ##     base models
@@ -86,7 +86,7 @@ base <- ranger::ranger(
     x = train_base[, data_cols],
     y = targets
 )
-save(base, file = "mle/models/base_img.rda")
+save(base, file = "mle/models/base_img_exp.rda")
 
 
 # 3 models with norm and noise
@@ -97,7 +97,7 @@ base_pw <- ranger::ranger(
     x = train_base[, data_cols],
     y = targets
 )
-save(base,file = "mle/models/base_img_pw.rda")
+save(base,file = "mle/models/base_img_pw_exp.rda")
 
 # 3 models with norm and noise
 base_w <- ranger::ranger(
@@ -107,7 +107,7 @@ base_w <- ranger::ranger(
     x = train_base[, data_cols],
     y = targets
 )
-save(base_w, file = "mle/models/base_img_w.rda")
+save(base_w, file = "mle/models/base_img_w_exp.rda")
 
 
 ###################################################
@@ -121,7 +121,7 @@ scale <- ranger::ranger(
     x = train_scale[, data_cols],
     y = targets
 )
-save(scale, file = "mle/models/scale_img.rda")
+save(scale, file = "mle/models/scale_img_exp.rda")
 
 
 # 3 models with norm and noise
@@ -132,7 +132,7 @@ scale_pw <- ranger::ranger(
     x = train_scale[, data_cols],
     y = targets
 )
-save(scale,file = "mle/models/scale_img_pw.rda")
+save(scale,file = "mle/models/scale_img_pw_exp.rda")
 
 # 3 models with norm and noise
 scale_w <- ranger::ranger(
@@ -142,7 +142,7 @@ scale_w <- ranger::ranger(
     x = train_scale[, data_cols],
     y = targets
 )
-save(scale_w, file = "mle/models/scale_img_w.rda")
+save(scale_w, file = "mle/models/scale_img_w_exp.rda")
 
 ###################################################
 ##     norm models noised
@@ -155,7 +155,7 @@ norm_noise <- ranger::ranger(
     x = noised_norm[, data_cols],
     y = targets
 )
-save(norm_noise,file = "mle/models/norm_noise_img.rda")
+save(norm_noise,file = "mle/models/norm_noise_img_exp.rda")
 
 
 # 3 models with norm and noise
@@ -166,7 +166,7 @@ norm_noise_pw <- ranger::ranger(
     x = noised_norm[, data_cols],
     y = targets
 )
-save(norm_noise_pw,file = "mle/models/norm_noise_img_pw.rda")
+save(norm_noise_pw,file = "mle/models/norm_noise_img_pw_exp.rda")
 
 # 3 models with norm and noise
 norm_noise_w <- ranger::ranger(
@@ -176,7 +176,7 @@ norm_noise_w <- ranger::ranger(
     x = noised_norm[, data_cols],
     y = targets
 )
-save(norm_noise_w, file = "mle/models/norm_noise_img_w.rda")
+save(norm_noise_w, file = "mle/models/norm_noise_img_w_exp.rda")
 
 ###################################################
 ##     base models noised
@@ -189,7 +189,7 @@ base_noise <- ranger::ranger(
     x = noised_base[, data_cols],
     y = targets
 )
-save(base_noise, file = "mle/models/base_noise_img.rda")
+save(base_noise, file = "mle/models/base_noise_img_exp.rda")
 
 
 # 3 models with norm and noise
@@ -200,7 +200,7 @@ base_noise_pw <- ranger::ranger(
     x = noised_base[, data_cols],
     y = targets
 )
-save(base_noise,file = "mle/models/base_noise_img_pw.rda")
+save(base_noise,file = "mle/models/base_noise_img_pw_exp.rda")
 
 # 3 models with norm and noise
 base_noise_w <- ranger::ranger(
@@ -210,7 +210,7 @@ base_noise_w <- ranger::ranger(
     x = noised_base[, data_cols],
     y = targets
 )
-save(base_noise_w, file = "mle/models/base_noise_img_w.rda")
+save(base_noise_w, file = "mle/models/base_noise_img_w_exp.rda")
 
 
 ###################################################
@@ -224,7 +224,7 @@ scale_noise <- ranger::ranger(
     x = noised_scale[, data_cols],
     y = targets
 )
-save(scale_noise, file = "mle/models/scale_noise_img.rda")
+save(scale_noise, file = "mle/models/scale_noise_img_exp.rda")
 
 
 # 3 models with norm and noise
@@ -235,7 +235,7 @@ scale_noise_pw <- ranger::ranger(
     x = noised_scale[, data_cols],
     y = targets
 )
-save(scale_noise,file = "mle/models/scale_noise_img_pw.rda")
+save(scale_noise,file = "mle/models/scale_noise_img_pw_exp.rda")
 
 # 3 models with norm and noise
 scale_noise_w <- ranger::ranger(
@@ -245,6 +245,9 @@ scale_noise_w <- ranger::ranger(
     x = noised_scale[, data_cols],
     y = targets
 )
-save(scale_noise_w, file = "mle/models/scale_noise_img_w.rda")
+save(scale_noise_w, file = "mle/models/scale_noise_img_w_exp.rda")
+
+
+
 
 
