@@ -240,11 +240,11 @@ process_tile <- function(
     input_crs <- raster::crs(raster_obj)
     print(paste0("preprocessing raster at ", tile_filename))
     base_df <- preprocess_raster_to_df(raster_obj, ml_model, band_names=band_names)
-    print(input_crs)
+    #print(input_crs)
     
     if(nrow(base_df) < 2){
-        print("The tile has no rows!")
-        print(dim(base_df))
+        #print("The tile has no rows!")
+        #print(dim(base_df))
         handle_empty_tile(
             raster_obj,
             save_path = save_path,
@@ -258,7 +258,7 @@ process_tile <- function(
             } 
 
         } 
-        print(save_path)
+        #print(save_path)
         return(unlist(save_path))
         # add return value if output is suppressed
     } else {
@@ -299,14 +299,14 @@ process_tile <- function(
         veg_indices <- get_vegetation_indices(resampled_df, ml_model, cluster = cluster)
 
 
-        print("Resampled Dataframe Dimensions:")
-        print(dim(resampled_df))
-        print("Index Dataframe Dimensions:")
-        print(dim(veg_indices))
+        #print("Resampled Dataframe Dimensions:")
+        #print(dim(resampled_df))
+        #print("Index Dataframe Dimensions:")
+        #print(dim(veg_indices))
 
         df <- cbind(resampled_df, veg_indices)
-        print("Input Data Columns")
-        print(colnames(df))
+        #print("Input Data Columns")
+        #print(colnames(df))
         #df <- df %>% dplyr::select(x, y, dplyr::all_of(target_model_cols)) 
         # above line should not be needed, testing then deleting
         rm(veg_indices)
@@ -333,7 +333,7 @@ process_tile <- function(
         raster::crs(prediction) <- input_crs
 
         if(suppress_output){
-            print(save_path)
+            #print(save_path)
             return(unlist(save_path))
         }
         return(prediction)

@@ -11,8 +11,6 @@
 
 #tst<-brick(paste(path,imgs[x], sep=""))
 #plot(tst)
-#band_count<-names(tst) %>% length()
-#band_names <- read.csv("./assets/bands.csv")$x[1:band_count] %>% as.vector()
 #
 #names(tst)<-band_names
 #
@@ -47,12 +45,15 @@
 #meta(df)
 
 
-
 #Parse metadata and add to each raster of a single PFT
 #Bison Gulch
 path<-("Data/Ground_Validation/Imagery/BisonPFT/")
 allfiles<-list.files(path) 
 imgs = grep(".envi$", allfiles, value = TRUE)
+band_path<-brick(paste(path,imgs[1], sep=""))
+band_count<-names(band_path) %>% length()
+band_names <- read.csv("./assets/bands.csv")$x[1:band_count] %>% as.vector()
+band_count<-names(path) %>% length()
 
 BisonPFT_labeled<-lapply(1:length(imgs), function(x){ 
 imgs_names<-str_match(imgs[x], "PFTs\\s*(.*?)\\s*.envi") %>%
@@ -70,6 +71,8 @@ new_names<-extract_bands(df)
 names(df)<-new_names
 df <- filter_bands(df)
 df <- df_to_speclib(df, type="spectrolab")
+#df<-spectrolab::resample(df, new_bands = seq(450, 850, 0.5), parallel = FALSE)
+df<-spectrolab::resample(df, new_bands = seq(398, 999, 5), parallel = FALSE)
 PFT<-separate(data.frame(A = imgs_names), col = "V2" , into = c("PFT", "ScanNum"), sep = "(?<=[a-zA-Z])\\s*(?=[0-9])")
 
 PFT$ScanNum<-ifelse(is.na(PFT$ScanNum)==TRUE,1,PFT$ScanNum)
@@ -106,6 +109,9 @@ ChatanikaPFT_labeled<-lapply(1:length(imgs), function(x){
   names(df)<-new_names
   df <- filter_bands(df)
   df <- df_to_speclib(df, type="spectrolab")
+  #df<-spectrolab::resample(df, new_bands = seq(450, 850, 0.5), parallel = FALSE)
+  df<-spectrolab::resample(df, new_bands = seq(398, 999, 5), parallel = FALSE)
+  
   PFT<-separate(data.frame(A = imgs_names), col = "V2" , into = c("PFT", "ScanNum"), sep = "(?<=[a-zA-Z])\\s*(?=[0-9])")
   
   PFT$ScanNum<-ifelse(is.na(PFT$ScanNum)==TRUE,1,PFT$ScanNum)
@@ -143,6 +149,8 @@ EightMilePFT_labeled<-lapply(1:length(imgs), function(x){
   names(df)<-new_names
   df <- filter_bands(df)
   df <- df_to_speclib(df, type="spectrolab")
+  #df<-spectrolab::resample(df, new_bands = seq(450, 850, 0.5), parallel = FALSE)
+  df<-spectrolab::resample(df, new_bands = seq(398, 999, 5), parallel = FALSE)
   PFT<-separate(data.frame(A = imgs_names), col = "V2" , into = c("PFT", "ScanNum"), sep = "(?<=[a-zA-Z])\\s*(?=[0-9])")
   
   PFT$ScanNum<-ifelse(is.na(PFT$ScanNum)==TRUE,1,PFT$ScanNum)
@@ -178,6 +186,8 @@ TwelveMilePFT_labeled<-lapply(1:length(imgs), function(x){
   names(df)<-new_names
   df <- filter_bands(df)
   df <- df_to_speclib(df, type="spectrolab")
+  #df<-spectrolab::resample(df, new_bands = seq(450, 850, 0.5), parallel = FALSE)
+  df<-spectrolab::resample(df, new_bands = seq(398, 999, 5), parallel = FALSE)
   PFT<-separate(data.frame(A = imgs_names), col = "V2" , into = c("PFT", "ScanNum"), sep = "(?<=[a-zA-Z])\\s*(?=[0-9])")
   
   PFT$ScanNum<-ifelse(is.na(PFT$ScanNum)==TRUE,1,PFT$ScanNum)
@@ -194,9 +204,9 @@ TwelveMilePFT_labeled<-lapply(1:length(imgs), function(x){
 })
 
 
-speclib_list<-c(BisonPFT_labeled,ChatanikaPFT_labeled,EightMilePFT_labeled,TwelveMilePFT_labeled)
+speclib_list<-c(BisonPFT_labeled,ChatanikaPFT_labeled,EightMilePFT_labeled) #,TwelveMilePFT_labeled)
 PFT_image_spectra<-Reduce(spectrolab::combine,speclib_list)
 
-write.csv(as.data.frame(PFT_image_spectra), "./Data/Ground_Validation/PFT_Image_spectra/PFT_Image_SpectralLib.csv")
+write.csv(as.data.frame(PFT_image_spectra), "./Data/Ground_Validation/PFT_Image_spectra/PFT_Image_SpectralLib_smooth.csv")
 
-saveRDS(PFT_image_spectra,"./Data/Ground_Validation/PFT_Image_spectra/PFT_Image_SpectralLib.rds")
+saveRDS(PFT_image_spectra,"./Data/Ground_Validation/PFT_Image_spectra/PFT_Image_SpectralLib_smooth.rds")

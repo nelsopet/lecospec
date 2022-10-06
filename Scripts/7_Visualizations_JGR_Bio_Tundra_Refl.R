@@ -131,16 +131,20 @@ Cleaned_Speclib_tall_Fnc_grp2 <- Cleaned_Speclib %>%
   as.data.frame() # %>%
 # group_by(Species_name, Wavelength)
 
+#Make a list of columns to ignore for rescaling
+ignore<-colnames(Cleaned_Speclib[,1:40])
 
 Cleaned_Speclib_tall_Fnc_grp1<-
   Cleaned_Speclib %>% 
-  group_by(Functional_group1, Species_name) %>% 
-  dplyr::select(Functional_group1, Species_name) %>% 
-  unique() %>% 
-  ungroup() %>% 
-  group_by(Functional_group1) %>%
-  tally() %>% 
-  dplyr::rename(species_count = n) %>%
+  #Comment line below if data should be used before rescaling
+  #global_min_max_scale(ignore_cols = ignore) %>%  
+      group_by(Functional_group1, Species_name) %>% 
+      dplyr::select(Functional_group1, Species_name) %>% 
+      unique() %>% 
+      ungroup() %>% 
+      group_by(Functional_group1) %>%
+      tally() %>% 
+      dplyr::rename(species_count = n) %>%
   inner_join(Cleaned_Speclib, by="Functional_group1") %>% 
   group_by(Functional_group1) %>% 
   dplyr::mutate(sample_size = n()) %>% 
@@ -376,7 +380,7 @@ dev.off()
 
 
 ######## Functional group 1 spectral profiles
-jpeg("Output/Fnc_grp1_spectral_profiles.jpg", height = 10000, width = 9000, res = 350)
+jpeg("Output/Fnc_grp1_spectral_profiles_minmax.jpg", height = 10000, width = 9000, res = 350)
 ggplot(Cleaned_Speclib_tall_Fnc_grp1, aes(Wavelength, Median_Reflectance,group = Functional_group1), scales = "fixed")+
   geom_ribbon(aes(Wavelength, ymin = Pct_12_5_Reflectance, ymax = Pct_87_5_Reflectance, alpha = 0.3))+
   geom_ribbon(aes(Wavelength, ymin = Lower_Reflectance, ymax = Upper_Reflectance, alpha = 0.2))+
