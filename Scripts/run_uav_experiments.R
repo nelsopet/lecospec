@@ -88,12 +88,15 @@ scale_flags <- c(
 
 
 # run the experiments
-for(model_idx in 7:length(model_paths)){
+for(model_idx in 12:length(model_paths)){
     model <- load_model(model_paths[[model_idx]])
     results <- validate_model(
         model, 
         experiment_save_paths[[model_idx]],
-        normalize_flags[[model_idx]]
+        normalize_input = normalize_flags[[model_idx]],
+        scale_input = scale_flags[[model_idx]]
     )
 }
 
+print(model$forest$independent.variable.names)
+print(model_idx)
