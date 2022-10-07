@@ -72,7 +72,7 @@ names(df)<-new_names
 df <- filter_bands(df)
 df <- df_to_speclib(df, type="spectrolab")
 #df<-spectrolab::resample(df, new_bands = seq(450, 850, 0.5), parallel = FALSE)
-df<-spectrolab::resample(df, new_bands = seq(398, 999, 5), parallel = FALSE)
+df<-spectrolab::resample(df, new_bands = seq(398, 999, 1), parallel = FALSE)
 PFT<-separate(data.frame(A = imgs_names), col = "V2" , into = c("PFT", "ScanNum"), sep = "(?<=[a-zA-Z])\\s*(?=[0-9])")
 
 PFT$ScanNum<-ifelse(is.na(PFT$ScanNum)==TRUE,1,PFT$ScanNum)
@@ -110,7 +110,7 @@ ChatanikaPFT_labeled<-lapply(1:length(imgs), function(x){
   df <- filter_bands(df)
   df <- df_to_speclib(df, type="spectrolab")
   #df<-spectrolab::resample(df, new_bands = seq(450, 850, 0.5), parallel = FALSE)
-  df<-spectrolab::resample(df, new_bands = seq(398, 999, 5), parallel = FALSE)
+  df<-spectrolab::resample(df, new_bands = seq(398, 999, 1), parallel = FALSE)
   
   PFT<-separate(data.frame(A = imgs_names), col = "V2" , into = c("PFT", "ScanNum"), sep = "(?<=[a-zA-Z])\\s*(?=[0-9])")
   
@@ -150,7 +150,7 @@ EightMilePFT_labeled<-lapply(1:length(imgs), function(x){
   df <- filter_bands(df)
   df <- df_to_speclib(df, type="spectrolab")
   #df<-spectrolab::resample(df, new_bands = seq(450, 850, 0.5), parallel = FALSE)
-  df<-spectrolab::resample(df, new_bands = seq(398, 999, 5), parallel = FALSE)
+  df<-spectrolab::resample(df, new_bands = seq(398, 999, 1), parallel = FALSE)
   PFT<-separate(data.frame(A = imgs_names), col = "V2" , into = c("PFT", "ScanNum"), sep = "(?<=[a-zA-Z])\\s*(?=[0-9])")
   
   PFT$ScanNum<-ifelse(is.na(PFT$ScanNum)==TRUE,1,PFT$ScanNum)
@@ -187,7 +187,7 @@ TwelveMilePFT_labeled<-lapply(1:length(imgs), function(x){
   df <- filter_bands(df)
   df <- df_to_speclib(df, type="spectrolab")
   #df<-spectrolab::resample(df, new_bands = seq(450, 850, 0.5), parallel = FALSE)
-  df<-spectrolab::resample(df, new_bands = seq(398, 999, 5), parallel = FALSE)
+  df<-spectrolab::resample(df, new_bands = seq(398, 999, 1), parallel = FALSE)
   PFT<-separate(data.frame(A = imgs_names), col = "V2" , into = c("PFT", "ScanNum"), sep = "(?<=[a-zA-Z])\\s*(?=[0-9])")
   
   PFT$ScanNum<-ifelse(is.na(PFT$ScanNum)==TRUE,1,PFT$ScanNum)
