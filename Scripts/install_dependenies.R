@@ -35,7 +35,8 @@ lecospec_depenencies <- c(
     "doParallel",
     "arrow",
     "RhpcBLASctl",
-    "plotly"
+    "plotly",
+    "xtable"
 )
 
 install.packages(lecospec_depenencies, repos = "http://cran.rstudio.com/")

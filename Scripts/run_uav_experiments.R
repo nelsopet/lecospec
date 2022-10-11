@@ -23,6 +23,24 @@ model_paths <- c(
     "mle/models/scale_noise_img_w_exp.rda"
 )
 
+scaled_ground_paths <- c(
+    "mle/models/scaled_clean_post.rda",
+    "mle/models/scaled_clean_prior.rda",
+    "mle/models/scaled_clean_no_weight.rda",
+    "mle/models/scaled_noise_post.rda",
+    "mle/models/scaled_noise_prior.rda",
+    "mle/models/scaled_noise_no_weight.rda"
+)
+
+scaled_save_paths <- c(
+    "mle/experiments/ground_trained/scaled_noised_val_weighted/",
+    "mle/experiments/ground_trained/scaled_noised_weighted/",
+    "mle/experiments/ground_trained/scaled_noised_unweighted/",
+    "mle/experiments/ground_trained/scaled_unnoised_val_weighted/",
+    "mle/experiments/ground_trained/scaled_unnoised_weighted/",
+    "mle/experiments/ground_trained/scaled_unnoised_unweighted/"
+)
+
 experiment_save_paths <- c(
     "mle/experiments/uav_expanded/normed_unnoised_unweighted/",
     "mle/experiments/uav_expanded/normed_unnoised_val_weighted/",
@@ -88,6 +106,7 @@ scale_flags <- c(
 
 
 # run the experiments
+
 for(model_idx in 12:length(model_paths)){
     model <- load_model(model_paths[[model_idx]])
     results <- validate_model(
