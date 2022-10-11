@@ -1,4 +1,5 @@
 library(plotly)
+library(pivottabler)
 # talk to NASA spectral imaging working group r/e gaps
 
 visualize_prediction <- function(filepath, key_file, column){
@@ -263,6 +264,66 @@ plot_by_pft <- function(df, save_path = NULL, open = TRUE){
     htmlwidgets::saveWidget(fig, fig_save_loc, selfcontained = FALSE)
     if(open){
         browseURL(fig_save_loc)
+    }
+}
+
+calculate_r_squared <- function(
+    df, 
+    independent_var, 
+    dependent_var){
+    linear_model <- lm(
+        df[,dependent_var] ~ df[,independent_var]
+    )
+    return(summary(linear_model)$r.squared)
+}
+
+
+
+write_validation_table <- function(
+    df, 
+    save_path=NULL, 
+    target_variable = "site",
+    grouping_variable = "key",
+    open=FALSE
+    ){
+    
+    base_html <- readr::read_file("assets/table_template.html")
+
+    row_values <- unique(df[,grouping_variable]) %>% as.character()
+    column_values <- unique(df[,target_variable]) %>% as.character()
+
+    row_string <- "<thead><tr><th>&nbsp</th>"
+    for(value in column_values){
+        row_string <- paste0(row_string, "<th>", value, "</th>")
+    }
+    row_string <- paste0(row_string, "</tr></thead>\n<tbody>")
+
+    for(row in row_values){
+        col_filtered_df <- df[df[,grouping_variable] == row,]
+        row_string <- paste0(row_string, "<tr>", "<td>", row, "</td>")
+        for(col in column_values){
+
+            filtered_df <- col_filtered_df[col_filtered_df[,target_variable]==col,]
+            r_squared <- calculate_r_squared(
+                filtered_df,
+                "validation_prop",
+                "prediction_prop")
+            row_string <- paste0(row_string, "<td>", r_squared, "</td>")
+        }
+
+        row_string <- paste0(row_string, "</tr>\n")
+    }
+    html <- stringr::str_replace(base_html, stringr::fixed("{{table}}"), row_string)
+
+    save_location <- save_path
+    if(is.null(save_path)){
+        save_location <- tempfile(pattern = "_table.html")
+    } 
+
+    write(html, file = save_location)
+
+    if(open){
+        utils::browseURL(save_location)
     }
 }
 

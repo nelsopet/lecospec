@@ -119,6 +119,8 @@ if (USE_CAL_VAL_SPLIT) {
 write.csv(training_data, n4path)
 
 scaled_data <- global_min_max_scale(training_data)
+write.csv(scaled_data, scaled_clean_path)
+
 
 
 if (ADD_NOISE) {
@@ -130,14 +132,13 @@ if (ADD_NOISE) {
         scaled_data[, active_column] <- scaled_data[, active_column] + noise
     }
     print(head(training_data))
+    write.csv(training_data, noise_no_norm_path)
+    write.csv(scaled_data, scaled_noise_path)
 }
 
-write.csv(training_data, noise_no_norm_path)
-write.csv(test_data, test_filepath)
+#write.csv(test_data, test_filepath)
 
 speclib$weights <- as.numeric(weights)
-
-if
 
 # the data is now noised   We can move on to build some models
 ###############################

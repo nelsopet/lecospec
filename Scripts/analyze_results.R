@@ -7,13 +7,26 @@ results <- c(
 )
 
 
+
+
 for(folder in results){
-    aggregated_results <- aggregate_results(folder)
+    aggregated_results <- aggregate_results(folder) %>% as.data.frame()
     save_path <- paste0(folder, "/aggregates.html" )
+    try(
+
     plot_by_pft(
         aggregated_results,
         save_path = save_path,
         open = FALSE
+    )
+    )
+    try(
+
+    write_validation_table(
+        aggregated_results,
+        save_path = paste0(folder, "/table.html"),
+        open = FALSE
+        )
     )
 }
 
