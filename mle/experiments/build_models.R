@@ -1,4 +1,7 @@
-save_paths <- dir("./mle/experiments/ground_trained/", full.names = TRUE, include.dirs=TRUE)
+save_paths <- dir(
+    "./mle/experiments/ground_trained/",
+    full.names = TRUE, include.dirs=TRUE
+    )
 print(save_paths)
 
 
@@ -162,7 +165,7 @@ save(norm_noise_prior, file = "mle/models/no_norm_no_noise_prior.rda")
 #     Scaled models
 ##########################################################
 
-scaled_noise_prior <- ranger::ranger(
+scaled_noise_post <- ranger::ranger(
     importance = "impurity",
     replace = TRUE,
     case.weights = posterior_weights,
@@ -192,7 +195,7 @@ scaled_noise_prior <- ranger::ranger(
 save(scaled_noise_prior, file = "mle/models/scaled_noise_prior.rda")
 
 # clean
-scaled_clean_prior <- ranger::ranger(
+scaled_clean_post <- ranger::ranger(
     importance = "impurity",
     replace = TRUE,
     case.weights = posterior_weights,
