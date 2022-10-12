@@ -503,3 +503,28 @@ standardize <- function(df){
         df
     )
 }
+
+
+# filters a data frame (using the columns specified) to be between the values provided
+filter_all_between <- function(
+    df, 
+    min_value, 
+    max_value,
+    ignore_cols = NULL){
+
+     used_cols <- colnames(df)
+    if(!is.null(ignore_cols)){
+        used_cols <- setdiff(colnames(df), ignore_cols)
+    }
+
+
+        max_by_row <- apply(df[, used_cols], 1, base::max) %>% 
+            as.data.frame()
+        df_filtered <- df[max_by_row < max_value, ]
+
+        min_by_row <- apply(df_filtered[, used_cols], 1, base::min) %>% 
+            as.data.frame()
+        df_filtered <- df_filtered[min_by_row > min_value, ]
+
+        return(df_filtered)
+}

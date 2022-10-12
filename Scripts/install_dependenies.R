@@ -36,7 +36,7 @@ lecospec_depenencies <- c(
     "arrow",
     "RhpcBLASctl",
     "plotly",
-    "xtable"
+    "readr"
 )
 
 install.packages(lecospec_depenencies, repos = "http://cran.rstudio.com/")
