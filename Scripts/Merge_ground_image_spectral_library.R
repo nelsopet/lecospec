@@ -132,14 +132,37 @@ Cleaned_Speclib %>%
 
 str(Cleaned_Speclib_merge)
 
-Cleaned_Speclib_merge %>% dplyr::select(-UID,-Source, -Functional_group1) %>% as.matrix() %>% hist()
-
 Cleaned_Speclib_merge %>%
   dplyr::select(UID,Source, Functional_group1, everything()) %>%
   pivot_longer(cols = `X398`:`X998`,  names_to  = "Wavelength", values_to = "Reflectance") #%>%
   #dplyr::filter(is.na(Reflectance))
   #dplyr::filter(Reflectance==0)
   
+#PCA of ground spectra only
+ground_PFT_spectra_mat<-Cleaned_Speclib_merge %>% 
+  dplyr::select(-UID,-Source, -Functional_group1) %>% 
+  as.matrix() 
+
+#Replace any NAs or Zeros with very small value
+ground_PFT_spectra_mat[ground_PFT_spectra_mat==0]<-0.00000001
+ground_PFT_spectra_mat[is.na(ground_PFT_spectra_mat)]<-0.00000001
+
+#Build PCA with and without sqrt transform
+ground_pca<-princomp(sqrt(ground_PFT_spectra_mat)) #, center=FALSE, scale=FALSE)
+ground_pca_pr<-prcomp(sqrt(ground_PFT_spectra_mat)) #, center=FALSE, scale=FALSE)
+
+cols<-palette.colors(n=9)
+screeplot(ground_pca)
+plot(ground_pca$scores[,1:2], col=cols, pch=c(1:2))
+title(main = "PCA of min max rescaled ground spectra")
+legend("bottomleft", legend=unique(Cleaned_Speclib_merge$Functional_group1), lty=1, col=c(1:9), cex=0.5)
+
+cols<-palette.colors(n=8)
+screeplot(image_pca)
+plot(image_pca$scores[,1:2], col=cols)#, pch=c(1:2))
+
+
+###Clean up image based PFT spectra to merge with ground based spectra
 merge_ignore2 = c("UID","FncGrp1")#, "PFT")
 PFT_IMG_SPEC_clean_merge<-
   PFT_IMG_SPEC_clean %>%
@@ -150,6 +173,7 @@ PFT_IMG_SPEC_clean_merge<-
     dplyr::select(UID,Source, Functional_group1, everything())  %>%
     as.data.frame()
 
+
 str(PFT_IMG_SPEC_clean_merge)
 
   PFT_IMG_SPEC_clean_merge %>%
@@ -159,9 +183,28 @@ str(PFT_IMG_SPEC_clean_merge)
   dplyr::filter(Reflectance==0)
   
 
-PFT_IMG_SPEC_clean_merge %>% dplyr::select(-UID,-Source, -Functional_group1) %>% as.matrix() %>% hist()
+  #PCA of ground spectra only
+  image_PFT_spectra_mat<-PFT_IMG_SPEC_clean_merge %>% 
+    dplyr::select(-UID,-Source, -Functional_group1) %>% 
+    as.matrix() 
+  
+  #Replace any NAs or Zeros with very small value
+  image_PFT_spectra_mat[image_PFT_spectra_mat==0]<-0.00000001
+  image_PFT_spectra_mat[is.na(image_PFT_spectra_mat)]<-0.00000001
+  
+  #Build PCA with and without sqrt transform
+  image_pca<-princomp(sqrt(image_PFT_spectra_mat)) #, center=FALSE, scale=FALSE)
+  image_pca_pr<-prcomp(sqrt(image_PFT_spectra_mat)) #, center=FALSE, scale=FALSE)
+  
+  cols<-palette.colors(n=8)
+  screeplot(image_pca)
+  plot(image_pca$scores[,1:2], col=cols)#, pch=c(1:2))
+  title(main = "PCA of min max rescaled PFT spectra from images")
+  #legend(x = -2, y =-1, legend=unique(PFT_IMG_SPEC_clean_merge$Functional_group1), lty=1, col=c(1:9), cex=0.5)
+  #legend(x = -2, y =-1, legend=unique(PFT_IMG_SPEC_clean_merge$Functional_group1), lty=1, col=c(1:9), cex=0.5)
+  
 
-colnames(PFT_IMG_SPEC_clean_merge)
+  
 #PFT_IMG_SPEC_clean_merge$UID<-c(PFT_IMG_SPEC_clean_merge$UID)
 
 PFT_SPEC<-bind_rows(Cleaned_Speclib_merge, PFT_IMG_SPEC_clean_merge) 
@@ -175,26 +218,32 @@ PFT_SPEC_TALL<-PFT_SPEC %>% dplyr::select(UID,Source, Functional_group1, everyth
 unique(PFT_SPEC$UID)
 unique(PFT_SPEC$Source)
 
-res.man <- manova(cbind(Reflectance,Wavelength) ~ Source, data = PFT_SPEC_TALL)
+dim(tst_mat)
+rownames(tst_mat)<-PFT_SPEC$UID
+length(PFT_SPEC$Source)
+#res.man <- MANOVA(tst_mat ~ as.factor(PFT_SPEC$Source))
 
-tst<-PFT_SPEC %>% dplyr::select(-UID,-Source, -Functional_group1)
+#Remove columns not usable in PCA
+tst<-PFT_SPEC %>% 
+  dplyr::select(-UID,-Source, -Functional_group1) %>%
+  as.matrix()
 
-dim(tst)
-tst_mat<-as.matrix(tst)
-
+#Replace any NAs or Zeros with very small value
 tst_mat[tst_mat==0]<-0.00000001
 tst_mat[is.na(tst_mat)]<-0.00000001
 tst_na<-tst_mat[is.na(tst_mat)==TRUE]
 
-dim(as.matrix(tst_na))
-
+#Build PCA with and without sqrt transform
 tst_pca<-princomp(sqrt(tst_mat)) #, center=FALSE, scale=FALSE)
-summary(tst_pca)
+tst_pca_pr<-prcomp(sqrt(tst_mat)) #, center=FALSE, scale=FALSE)
 
+summary(tst_pca_pr)
+
+#How many values in 
 seq(1:length(unique(PFT_SPEC$Functional_group1)))
 cols<-palette.colors(n=9)
 screeplot(tst_pca)
-plot(tst_pca$scores, col=cols, pch=c(1:2))
+plot(tst_pca$scores[,2:3], col=cols, pch=c(1:2))
 
 #legend(x = -6, y =10, legend=unique(PFT_SPEC$Functional_group1), lty=1, col=c(1:9), cex=0.5)
 #legend(x = -6, y =3, legend=unique(PFT_SPEC$Source), pch=c(1:2), cex=0.5)
