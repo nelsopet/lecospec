@@ -213,7 +213,7 @@ meta(brooksLib_spectra) <- data.frame(brooksLib_metadata, stringsAsFactors = FAL
 saveRDS(brooksLib_spectra, "./Output/A_005_SC2_brooksLib_spectra.rds")
 # ------------------------------------------- EagleSummit ------------------------------------------------ #
 #### Read in data as spectra
-Eagle_summit_spectra <- read_spectra("./Data/SpectraByLocation/Eagle_summit/original_samples", format = "sed", extract_metadata = TRUE)
+Eagle_summit_spectra <- read_spectra("./Data/SpectraByLocation/Eagle_summit/original_Samples", format = "sed", extract_metadata = TRUE)
 
 ## Fix Names
 names(Eagle_summit_spectra) <- gsub(".sed", "", names(Eagle_summit_spectra))
@@ -238,7 +238,7 @@ meta(Eagle_summit_spectra) <- data.frame(Eagle_summit_metadata, stringsAsFactors
 ## save spectra (Raw)
 saveRDS(Eagle_summit_spectra, "./Output/A_006_SC2_Eagle_summit_spectra.rds")
 # ------------------------------------------- MurphyDome1 ------------------------------------------------ #
-#### Read in data as spectra
+#### Read in data as spectraibcurl4-openssl-dev
 Murph_lib_spectra <- read_spectra("./Data/SpectraByLocation/20180729/M_Dome", format = "sed", extract_metadata = TRUE)
 
 ## Remove eightmileflight1 scans
@@ -330,7 +330,7 @@ saveRDS(Murph2_spectra, "./Output/A_008_SC2_Murph2_spectra.rds")
 # ------------------------------------------- MurphydomeA ------------------------------------------------ #
 
 #### Read in data as spectra
-Murphy_domeA_spectra <- read_spectra("./Data/SpectraByLocation/Murphy_domeA/original_samples", format = "sed", extract_metadata = TRUE)
+Murphy_domeA_spectra <- read_spectra("./Data/SpectraByLocation/Murphy_DomeA/original_samples", format = "sed", extract_metadata = TRUE)
 
 ## Fix Names
 names(Murphy_domeA_spectra) <- gsub(".sed", "", names(Murphy_domeA_spectra))
@@ -356,7 +356,7 @@ meta(Murphy_domeA_spectra) <- data.frame(Murphy_domeA_metadata, stringsAsFactors
 saveRDS(Murphy_domeA_spectra, "./Output/A_009_SC2_Murphy_domeA_spectra.rds")
 # ------------------------------------------- MurphyDomeB ------------------------------------------------ #
 #### Read in data as spectra
-Murphy_domeB_spectra <- read_spectra("./Data/SpectraByLocation/Murphy_domeB/original_samples", format = "sed", extract_metadata = TRUE)
+Murphy_domeB_spectra <- read_spectra("./Data/SpectraByLocation/Murphy_DomeB/original_samples", format = "sed", extract_metadata = TRUE)
 
 ## Fix Names
 names(Murphy_domeB_spectra) <- gsub(".sed", "", names(Murphy_domeB_spectra))
@@ -382,7 +382,7 @@ meta(Murphy_domeB_spectra) <- data.frame(Murphy_domeB_metadata, stringsAsFactors
 saveRDS(Murphy_domeB_spectra, "./Output/A_010_SC2_Murphy_domeB_spectra.rds")
 # ------------------------------------------- WickershamDomeB -------------------------------------------- #
 #### Read in data as spectra
-Wickersham_domeA_spectra <- read_spectra("./Data/SpectraByLocation/Wickersham_domeA/original_samples", format = "sed", extract_metadata = TRUE)
+Wickersham_domeA_spectra <- read_spectra("./Data/SpectraByLocation/Wickersham_DomeA/original_samples", format = "sed", extract_metadata = TRUE)
 
 ## Fix Names
 names(Wickersham_domeA_spectra) <- gsub(".sed", "", names(Wickersham_domeA_spectra))
@@ -408,7 +408,7 @@ meta(Wickersham_domeA_spectra) <- data.frame(Wickersham_domeA_metadata, stringsA
 saveRDS(Wickersham_domeA_spectra, "./Output/A_011_SC2_Wickersham_domeA_spectra.rds")
 # ------------------------------------------- WickershamDomeB -------------------------------------------- #
 #### Read in data as spectra
-Wickersham_domeB_spectra <- read_spectra("./Data/SpectraByLocation/Wickersham_domeB/original_samples", format = "sed", extract_metadata = TRUE)
+Wickersham_domeB_spectra <- read_spectra("./Data/SpectraByLocation/Wickersham_DomeB/original_samples", format = "sed", extract_metadata = TRUE)
 
 ## Fix Names
 names(Wickersham_domeB_spectra) <- gsub(".sed", "", names(Wickersham_domeB_spectra))
@@ -481,3 +481,4 @@ meta(yKDeltLib_spectra) <- data.frame(yKDeltLib_metadata, stringsAsFactors = FAL
 
 ### save spectra (Raw)
 saveRDS(yKDeltLib_spectra, "./Output/A_013_SC2_yKDeltLib_spectra.rds")
+

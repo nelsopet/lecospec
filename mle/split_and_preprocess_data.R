@@ -16,21 +16,24 @@ TRAINING_PROPORTION <- 0.8
 
 
 model_filepath <- "mle/fg1_model_normed_weighted.rda"
-training_filepath <- "mle/training_data_redux.csv"
-test_filepath <- "mle/test_data_redux.csv"
+training_filepath <- "Data/D_002_SpecLib_Derivs.csv"
+#test_filepath <- "mle/test_data_redux.csv"
 
-target_path <- "Data/Ground_Validation/training/labels.json"
-n4path <- "mle/no_noise_no_norm.csv"
-n2path <- "mle/training_data_noise_norm.csv"
-noise_no_norm_path <- "mle/noise_no_norm.csv"
-no_noise_norm_path <- "mle/no_noise_norm.csv"
+target_path <- "Data/Ground_Validation/training/labels.csv"
+n4path <- "mle/no_noise_no_norm_exp.csv"
+n2path <- "mle/training_data_noise_norm_exp.csv"
+noise_no_norm_path <- "mle/noise_no_norm_exp.csv"
+no_noise_norm_path <- "mle/no_noise_norm_exp.csv"
 
-scaled_clean_path <- "mle/scaled_ground_no_noise.csv"
-scaled_noise_path <- "mle/scaled_ground_noise.csv"
+scaled_clean_path <- "mle/scaled_ground_no_noise_exp.csv"
+scaled_noise_path <- "mle/scaled_ground_noise_exp.csv"
 
 
-speclib_filepath <- "Output/D_002_SpecLib_Derivs.csv"
+speclib_filepath <- "Data/output_speclib_extended.csv"
 speclib <- read.csv(speclib_filepath, header = TRUE)
+
+print(dim(speclib))
+write.csv(as.data.frame(speclib[, "Functional_group1"]), target_path)
 
 total_observations <- nrow(speclib)
 print(colnames(speclib)[[1]])
@@ -116,7 +119,17 @@ if (USE_CAL_VAL_SPLIT) {
     num_observations <- nrow(training_data)
 }
 
+print(colnames(training_data))
+
+
+
 write.csv(training_data, n4path)
+band_names <- extract_bands(training_data) %>% as.character()
+print(band_names)
+print(colnames(training_data))
+normalized_data_bands <- training_data %>% df_to_speclib(., type="spectrolab") %>% spectrolab::normalize() %>% as.data.frame()
+print(normalized_data_bands)
+write.csv(normalized_data_bands, no_noise_norm_path)
 
 scaled_data <- global_min_max_scale(training_data)
 write.csv(scaled_data, scaled_clean_path)
@@ -134,11 +147,18 @@ if (ADD_NOISE) {
     print(head(training_data))
     write.csv(training_data, noise_no_norm_path)
     write.csv(scaled_data, scaled_noise_path)
+
+    normalized_data_noisy <- training_data %>% df_to_speclib(., type="spectrolab") %>% spectrolab::normalize() %>% as.data.frame()
+    print(normalized_data_noisy)
+    write.csv(normalized_data_noisy, n2path)
+
 }
 
 #write.csv(test_data, test_filepath)
 
 speclib$weights <- as.numeric(weights)
+
+
 
 # the data is now noised   We can move on to build some models
 ###############################
@@ -146,7 +166,6 @@ speclib$weights <- as.numeric(weights)
 ###############################
 fg1_model <- ranger::ranger(
     # data = training_data[used_cols],
-    num.trees = 256,
     importance = "impurity",
     replace = TRUE,
     # verbose = TRUE,

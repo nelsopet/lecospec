@@ -1,7 +1,7 @@
 source("Functions/lecospectR.R")
 library(caret)
 library(ranger)
-library(xgboost)
+#library(xgboost)
 
 
 genus_validation_df <- read.csv("figures/merged_validation_t.csv", header = TRUE)
@@ -42,7 +42,7 @@ adjancy_list <- rjson::fromJSON(file = "./assets/pft_adj_list.json")
 ##        Train the Model
 ################################################
 
-base_data_path <- "Output/D_002_SpecLib_Derivs.csv"
+base_data_path <- "Data/output_speclib_extended.csv"
 augmented_data_path <- "./mle/validation100_stratified.csv"
 spec_lib <- read.csv(base_data_path)
 
