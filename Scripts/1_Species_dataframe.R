@@ -695,3 +695,14 @@ mutate(
                                                                                                                                                     ifelse(Functional_group1=="Lichen_Foliose_Dark_Peltigera","Lichen", Functional_group2)))))))))))))))))))) #%>% dplyr::select(Functional_group2)
 
 write.csv(SpecLib_groups,"Output/B_001_SC1_SpeciesTable.csv",row.names = F)
+
+
+
+
+
+
+
+
+
+
+

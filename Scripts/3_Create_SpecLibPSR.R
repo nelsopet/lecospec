@@ -207,7 +207,7 @@ list_of_SpecLib <- lapply(SpecLib_by_location, readRDS) %>% # Reads in the spect
 # Combines specral libraries from all locations
 SpecLib_raw <- Reduce(spectrolab::combine, list_of_SpecLib) # %>% # dim(n_samples=1989, n_wavelegths=2151)
 
-Speclib_metadata <- meta(SpecLib_raw)
+Speclib_metadata <- spectrolab::meta(SpecLib_raw)
 
 write_csv(Speclib_metadata, "./Output/C_000_Speclib_raw_metadata.csv")
 
@@ -287,8 +287,11 @@ SpecLib_out <- bind_rows(SpecLib, Ecosis_data)
 
 # Removes all the rows with negative values or Values >2
 print(colnames(SpecLib_out)[1:43])
-meta_columns <- 45#formerly 37
-meta_names <- colnames(SpecLib_out)[1:43]
+meta_columns <- 37#formerly 37
+print(colnames(SpecLib_out)[1:100])
+meta_names <- colnames(SpecLib_out)[1:meta_columns]
+SpecLib_out <- columnwise_min_max_scale(SpecLib_out, ignore_cols = meta_names)
+print(summary(SpecLib_new))
 SpecLib_new <- filter_all_between(
   as.data.frame(SpecLib_out),
   0,
@@ -298,7 +301,7 @@ SpecLib_new <- filter_all_between(
 
 
 
-  print(SpecLib_new)
+  #print(SpecLib_new)
 
 print(paste0(
   "Filtered data from  ",
@@ -308,6 +311,7 @@ print(paste0(
   " rows."
 ))
 
+summary(SpecLib_out)
 # table(SpecLib_new$Functional_group1)%>%as.data.frame()
 
 # Adds more details to our spectral library (Freq columns = The count of each Species)
@@ -630,9 +634,10 @@ source("Functions/1_LCE_derivs.R")
 source("Functions/2_LCE_veg_index.R")
 source("Functions/lecospectR.R")
 
-out_file <- ""
+out_file <- "Data/"
 
-Make_Speclib_Derivs("Data/Ground_Validation/PFT_Image_spectra/PFT_Image_SpectralLib_Clean.csv", mypath)
+Make_Speclib_Derivs("./Output/C_001_SC3_Cleaned_SpectralLib.csv", out_file)
 # Make_Speclib_Derivs("Output/C_001_SC3_Cleaned_SpectralLib.csv",out_file="Output/")
 # Make_Speclib_Derivs("Output/C_001_SC3_Cleaned_SpectralLib4.csv", out_file = "Output/resampled/")
 # Make_Speclib_Derivs("Output/C_001_SC3_Cleaned_SpectralLib29.csv", out_file = "Output/resampled/FncGrp2/")
+# "Data/Ground_Validation/PFT_Image_spectra/PFT_Image_SpectralLib_Clean.csv"
