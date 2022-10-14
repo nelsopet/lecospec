@@ -1,9 +1,12 @@
 source("Functions/lecospectR.R")
 
+raster::beginCluster()
+cl <- raster::getCluster()
+print(cl)
 
 # set all the paths for saving the data, etc.
 model_paths <- c(
-    "mle/models/norm_no_noise_no_weight_exp.rda",
+    "mle/models/norm_no_noise_no_weight_exp.rda",#
     "mle/models/norm_no_noise_post_exp.rda",
     "mle/models/norm_no_noise_prior_exp.rda",
     "mle/models/no_norm_no_noise_no_weight_exp.rda",
@@ -107,14 +110,15 @@ scale_flags <- c(
 
 # run the experiments
 
-for(model_idx in seq_along(model_paths)){
-    model <- load_model(model_paths[[model_idx]])
-    results <- validate_model(
-        model, 
-        experiment_save_paths[[model_idx]],
-        normalize_input = normalize_flags[[model_idx]],
-        scale_input = scale_flags[[model_idx]]
-    )
+for(model_idx in 17:length(model_paths)){
+        model <- load_model(model_paths[[model_idx]])
+        results <- validate_model(
+            model, 
+            experiment_save_paths[[model_idx]],
+            normalize_input = normalize_flags[[model_idx]],
+            scale_input = scale_flags[[model_idx]],
+            cluster = cl
+        )
 }
 
 print(model$forest$independent.variable.names)

@@ -37,6 +37,7 @@ noise_no_norm <- subset(read.csv(noise_no_norm_path), select = -c(X))
 no_noise_norm <- subset(read.csv(no_noise_norm_path), select = -c(X))
 noise_norm <- subset(read.csv(n2path), select = -c(X))
 
+
 scaled_noise <- subset(read.csv(scaled_noise_path), select = -c(X))
 scaled_clean <- subset(read.csv(scaled_clean_path), select = -c(X))
 print(colnames(noise_no_norm))
@@ -67,6 +68,8 @@ norm_noise_post <- ranger::ranger(
     x = noise_norm,
     y = targets %>% as.factor()
 )
+print(norm_noise_post$forest$independent.variable.names)
+print(colnames(noise_norm))
 save(norm_noise_post,file = "mle/models/norm_noise_post_exp.rda")
 
 norm_noise_no_weight <- ranger::ranger(
@@ -240,5 +243,9 @@ scaled_noise_prior <- ranger::ranger(
     y = targets
 )
 save(scaled_noise_prior, file = "mle/models/scaled_clean_prior_exp.rda")
+
+
+
+
 
 
