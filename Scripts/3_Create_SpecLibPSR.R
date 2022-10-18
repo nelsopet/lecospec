@@ -137,6 +137,7 @@ Ecosis_data_3 <- Ecosis_data_3 %>% dplyr::select(Eco1_names)
 range(Ecosis_data_3$`1000`)
 
 Ecosis_data_3 <- Ecosis_data_3 %>% dplyr::mutate(dplyr::across(.cols = `350`:`2500`, ~ .x / 100, na.rm = TRUE))
+range(Ecosis_data_3$`1000`)
 
 Ecosis_data_3 %>%
   anti_join(Species_groups, by = "Code_name", keep = FALSE) %>%
@@ -165,36 +166,43 @@ Ecosis_data %>%
   group_by(Functional_group1) %>%
   tally()
 
-summary(Ecosis_data)
+str(Ecosis_data)
+
 # Check EcoSIS data
-meta_columns <- 20
+#Currently not used since all the data is checked together later using plot_interactive
 
-Target_names <- unique(sort(Ecosis_data$Species_name))
-
-# Creates an empty list
-each_target <- list()
-
-# Function splits the spectral library into spectral objects based on each target (105 Spectral Objects)
-for (i in 1:length(Target_names)) {
-
-  # Subset a functional group
-  each_target[[i]] <- subset(Ecosis_data, Species_name == Target_names[i])
-
-
-  # saves metadata
-  metadata <- each_target[[i]][, c(1:meta_columns)] %>% as.data.frame()
-
-  # Convert to a spectral object
-  bands <- extract_bands(as.data.frame(each_target[[i]])) %>% as.character()
-  each_target[[i]] <- as_spectra(as.data.frame(each_target[[i]])[,bands])
-  # Add metadata
-  spectrolab::meta(each_target[[i]]) <- data.frame(metadata[, c(1:meta_columns)], stringsAsFactors = FALSE)
-}
-
-# Renames each target in list
-each_target <- each_target %>% setNames(Target_names)
-
-
+#meta_columns <- 20
+#
+#Target_names <- unique(sort(Ecosis_data$Species_name))
+#
+## Creates an empty list
+#each_target <- list()
+#
+## Function splits the spectral library into spectral objects based on each target (105 Spectral Objects)
+#for (i in 1:length(Target_names)) {
+#
+#  # Subset a functional group
+#  each_target[[i]] <- subset(Ecosis_data, Species_name == Target_names[i])
+#
+#
+#  # saves metadata
+#  metadata <- each_target[[i]][, c(1:meta_columns)] %>% as.data.frame()
+#
+#  # Convert to a spectral object
+#  bands <- extract_bands(as.data.frame(each_target[[i]])) %>% as.character()
+#  each_target[[i]] <- as_spectra(as.data.frame(each_target[[i]])[,bands])
+#  # Add metadata
+#  spectrolab::meta(each_target[[i]]) <- data.frame(metadata[, c(1:meta_columns)], stringsAsFactors = FALSE)
+#}
+#
+## Renames each target in list
+#each_target <- each_target %>% setNames(Target_names)
+#
+#
+#plot_interactive(each_target[["Alnus sp."]])#2                  Alnus sp.   80 # Need to clean out half of these because there are two groups.
+#
+#
+#rm(each_target)
 
 ### Read in our data by site
 # Import file path names of .rds files into character list (Spectral libraries based on each location in alaska)
@@ -207,12 +215,19 @@ list_of_SpecLib <- lapply(SpecLib_by_location, readRDS) %>% # Reads in the spect
 # Combines specral libraries from all locations
 SpecLib_raw <- Reduce(spectrolab::combine, list_of_SpecLib) # %>% # dim(n_samples=1989, n_wavelegths=2151)
 
+str(SpecLib_raw)
+dim(SpecLib_raw)
+
 Speclib_metadata <- spectrolab::meta(SpecLib_raw)
 
 write_csv(Speclib_metadata, "./Output/C_000_Speclib_raw_metadata.csv")
 
 speclib_conversion_test <- SpecLib_raw %>%
   as.data.frame()
+
+range(speclib_conversion_test$`1240`)
+dim(speclib_conversion_test)
+#[1] 1985 2184
 
 print(colnames(speclib_conversion_test)[1:50])
 
@@ -233,15 +248,36 @@ SpecLib <- SpecLib_raw %>%
     everything()
   ) # Reorders columns
 
+
+str(SpecLib)
+
 # Write out full spectral library including Dryas scans from Stasinski et al. 2021
 write_csv(SpecLib, "./Output/C_000_Speclib_raw.csv")
 
 # Combines Ecosis data and spectral library
 SpecLib_out <- bind_rows(SpecLib, Ecosis_data) 
-
-
-
-
+    #tst2<-SpecLib_out %>%   
+    #  pivot_longer(cols = `350`:`2500`,  names_to  = "Wavelength", values_to = "Reflectance") %>%    
+    #  mutate(Wavelength = gsub("X","",Wavelength)) %>%
+    #  group_by(Functional_group1, Wavelength) %>%  
+    #  dplyr::summarise(Median_Reflectance = median(Reflectance)) %>%
+    #  mutate(Wavelength = as.numeric(Wavelength))
+    #
+    #jpeg("Output/test.jpg", height = 10000, width = 9000, res = 350)
+    #
+    #ggplot(tst2, aes(Wavelength, Median_Reflectance, group = Functional_group1), scales = "fixed")+
+    #  labs(title = c("Reflectance by plant functional group and sample size with median (red), 75% (dark) and 90% (grey) quantiles based on 1242 scans"), y="Reflectance")+
+    #  theme(panel.background = element_rect(fill = "white", colour = "grey50"), 
+    #        #legend.key.size = unit(0.5, "cm"),legend.text = element_text(size=25),
+    #        legend.position = "none",
+    #        title = element_text(size=25),
+    #        strip.text = element_text(size = 25),
+    #        axis.text = element_text(size = 20),
+    #        axis.text.x = element_text(angle = 90)) +
+    #  geom_point(aes(Wavelength, Median_Reflectance,color = "red"),size = 2)+
+    #  facet_wrap(vars(Functional_group1), scales = "fixed", ncol = 3) 
+    #
+    #dev.off()
 
 ## Please note: these are the number of samples we have for each functional group
 # table(SpecLib_out$Functional_group1)%>%as.data.frame()
@@ -287,17 +323,17 @@ SpecLib_out <- bind_rows(SpecLib, Ecosis_data)
 
 # Removes all the rows with negative values or Values >2
 print(colnames(SpecLib_out)[1:43])
-meta_columns <- 37#formerly 37
+meta_columns <- 36#formerly 37
 print(colnames(SpecLib_out)[1:100])
 meta_names <- colnames(SpecLib_out)[1:meta_columns]
-SpecLib_out <- columnwise_min_max_scale(SpecLib_out, ignore_cols = meta_names)
+SpecLib_out <- columnwise_min_max_scale(SpecLib_out, ignore_cols = meta_names) #%>% str()
 print(summary(SpecLib_new))
 SpecLib_new <- filter_all_between(
   as.data.frame(SpecLib_out),
   0,
   1,
   ignore_cols = meta_names
-  )
+  ) #%>% str()
 
 
 
@@ -348,8 +384,8 @@ SpecLib_new_All <- SpecLib_new %>% # SpecLib_new%>%
 # Removes all unknown scans
 SpecLib_new_All <- SpecLib_new_All[!(SpecLib_new_All$Species_name == "Unknown"), ]
 # Filter out rows with really low reflectance at a band for which all surfaces should have elevated reflectance
-SpecLib_new_All <- SpecLib_new_All %>%
-  dplyr::filter(`1250` > 0.1) %>%
+SpecLib_new_All <- SpecLib_new_All %>% #dplyr::filter(`1250` > 0.1) %>% head() %>% View()
+  dplyr::filter(`1250` > 0.1) %>% #dim()
   mutate(Species_name = replace(Species_name, Species_name == "Cladonia steallaris", "Cladonia stellaris")) %>%
   mutate(Species_name = replace(Species_name, Species_name == "Petasites frigida", "Petasites frigidus"))
 
@@ -574,6 +610,28 @@ Cleaned_Speclib_rds <- Reduce(spectrolab::combine, New_targets)
 
 table(Cleaned_Speclib$Functional_group2) %>% as.data.frame()
 
+#tst2<-Cleaned_Speclib %>%   
+#  pivot_longer(cols = `350`:`2500`,  names_to  = "Wavelength", values_to = "Reflectance") %>%    
+#  mutate(Wavelength = gsub("X","",Wavelength)) %>%
+#  group_by(Functional_group1, Wavelength) %>%  
+#  dplyr::summarise(Median_Reflectance = median(Reflectance)) %>%
+#  mutate(Wavelength = as.numeric(Wavelength))
+#
+#jpeg("Output/test.jpg", height = 10000, width = 9000, res = 350)
+#
+#ggplot(tst2, aes(Wavelength, Median_Reflectance, group = Functional_group1), scales = "fixed")+
+#  labs(title = c("Reflectance by plant functional group and sample size with median (red), 75% (dark) and 90% (grey) quantiles based on 1242 scans"), y="Reflectance")+
+#  theme(panel.background = element_rect(fill = "white", colour = "grey50"), 
+#        #legend.key.size = unit(0.5, "cm"),legend.text = element_text(size=25),
+#        legend.position = "none",
+#        title = element_text(size=25),
+#        strip.text = element_text(size = 25),
+#        axis.text = element_text(size = 20),
+#        axis.text.x = element_text(angle = 90)) +
+#  geom_point(aes(Wavelength, Median_Reflectance,color = "red"),size = 2)+
+#  facet_wrap(vars(Functional_group1), scales = "fixed", ncol = 3) 
+#
+#dev.off()
 # Var1 Freq
 # 1              Dwarf_Shrub_Decid  107
 # 2                           Forb  139
@@ -641,3 +699,4 @@ Make_Speclib_Derivs("./Output/C_001_SC3_Cleaned_SpectralLib.csv", out_file)
 # Make_Speclib_Derivs("Output/C_001_SC3_Cleaned_SpectralLib4.csv", out_file = "Output/resampled/")
 # Make_Speclib_Derivs("Output/C_001_SC3_Cleaned_SpectralLib29.csv", out_file = "Output/resampled/FncGrp2/")
 # "Data/Ground_Validation/PFT_Image_spectra/PFT_Image_SpectralLib_Clean.csv"
+

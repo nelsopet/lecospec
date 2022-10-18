@@ -150,10 +150,10 @@ Cleaned_Speclib_tall_Fnc_grp1<-
   dplyr::mutate(sample_size = n()) %>% 
   dplyr::mutate(Functional_group1_wN = glue('{Functional_group1} {"(n="} {sample_size} {"scans,"} {species_count} {"species"})')) %>%
   #mutate(Functional_group1_wN = Functional_group1) %>% 
-  ungroup() %>%
+  ungroup() %>% #colnames()
   pivot_longer(cols = `X350`:`X2500`,  names_to  = "Wavelength", values_to = "Reflectance") %>%
   mutate(Wavelength = gsub("X","",Wavelength)) %>%
-  group_by(Functional_group1_wN, Functional_group1,Wavelength) %>%  
+  group_by(Functional_group1_wN, Functional_group1, Wavelength) %>%  
   dplyr::summarise(Median_Reflectance = median(Reflectance),
                    Max_Reflectance = max(Reflectance),
                    Min_Reflectance = min(Reflectance),
@@ -381,7 +381,7 @@ dev.off()
 
 ######## Functional group 1 spectral profiles
 jpeg("Output/Fnc_grp1_spectral_profiles_minmax.jpg", height = 10000, width = 9000, res = 350)
-ggplot(Cleaned_Speclib_tall_Fnc_grp1, aes(Wavelength, Median_Reflectance,group = Functional_group1), scales = "fixed")+
+ggplot(Cleaned_Speclib_tall_Fnc_grp1, aes(Wavelength, Median_Reflectance, group = Functional_group1), scales = "fixed")+
   geom_ribbon(aes(Wavelength, ymin = Pct_12_5_Reflectance, ymax = Pct_87_5_Reflectance, alpha = 0.3))+
   geom_ribbon(aes(Wavelength, ymin = Lower_Reflectance, ymax = Upper_Reflectance, alpha = 0.2))+
   labs(title = c("Reflectance by plant functional group and sample size with median (red), 75% (dark) and 90% (grey) quantiles based on 1242 scans"), y="Reflectance")+
@@ -392,7 +392,7 @@ ggplot(Cleaned_Speclib_tall_Fnc_grp1, aes(Wavelength, Median_Reflectance,group =
         strip.text = element_text(size = 25),
         axis.text = element_text(size = 20),
         axis.text.x = element_text(angle = 90)) +
-  geom_line(aes(Wavelength, Median_Reflectance,color = "red"),size = 2)+
+ geom_line(aes(Wavelength, Median_Reflectance,color = "red"),size = 2)+
   facet_wrap(vars(Functional_group1_wN), scales = "fixed", ncol = 3) 
 dev.off()
 
