@@ -7,30 +7,30 @@ require(vegan)
 Cleaned_Speclib <- read.csv("./Output/C_001_SC3_Cleaned_SpectralLib.csv")
 
 colnames(Cleaned_Speclib) %>% as.data.frame() %>% View()
-
+unique(Cleaned_Speclib$Functional_group2)
 
 
 #List of column names to ignore 
 #ignore<-colnames(Cleaned_Speclib[,1:40])
-ignore<-c(colnames(Cleaned_Speclib[,1:40]), "species_count")
+ignore<-c(colnames(Cleaned_Speclib[,1:11]), "species_count")
 
 #Rescale ground spectra to min max  
 Cleaned_Speclib_tall_Fnc_grp1<-
     Cleaned_Speclib %>% 
     #Comment line below if data should be used before rescaling
     #global_min_max_scale(ignore_cols = ignore) %>%  
-    group_by(Functional_group2, Species_name) %>% 
-    dplyr::select(Functional_group2, Species_name) %>% 
+    group_by(Functional_group1, Species_name) %>% 
+    dplyr::select(Functional_group1, Species_name) %>% 
     unique() %>% 
     ungroup() %>% 
-    group_by(Functional_group2) %>%
+    group_by(Functional_group1) %>%
     tally() %>% 
     dplyr::rename(species_count = n) %>%
-  inner_join(Cleaned_Speclib, by="Functional_group2") %>% #colnames()
+  inner_join(Cleaned_Speclib, by="Functional_group1") %>% #colnames()
   global_min_max_scale(ignore_cols = ignore) %>% #head() %>% View()#colnames() #as.matrix() %>% hist()
-  group_by(Functional_group2) %>% 
+  group_by(Functional_group1) %>% 
   dplyr::mutate(sample_size = n()) %>% 
-  dplyr::mutate(Functional_group1_wN = glue('{Functional_group2} {"(n="} {sample_size} {"scans,"} {species_count} {"species"})')) %>%
+  dplyr::mutate(Functional_group1_wN = glue('{Functional_group1} {"(n="} {sample_size} {"scans,"} {species_count} {"species"})')) %>%
   #mutate(Functional_group1_wN = Functional_group1) %>% 
   ungroup() %>% #colnames() %>% View()
   dplyr::select(X
@@ -49,7 +49,7 @@ Cleaned_Speclib_tall_Fnc_grp1<-
                 everything()) %>%
   pivot_longer(cols = `X350`:`X2500`,  names_to  = "Wavelength", values_to = "Reflectance") %>%
   mutate(Wavelength = gsub("X","",Wavelength)) %>% #dplyr::select(Wavelength) %>% unique() %>% as.data.frame() %>% View()
-  group_by(Functional_group1_wN, Functional_group2,Wavelength) %>%  
+  group_by(Functional_group1_wN, Functional_group1,Wavelength) %>%  
   dplyr::summarise(Median_Reflectance = median(Reflectance),
                    Max_Reflectance = max(Reflectance),
                    Min_Reflectance = min(Reflectance),
@@ -65,7 +65,7 @@ Cleaned_Speclib_tall_Fnc_grp1<-
 unique(Cleaned_Speclib_tall_Fnc_grp1$Wavelength) %>% as.data.frame() %>% View()
 
 jpeg("Output/Fnc_grp1_spectral_profiles_minmax.jpg", height = 10000, width = 9000, res = 350)
-ggplot(Cleaned_Speclib_tall_Fnc_grp1, aes(Wavelength, Median_Reflectance, group = Functional_group2), scales = "fixed")+
+ggplot(Cleaned_Speclib_tall_Fnc_grp1, aes(Wavelength, Median_Reflectance, group = Functional_group1), scales = "fixed")+
   geom_ribbon(aes(Wavelength, ymin = Pct_12_5_Reflectance, ymax = Pct_87_5_Reflectance, alpha = 0.3))+
   geom_ribbon(aes(Wavelength, ymin = Lower_Reflectance, ymax = Upper_Reflectance, alpha = 0.2))+
   labs(title = c("Reflectance by plant functional group and sample size with median (red), 75% (dark) and 90% (grey) quantiles based on 1242 scans"), y="Reflectance")+
@@ -249,7 +249,7 @@ length(PFT_SPEC$Source)
 #res.man <- MANOVA(tst_mat ~ as.factor(PFT_SPEC$Source))
 
 #Remove columns not usable in PCA
-tst<-PFT_SPEC %>% 
+tst_mat<-PFT_SPEC %>% 
   dplyr::select(-UID,-Source, -Functional_group1) %>%
   as.matrix()
 
@@ -262,7 +262,7 @@ tst_na<-tst_mat[is.na(tst_mat)==TRUE]
 tst_pca<-princomp(sqrt(tst_mat)) #, center=FALSE, scale=FALSE)
 #tst_pca_pr<-prcomp(sqrt(tst_mat)) #, center=FALSE, scale=FALSE)
 
-summary(tst_pca_pr)
+summary(tst_pca)
 
 #How many values in 
 seq(1:length(unique(PFT_SPEC$Functional_group1)))

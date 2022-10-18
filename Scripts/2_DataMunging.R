@@ -59,6 +59,7 @@ TwelveMile_metadata <- cbind(TwelveMile_metadata, TwelveMile_metadata_instrument
 meta(TwelveMile_spectra) <- data.frame(TwelveMile_metadata, stringsAsFactors = FALSE)
 dim(meta(TwelveMile_spectra))
 ## save spectra (Raw)
+range(TwelveMile_spectra)
 saveRDS(TwelveMile_spectra, "./Output/A_001_SC2_TwelveMile_spectra.rds")
 
 # ------------------------------------------- AK2018 ---------------------------------------------------------------- #
@@ -129,6 +130,7 @@ meta(AK2018_spectra) <- data.frame(AK2018_metadata, stringsAsFactors = FALSE)
 dim(meta(AK2018_spectra))
 
 ## save spectran(raw)
+range(AK2018_spectra)
 saveRDS(AK2018_spectra, "./Output/A_002_SC2_AK2018_spectra.rds")
 # ------------------------------------------- Bethel ----------------------------------------------------- #
 #### Read in data as spectra
@@ -183,6 +185,7 @@ bethelLib_metadata <- cbind(bethelLib_metadata, bethelLib_metadata_instrument)
 meta(bethelLib_spectra) <- data.frame(bethelLib_metadata, stringsAsFactors = FALSE)
 dim(meta(bethelLib_spectra))
 ## save spectra (Raw)
+range(bethelLib_spectra)
 saveRDS(bethelLib_spectra, "./Output/A_003_SC2_bethelLib_spectra.rds")
 # ------------------------------------------- BigTrail --------------------------------------------------- #
 
@@ -221,6 +224,7 @@ meta(Big_Trail_Lake_spectra) <- data.frame(Big_Trail_Lake_metadata, stringsAsFac
 dim(meta(Big_Trail_Lake_spectra))
 
 ## save spectra (Raw)
+range(Big_Trail_Lake_spectra)
 saveRDS(Big_Trail_Lake_spectra, "./Output/A_004_SC2_Big_Trail_Lake_spectra.rds")
 # ------------------------------------------- Brooks ----------------------------------------------------- #
 #### Read in data as spectra
@@ -268,6 +272,7 @@ brooksLib_metadata <- cbind(brooksLib_metadata, brooksLib_metadata_instrument)
 meta(brooksLib_spectra) <- data.frame(brooksLib_metadata, stringsAsFactors = FALSE)
 
 ## save spectra (Raw)
+range(brooksLib_spectra)
 saveRDS(brooksLib_spectra, "./Output/A_005_SC2_brooksLib_spectra.rds")
 # ------------------------------------------- EagleSummit ------------------------------------------------ #
 #### Read in data as spectra
