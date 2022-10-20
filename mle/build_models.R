@@ -24,7 +24,6 @@ n4path <- "mle/no_noise_no_norm._expcsv"
 n2path <- "mle/training_data_noise_norm_exp.csv"
 noise_no_norm_path <- "mle/noise_no_norm_exp.csv"
 no_noise_norm_path <- "mle/no_noise_norm_exp.csv"
-
 scaled_clean_path <- "mle/scaled_ground_no_noise_exp.csv"
 scaled_noise_path <- "mle/scaled_ground_noise_exp.csv"
 
@@ -57,7 +56,7 @@ print(length(targets))
 posterior_weights <- rjson::fromJSON(file = posterior_weights_path)
 print(length(posterior_weights))
 
-
+print(summary(no_noise_no_norm))
 ##########################################################
 #     Model Training
 ##########################################################
@@ -170,12 +169,18 @@ norm_noise_post <- ranger::ranger(
 save(norm_noise_post, file = "mle/models/no_norm_no_noise_post_exp.rda")
 
 norm_noise_no_weight <- ranger::ranger(
+    num.trees = 1000,
+    mtry = 51,
+    max.depth = 11,
     importance = "impurity",
     replace = TRUE,
     classification = TRUE,
     x = no_noise_no_norm,
     y = targets
 )
+print(norm_noise_no_weight$prediction.error)
+var_imp <- sort(norm_noise_no_weight$variable.importance, decreasing=TRUE)
+print(names(var_imp)[1:30])
 save(norm_noise_no_weight, file = "mle/models/no_norm_no_noise_no_weight_exp.rda")
 
 norm_noise_prior <- ranger::ranger(
@@ -205,6 +210,7 @@ save(scaled_noise_post, file = "mle/models/scaled_noise_post_exp.rda")
 
 scaled_noise_no_weight <- ranger::ranger(
     importance = "impurity",
+    mtry = 51,
     replace = TRUE,
     classification = TRUE,
     x = scaled_noise,
@@ -234,12 +240,16 @@ scaled_clean_post <- ranger::ranger(
 save(scaled_clean_post, file = "mle/models/scaled_clean_post_exp.rda")
 
 scaled_clean_no_weight <- ranger::ranger(
+    num.trees = 1000,
+    mtry = 51,
     importance = "impurity",
     replace = TRUE,
     classification = TRUE,
     x = scaled_clean,
     y = targets
 )
+print(scaled_clean_no_weight$prediction.error)
+print(scaled_clean_no_weight$variable.importance)
 save(scaled_clean_no_weight, file = "mle/models/scaled_clean_no_weight_exp.rda")
 
 scaled_noise_prior <- ranger::ranger(
@@ -251,3 +261,44 @@ scaled_noise_prior <- ranger::ranger(
     y = targets
 )
 save(scaled_noise_prior, file = "mle/models/scaled_clean_prior_exp.rda")
+
+crazy_model <- ranger::ranger(
+    importance = "impurity",
+    replace = TRUE,
+    case.weights = prior_weights,
+    classification = TRUE,
+    x = no_noise_no_norm[, names(var_imp)[1:35]],
+    y = targets
+)
+
+print(crazy_model$prediction.error)
+
+raster::beginCluster()
+cl <- raster::getCluster()
+
+results <- validate_model(
+    crazy_model,
+    "mle/experiments/crazy/",
+    normalize_input = FALSE,
+    scale_input = FALSE,
+    cluster = cl)
+
+raster::endCluster()
+aggregated_results <- aggregate_results("mle/experiments/crazy/") %>% as.data.frame()
+try(
+
+    plot_by_pft(
+        aggregated_results,
+        save_path = "mle/experiments/crazy/aggregates.html",
+        open = FALSE
+    )
+    )
+try(
+
+    write_validation_table(
+        aggregated_results,
+        save_path = "mle/experiments/crazy/table.html",
+        open = FALSE
+        )
+    )
+
