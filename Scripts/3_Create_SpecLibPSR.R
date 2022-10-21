@@ -531,7 +531,7 @@ each_target <- each_target %>% setNames(Target_names)
 # plot_interactive(each_target[["Pices (bark)"]])#69              Pices (bark)    5
 # plot_interactive(each_target[["Pilophorus acicularis"]])#70     Pilophorus acicularis   15
 # plot_interactive(each_target[["Plagiomnium sp."]])#71           Plagiomnium sp.    4
-# plot_interactive(each_target[["Pleurozium schreberi"]])#72      Pleurozium schreberi    4
+#plot_interactive(each_target[["Pleurozium schreberi"]])#72      Pleurozium schreberi    4
 # plot_interactive(each_target[["Polytrichum juniperinum"]])#73   Polytrichum juniperinum   10 #Remove scans 1-4
   each_target[["Polytrichum juniperinum"]] <- each_target[["Polytrichum juniperinum"]][-c(1:4), ]
 # plot_interactive(each_target[["Polytrichum sp."]])#74           Polytrichum sp.   13

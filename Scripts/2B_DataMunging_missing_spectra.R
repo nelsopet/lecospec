@@ -75,7 +75,7 @@ spec_missing_all<-
           tst_spec_names <- list.files("./Data/SpectraByLocation/12_Mile/original_samples", pattern = ".sed", full.names = F)
           dir_spec_fix<-lapply(1:length(tst_speclib_onesite), read_spectra_fix_missing_spec)
           dir_spec_fix<-Reduce(spectrolab::combine, dir_spec_fix)
-          meta(dir_spec_fix)<-dirs_spec_new_meta[y] %>% as.data.frame() %>% rename(Area = '.')
+          meta(dir_spec_fix)<-dirs_spec_new_meta[[y]] %>% as.data.frame() %>% rename(Area = '.')
           names(dir_spec_fix)<-dir_spec_names[y]
           print(dirs_spec_new_meta[y])
           summary(dir_spec_fix)
@@ -102,13 +102,13 @@ names(spec_missing_all_metadata)[1] <- "ScanID"
 
 # Grab metadata from instrument
 spec_missing_all_metadata_instrument <- lapply(1:length(dir_spec_rds), function(x) meta(dir_spec_rds[[x]])) 
-spec_missing_all_metadata_instrument<-Reduce(rbind,spec_missing_all_metadata_instrument)
+spec_missing_all_metadata_instrument<-Reduce(rbind,spec_missing_all_metadata_instrument) %>% as.data.frame()
 
 # Combine metadata generated in this script with instrument metadata
 spec_missing_all_metadata <- cbind(spec_missing_all_metadata, spec_missing_all_metadata_instrument)
-spec_missing_all_metadata$Area<-meta(spec_missing_all)
+spec_missing_all_metadata<-cbind(spec_missing_all_metadata,meta(spec_missing_all_raw) %>% dplyr::select(Area))
 ## Set metadata
-meta(spec_missing_all) <- data.frame(spec_missing_all_metadata, stringsAsFactors = FALSE)
+meta(spec_missing_all) <- spec_missing_all_metadata #data.frame(spec_missing_all_metadata, stringsAsFactors = FALSE)
 dim(meta(spec_missing_all))
 
 ## save spectra (Raw)
@@ -255,84 +255,176 @@ meta_colnames<-c(colnames(spec_missing_out[,1:26]), "Code_name", "ScanNum")
 
 spec_missing_out<-spec_missing_out %>% dplyr::select(all_of(meta_colnames), everything())  
 
-Target_names <- unique(sort(spec_missing_out$Code_name))
+missing_target_names <- unique(sort(spec_missing_out$Code_name))
 
 # Creates an empty list
-each_target <- list()
-meta_columns <- 28
+missing_target <- list()
+missing_meta_cols <- 28
 
 # Function splits the spectral library into spectral objects based on each target (105 Spectral Objects)
-for (i in 1:length(Target_names)) {
+for (i in 1:length(missing_target_names)) {
   
   # Subset a functional group
-  each_target[[i]] <- subset(spec_missing_out, Code_name == Target_names[i])
+  missing_target[[i]] <- subset(spec_missing_out, Code_name == missing_target_names[i])
   
   # saves metadata
-  metadata <- each_target[[i]][, c(1:(meta_columns))] %>% as.data.frame()
+  metadata <- missing_target[[i]][, c(1:(missing_meta_cols))] %>% as.data.frame()
   
   # Convert to a spectral object
-  each_target[[i]] <- as_spectra(each_target[[i]][-1:-(meta_columns)])
-  # each_target[[i]] <-normalize(each_target[[i]])
+  missing_target[[i]] <- as_spectra(missing_target[[i]][-1:-(missing_meta_cols)])
+  # missing_target[[i]] <-normalize(missing_target[[i]])
   # Add metadata
-  meta(each_target[[i]]) <- data.frame(metadata[, c(1:(meta_columns))], stringsAsFactors = FALSE)
+  meta(missing_target[[i]]) <- data.frame(metadata[, c(1:(missing_meta_cols))], stringsAsFactors = FALSE)
 }
 
 # Renames each target in list
-each_target <- each_target %>% setNames(Target_names)
+missing_target <- missing_target %>% setNames(missing_target_names)
 
-plot_interactive(each_target[["aleoch"]])#1       Alectoria ochroleuca    6 #Remove scan 2
-plot_interactive(each_target[["ALVI5"]])#1       Alnus      #Two different surfaces here
-plot_interactive(each_target[["arccen"]])#1       Arctoparmelia      #Remove scan 4
-plot_interactive(each_target[["arcrub"]])#1             #Remove scan 11
-plot_interactive(each_target[["aulpal"]])#1             #Looks good
-plot_interactive(each_target[["aultur"]])#1             #Looks good
-plot_interactive(each_target[["bare rock"]])#1             #Looks good
-plot_interactive(each_target[["betnan"]]) # Not sure these are good. Compare to other betnan
-plot_interactive(each_target[["betneo"]])#1             #mixture of things ... need to reassess
-plot_interactive(each_target[["betpap"]])#1             #mixture of things ... need to reassess
-plot_interactive(each_target[["bryoria"]])#1             #mixture ... reassess
-plot_interactive(each_target[["carlin"]])#1             #mixture ... reassess
-plot_interactive(each_target[["cetisl"]])#1             #looks good
-plot_interactive(each_target[["cetlae"]])#1             #Looks good
-plot_interactive(each_target[["claama"]])#1             #Looks good
-plot_interactive(each_target[["clacor"]])#1             #Scan 3 is very dark
-plot_interactive(each_target[["clagra"]])#1             #Looks good
-plot_interactive(each_target[["clamit"]])#1             #Looks good
-plot_interactive(each_target[["claste"]])#1             #Looks good
-plot_interactive(each_target[["DROCA2"]])#1             #Looks good
-plot_interactive(each_target[["equsyl"]])#1             #Remove scan 4 ... shape looks like a lichen
-plot_interactive(each_target[["erivag"]])#1             #Appears to be two different things ... reassess
-plot_interactive(each_target[["evemes"]])#1             #Not good ... delete
-plot_interactive(each_target[["flacuc"]])#1             #REmove scan 3 .... data looks like it was from bare fiber optic
-plot_interactive(each_target[["flaniv"]])#1             #Remove scan 4
-plot_interactive(each_target[["gravel"]])#1             #Remove Scan 5
-plot_interactive(each_target[["hylspl"]])#1             #Looks good
-plot_interactive(each_target[["larlar"]])#1             #Werid mix ... delete
-plot_interactive(each_target[["LEDUM"]])#1             #Werid mix ... delete
-plot_interactive(each_target[["loipro"]])#1             #Looks good
-plot_interactive(each_target[["luparc"]])#1             #Remove scan 1
-plot_interactive(each_target[["masric"]])#1             #Looks good
-plot_interactive(each_target[["melhep"]])#1             #Looks good
-plot_interactive(each_target[["naparc"]])#1             #Looks good but name is misspelled
-plot_interactive(each_target[["pedrac"]])#1             #Remove scan 11
-plot_interactive(each_target[["petfri"]])#1             #Looks good
-plot_interactive(each_target[["picmar"]])#1             #Delete or investigate ... not a green plant spectrum
-plot_interactive(each_target[["plesch"]])#1             #Looks good but suspciously like a yellow lichen
-plot_interactive(each_target[["poljun"]])#1             #Looks good but suspciously like a yellow lichen
-plot_interactive(each_target[["polytrichum"]])#1             #Looks good but suspciously like a green plant
-plot_interactive(each_target[["quartz"]])#1             #Remove scan 13
-plot_interactive(each_target[["rhigeo"]])#1             #Looks good
-plot_interactive(each_target[["rhyrug"]])#1             #Looks good
-plot_interactive(each_target[["rubcam"]])#1             #Delete or investigate ... not a green plant spectrum
-plot_interactive(each_target[["salpul"]])#1             #Delete
-plot_interactive(each_target[["sphagn"]])#1             #Mix of more than one thing ... delete?
-plot_interactive(each_target[["toefeldia"]])#1             #Remove scans 2 and 5
-plot_interactive(each_target[["tomnit"]])#1             #Looks good
-plot_interactive(each_target[["umbhyp"]])#1             #Looks good
-plot_interactive(each_target[["vaculi"]])#1             #Delete
+#plot_interactive(missing_target[["aleoch"]])#1       Alectoria ochroleuca    6 #Remove scan 2
+ missing_target[["aleoch"]]<-missing_target[["aleoch"]][-c(2),]
+#plot_interactive(missing_target[["ALVI5"]])#1       Alnus      #Two different surfaces here
+ missing_target[["ALVI5"]]<-missing_target[["ALVI5"]][-c(1:5,16:26, 37:44),]
+#plot_interactive(missing_target[["arccen"]])#1       Arctoparmelia      #Remove scan 4
+ missing_target[["arccen"]]<-missing_target[["arccen"]][-c(4),]
+#plot_interactive(missing_target[["arcrub"]])#1             #Remove scan 11
+ missing_target[["arcrub"]]<-missing_target[["arcrub"]][-c(11),]
+#plot_interactive(missing_target[["aulpal"]])#1             #Looks good
+#plot_interactive(missing_target[["aultur"]])#1             #Looks good
+#plot_interactive(missing_target[["bare rock"]])#1             #Looks good
+#plot_interactive(missing_target[["betnan"]]) # Remove all for now: Not sure these are good. #Remove scans 2:3, 8
+ missing_target[["betnan"]]<-NULL #missing_target[["betnan"]][-c(2:3,8),]
+#plot_interactive(missing_target[["betneo"]])#1             #mixture of things ... need to reassess Remove 1:8, 18:23
+ missing_target[["betneo"]]<-missing_target[["betneo"]][-c(1:8, 18:23),]
+#plot_interactive(missing_target[["betpap"]])#1             #mixture of things ... need to reassess: Delete all
+  missing_target[["betpap"]]<-NULL #missing_target[["betnan"]][-c(2:3,8),]
+#plot_interactive(missing_target[["bryoria"]])#1             #mixture ... reassess: Delete all
+  missing_target[["bryoria"]]<-NULL #missing_target[["betnan"]][-c(2:3,8),]
+#plot_interactive(missing_target[["carlin"]])#1             #mixture ... reassess: Delete all
+  missing_target[["carlin"]]<-NULL #missing_target[["betnan"]][-c(2:3,8),]
+#plot_interactive(missing_target[["cetisl"]])#1             #looks good
+#plot_interactive(missing_target[["cetlae"]])#1             #Looks good
+#plot_interactive(missing_target[["claama"]])#1             #Looks good
+#plot_interactive(missing_target[["clacor"]])#1             #Scan 3 is very dark
+ missing_target[["clacor"]]<-missing_target[["clacor"]][-c(3),]
+#plot_interactive(missing_target[["clagra"]])#1             #Looks good
+#plot_interactive(missing_target[["clamit"]])#1             #Looks good
+#plot_interactive(missing_target[["claste"]])#1             #Looks good
+#plot_interactive(missing_target[["DROCA2"]])#1             #Looks good
+#plot_interactive(missing_target[["equsyl"]])#1             #Remove all: Remove scan 4 ... shape looks like a lichen: Exactly the same data as flavniv?
+ missing_target[["equsyl"]]<-NULL
+#plot_interactive(missing_target[["erivag"]])#1             #Appears to be two different things ... reassess: Remove all
+ missing_target[["erivag"]]<-NULL
+#plot_interactive(missing_target[["evemes"]])#1             #Not good ... delete: Remove all
+ missing_target[["evemes"]]<-NULL
+#plot_interactive(missing_target[["flacuc"]])#1             #REmove scan 3: Remove all .... data looks like it was from bare fiber optic
+ missing_target[["flacuc"]]<-NULL
+#plot_interactive(missing_target[["flaniv"]])#1             #Remove scan 4
+ missing_target[["flaniv"]]<-missing_target[["flaniv"]][-c(1),]
+#plot_interactive(missing_target[["gravel"]])#1             #Remove Scan 5
+ missing_target[["gravel"]]<-missing_target[["gravel"]][-c(5),]
+#plot_interactive(missing_target[["hylspl"]])#1             #Looks good
+#plot_interactive(missing_target[["larlar"]])#1             #Werid mix ... delete: Remove all
+ missing_target[["larlar"]]<-NULL
+#plot_interactive(missing_target[["LEDUM"]])#1              #Werid mix ... delete: Remove all
+ missing_target[["LEDUM"]]<-NULL
+#plot_interactive(missing_target[["loipro"]])#1             #Looks good
+#plot_interactive(missing_target[["luparc"]])#1             #Remove scan 1
+ missing_target[["luparc"]]<-missing_target[["luparc"]][-c(1),]
+#plot_interactive(missing_target[["masric"]])#1             #Looks good
+#plot_interactive(missing_target[["melhep"]])#1             #Looks good
+#plot_interactive(missing_target[["naparc"]])#1             #Looks good but name is misspelled
+#plot_interactive(missing_target[["pedrac"]])#1             #Remove scan 11
+ missing_target[["pedrac"]]<-missing_target[["pedrac"]][-c(11),]
+#plot_interactive(missing_target[["petfri"]])#1             #Looks good
+#plot_interactive(missing_target[["picmar"]])#1             #Delete or investigate ... not a green plant spectrum
+ missing_target[["picmar"]]<-NULL
+#plot_interactive(missing_target[["plesch"]])#1             #Looks good but suspciously like a yellow lichen
+#plot_interactive(missing_target[["poljun"]])#1             #Looks good but suspciously like a yellow lichen
+#plot_interactive(missing_target[["polytrichum"]])#1        #Looks good but suspciously like a green plant
+#plot_interactive(missing_target[["quartz"]])#1             #Remove scan 13
+#plot_interactive(missing_target[["rhigeo"]])#1             #Looks good
+#plot_interactive(missing_target[["rhyrug"]])#1             #Looks good
+#plot_interactive(missing_target[["rubcam"]])#1             #Delete or investigate ... not a green plant spectrum
+missing_target[["rubcam"]]<-NULL
+#plot_interactive(missing_target[["salpul"]])#1             #Delete
+missing_target[["salpul"]]<-NULL
+#plot_interactive(missing_target[["sphagn"]])#1             #Mix of more than one thing ... delete?
+missing_target[["sphagn"]]<-NULL
+#plot_interactive(missing_target[["toefeldia"]])#1             #Remove scans 2 and 5
+missing_target[["toefeldia"]]<-missing_target[["toefeldia"]][-c(2,5),]
+#plot_interactive(missing_target[["tomnit"]])#1             #Looks good
+#plot_interactive(missing_target[["umbhyp"]])#1             #Looks good
+#plot_interactive(missing_target[["vaculi"]])#1             #Delete
+missing_target[["vaculi"]]<-NULL
 
 
+# Creates a new object with cleaned spectral library
+missing_target_filt <- missing_target
 
+# Remove scans that are Epiphytes
+#missing_target_filt[c(
+#  "Vulpicida pinastri",
+#  "Usnea scabrata",
+#  "Usnea lapponica",
+#  "Parmelis sulcata",
+#  "Hypogymnia austerodes",
+#  "Evernia mesomorpha",
+#  "Flavocetraria cucculata",
+#  "Bryoria sp."
+#)] <- NULL
 
-#saveRDS(TwelveMile_spectra, "./Output/A_001_SC2_TwelveMile_spectra.rds")
+# Combines all species into one spectral library if satisfied with our results
+
+# The result is a dataframe
+missing_cleaned_speclib <- Reduce(spectrolab::combine, missing_target_filt) %>%
+  as.data.frame() %>% # Converts Spectral Object to a dataframe
+  dplyr::select(-sample_name)
+
+# Creates .rds object
+missing_cleaned_speclib_rds <- Reduce(spectrolab::combine, missing_target_filt)
+
+MissingSpecLib <- missing_cleaned_speclib %>%
+  as.data.frame() %>% # Converts Spectral Object to a dataframe
+  #dplyr::select(-sample_name) %>% # Removes unwanted column ~ should remove this later instead
+  left_join(Species_groups, by = "Code_name") %>% #colnames() %>% View()# Joins dataframe with all the species info to our spectral library
+  dplyr::select(
+    all_of(Ecosis_Colnames)
+    #ScanID,
+    #Code_name,
+    #Species_name,
+    #Genus,
+    #Functional_group2,
+    #Functional_group1,
+    #Area,
+    #everything()
+  ) %>%
+  mutate(ScanID = as.character(ScanID)) #%>% colnames() # Reorders columns
+table(MissingSpecLib$Functional_group1) %>% as.data.frame()
+#
+tst3<-MissingSpecLib %>%   
+  pivot_longer(cols = `350`:`2500`,  names_to  = "Wavelength", values_to = "Reflectance") %>%    
+  mutate(Wavelength = gsub("X","",Wavelength)) %>%
+  group_by(Functional_group1, Wavelength) %>%  
+  dplyr::summarise(Median_Reflectance = median(Reflectance)) %>%
+  mutate(Wavelength = as.numeric(Wavelength))
+
+jpeg("Output/test.jpg", height = 10000, width = 9000, res = 350)
+
+ggplot(tst3, aes(Wavelength, Median_Reflectance, group = Functional_group1), scales = "fixed")+
+  labs(title = c("Reflectance by plant functional group and sample size with median (red), 75% (dark) and 90% (grey) quantiles based on 1242 scans"), y="Reflectance")+
+  theme(panel.background = element_rect(fill = "white", colour = "grey50"), 
+        #legend.key.size = unit(0.5, "cm"),legend.text = element_text(size=25),
+        legend.position = "none",
+        title = element_text(size=25),
+        strip.text = element_text(size = 25),
+        axis.text = element_text(size = 20),
+        axis.text.x = element_text(angle = 90)) +
+  geom_point(aes(Wavelength, Median_Reflectance,color = "red"),size = 2)+
+  facet_wrap(vars(Functional_group1), scales = "fixed", ncol = 3) 
+
+dev.off()
+
+write.csv(MissingSpecLib, "./Output/C_001_SC3_Missing_Cleaned_SpectralLib.csv")
+
+saveRDS(missing_cleaned_speclib_rds, "./Output/C_002_SC3__Missing_Cleaned_Speclib.rds")
 
