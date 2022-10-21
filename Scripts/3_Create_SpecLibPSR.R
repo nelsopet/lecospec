@@ -437,15 +437,14 @@ each_target <- each_target %>% setNames(Target_names)
 # Var1 Freq
 # plot_interactive(each_target[["Alectoria ochroleuca"]])#1       Alectoria ochroleuca    6 #Remove scan 2
   each_target[["Alectoria ochroleuca"]] <- each_target[["Alectoria ochroleuca"]][-c(2), ]
- plot_interactive(each_target[["Alnus sp."]])#2                  Alnus sp.   80 # Need to clean out half of these because there are two groups.
- 
+# plot_interactive(each_target[["Alnus sp."]])#2                  Alnus sp.   80 # Need to clean out half of these because there are two groups.
+ each_target[["Alnus sp."]] <- each_target[["Alnus sp."]][-c(1:43), ]
 # plot_interactive(each_target[["Arctagrostis latifolia"]])#3     Arctagrostis latifolia    5#Remove scan 1
- 
+ each_target[["Arctagrostis latifolia"]] <- each_target[["Arctagrostis latifolia"]][-c(1), ]
 # plot_interactive(each_target[["Arctocetraria centrifuga"]])#4   Arctocetraria centrifuga    4 
 # plot_interactive(each_target[["Arctophila fulva"]])#5           Arctophila fulva   12 #Remove scans 1-5
   each_target[["Arctophila fulva"]] <- each_target[["Arctophila fulva"]][-c(1:5)] #               ]
 # plot_interactive(each_target[["Arctostaphyllos"]])#6            Arctostaphyllos   25 #Mixed of two things, Remove scans 20:25 based on SWIR detector edge artifact
-  each_target[["Arctostaphyllos"]] <- each_target[["Arctostaphyllos"]][-c(20:25)] # OLD[-c(19,13,10,11,16,17)                 ]
 # plot_interactive(each_target[["Arenaria pseudofrigida"]])#7     Arenaria pseudofrigida    1
 # plot_interactive(each_target[["Asahinea chrysantha"]])#8        Asahinea chrysantha   19
 # plot_interactive(each_target[["Aulacomnium palustre"]])#9       Aulacomnium palustre    6
@@ -495,9 +494,9 @@ each_target <- each_target %>% setNames(Target_names)
 # plot_interactive(each_target[["Evernia mesomorpha"]])#42        Evernia mesomorpha   20 #Remove scan 8
   each_target[["Evernia mesomorpha"]] <- each_target[["Evernia mesomorpha"]][-c(8), ]
 # plot_interactive(each_target[["Flavocetraria cucculata"]])#43   Flavocetraria cucculata   14 #Remove scan 7
-   each_target[["Flavocetraria cucculata"]] <- each_target[["Flavocetraria cucculata"]][-c(7), ]
+  each_target[["Flavocetraria cucculata"]] <- each_target[["Flavocetraria cucculata"]][-c(7), ]
 # plot_interactive(each_target[["Flavocetraria nivalis"]])#44     Flavocetraria nivalis   19 #Remove scan 11
-   each_target[["Flavocetraria nivalis"]] <- each_target[["Flavocetraria nivalis"]][-c(11), ]
+  each_target[["Flavocetraria nivalis"]] <- each_target[["Flavocetraria nivalis"]][-c(11), ]
 # plot_interactive(each_target[["Heracleum lanatum"]])#45         Heracleum lanatum    8
 # plot_interactive(each_target[["Hieracium sp."]])#46             Hieracium sp.    1
 # plot_interactive(each_target[["Hylocomium splendens"]])#47      Hylocomium splendens   13 #Removes scans 5-7
@@ -571,9 +570,9 @@ each_target <- each_target %>% setNames(Target_names)
 # plot_interactive(each_target[["Usnea scabrata"]])#103           Usnea scabrata   12 #Remove scans 9-12
   each_target[["Usnea scabrata"]]<-each_target[["Usnea scabrata"]][-c(9:12),]
 # plot_interactive(each_target[["Vaccinium uliginosum"]])#104     Vaccinium uliginosum   16 #Two groups .. remove scans 1-10
-   each_target[["Vaccinium uliginosum"]]<-each_target[["Vaccinium uliginosum"]][-c(1:10),]
+  each_target[["Vaccinium uliginosum"]]<-each_target[["Vaccinium uliginosum"]][-c(1:10),]
 # plot_interactive(each_target[["Vaccinium vitis-idea"]])#105     Vaccinium vitis-idea   25 #Remove scans 1-8
-   each_target[["Vaccinium vitis-idea"]] <- each_target[["Vaccinium vitis-idea"]][-c(1:8), ]
+  each_target[["Vaccinium vitis-idea"]] <- each_target[["Vaccinium vitis-idea"]][-c(1:8), ]
 # plot_interactive(each_target[["Vulpicida pinastri"]])#106       Vulpicida pinastri   12 #Remove scan 11
   each_target[["Vulpicida pinastri"      ]]<-each_target[["Vulpicida pinastri"      ]][-c(11),                           ]
  
