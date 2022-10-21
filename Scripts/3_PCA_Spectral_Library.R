@@ -1,6 +1,7 @@
 require(tidyverse)
 require(factoextra)
 #Define groups based on spectra
+#Need to read in Cleaned_SpecLib ....
 tst<-Cleaned_Speclib %>% 
 #  dplyr::select(Species_name, everything()) %>% #colnames()
 dplyr::select(-ScanID:-Functional_group2_Freq)

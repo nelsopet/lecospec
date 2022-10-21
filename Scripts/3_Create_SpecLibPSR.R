@@ -531,7 +531,7 @@ each_target <- each_target %>% setNames(Target_names)
 # plot_interactive(each_target[["Pices (bark)"]])#69              Pices (bark)    5
 # plot_interactive(each_target[["Pilophorus acicularis"]])#70     Pilophorus acicularis   15
 # plot_interactive(each_target[["Plagiomnium sp."]])#71           Plagiomnium sp.    4
-# plot_interactive(each_target[["Pleurozium schreberi"]])#72      Pleurozium schreberi    4
+#plot_interactive(each_target[["Pleurozium schreberi"]])#72      Pleurozium schreberi    4
 # plot_interactive(each_target[["Polytrichum juniperinum"]])#73   Polytrichum juniperinum   10 #Remove scans 1-4
   each_target[["Polytrichum juniperinum"]] <- each_target[["Polytrichum juniperinum"]][-c(1:4), ]
 # plot_interactive(each_target[["Polytrichum sp."]])#74           Polytrichum sp.   13
@@ -618,14 +618,19 @@ New_targets[c(
 
 # Combines all species into one spectral library if satisfied with our results
 
+MissingSpecLib <- read.csv("./Output/C_001_SC3_Missing_Cleaned_SpectralLib.csv", check.names = F)
 
 # The result is a dataframe
 Cleaned_Speclib <- Reduce(spectrolab::combine, New_targets) %>%
-  as.data.frame() %>% # Converts Spectral Object to a dataframe
-  dplyr::select(-sample_name)
+  as.data.frame() %>% # dplyr::select(Area)# Converts Spectral Object to a dataframe
+  dplyr::select(-sample_name) %>%
+  bind_rows(MissingSpecLib) #%>% dim
+  
+
+#Read in missing spectra
 
 # Creates .rds object
-Cleaned_Speclib_rds <- Reduce(spectrolab::combine, New_targets)
+#Cleaned_Speclib_rds <- Reduce(spectrolab::combine, New_targets)
 
 table(Cleaned_Speclib$Functional_group2) %>% as.data.frame()
 
@@ -691,7 +696,7 @@ dev.off()
 
 write.csv(Cleaned_Speclib, "./Output/C_001_SC3_Cleaned_SpectralLib.csv")
 
-saveRDS(Cleaned_Speclib_rds, "./Output/C_002_SC3_Cleaned_Speclib.rds")
+#saveRDS(Cleaned_Speclib_rds, "./Output/C_002_SC3_Cleaned_Speclib.rds")
 
 
 # Make a table showing all the scans tallied by the three groups.
