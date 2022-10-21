@@ -399,30 +399,30 @@ MissingSpecLib <- missing_cleaned_speclib %>%
     #everything()
   ) %>%
   mutate(ScanID = as.character(ScanID)) #%>% colnames() # Reorders columns
-table(MissingSpecLib$Functional_group1) %>% as.data.frame()
+table(MissingSpecLib$Area) %>% as.data.frame()
 #
-tst3<-MissingSpecLib %>%   
-  pivot_longer(cols = `350`:`2500`,  names_to  = "Wavelength", values_to = "Reflectance") %>%    
-  mutate(Wavelength = gsub("X","",Wavelength)) %>%
-  group_by(Functional_group1, Wavelength) %>%  
-  dplyr::summarise(Median_Reflectance = median(Reflectance)) %>%
-  mutate(Wavelength = as.numeric(Wavelength))
-
-jpeg("Output/test.jpg", height = 10000, width = 9000, res = 350)
-
-ggplot(tst3, aes(Wavelength, Median_Reflectance, group = Functional_group1), scales = "fixed")+
-  labs(title = c("Reflectance by plant functional group and sample size with median (red), 75% (dark) and 90% (grey) quantiles based on 1242 scans"), y="Reflectance")+
-  theme(panel.background = element_rect(fill = "white", colour = "grey50"), 
-        #legend.key.size = unit(0.5, "cm"),legend.text = element_text(size=25),
-        legend.position = "none",
-        title = element_text(size=25),
-        strip.text = element_text(size = 25),
-        axis.text = element_text(size = 20),
-        axis.text.x = element_text(angle = 90)) +
-  geom_point(aes(Wavelength, Median_Reflectance,color = "red"),size = 2)+
-  facet_wrap(vars(Functional_group1), scales = "fixed", ncol = 3) 
-
-dev.off()
+#tst3<-MissingSpecLib %>%   
+#  pivot_longer(cols = `350`:`2500`,  names_to  = "Wavelength", values_to = "Reflectance") %>%    
+#  mutate(Wavelength = gsub("X","",Wavelength)) %>%
+#  group_by(Functional_group1, Wavelength) %>%  
+#  dplyr::summarise(Median_Reflectance = median(Reflectance)) %>%
+#  mutate(Wavelength = as.numeric(Wavelength))
+#
+#jpeg("Output/test.jpg", height = 10000, width = 9000, res = 350)
+#
+#ggplot(tst3, aes(Wavelength, Median_Reflectance, group = Functional_group1), scales = "fixed")+
+#  labs(title = c("Reflectance by plant functional group and sample size with median (red), 75% (dark) and 90% (grey) quantiles based on 1242 scans"), y="Reflectance")+
+#  theme(panel.background = element_rect(fill = "white", colour = "grey50"), 
+#        #legend.key.size = unit(0.5, "cm"),legend.text = element_text(size=25),
+#        legend.position = "none",
+#        title = element_text(size=25),
+#        strip.text = element_text(size = 25),
+#        axis.text = element_text(size = 20),
+#        axis.text.x = element_text(angle = 90)) +
+#  geom_point(aes(Wavelength, Median_Reflectance,color = "red"),size = 2)+
+#  facet_wrap(vars(Functional_group1), scales = "fixed", ncol = 3) 
+#
+#dev.off()
 
 write.csv(MissingSpecLib, "./Output/C_001_SC3_Missing_Cleaned_SpectralLib.csv")
 
