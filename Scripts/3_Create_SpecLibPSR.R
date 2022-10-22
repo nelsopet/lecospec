@@ -269,28 +269,28 @@ SpecLib_out_db<-as.data.frame(SpecLib_out)
 range(SpecLib$`1240`)
 range(Ecosis_data$`1240`)
 range(SpecLib_out_db$`1240`)
-    tst2<-SpecLib_out %>%   
-      pivot_longer(cols = `350`:`2500`,  names_to  = "Wavelength", values_to = "Reflectance") %>%    
-      mutate(Wavelength = gsub("X","",Wavelength)) %>%
-      group_by(Functional_group1, Wavelength) %>%  
-      dplyr::summarise(Median_Reflectance = median(Reflectance)) %>%
-      mutate(Wavelength = as.numeric(Wavelength))
-    
-    jpeg("Output/test.jpg", height = 10000, width = 9000, res = 350)
-    
-    ggplot(tst2, aes(Wavelength, Median_Reflectance, group = Functional_group1), scales = "fixed")+
-      labs(title = c("Reflectance by plant functional group and sample size with median (red), 75% (dark) and 90% (grey) quantiles based on 1242 scans"), y="Reflectance")+
-      theme(panel.background = element_rect(fill = "white", colour = "grey50"), 
-            #legend.key.size = unit(0.5, "cm"),legend.text = element_text(size=25),
-            legend.position = "none",
-            title = element_text(size=25),
-            strip.text = element_text(size = 25),
-            axis.text = element_text(size = 20),
-            axis.text.x = element_text(angle = 90)) +
-      geom_point(aes(Wavelength, Median_Reflectance,color = "red"),size = 2)+
-      facet_wrap(vars(Functional_group1), scales = "fixed", ncol = 3) 
-    
-    dev.off()
+   #tst2<-SpecLib_out %>%   
+   #  pivot_longer(cols = `350`:`2500`,  names_to  = "Wavelength", values_to = "Reflectance") %>%    
+   #  mutate(Wavelength = gsub("X","",Wavelength)) %>%
+   #  group_by(Functional_group1, Wavelength) %>%  
+   #  dplyr::summarise(Median_Reflectance = median(Reflectance)) %>%
+   #  mutate(Wavelength = as.numeric(Wavelength))
+   #
+   #jpeg("Output/test.jpg", height = 10000, width = 9000, res = 350)
+   #
+   #ggplot(tst2, aes(Wavelength, Median_Reflectance, group = Functional_group1), scales = "fixed")+
+   #  labs(title = c("Reflectance by plant functional group and sample size with median (red), 75% (dark) and 90% (grey) quantiles based on 1242 scans"), y="Reflectance")+
+   #  theme(panel.background = element_rect(fill = "white", colour = "grey50"), 
+   #        #legend.key.size = unit(0.5, "cm"),legend.text = element_text(size=25),
+   #        legend.position = "none",
+   #        title = element_text(size=25),
+   #        strip.text = element_text(size = 25),
+   #        axis.text = element_text(size = 20),
+   #        axis.text.x = element_text(angle = 90)) +
+   #  geom_point(aes(Wavelength, Median_Reflectance,color = "red"),size = 2)+
+   #  facet_wrap(vars(Functional_group1), scales = "fixed", ncol = 3) 
+   #
+   #dev.off()
 
 ## Please note: these are the number of samples we have for each functional group
  table(SpecLib_out$Functional_group1)%>%as.data.frame()
@@ -361,6 +361,7 @@ print(paste0(
 ))
 
 summary(SpecLib_out)
+range(SpecLib_new$`1000`)
 # table(SpecLib_new$Functional_group1)%>%as.data.frame()
 
 # Adds more details to our spectral library (Freq columns = The count of each Species)
@@ -618,13 +619,26 @@ New_targets[c(
 
 # Combines all species into one spectral library if satisfied with our results
 
-MissingSpecLib <- read.csv("./Output/C_001_SC3_Missing_Cleaned_SpectralLib.csv", check.names = F)
+MissingSpecLib <- read.csv("./Output/C_001_SC3_Missing_Cleaned_SpectralLib.csv", check.names = F) %>% 
+  dplyr::rename(sample_num = "") %>%
+meta_columns <- 7#formerly 37
+meta_names <- c(colnames(MissingSpecLib)[1:meta_columns], "Area")
+MissingSpecLib_out <- columnwise_min_max_scale(MissingSpecLib, ignore_cols = meta_names) #%>% str()
+
+print(summary(SpecLib_new))
+MissingSpecLib_new <- filter_all_between(
+  as.data.frame(MissingSpecLib_out),
+  0,
+  1,
+  ignore_cols = meta_names
+) #%>% str()
+
 
 # The result is a dataframe
-Cleaned_Speclib <- Reduce(spectrolab::combine, New_targets) %>%
+Cleaned_Speclib_out <- Reduce(spectrolab::combine, New_targets) %>%
   as.data.frame() %>% # dplyr::select(Area)# Converts Spectral Object to a dataframe
   dplyr::select(-sample_name) %>%
-  bind_rows(MissingSpecLib) #%>% dim
+  bind_rows(MissingSpecLib_new) #%>% dim
   
 
 #Read in missing spectra
@@ -632,9 +646,9 @@ Cleaned_Speclib <- Reduce(spectrolab::combine, New_targets) %>%
 # Creates .rds object
 #Cleaned_Speclib_rds <- Reduce(spectrolab::combine, New_targets)
 
-table(Cleaned_Speclib$Functional_group2) %>% as.data.frame()
+table(Cleaned_Speclib_out$Functional_group2) %>% as.data.frame()
 
-tst2<-Cleaned_Speclib %>%   
+tst2<-Cleaned_Speclib_out %>%   
   pivot_longer(cols = `350`:`2500`,  names_to  = "Wavelength", values_to = "Reflectance") %>%    
   mutate(Wavelength = gsub("X","",Wavelength)) %>%
   group_by(Functional_group1, Wavelength) %>%  
@@ -694,7 +708,7 @@ dev.off()
 # 35                Tree_Evergreen   17
 # 36                   Wood_Coarse    5
 
-write.csv(Cleaned_Speclib, "./Output/C_001_SC3_Cleaned_SpectralLib.csv")
+write.csv(Cleaned_Speclib_out, "./Output/C_001_SC3_Cleaned_SpectralLib.csv")
 
 #saveRDS(Cleaned_Speclib_rds, "./Output/C_002_SC3_Cleaned_Speclib.rds")
 
