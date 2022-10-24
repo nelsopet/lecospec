@@ -293,7 +293,7 @@ missing_target <- missing_target %>% setNames(missing_target_names)
 #plot_interactive(missing_target[["bare rock"]])#1             #Looks good
 #plot_interactive(missing_target[["betnan"]]) # Remove all for now: Not sure these are good. #Remove scans 2:3, 8
  missing_target[["betnan"]]<-NULL #missing_target[["betnan"]][-c(2:3,8),]
-#plot_interactive(missing_target[["betneo"]])#1             #mixture of things ... need to reassess Remove 1:8, 18:23
+plot_interactive(missing_target[["betneo"]])#1             #mixture of things ... need to reassess Remove 1:8, 18:23
  missing_target[["betneo"]]<-missing_target[["betneo"]][-c(1:8, 18:23),]
 #plot_interactive(missing_target[["betpap"]])#1             #mixture of things ... need to reassess: Delete all
   missing_target[["betpap"]]<-NULL #missing_target[["betnan"]][-c(2:3,8),]

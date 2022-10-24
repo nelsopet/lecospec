@@ -132,7 +132,8 @@ Cleaned_Speclib_tall_Fnc_grp2 <- Cleaned_Speclib %>%
 # group_by(Species_name, Wavelength)
 
 #Make a list of columns to ignore for rescaling
-ignore<-colnames(Cleaned_Speclib[,1:40])
+#ignore<-colnames(Cleaned_Speclib[,1:40])
+ignore<-colnames(Cleaned_Speclib[,1:10])
 
 Cleaned_Speclib_tall_Fnc_grp1<-
   Cleaned_Speclib %>% 
