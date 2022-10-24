@@ -36,10 +36,12 @@ lecospec_depenencies <- c(
     "arrow",
     "RhpcBLASctl",
     "plotly",
-    "readr"
+    "readr",
+    "pivottabler",
+    "webshot"
 )
 
 install.packages(lecospec_depenencies, repos = "http://cran.rstudio.com/")
 update.packages(repos = "http://cran.rstudio.com/", ask=FALSE)
 
-webshot::install_phantomjs()
+#webshot::install_phantomjs()
