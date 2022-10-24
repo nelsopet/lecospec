@@ -610,3 +610,14 @@ vector_normalize_df <- function(df, maintain_names = FALSE){
         normalized_bands
     ))
 }
+
+
+inf_to_na <- function(df){
+    return(
+        do.call(
+            data.frame,                      # Replace Inf in data by NA
+            lapply(
+                df,
+                function(x) {return(replace(x, is.infinite(x), NA))}))
+    )
+}

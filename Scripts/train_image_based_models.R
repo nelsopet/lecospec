@@ -3,11 +3,12 @@ source("Functions/lecospectR.R")
 NOISE_POWER <- 0.01
 target_path <- "Data/Ground_Validation/training/labels.json"
 
-train_base_path <- "Data/Ground_Validation/training/base_exp.csv"
+train_base_path <- "Data/Ground_Validation/training/base.csv"
 train_norm_path <- "Data/Ground_Validation/training/normed_exp.csv"
 train_scale_path <- "Data/Ground_Validation/training/scaled_exp.csv"
 
-targets <- rjson::fromJSON(file = target_path) %>% as.factor()
+img_targets <- read.csv(target_path, header = TRUE)$x %>% as.factor()
+print(targets)
 base_weights <- rjson::fromJSON(file = "mle/fg1_weights.json") %>% as.list()
 posterior_weights <- purrr::map(targets, function(x){
     return(1 / base_weights[[x]])

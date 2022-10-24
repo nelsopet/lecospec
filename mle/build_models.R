@@ -13,7 +13,7 @@ for(filename in save_path_names){
 
 file_paths <- dir(base_path, full.names=TRUE, include.dirs=TRUE)
 
-
+image_data <- read.csv()
 
 print(save_path_names)
 
@@ -263,7 +263,7 @@ scaled_noise_prior <- ranger::ranger(
 save(scaled_noise_prior, file = "mle/models/scaled_clean_prior_exp.rda")
 
 crazy_model <- ranger::ranger(
-    importance = "impurity",
+    importance = "permutation",
     replace = TRUE,
     case.weights = prior_weights,
     classification = TRUE,
@@ -277,19 +277,20 @@ raster::beginCluster()
 cl <- raster::getCluster()
 
 results <- validate_model(
-    crazy_model,
-    "mle/experiments/crazy/",
+    knn,
+    "mle/experiments/knn/",
     normalize_input = FALSE,
     scale_input = FALSE,
-    cluster = cl)
+    cluster = NULL)
 
 raster::endCluster()
-aggregated_results <- aggregate_results("mle/experiments/crazy/") %>% as.data.frame()
+unregister_dopar()
+aggregated_results <- aggregate_results("mle/experiments/knn/") %>% as.data.frame()
 try(
 
     plot_by_pft(
         aggregated_results,
-        save_path = "mle/experiments/crazy/aggregates.html",
+        save_path = "mle/experiments/knn/aggregates.html",
         open = FALSE
     )
     )
@@ -297,8 +298,41 @@ try(
 
     write_validation_table(
         aggregated_results,
-        save_path = "mle/experiments/crazy/table.html",
+        save_path = "mle/experiments/knn/table.html",
         open = FALSE
         )
     )
 
+
+ctrl <- caret::trainControl(method = "repeatedcv", repeats = 5)
+knn <- caret::train(
+    no_noise_no_norm[, names(var_imp)[1:35]], 
+    targets, 
+    method="knn", 
+    preProcess=c("center", "scale"),
+    tuneLength = 10,
+    trControl=ctrl
+)
+print(str(knn$results))
+
+unregister_dopar <- function() {
+  env <- foreach:::.foreachGlobals
+  rm(list=ls(name=env), pos=env)
+}
+
+print(names(knn))
+print(knn$preProcess)
+print(nrow(train_base))
+knn_predictions <- predict(knn, newdata=train_base)
+rf_predictions <- apply_model(train_base, crazy_model)
+print(is.factor(knn_predictions))
+knn_conf <- caret::confusionMatrix(knn_predictions, img_targets)
+print(length(knn_predictions))
+print(length(img_targets))
+print(colnames(results))
+print(summary(targets))
+print(summary(rf_predictions))
+print(summary(train_base))
+
+knn$modelInfo
+knn$levels
