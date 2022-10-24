@@ -349,7 +349,7 @@ SpecLib_new <- filter_all_between(
   ) #%>% str()
 
 
-
+print(colnames(SpecLib_new)[1:40])
   #print(SpecLib_new)
 
 print(paste0(
@@ -385,7 +385,7 @@ SpecLib_new_All <- SpecLib_new %>% # SpecLib_new%>%
     ScanID,
     Area,
     Code_name,
-    Species_name,
+    #Species_name,
     Functional_group1,
     Functional_group2,
     Area,

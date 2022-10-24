@@ -83,6 +83,9 @@ get_required_veg_indices.ranger <- function(ml_model, ...) {
     return(veg_indices)
 }
 
+get_required_veg_indices.default <- function(ml_model, ...) {
+    return(read.csv("assets/vegIndicesUsed.csv", header = TRUE)$x)
+}
 
 
 
@@ -151,4 +154,13 @@ apply_model.ranger <- function(df, model){
 
 apply_model.xgboost <- function(){
 
+}
+
+apply_model.train <- function(df, model, ...) {
+    predictions <- predict(
+        model, 
+        newdata = as.data.frame(df)) %>% 
+        as.data.frame()
+    colnames(predictions) <- c("z")
+    return(predictions)
 }
