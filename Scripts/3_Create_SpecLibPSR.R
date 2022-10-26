@@ -170,8 +170,20 @@ write_csv(SpecLib, "./Output/C_000_Speclib_raw.csv")
 SpecLib_EcoSis_raw <- bind_rows(SpecLib, Ecosis_data) 
 SpecLib_EcoSis_raw_out_db<-as.data.frame(SpecLib_EcoSis_raw)
 
-## Please note: these are the number of samples we have for each functional group
- table(SpecLib_EcoSis_raw$Functional_group1)%>%as.data.frame()
+print(colnames(SpecLib_new)[1:40])
+#print(SpecLib_new)
+
+print(paste0(
+  "Filtered data from  ",
+  nrow(SpecLib_out),
+  " rows to ",
+  nrow(SpecLib_new),
+  " rows."
+))
+
+summary(SpecLib_out)
+range(SpecLib_new$`1000`)
+# table(SpecLib_new$Functional_group1)%>%as.data.frame()
 
 # Adds more details to our spectral library (Freq columns = The count of each Species)
 # Frequency values represent the number of scans per species and the number of scans per functional group
