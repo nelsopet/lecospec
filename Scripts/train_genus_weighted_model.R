@@ -42,7 +42,7 @@ adjancy_list <- rjson::fromJSON(file = "./assets/pft_adj_list.json")
 ##        Train the Model
 ################################################
 
-base_data_path <- "Data/output_speclib_extended.csv"
+base_data_path <- "Data/D_002_SpecLib_Derivs.csv"
 augmented_data_path <- "./mle/validation100_stratified.csv"
 spec_lib <- read.csv(base_data_path)
 

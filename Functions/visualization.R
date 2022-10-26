@@ -1,5 +1,4 @@
 library(plotly)
-library(pivottabler)
 # talk to NASA spectral imaging working group r/e gaps
 
 visualize_prediction <- function(filepath, key_file, column){

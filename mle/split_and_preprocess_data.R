@@ -15,7 +15,7 @@ TRAINING_PROPORTION <- 0.8
 
 
 
-model_filepath <- "mle/fg1_model_normed_weighted.rda"
+model_filepath <- "mle/fg1_model_normed_weighted_training.rda"
 training_filepath <- "Data/D_002_SpecLib_Derivs.csv"
 #test_filepath <- "mle/test_data_redux.csv"
 
@@ -29,7 +29,7 @@ scaled_clean_path <- "mle/scaled_ground_no_noise_exp.csv"
 scaled_noise_path <- "mle/scaled_ground_noise_exp.csv"
 
 
-speclib_filepath <- "Data/output_speclib_extended.csv"
+speclib_filepath <- "Data/D_002_SpecLib_Derivs.csv"
 speclib <- read.csv(speclib_filepath, header = TRUE)
 
 print(dim(speclib))
@@ -122,12 +122,11 @@ if (USE_CAL_VAL_SPLIT) {
 print(colnames(training_data))
 
 
-
 write.csv(training_data, n4path)
 band_names <- extract_bands(training_data) %>% as.character()
 print(band_names)
 print(colnames(training_data))
-normalized_data_bands <- training_data %>% df_to_speclib(., type="spectrolab") %>% spectrolab::normalize() %>% as.data.frame()
+normalized_data_bands <- vector_normalize_df(training_data, maintain_names = TRUE)
 print(normalized_data_bands)
 write.csv(normalized_data_bands, no_noise_norm_path)
 
@@ -148,7 +147,7 @@ if (ADD_NOISE) {
     write.csv(training_data, noise_no_norm_path)
     write.csv(scaled_data, scaled_noise_path)
 
-    normalized_data_noisy <- training_data %>% df_to_speclib(., type="spectrolab") %>% spectrolab::normalize() %>% as.data.frame()
+    normalized_data_noisy <- vector_normalize_df(training_data, maintain_names = TRUE)
     print(normalized_data_noisy)
     write.csv(normalized_data_noisy, n2path)
 

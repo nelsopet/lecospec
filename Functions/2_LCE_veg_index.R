@@ -123,7 +123,7 @@ Func_Resamp <- function(Resamp) {
   print("Resampling spectra every 5nm")
 
   # Creates functions that will do the resampling every 5nm
-  final <- spectrolab::resample(SpeclibObj, seq(397.593, 899.424, 5)) %>%
+  final <- spectrolab::resample(SpeclibObj, seq(397.593, 992.593, 5)) %>%
     as.data.frame() %>%
     dplyr::select(-sample_name)
 

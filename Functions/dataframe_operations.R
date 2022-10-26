@@ -571,3 +571,53 @@ columnwise_min_max_scale <- function(df, ignore_cols = NULL){
     }
     return(new_df)
 }
+
+vector_normalize_df <- function(df, maintain_names = FALSE){
+    band_cols <- c(
+        grep(
+            "^[0-9][0-9][0-9]",
+            colnames(df),
+            value = FALSE,
+            invert = FALSE  
+        ),
+        grep(
+            "^[X x][0-9][0-9][0-9]",
+            colnames(df),
+            value = FALSE,
+            invert = FALSE
+        )
+
+        ) %>% 
+        unique() %>%
+        as.vector()
+
+    band_df <- df[,band_cols]
+    non_band_df <- df[, -band_cols]
+
+    normalized_bands <- band_df %>% 
+        df_to_speclib(., type="spectrolab") %>% 
+        spectrolab::normalize() %>% 
+        as.data.frame()
+
+    if(maintain_names){
+        colnames(normalized_bands) <- colnames(band_df)
+    }
+    
+    #colnames(normalized_bands) <- colnames(band_df)
+
+    return(cbind(
+        non_band_df,
+        normalized_bands
+    ))
+}
+
+
+inf_to_na <- function(df){
+    return(
+        do.call(
+            data.frame,                      # Replace Inf in data by NA
+            lapply(
+                df,
+                function(x) {return(replace(x, is.infinite(x), NA))}))
+    )
+}
