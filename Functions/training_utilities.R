@@ -36,3 +36,38 @@ check_output_distribution <- function(df, model, targets){
 add_noise_to_df <- function(df, noise_power = 0.01){}
 
 
+automated_check <- function(input_df, ignore_cols = NULL){
+    used_cols <- colnames(input_df)
+    if(!is.null(ignore_cols)){
+
+        used_cols <- setdiff(colnames(input_df), ignore_cols)
+    }
+
+    df <- input_df[, used_cols]
+
+    indx <- apply(df, 2, function(x) any(is.na(x) | is.infinite(x)))
+    if(length(indx > 0)){
+        print("NAs and/or infinite values detected in data")
+    }
+
+    column_max_values <- apply(df, 2, function(x) base::max(x, na.rm = TRUE))
+    column_min_values <- apply(df, 2, function(x) base::min(x, na.rm = TRUE))
+    column_median_values <- apply(df, 2, function(x) stats::median(x, na.rm = TRUE))
+    column_mean_values <- apply(df, 2, function(x) base::mean(x, na.rm = TRUE))
+    column_variances <- apply(df, 2, function(x) var(x, na.rm = TRUE))
+    
+    print(paste0("Global minimum: ", min(column_min_values)))
+    print(paste0("Global maximum: ", max(column_max_values)))
+    print(paste0("Gloabl Mean: ", mean(column_mean_values)))
+    print(paste0("Global Estimated Variance: ", mean(column_variances)))
+    print(paste0("Global Minimum Variance: ", min(column_variances)))
+    print(paste0("Global Maximum Variance: ", max(column_variances)))
+
+    return( list(
+        maxs = column_max_values,
+        mins = column_min_values,
+        means = column_mean_values,
+        medians = column_median_values,
+        vars = column_variances
+    ))
+}

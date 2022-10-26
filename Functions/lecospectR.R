@@ -276,15 +276,18 @@ process_tile <- function(
 
 
         cleaned_df_no_empty_cols <- drop_empty_columns(cleaned_df)
+        
+        imputed_df <- impute_spectra(cleaned_df_no_empty_cols, cluster = cluster)
+
+        veg_indices <- get_vegetation_indices(resampled_df, ml_model, cluster = cluster)
 
         if(scale_input){
-            cleaned_df_no_empty_cols <- global_min_max_scale(
-                cleaned_df_no_empty_cols, 
+            imputed_df <- global_min_max_scale(
+                imputed_df, 
                 ignore_cols = c("x", "y")) %>%
                 as.data.frame()
         }
         
-        imputed_df <- impute_spectra(cleaned_df_no_empty_cols, cluster = cluster)
     
         try(
             rm(cleaned_df)
@@ -296,7 +299,6 @@ process_tile <- function(
         resampled_df <- resample_df(imputed_df, normalize = normalize_input, max_wavelength = 995.716)
         gc()
 
-        veg_indices <- get_vegetation_indices(resampled_df, ml_model, cluster = cluster)
 
 
         #print("Resampled Dataframe Dimensions:")
