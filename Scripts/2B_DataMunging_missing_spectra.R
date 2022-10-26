@@ -65,8 +65,8 @@ read_spectra_fix_missing_spec= function(x)
 tst_speclib_onesite<-dir_spec_list[[8]]
 dir_spec_fix<-lapply(1:length(tst_speclib_onesite), read_spectra_fix_missing_spec)
 dir_spec_fix<-Reduce(spectrolab::combine, dir_spec_fix)
-meta(dir_spec_fix)<-dirs_spec_new_meta[8] %>% as.data.frame() %>% rename(Area = '.')
-names(dir_spec_fix)<-dir_spec_names[8]
+meta(dir_spec_fix)<-dirs_spec_new_meta[8] %>% as.data.frame() %>% dplyr::rename(Area = '.')
+#names(dir_spec_fix)<-dir_spec_names[8]
 
 spec_missing_all<-
   lapply(1:length(dir_spec_list), 
@@ -75,7 +75,7 @@ spec_missing_all<-
           tst_spec_names <- list.files("./Data/SpectraByLocation/12_Mile/original_samples", pattern = ".sed", full.names = F)
           dir_spec_fix<-lapply(1:length(tst_speclib_onesite), read_spectra_fix_missing_spec)
           dir_spec_fix<-Reduce(spectrolab::combine, dir_spec_fix)
-          meta(dir_spec_fix)<-dirs_spec_new_meta[[y]] %>% as.data.frame() %>% rename(Area = '.')
+          meta(dir_spec_fix)<-dirs_spec_new_meta[[y]] %>% as.data.frame() %>% dplyr::rename(Area = '.')
           names(dir_spec_fix)<-dir_spec_names[y]
           print(dirs_spec_new_meta[y])
           summary(dir_spec_fix)
@@ -220,7 +220,7 @@ CodeNames_omit<-c("1676083"
                   ,"chatnikaF3"
                   ,"eightmileflight1") %>% 
   as.data.frame() %>%
-  rename(Code_name = ".")
+  dplyr::rename(Code_name = ".")
 
 meta_clean_filt<-
 meta_clean %>% 
@@ -293,7 +293,7 @@ missing_target <- missing_target %>% setNames(missing_target_names)
 #plot_interactive(missing_target[["bare rock"]])#1             #Looks good
 #plot_interactive(missing_target[["betnan"]]) # Remove all for now: Not sure these are good. #Remove scans 2:3, 8
  missing_target[["betnan"]]<-NULL #missing_target[["betnan"]][-c(2:3,8),]
-plot_interactive(missing_target[["betneo"]])#1             #mixture of things ... need to reassess Remove 1:8, 18:23
+#plot_interactive(missing_target[["betneo"]])#1             #mixture of things ... need to reassess Remove 1:8, 18:23
  missing_target[["betneo"]]<-missing_target[["betneo"]][-c(1:8, 18:23),]
 #plot_interactive(missing_target[["betpap"]])#1             #mixture of things ... need to reassess: Delete all
   missing_target[["betpap"]]<-NULL #missing_target[["betnan"]][-c(2:3,8),]
@@ -376,7 +376,7 @@ missing_target_filt <- missing_target
 # Combines all species into one spectral library if satisfied with our results
 
 # The result is a dataframe
-missing_cleaned_speclib <- Reduce(spectrolab::combine, missing_target_filt) %>%
+missing_cleaned_speclib <- Reduce(spectrolab::combine, missing_target_filt) %>% 
   as.data.frame() %>% # Converts Spectral Object to a dataframe
   dplyr::select(-sample_name)
 
@@ -384,21 +384,20 @@ missing_cleaned_speclib <- Reduce(spectrolab::combine, missing_target_filt) %>%
 missing_cleaned_speclib_rds <- Reduce(spectrolab::combine, missing_target_filt)
 
 MissingSpecLib <- missing_cleaned_speclib %>%
-  as.data.frame() %>% # Converts Spectral Object to a dataframe
-  #dplyr::select(-sample_name) %>% # Removes unwanted column ~ should remove this later instead
-  left_join(Species_groups, by = "Code_name") %>% #colnames() %>% View()# Joins dataframe with all the species info to our spectral library
+  as.data.frame() %>%
+  inner_join(Species_groups, by = "Code_name") %>% #colnames() %>% as.data.frame() %>% View()# Joins dataframe with all the species info to our spectral library
   dplyr::select(
-    all_of(Ecosis_Colnames)
-    #ScanID,
-    #Code_name,
-    #Species_name,
-    #Genus,
-    #Functional_group2,
-    #Functional_group1,
-    #Area,
-    #everything()
+    ScanID,
+    Code_name,
+    Species_name,
+    Genus,
+    Functionalgroup2,
+    Functional_group1,
+    Area,
+    everything()
   ) %>%
-  mutate(ScanID = as.character(ScanID)) #%>% colnames() # Reorders columns
+  mutate(ScanID = as.character(ScanID)) %>%
+  dplyr::rename(Functional_group2= Functionalgroup2) #%>% colnames() # Reorders columns
 table(MissingSpecLib$Area) %>% as.data.frame()
 #
 #tst3<-MissingSpecLib %>%   

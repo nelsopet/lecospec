@@ -17,14 +17,10 @@ source("Functions/lecospectR.R")
 # In this step we will combine all our spectral profiles to form one spectral library
 
 # Creates a file path to where our spectral libraries for each site is loacated
-mypath <- "./Data/Ground_Validation/training/"
 output_path <- "./Output/"
 
 # Reads in species and functional level groups dataframe creatd in script 1
 Species_groups <- read.csv("./Data/SpeciesTable_20220125.csv", encoding = "UTF-8")
-
-print(colnames(Species_groups))
-
 
 colnames(Species_groups) <- c(
   "Code_name",
@@ -42,7 +38,7 @@ Metadata_Ecosis_1 <- read.csv("Data/ngeearctic_bnl_2013_leaf_spectra_traits_meta
 
 # Merges meta and spectra
 Ecosis_data_1 <- cbind(Metadata_Ecosis_1[, -3], Spectra_Ecosis_1[, -1])
-range(Ecosis_data_1$`1000`)
+
 # Change name of column and add an area column
 names(Ecosis_data_1)[2] <- "Code_name"
 names(Ecosis_data_1)[1] <- "ScanID"
@@ -52,37 +48,12 @@ Ecosis_data_1$ScanID <- as.character(Ecosis_data_1$ScanID)
 
 Ecosis_data_1 <- Ecosis_data_1 %>% dplyr::mutate(dplyr::across(.cols = `350`:`2500`,~ .x * 100, na.rm = TRUE)) # ,
 
-Ecosis_data_1 %>%
-  left_join(Species_groups, by = "Code_name", keep = FALSE) %>%
-  group_by(Species_name) %>%
-  tally()
-
-range(Ecosis_data_1$`1000`)
-# Joins dataframe with all the species info to our spectral library
-
-
-# A tibble: 9 × 2
-# Code_name     n
-#<chr>     <int>
-#  1 ARFU2         5
-# 2 ARLA2         5
-# 3 CAAQ          8
-# 4 DUFI         10
-# 5 ERAN6        10
-# 6 PEFR5        10
-# 7 SAPU15       10
-# 8 SAPU6        10
-# 9 VAVI          1
-
 ###
 
 Spectra_Ecosis_2 <- read.csv("Data/sewpen_2019_canopy_spectral_reflectance.csv", check.names = F)
 Metadata_Ecosis_2 <- read.csv("Data/sewpen_2019_canopy_spectral_reflectance_metadata.csv", check.names = F)
 
 Ecosis_data_2 <- inner_join(Metadata_Ecosis_2, Spectra_Ecosis_2, by = "SampleID", keep = FALSE)
-# Ecosis_data_2<-bind_cols(Metadata_Ecosis_2,Spectra_Ecosis_2, .id = "id")
-# Merges meta and spectra
-# Ecosis_data_1<-cbind(Metadata_Ecosis_1[,-3],Spectra_Ecosis_1[,-1])
 
 # Change name of column and add an area column
 Ecosis_data_2 <- Ecosis_data_2 %>%
@@ -95,9 +66,6 @@ Ecosis_data_2 <- Ecosis_data_2 %>%
     ScanID = as.character(ScanID)
   )
 Ecosis_data_2 <- Ecosis_data_2 %>% dplyr::mutate(dplyr::across(.cols = `350`:`2500`, na.rm = TRUE)) # ,~ .x / 100
-# names(Ecosis_data_1$Dominant_Species)<-"Code_name"
-# names(Ecosis_data_1)[1]<-"ScanID"
-# Ecosis_data_1$Area<- "NOT RECORDED"
 
 Eco1_names <- colnames(Ecosis_data_1)
 Ecosis_data_2 <- Ecosis_data_2 %>% dplyr::select(Eco1_names)
@@ -117,31 +85,18 @@ Metadata_Ecosis_3 <- read.csv("Data/ngee-arctic_2014_to_2016_barrow_canopy_spect
 
 Ecosis_data_3 <- Metadata_Ecosis_3 %>%
   inner_join(Spectra_Ecosis_3, by = "Sample_ID", keep = FALSE) # %>%
-#  left_join(Spectra_Ecosis_3_2, by ="Sample_ID", keep = FALSE)
-# Ecosis_data_3 %>% filter(is.na(`350`)==FALSE) %>% dim
-# dim(Ecosis_data_3)
-# Ecosis_data_3<-bind_cols(Metadata_Ecosis_3,Spectra_Ecosis_3, .id = "id")
-# Merges meta and spectra
-# Ecosis_data_1<-cbind(Metadata_Ecosis_1[,-3],Spectra_Ecosis_1[,-1])
 
 # Change name of column and add an area column
 Ecosis_data_3 <- Ecosis_data_3 %>%
-  dplyr::rename(
-    Code_name = USDA_Species_Code,
-    ScanID = Sample_ID
+  dplyr::rename(Code_name = USDA_Species_Code, ScanID = Sample_ID
   ) %>%
-  mutate(
-    Area = "Barrow",
+  mutate(Area = "Barrow",
     ScanID = as.character(ScanID)
   )
-# names(Ecosis_data_1$Dominant_Species)<-"Code_name"
-# names(Ecosis_data_1)[1]<-"ScanID"
-# Ecosis_data_1$Area<- "NOT RECORDED"
+
 Ecosis_data_3 <- Ecosis_data_3 %>% dplyr::select(Eco1_names)
-range(Ecosis_data_3$`1000`)
 
 Ecosis_data_3 <- Ecosis_data_3 %>% dplyr::mutate(dplyr::across(.cols = `350`:`2500`,   na.rm = TRUE)) #~ .x / 100,
-range(Ecosis_data_3$`1240`)
 
 Ecosis_data_3 %>%
   anti_join(Species_groups, by = "Code_name", keep = FALSE) %>%
@@ -150,7 +105,6 @@ Ecosis_data_3 %>%
 
 
 Ecosis_data_all <- bind_rows(Ecosis_data_1, Ecosis_data_2, Ecosis_data_3)
-range(Ecosis_data_all$`1240`)
 
 # Creates a spectral library from ecosis data
 Ecosis_data <- Ecosis_data_all %>%
@@ -165,48 +119,14 @@ Ecosis_data <- Ecosis_data_all %>%
     Area,
     everything()
   )
-range(Ecosis_data$`1240`)
 Ecosis_data %>%
   group_by(Species_name) %>%
   tally()
 
-str(Ecosis_data)
 Ecosis_Colnames<-colnames(Ecosis_data)
-# Check EcoSIS data
-#Currently not used since all the data is checked together later using plot_interactive
+meta_names<-Ecosis_Colnames[1:7]
+as_spectra(Ecosis_data %>% dplyr::select(-meta_names))  %>% as.matrix() %>% hist()
 
-#meta_columns <- 20
-#
-#Target_names <- unique(sort(Ecosis_data$Species_name))
-#
-## Creates an empty list
-#each_target <- list()
-#
-## Function splits the spectral library into spectral objects based on each target (105 Spectral Objects)
-#for (i in 1:length(Target_names)) {
-#
-#  # Subset a functional group
-#  each_target[[i]] <- subset(Ecosis_data, Species_name == Target_names[i])
-#
-#
-#  # saves metadata
-#  metadata <- each_target[[i]][, c(1:meta_columns)] %>% as.data.frame()
-#
-#  # Convert to a spectral object
-#  bands <- extract_bands(as.data.frame(each_target[[i]])) %>% as.character()
-#  each_target[[i]] <- as_spectra(as.data.frame(each_target[[i]])[,bands])
-#  # Add metadata
-#  spectrolab::meta(each_target[[i]]) <- data.frame(metadata[, c(1:meta_columns)], stringsAsFactors = FALSE)
-#}
-#
-## Renames each target in list
-#each_target <- each_target %>% setNames(Target_names)
-#
-#
-#plot_interactive(each_target[["Alnus sp."]])#2                  Alnus sp.   80 # Need to clean out half of these because there are two groups.
-#
-#
-#rm(each_target)
 
 ### Read in our data by site
 # Import file path names of .rds files into character list (Spectral libraries based on each location in alaska)
@@ -219,23 +139,11 @@ list_of_SpecLib <- lapply(SpecLib_by_location, readRDS) %>% # Reads in the spect
 # Combines specral libraries from all locations
 SpecLib_raw <- Reduce(spectrolab::combine, list_of_SpecLib) # %>% # dim(n_samples=1989, n_wavelegths=2151)
 
-str(SpecLib_raw)
-dim(SpecLib_raw)
+SpecLib_raw %>% as.data.frame() %>% dplyr::select(-1:-29) %>% as.matrix() %>% hist()
 
 Speclib_metadata <- spectrolab::meta(SpecLib_raw)
 
 write_csv(Speclib_metadata, "./Output/C_000_Speclib_raw_metadata.csv")
-
-speclib_conversion_test <- SpecLib_raw %>%
-  as.data.frame()
-
-range(speclib_conversion_test$`1240`)
-dim(speclib_conversion_test)
-#[1] 1985 2184
-
-print(colnames(speclib_conversion_test)[1:50])
-
-
 
 SpecLib <- SpecLib_raw %>%
   as.data.frame() %>% # Converts Spectral Object to a dataframe
@@ -254,91 +162,20 @@ SpecLib <- SpecLib_raw %>%
   ) %>%
   mutate(ScanID = as.character(ScanID)) #%>% colnames() # Reorders columns
 
-
-str(SpecLib)
-
 # Write out full spectral library including Dryas scans from Stasinski et al. 2021
 write_csv(SpecLib, "./Output/C_000_Speclib_raw.csv")
 
 # Combines Ecosis data and spectral library
-dim(SpecLib)
-dim(Ecosis_data)
 
-SpecLib_out <- bind_rows(SpecLib, Ecosis_data) 
-SpecLib_out_db<-as.data.frame(SpecLib_out)
-range(SpecLib$`1240`)
-range(Ecosis_data$`1240`)
-range(SpecLib_out_db$`1240`)
-   #tst2<-SpecLib_out %>%   
-   #  pivot_longer(cols = `350`:`2500`,  names_to  = "Wavelength", values_to = "Reflectance") %>%    
-   #  mutate(Wavelength = gsub("X","",Wavelength)) %>%
-   #  group_by(Functional_group1, Wavelength) %>%  
-   #  dplyr::summarise(Median_Reflectance = median(Reflectance)) %>%
-   #  mutate(Wavelength = as.numeric(Wavelength))
-   #
-   #jpeg("Output/test.jpg", height = 10000, width = 9000, res = 350)
-   #
-   #ggplot(tst2, aes(Wavelength, Median_Reflectance, group = Functional_group1), scales = "fixed")+
-   #  labs(title = c("Reflectance by plant functional group and sample size with median (red), 75% (dark) and 90% (grey) quantiles based on 1242 scans"), y="Reflectance")+
-   #  theme(panel.background = element_rect(fill = "white", colour = "grey50"), 
-   #        #legend.key.size = unit(0.5, "cm"),legend.text = element_text(size=25),
-   #        legend.position = "none",
-   #        title = element_text(size=25),
-   #        strip.text = element_text(size = 25),
-   #        axis.text = element_text(size = 20),
-   #        axis.text.x = element_text(angle = 90)) +
-   #  geom_point(aes(Wavelength, Median_Reflectance,color = "red"),size = 2)+
-   #  facet_wrap(vars(Functional_group1), scales = "fixed", ncol = 3) 
-   #
-   #dev.off()
+SpecLib_EcoSis_raw <- bind_rows(SpecLib, Ecosis_data) 
+SpecLib_EcoSis_raw_out_db<-as.data.frame(SpecLib_EcoSis_raw)
 
 ## Please note: these are the number of samples we have for each functional group
- table(SpecLib_out$Functional_group1)%>%as.data.frame()
-#                         Var1  Freq
-#            Dwarf_Shrub_Decid  968
-#                         Forb   80
-#              Graminoid_Grass   24
-#              Graminoid_Sedge   44
-#         Lichen_Crustose_Dark   32
-#        Lichen_Crustose_Light   28
-#         Lichen_Epiphyte_Dark   23
-#       Lichen_Epiphyte_Yellow   56
-#          Lichen_Foliose_Dark   46
-# Lichen_Foliose_Dark_Peltigera   29
-#         Lichen_Foliose_Light   16
-#        Lichen_Foliose_Yellow   53
-#        Lichen_Fruticose_Dark   43
-#       Lichen_Fruticose_Light   46
-#      Lichen_Fruticose_Yellow   97
-#                       Litter    8
-#             Moss_Aulacomnium   12
-#               Moss_Ceratadon    5
-#                Moss_Dicranum    5
-#             Moss_Hylocomnium   13
-#             Moss_Plagiomnium    4
-#              Moss_Pleurozium    4
-#             Moss_Polytrichum   23
-#             Moss_Racomitrium    4
-#               Moss_Rhytidium    6
-#         Moss_Sphagnum_fuscum    4
-#          Moss_Sphagnum_other    8
-#            Moss_Tomenthypnum    2
-#                         Rock   32
-#                  Shrub_Alder   44
-#                 Shrub_Betula   56
-#              Shrub_Evergreen   65
-#                   Shrub_Rosa   20
-#                  Shrub_Salix  111
-#                         Soil   13
-#                   Tree_Decid   12
-#               Tree_Evergreen   17
-#                  Wood_Coarse    5
-
-
+ table(SpecLib_EcoSis_raw$Functional_group1)%>%as.data.frame()
 
 # Adds more details to our spectral library (Freq columns = The count of each Species)
 # Frequency values represent the number of scans per species and the number of scans per functional group
-SpecLib_new_All <- SpecLib_new %>% # SpecLib_new%>%
+SpecLib_new_All <- SpecLib_EcoSis_raw %>% # SpecLib_new%>%
   plyr::ddply(
     .(Species_name),
     mutate,
@@ -375,7 +212,6 @@ SpecLib_new_All <- SpecLib_new_All %>% #dplyr::filter(`1250` > 0.1) %>% head() %
   mutate(Species_name = replace(Species_name, Species_name == "Cladonia steallaris", "Cladonia stellaris")) %>%
   mutate(Species_name = replace(Species_name, Species_name == "Petasites frigida", "Petasites frigidus"))
 
-dim(SpecLib_new_All)
 # ------------------------------------------------- Step 2: Spectral Library Clean Up -------------------------------------------------- #
 # This section pf the script removes weird scans from each species in the combines spectral library
 # table(SpecLib_new_All$Species_name)%>%as.data.frame() # There are 105 species in our spectral library
@@ -393,10 +229,8 @@ for (i in 1:length(Target_names)) {
 
   # Subset a functional group
   each_target[[i]] <- subset(SpecLib_new_All, Species_name == Target_names[i])
-
   # saves metadata
   metadata <- each_target[[i]][, c(1:(meta_columns))] %>% as.data.frame()
-
   # Convert to a spectral object
   each_target[[i]] <- as_spectra(each_target[[i]][-1:-(meta_columns)])
   # each_target[[i]] <-normalize(each_target[[i]])
@@ -406,11 +240,10 @@ for (i in 1:length(Target_names)) {
 
 # Renames each target in list
 each_target <- each_target %>% setNames(Target_names)
-
 # Var1 Freq
- plot_interactive(each_target[["Alectoria ochroleuca"]])#1       Alectoria ochroleuca    6 #Remove scan 2
+# plot_interactive(each_target[["Alectoria ochroleuca"]])#1       Alectoria ochroleuca    6 #Remove scan 2
   each_target[["Alectoria ochroleuca"]] <- each_target[["Alectoria ochroleuca"]][-c(2), ]
-plot_interactive(each_target[["Alnus sp."]])#2                  Alnus sp.   80 # Need to clean out half of these because there are two groups.
+#plot_interactive(each_target[["Alnus sp."]])#2                  Alnus sp.   80 # Need to clean out half of these because there are two groups.
  each_target[["Alnus sp."]] <- each_target[["Alnus sp."]][-c(1:43), ]
 # plot_interactive(each_target[["Arctagrostis latifolia"]])#3     Arctagrostis latifolia    5#Remove scan 1
  each_target[["Arctagrostis latifolia"]] <- each_target[["Arctagrostis latifolia"]][-c(1), ]
@@ -422,7 +255,8 @@ plot_interactive(each_target[["Alnus sp."]])#2                  Alnus sp.   80 #
 # plot_interactive(each_target[["Asahinea chrysantha"]])#8        Asahinea chrysantha   19
 # plot_interactive(each_target[["Aulacomnium palustre"]])#9       Aulacomnium palustre    6
 # plot_interactive(each_target[["Aulacomnium turgidum"]])#10      Aulacomnium turgidum    6
-# plot_interactive(each_target[["Bare Rock"]])#11                 Bare Rock    7
+
+#   plot_interactive(each_target[["Bare Rock"]])#11                 Bare Rock    7
 # plot_interactive(each_target[["Bare Soil"]])#12                 Bare Soil   13
 # plot_interactive(each_target[["Betula nana"]])#13               Betula nana   65 # #Remove scan 33 and 49
   each_target[["Betula nana"]] <- each_target[["Betula nana"]][-c(33,49), ] # [-c(5,18,26,27,32,43,56),              ]
@@ -550,30 +384,6 @@ plot_interactive(each_target[["Alnus sp."]])#2                  Alnus sp.   80 #
   each_target[["Vulpicida pinastri"      ]]<-each_target[["Vulpicida pinastri"      ]][-c(11),                           ]
  
 
-
-# Hard code removes bad spectra taken for each species
-# each_target[["Asahinea chrysantha"     ]]<-each_target[["Asahinea chrysantha"     ]][-c(3),                                ]
-# each_target[["Aulacomnium turgidum"    ]]<-each_target[["Aulacomnium turgidum"    ]][-c(3,4),                              ]
-# each_target[["Bare Soil"               ]]<-each_target[["Bare Soil"               ]][-c(1,3,7),                            ]
-# each_target[["Cladonia mitis"          ]]<-each_target[["Cladonia mitis"          ]][-c(8,12,13,14,15,16,17),              ]
-# each_target[["Cladonia rangiferina"    ]]<-each_target[["Cladonia rangiferina"    ]][-c(1,2,3,4,17,18),                    ]
-#each_target[["Cladonia stellaris"]] <- each_target[["Cladonia stellaris"]][-c(1, 2, 3, 4), ]
-# each_target[["Dactylina arctica"       ]]<-each_target[["Dactylina arctica"       ]][-c(3,7),                              ]
-# each_target[["Dead Salix"              ]]<-each_target[["Dead Salix"              ]][-c(3,4,8),                            ]
-# each_target[["Gravel"                  ]]<-each_target[["Gravel"                  ]][-c(5),                                 ] #Why is this gone?
-# each_target[["Heracleum lanatum"       ]]<-each_target[["Heracleum lanatum"       ]][-c(2),                                ]
-#each_target[["Icmadophila ericetorum"]] <- each_target[["Icmadophila ericetorum"]][-c(7), ]
-#each_target[["Iris sp."]] <- each_target[["Iris sp."]][-c(2), ]
-# each_target[["Lupinus sp."             ]]<-each_target[["Lupinus sp."             ]][-c(1,12),                             ]
-# each_target[["Masonhalea richardsonii" ]]<-each_target[["Masonhalea richardsonii" ]][-c(2),                                ]
-# each_target[["Parmeliopsis ambigua"    ]]<-each_target[["Parmeliopsis ambigua"    ]][-c(4),                                ]
-# each_target[["Parmelis sulcata"        ]]<-each_target[["Parmelis sulcata"        ]][-c(1,11),                             ]
-# each_target[["Polytrichum sp."         ]]<-each_target[["Polytrichum sp."         ]][-c(1,4),                              ]
-# each_target[["Quartz"]] <- each_target[["Quartz"]][-c(4), ]
-# each_target[["Rhizocarpon geographicum"]]<-each_target[["Rhizocarpon geographicum"]][-c(8,18),                             ]
-# each_target[["Rosa acicularis"         ]]<-each_target[["Rosa acicularis"         ]][-c(19),                               ]
-#each_target[["Trapelopsis granulosa"]] <- each_target[["Trapelopsis granulosa"]][-c(1), ]
-
 # Creates a new object with cleaned spectral library
 New_targets <- each_target
 
@@ -589,83 +399,20 @@ New_targets[c(
   "Bryoria sp."
 )] <- NULL
 
-Speclib_out <- Reduce(spectrolab::combine, New_targets) %>% #max
+Speclib_out <- Reduce(spectrolab::combine, New_targets) %>% 
   as.data.frame() %>% # dplyr::select(Area)# Converts Spectral Object to a dataframe
   dplyr::select(-sample_name)
 
-Speclib_out_VNIR <- Reduce(spectrolab::combine, New_targets) %>% #max
-  as.data.frame() %>% # dplyr::select(Area)# Converts Spectral Object to a dataframe
-  dplyr::select(-sample_name, -`350`:-`425`, -`1001`:-`2500`)
-
-# Removes all the rows with negative values or Values >2
-print(colnames(SpecLib_out)[1:43])
-meta_columns <- 7#formerly 37
-print(colnames(SpecLib_out)[1:100])
-meta_names <- colnames(SpecLib_out)[1:meta_columns]
-
-SpecLib_out_raw_tall<-
-  SpecLib_out %>%
-  pivot_longer(cols = `350`:`2500`,  names_to  = "Wavelength", values_to = "Reflectance") %>%    
-  mutate(Wavelength = gsub("X","",Wavelength)) %>%
-  group_by(Functional_group1, Wavelength) %>%  
-  dplyr::summarise(Median_Reflectance = median(Reflectance)) %>%
-  mutate(Wavelength = as.numeric(Wavelength))
-
-
-ggplot(SpecLib_out_raw_tall, 
-       aes(Wavelength, Median_Reflectance, group = Functional_group1), scales = "fixed")+
-  labs(title = c("Reflectance by plant functional group and sample size with median (red), 75% (dark) and 90% (grey) quantiles based on 1242 scans"), y="Reflectance")+
-  theme(panel.background = element_rect(fill = "white", colour = "grey50"), 
-        #legend.key.size = unit(0.5, "cm"),legend.text = element_text(size=25),
-        legend.position = "none",
-        title = element_text(size=25),
-        strip.text = element_text(size = 25),
-        axis.text = element_text(size = 20),
-        axis.text.x = element_text(angle = 90)) +
-  geom_point(aes(Wavelength, Median_Reflectance,color = "red"),size = 2)+
-  facet_wrap(vars(Functional_group1), scales = "fixed", ncol = 3) 
-
-
-SpecLib_out_VNIR_minmax_rescale <- columnwise_min_max_scale(Speclib_out_VNIR, ignore_cols = meta_names) #%>% str()
-SpecLib_out_minmax_rescale <- columnwise_min_max_scale(SpecLib_out, ignore_cols = meta_names) #%>% str()
-#SpecLib_out_sd_rescale <- preProcess(Speclib_out_VNIR %>% 
-#                                       dplyr::select(-meta_names)) %>%
-#                                       as.data.frame() %>% 
-#                                       cbind(Speclib_out_VNIR %>% 
-#                                                   dplyr::select(meta_names))
-
-SpecLib_out_VNIR_minmax_rescale_tall<-
-  SpecLib_out_VNIR_minmax_rescale %>%
-  pivot_longer(cols = `426`:`1000`,  names_to  = "Wavelength", values_to = "Reflectance") %>%    
-  mutate(Wavelength = gsub("X","",Wavelength)) %>%
-  group_by(Functional_group1, Wavelength) %>%  
-  dplyr::summarise(Median_Reflectance = median(Reflectance)) %>%
-  mutate(Wavelength = as.numeric(Wavelength))
-
-
-ggplot(SpecLib_out_VNIR_minmax_rescale_tall, 
-       aes(Wavelength, Median_Reflectance, group = Functional_group1), scales = "fixed")+
-  labs(title = c("Reflectance by plant functional group and sample size with median (red), 75% (dark) and 90% (grey) quantiles based on 1242 scans"), y="Reflectance")+
-  theme(panel.background = element_rect(fill = "white", colour = "grey50"), 
-        #legend.key.size = unit(0.5, "cm"),legend.text = element_text(size=25),
-        legend.position = "none",
-        title = element_text(size=25),
-        strip.text = element_text(size = 25),
-        axis.text = element_text(size = 20),
-        axis.text.x = element_text(angle = 90)) +
-  geom_point(aes(Wavelength, Median_Reflectance,color = "red"),size = 2)+
-  facet_wrap(vars(Functional_group1), scales = "fixed", ncol = 3) 
-
+SpecLib_out %>% dplyr::select(-1:-7) %>% as.matrix() %>% hist()
 
 SpecLib_new <- filter_all_between(
-  as.data.frame(SpecLib_out_minmax_rescale),
+  as.data.frame(SpecLib_out),
   0,
-  1,
+  100,
   ignore_cols = meta_names
 ) #%>% str()
 
-
-#print(SpecLib_new)
+#SpecLib_new %>% dplyr::select(-1:-7) %>% as.matrix() %>% hist()
 
 print(paste0(
   "Filtered data from  ",
@@ -675,131 +422,119 @@ print(paste0(
   " rows."
 ))
 
-summary(SpecLib_out)
-range(SpecLib_new$`1000`)
-# table(SpecLib_new$Functional_group1)%>%as.data.frame()
+
+
 
 # Combines all species into one spectral library if satisfied with our results
+MissingSpecLib <- read.csv("./Output/C_001_SC3_Missing_Cleaned_SpectralLib.csv", check.names = F) #%>% 
+  #dplyr::select(-sample_num)
+MissingSpecLib$sample_num<-NULL
+MissingSpecLib %>% dplyr::select(colnames(SpecLib_new))
+meta_columns <- 8#formerly 37
+meta_names <- colnames(MissingSpecLib[1:meta_columns])
 
-MissingSpecLib <- read.csv("./Output/C_001_SC3_Missing_Cleaned_SpectralLib.csv", check.names = F) %>% 
-  dplyr::rename(sample_num = "") #%>%
-MissingSpecLib_VNIR<-MissingSpecLib %>%
-dplyr::select(-`350`:-`425`, -`1001`:-`2500`)
-
-meta_columns <- 7#formerly 37
-meta_names <- c(colnames(MissingSpecLib)[1:meta_columns], "Area")
-
-#as_spectra(MissingSpecLib %>% dplyr::select(-meta_names)) %>% max #colnames() %>% as.data.frame() %>% View()
-#  spectrolab::resample(new_bands = c(seq(from = 350, to = 2500, by = 0.5)))
-
-MissingSpecLib_raw_unscaled_tall<-
-MissingSpecLib %>%
-pivot_longer(cols = `350`:`2500`,  names_to  = "Wavelength", values_to = "Reflectance") %>%    
-  mutate(Wavelength = gsub("X","",Wavelength)) %>%
-  group_by(Functional_group1, Wavelength) %>%  
-  dplyr::summarise(Median_Reflectance = median(Reflectance)) %>%
-  mutate(Wavelength = as.numeric(Wavelength))
-
-TreeBroadleaf_minmax_rescaled_tall<-
-MissingSpecLib %>% 
-  dplyr::filter(Functional_group1 == "TreeBroadleaf") %>% #dim
-  columnwise_min_max_scale(ignore_cols = meta_names) %>%
-  pivot_longer(cols = `350`:`2500`,  names_to  = "Wavelength", values_to = "Reflectance") %>%    
-  mutate(Wavelength = gsub("X","",Wavelength)) %>%
-  group_by(Functional_group1, Wavelength) %>%  
-  dplyr::summarise(Median_Reflectance = median(Reflectance)) %>%
-  mutate(Wavelength = as.numeric(Wavelength))
-
-
-ggplot(MissingSpecLib_raw_unscaled_tall, 
-       aes(Wavelength, Median_Reflectance), scales = "fixed")+
-  labs(title = c("Reflectance by plant functional group and sample size with median (red), 75% (dark) and 90% (grey) quantiles based on 1242 scans"), y="Reflectance")+
-  theme(panel.background = element_rect(fill = "white", colour = "grey50"), 
-        #legend.key.size = unit(0.5, "cm"),legend.text = element_text(size=25),
-        legend.position = "none",
-        title = element_text(size=25),
-        strip.text = element_text(size = 25),
-        axis.text = element_text(size = 20),
-        axis.text.x = element_text(angle = 90)) +
-  geom_point(aes(Wavelength, Median_Reflectance,color = "red"),size = 2)+
-  facet_wrap(vars(Functional_group1), scales = "fixed", ncol = 3) 
-
-
-MissingSpecLib_out <- columnwise_min_max_scale(MissingSpecLib, ignore_cols = meta_names) #%>% str()
-MissingSpecLib_VNIR_out <- columnwise_min_max_scale(MissingSpecLib_VNIR, ignore_cols = meta_names) #%>% str()
-
-MissingSpecLib_VNIR_out_rescaled_tall<- MissingSpecLib_VNIR_out %>%
-  pivot_longer(cols = `426`:`1000`,  names_to  = "Wavelength", values_to = "Reflectance") %>%    
-  mutate(Wavelength = gsub("X","",Wavelength)) %>%
-  group_by(Functional_group1, Wavelength) %>%  
-  dplyr::summarise(Median_Reflectance = median(Reflectance)) %>%
-  mutate(Wavelength = as.numeric(Wavelength))
-
-ggplot(MissingSpecLib_VNIR_out_rescaled_tall, 
-       aes(Wavelength, Median_Reflectance, group = Functional_group1), scales = "fixed")+
-  labs(title = c("Reflectance by plant functional group and sample size with median (red), 75% (dark) and 90% (grey) quantiles based on 1242 scans"), y="Reflectance")+
-  theme(panel.background = element_rect(fill = "white", colour = "grey50"), 
-        #legend.key.size = unit(0.5, "cm"),legend.text = element_text(size=25),
-        legend.position = "none",
-        title = element_text(size=25),
-        strip.text = element_text(size = 25),
-        axis.text = element_text(size = 20),
-        axis.text.x = element_text(angle = 90)) +
-  geom_point(aes(Wavelength, Median_Reflectance,color = "red"),size = 2) +
-  facet_wrap(vars(Functional_group1), scales = "fixed", ncol = 3) 
-
+MissingSpecLib<-MissingSpecLib[,-1]
+#MissingSpecLib %>% dplyr::select(-1:-8) %>% as.matrix() %>% hist()
+#MissingSpecLib_out <- columnwise_min_max_scale(MissingSpecLib, ignore_cols = meta_names) #%>% str()
+#MissingSpecLib_VNIR_out <- columnwise_min_max_scale(MissingSpecLib_VNIR, ignore_cols = meta_names) #%>% str()
 MissingSpecLib_new <- filter_all_between(
-  as.data.frame(MissingSpecLib_out),
+  as.data.frame(MissingSpecLib),
   0,
-  1,
+  100,
   ignore_cols = meta_names
 ) #%>% str()
 
-
-MissingSpecLib_out_tall<-MissingSpecLib_new %>%   
-  pivot_longer(cols = `350`:`2500`,  names_to  = "Wavelength", values_to = "Reflectance") %>%    
-  mutate(Wavelength = gsub("X","",Wavelength)) %>%
-  group_by(Functional_group1, Wavelength) %>%  
-  dplyr::summarise(Median_Reflectance = median(Reflectance)) %>%
-  mutate(Wavelength = as.numeric(Wavelength))
-
-jpeg("Output/MissingSpecLib_out_tall_minmax_median_PFT_refl.jpg", height = 10000, width = 9000, res = 350)
-
-ggplot(MissingSpecLib_out_tall %>% dplyr::filter(Functional_group1 == "TreeBroadleaf"), 
-       aes(Wavelength, Median_Reflectance, group = Functional_group1), scales = "fixed")+
-  labs(title = c("Reflectance by plant functional group and sample size with median (red), 75% (dark) and 90% (grey) quantiles based on 1242 scans"), y="Reflectance")+
-  theme(panel.background = element_rect(fill = "white", colour = "grey50"), 
-        #legend.key.size = unit(0.5, "cm"),legend.text = element_text(size=25),
-        legend.position = "none",
-        title = element_text(size=25),
-        strip.text = element_text(size = 25),
-        axis.text = element_text(size = 20),
-        axis.text.x = element_text(angle = 90)) +
-  geom_point(aes(Wavelength, Median_Reflectance,color = "red"),size = 2)+
-  facet_wrap(vars(Functional_group1), scales = "fixed", ncol = 3) 
-
-dev.off()
+print(paste0(
+  "Filtered data from  ",
+  nrow(MissingSpecLib),
+  " rows to ",
+  nrow(MissingSpecLib_new),
+  " rows."
+))
 
 
-# The result is a dataframe
-Cleaned_Speclib_out <- bind_rows(SpecLib_new, MissingSpecLib_new) #%>% dim
-Cleaned_Speclib_VNIR_out <- bind_rows(Speclib_out_VNIR, MissingSpecLib_VNIR_out) #%>% dim
+AllSpecRaw<-bind_rows(SpecLib_new, MissingSpecLib_new)
+
+#as_spectra(AllSpecRaw %>% dplyr::select(-meta_names))  %>% as.matrix() %>% hist()
+
+#AllSpecRaw_tall<-AllSpecRaw %>%
+#pivot_longer(cols = `350`:`2500`,  names_to  = "Wavelength", values_to = "Reflectance") %>%    
+#  mutate(Wavelength = gsub("X","",Wavelength)) %>%
+#  group_by(Functional_group1, Wavelength) %>%  
+#  dplyr::summarise(Median_Reflectance = median(Reflectance),
+#                   Max_Reflectance = max(Reflectance),
+#                   Min_Reflectance = min(Reflectance),
+#                   Pct_87_5_Reflectance = quantile(Reflectance, probs = 0.875),
+#                   Pct_12_5_Reflectance = quantile(Reflectance, probs = 0.125),
+#                   Upper_Reflectance = quantile(Reflectance, probs = 0.95),
+#                   Lower_Reflectance = quantile(Reflectance, probs = 0.05))%>%
+#  mutate(Wavelength = as.numeric(Wavelength))  %>%
+#  as.data.frame() #%>%
+  
+# jpeg("Output/AllSpecRaw_VNIR_quantiles.jpg", height = 10000, width = 9000, res = 350)
+# 
+# ggplot(AllSpecRaw_tall %>% dplyr::filter(Wavelength>424&Wavelength<1000), aes(Wavelength, Median_Reflectance, group = Functional_group1), scales = "fixed")+
+#   labs(title = c("Reflectance by plant functional group and sample size with median (red), 75% (dark) and 90% (grey) quantiles based on 1242 scans"), y="Reflectance")+
+#   theme(panel.background = element_rect(fill = "white", colour = "grey50"), 
+#         #legend.key.size = unit(0.5, "cm"),legend.text = element_text(size=25),
+#         legend.position = "none",
+#         title = element_text(size=25),
+#         strip.text = element_text(size = 25),
+#        axis.text = element_text(size = 20),
+#        axis.text.x = element_text(angle = 90)) +
+#  geom_line(aes(Wavelength, Median_Reflectance,color = "red"),size = 2)+  
+#   geom_ribbon(aes(Wavelength, ymin = Pct_12_5_Reflectance, ymax = Pct_87_5_Reflectance), alpha = 0.3) +
+#   geom_ribbon(aes(Wavelength, ymin = Lower_Reflectance, ymax = Upper_Reflectance), alpha = 0.2) +
+#  facet_wrap(vars(Functional_group1), scales = "fixed", ncol = 3) 
+#
+#dev.off()
 
 
-# Creates .rds object
-#Cleaned_Speclib_rds <- Reduce(spectrolab::combine, New_targets)
+#AllSpecRaw_minmax_resscale <- columnwise_min_max_scale(AllSpecRaw, ignore_cols = meta_names)#%>% str()
+#meta_names<-colnames(AllSpecRaw_minmax_resscale[,1:11])
+#as_spectra(AllSpecRaw_minmax_resscale %>% dplyr::select(-meta_names))  %>% as.matrix() %>% hist()
 
-table(Cleaned_Speclib_out$Functional_group2) %>% as.data.frame()
+#AllSpecRaw_minmax_resscale_tall<- AllSpecRaw_minmax_resscale %>%
+#  pivot_longer(cols = `350`:`2500`,  names_to  = "Wavelength", values_to = "Reflectance") %>%    
+#  mutate(Wavelength = gsub("X","",Wavelength)) %>%
+#  group_by(Functional_group1, Wavelength) %>%  
+#  dplyr::summarise(Median_Reflectance = median(Reflectance),
+#                   Max_Reflectance = max(Reflectance),
+#                   Min_Reflectance = min(Reflectance),
+#                   Pct_87_5_Reflectance = quantile(Reflectance, probs = 0.875),
+#                   Pct_12_5_Reflectance = quantile(Reflectance, probs = 0.125),
+#                   Upper_Reflectance = quantile(Reflectance, probs = 0.95),
+#                   Lower_Reflectance = quantile(Reflectance, probs = 0.05))%>%
+#  mutate(Wavelength = as.numeric(Wavelength))  %>%
+#  as.data.frame() %>%
 
-write.csv(Cleaned_Speclib_out, "./Output/C_001_SC3_Cleaned_SpectralLib.csv")
+  #jpeg("Output/MissingSpecLib_out_tall_minmax_median_PFT_refl.jpg", height = 10000, width = 9000, res = 350)
+  #
+  #ggplot(MissingSpecLib_out_tall %>% dplyr::filter(Functional_group1 == "TreeBroadleaf"), 
+  #       aes(Wavelength, Median_Reflectance, group = Functional_group1), scales = "fixed")+
+  #  labs(title = c("Reflectance by plant functional group and sample size with median (red), 75% (dark) and 90% (grey) quantiles based on 1242 scans"), y="Reflectance")+
+  #  theme(panel.background = element_rect(fill = "white", colour = "grey50"), 
+  #        #legend.key.size = unit(0.5, "cm"),legend.text = element_text(size=25),
+  #        legend.position = "none",
+  #        title = element_text(size=25),
+  #        strip.text = element_text(size = 25),
+#        axis.text = element_text(size = 20),
+#        axis.text.x = element_text(angle = 90)) +
+#  geom_point(aes(Wavelength, Median_Reflectance,color = "red"),size = 2)+
+#  facet_wrap(vars(Functional_group1), scales = "fixed", ncol = 3) 
+#
+#dev.off()
+##
+
+write.csv(AllSpecRaw, "./Output/C_001_SC3_Cleaned_SpectralLib.csv")
 
 #saveRDS(Cleaned_Speclib_rds, "./Output/C_002_SC3_Cleaned_Speclib.rds")
 
 
 # Make a table showing all the scans tallied by the three groups.
 
-Cleaned_Speclib %>%
-  dplyr::filter(is.na(File.Name.1) == FALSE) %>%
+AllSpecRaw %>%
+  #dplyr::filter(is.na(File.Name.1) == FALSE) %>%
   group_by(Functional_group1, Functional_group2) %>% # ,Species_name) %>%
   tally() %>%
   as.data.frame() %>% # View()
