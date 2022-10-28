@@ -33,4 +33,7 @@ PFT_IMG_SPEC %>%
 
 write.csv(PFT_IMG_SPEC, "./Data/Ground_Validation/PFT_Image_spectra/PFT_Image_SpectralLib_Clean.csv")
 
+out_file <- "Output/"
+
+Make_Speclib_Derivs("./Data/Ground_Validation/PFT_Image_spectra/PFT_Image_SpectralLib_Clean.csv", out_file)
 
