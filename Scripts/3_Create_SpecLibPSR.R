@@ -139,7 +139,7 @@ list_of_SpecLib <- lapply(SpecLib_by_location, readRDS) %>% # Reads in the spect
 # Combines specral libraries from all locations
 SpecLib_raw <- Reduce(spectrolab::combine, list_of_SpecLib) # %>% # dim(n_samples=1989, n_wavelegths=2151)
 
-SpecLib_raw %>% as.data.frame() %>% dplyr::select(-1:-29) %>% as.matrix() %>% hist()
+SpecLib_raw %>% as.data.frame() %>% dim #dplyr::select(-1:-29) %>% as.matrix() %>% hist()
 
 Speclib_metadata <- spectrolab::meta(SpecLib_raw)
 
@@ -148,7 +148,7 @@ write_csv(Speclib_metadata, "./Output/C_000_Speclib_raw_metadata.csv")
 SpecLib <- SpecLib_raw %>%
   as.data.frame() %>% # Converts Spectral Object to a dataframe
   dplyr::select(-sample_name) %>% # Removes unwanted column ~ should remove this later instead
-  left_join(Species_groups, by = "Code_name") %>% #colnames() %>% View()# Joins dataframe with all the species info to our spectral library
+  inner_join(Species_groups, by = "Code_name") %>% #colnames() %>% View()# Joins dataframe with all the species info to our spectral library
   dplyr::select(
     all_of(Ecosis_Colnames)
     #ScanID,
@@ -170,20 +170,6 @@ write_csv(SpecLib, "./Output/C_000_Speclib_raw.csv")
 SpecLib_EcoSis_raw <- bind_rows(SpecLib, Ecosis_data) 
 SpecLib_EcoSis_raw_out_db<-as.data.frame(SpecLib_EcoSis_raw)
 
-print(colnames(SpecLib_new)[1:40])
-#print(SpecLib_new)
-
-print(paste0(
-  "Filtered data from  ",
-  nrow(SpecLib_out),
-  " rows to ",
-  nrow(SpecLib_new),
-  " rows."
-))
-
-summary(SpecLib_out)
-range(SpecLib_new$`1000`)
-# table(SpecLib_new$Functional_group1)%>%as.data.frame()
 
 # Adds more details to our spectral library (Freq columns = The count of each Species)
 # Frequency values represent the number of scans per species and the number of scans per functional group
@@ -218,6 +204,7 @@ SpecLib_new_All <- SpecLib_EcoSis_raw %>% # SpecLib_new%>%
 
 # Removes all unknown scans
 SpecLib_new_All <- SpecLib_new_All[!(SpecLib_new_All$Species_name == "Unknown"), ]
+
 # Filter out rows with really low reflectance at a band for which all surfaces should have elevated reflectance
 SpecLib_new_All <- SpecLib_new_All %>% #dplyr::filter(`1250` > 0.1) %>% head() %>% View()
   dplyr::filter(`1250` >0.1) %>% #group_by(Area) %>% tally()
@@ -415,20 +402,26 @@ Speclib_out <- Reduce(spectrolab::combine, New_targets) %>%
   as.data.frame() %>% # dplyr::select(Area)# Converts Spectral Object to a dataframe
   dplyr::select(-sample_name)
 
-SpecLib_out %>% dplyr::select(-1:-7) %>% as.matrix() %>% hist()
 
+Speclib_out %>% dplyr::select(-1:-38) %>% as.matrix() %>% hist()
+
+Speclib_out %>% group_by(Area,Functional_group1) %>% tally() %>% pivot_wider(names_from = Functional_group1, values_from = n)
+
+meta_names<-colnames(Speclib_out[,1:10])
 SpecLib_new <- filter_all_between(
-  as.data.frame(SpecLib_out),
+  Speclib_out,
   0,
   100,
   ignore_cols = meta_names
 ) #%>% str()
 
-#SpecLib_new %>% dplyr::select(-1:-7) %>% as.matrix() %>% hist()
+SpecLib_new %>% group_by(Area,Functional_group1) %>% tally() %>% pivot_wider(names_from = Functional_group1, values_from = n)
+
+SpecLib_new %>% dplyr::select(-1:-10) %>% as.matrix() %>% hist()
 
 print(paste0(
   "Filtered data from  ",
-  nrow(SpecLib_out),
+  nrow(Speclib_out),
   " rows to ",
   nrow(SpecLib_new),
   " rows."
@@ -440,15 +433,13 @@ print(paste0(
 # Combines all species into one spectral library if satisfied with our results
 MissingSpecLib <- read.csv("./Output/C_001_SC3_Missing_Cleaned_SpectralLib.csv", check.names = F) #%>% 
   #dplyr::select(-sample_num)
-MissingSpecLib$sample_num<-NULL
-MissingSpecLib %>% dplyr::select(colnames(SpecLib_new))
-meta_columns <- 8#formerly 37
-meta_names <- colnames(MissingSpecLib[1:meta_columns])
-
+#MissingSpecLib$sample_num<-NULL
+#MissingSpecLib %>% dplyr::select(colnames(SpecLib_new))
 MissingSpecLib<-MissingSpecLib[,-1]
-#MissingSpecLib %>% dplyr::select(-1:-8) %>% as.matrix() %>% hist()
+MissingSpecLib %>% dplyr::select(-1:-30) %>% as.matrix() %>% hist()
 #MissingSpecLib_out <- columnwise_min_max_scale(MissingSpecLib, ignore_cols = meta_names) #%>% str()
 #MissingSpecLib_VNIR_out <- columnwise_min_max_scale(MissingSpecLib_VNIR, ignore_cols = meta_names) #%>% str()
+meta_names<-colnames(MissingSpecLib[,1:31])
 MissingSpecLib_new <- filter_all_between(
   as.data.frame(MissingSpecLib),
   0,
@@ -467,39 +458,39 @@ print(paste0(
 
 AllSpecRaw<-bind_rows(SpecLib_new, MissingSpecLib_new)
 
-#as_spectra(AllSpecRaw %>% dplyr::select(-meta_names))  %>% as.matrix() %>% hist()
+meta_names<-colnames(AllSpecRaw[,1:10])
 
-#AllSpecRaw_tall<-AllSpecRaw %>%
-#pivot_longer(cols = `350`:`2500`,  names_to  = "Wavelength", values_to = "Reflectance") %>%    
-#  mutate(Wavelength = gsub("X","",Wavelength)) %>%
-#  group_by(Functional_group1, Wavelength) %>%  
-#  dplyr::summarise(Median_Reflectance = median(Reflectance),
-#                   Max_Reflectance = max(Reflectance),
-#                   Min_Reflectance = min(Reflectance),
-#                   Pct_87_5_Reflectance = quantile(Reflectance, probs = 0.875),
-#                   Pct_12_5_Reflectance = quantile(Reflectance, probs = 0.125),
-#                   Upper_Reflectance = quantile(Reflectance, probs = 0.95),
-#                   Lower_Reflectance = quantile(Reflectance, probs = 0.05))%>%
-#  mutate(Wavelength = as.numeric(Wavelength))  %>%
-#  as.data.frame() #%>%
-  
-# jpeg("Output/AllSpecRaw_VNIR_quantiles.jpg", height = 10000, width = 9000, res = 350)
-# 
-# ggplot(AllSpecRaw_tall %>% dplyr::filter(Wavelength>424&Wavelength<1000), aes(Wavelength, Median_Reflectance, group = Functional_group1), scales = "fixed")+
-#   labs(title = c("Reflectance by plant functional group and sample size with median (red), 75% (dark) and 90% (grey) quantiles based on 1242 scans"), y="Reflectance")+
-#   theme(panel.background = element_rect(fill = "white", colour = "grey50"), 
-#         #legend.key.size = unit(0.5, "cm"),legend.text = element_text(size=25),
-#         legend.position = "none",
-#         title = element_text(size=25),
-#         strip.text = element_text(size = 25),
-#        axis.text = element_text(size = 20),
-#        axis.text.x = element_text(angle = 90)) +
-#  geom_line(aes(Wavelength, Median_Reflectance,color = "red"),size = 2)+  
-#   geom_ribbon(aes(Wavelength, ymin = Pct_12_5_Reflectance, ymax = Pct_87_5_Reflectance), alpha = 0.3) +
-#   geom_ribbon(aes(Wavelength, ymin = Lower_Reflectance, ymax = Upper_Reflectance), alpha = 0.2) +
-#  facet_wrap(vars(Functional_group1), scales = "fixed", ncol = 3) 
-#
-#dev.off()
+AllSpecRaw_tall<-AllSpecRaw %>%
+pivot_longer(cols = `350`:`2500`,  names_to  = "Wavelength", values_to = "Reflectance") %>%    
+  mutate(Wavelength = gsub("X","",Wavelength)) %>%
+  group_by(Functional_group1, Wavelength) %>%  
+  dplyr::summarise(Median_Reflectance = median(Reflectance),
+                   Max_Reflectance = max(Reflectance),
+                   Min_Reflectance = min(Reflectance),
+                   Pct_87_5_Reflectance = quantile(Reflectance, probs = 0.875),
+                   Pct_12_5_Reflectance = quantile(Reflectance, probs = 0.125),
+                   Upper_Reflectance = quantile(Reflectance, probs = 0.95),
+                   Lower_Reflectance = quantile(Reflectance, probs = 0.05))%>%
+  mutate(Wavelength = as.numeric(Wavelength))  %>%
+  as.data.frame() #%>%
+ 
+ jpeg("Output/AllSpecRaw_VNIR_quantiles.jpg", height = 10000, width = 9000, res = 350)
+ 
+ ggplot(AllSpecRaw_tall %>% dplyr::filter(Wavelength>424&Wavelength<1000), aes(Wavelength, Median_Reflectance, group = Functional_group1), scales = "fixed")+
+   labs(title = c("Reflectance by plant functional group and sample size with median (red), 75% (dark) and 90% (grey) quantiles based on 1242 scans"), y="Reflectance")+
+   theme(panel.background = element_rect(fill = "white", colour = "grey50"), 
+         #legend.key.size = unit(0.5, "cm"),legend.text = element_text(size=25),
+         legend.position = "none",
+         title = element_text(size=25),
+         strip.text = element_text(size = 25),
+        axis.text = element_text(size = 20),
+        axis.text.x = element_text(angle = 90)) +
+  geom_line(aes(Wavelength, Median_Reflectance,color = "red"),size = 2)+  
+   geom_ribbon(aes(Wavelength, ymin = Pct_12_5_Reflectance, ymax = Pct_87_5_Reflectance), alpha = 0.3) +
+   geom_ribbon(aes(Wavelength, ymin = Lower_Reflectance, ymax = Upper_Reflectance), alpha = 0.2) +
+  facet_wrap(vars(Functional_group1), scales = "fixed", ncol = 3) 
+
+dev.off()
 
 
 #AllSpecRaw_minmax_resscale <- columnwise_min_max_scale(AllSpecRaw, ignore_cols = meta_names)#%>% str()
@@ -552,6 +543,7 @@ AllSpecRaw %>%
   as.data.frame() %>% # View()
   write.csv("./Output/C_003_SC3_Cleaned_SpectralLib_table.csv")
 
+AllSpecRaw %>% group_by(Area,Functional_group1) %>% tally() %>% pivot_wider(names_from = Functional_group1, values_from = n)
 
 ### Run LandCoverEstimator to generate Spectral Derivatives.
 # source("Functions/1_Simple_LandCoverEstimator.R")
