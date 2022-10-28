@@ -32,10 +32,6 @@ check_output_distribution <- function(df, model, targets){
         ))
 }
 
-
-add_noise_to_df <- function(df, noise_power = 0.01){}
-
-
 automated_check <- function(input_df, ignore_cols = NULL){
     used_cols <- colnames(input_df)
     if(!is.null(ignore_cols)){
@@ -58,7 +54,7 @@ automated_check <- function(input_df, ignore_cols = NULL){
     
     print(paste0("Global minimum: ", min(column_min_values)))
     print(paste0("Global maximum: ", max(column_max_values)))
-    print(paste0("Gloabl Mean: ", mean(column_mean_values)))
+    print(paste0("Global Mean: ", mean(column_mean_values)))
     print(paste0("Global Estimated Variance: ", mean(column_variances)))
     print(paste0("Global Minimum Variance: ", min(column_variances)))
     print(paste0("Global Maximum Variance: ", max(column_variances)))
@@ -70,4 +66,25 @@ automated_check <- function(input_df, ignore_cols = NULL){
         medians = column_median_values,
         vars = column_variances
     ))
+}
+
+
+targets_to_weights <- function(target_factors){
+    weights_by_pft <- target_factors %>% 
+        table() %>% 
+        purrr::map(., function(x) return(abs(1/x))) %>% 
+        as.list() 
+    weights_by_pft$Unknown <- 0# should not include data with no label
+
+    return(purrr::map(
+        target_factors %>% as.character(),
+        function(x){
+            return(weights_by_pft[[x]])
+        }   
+    ) %>% 
+    as.numeric()
+    )
+
+
+
 }
