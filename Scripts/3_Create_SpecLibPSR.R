@@ -542,8 +542,8 @@ AllSpecRaw %>%
   tally() %>%
   as.data.frame() %>% # View()
   write.csv("./Output/C_003_SC3_Cleaned_SpectralLib_table.csv")
-
-AllSpecRaw %>% group_by(Area,Functional_group1) %>% tally() %>% pivot_wider(names_from = Functional_group1, values_from = n)
+AllSpecRaw_summary<-
+AllSpecRaw %>% dplyr::mutate(Source = "Ground") %>% group_by(Area,Functional_group1,Source) %>% tally() %>% pivot_wider(names_from = Functional_group1, values_from = n)
 
 ### Run LandCoverEstimator to generate Spectral Derivatives.
 # source("Functions/1_Simple_LandCoverEstimator.R")
