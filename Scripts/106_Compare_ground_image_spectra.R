@@ -135,18 +135,6 @@ legend(x='bottomright', legend=unique(fnc_grp1_color_list$Functional_group1), fi
 dev.off()
 
 
-
-
-
-
-dim(VI_DF_rescale) #"ScanNum", "sample_name", "Species_name", 
-dim(VI_DF) #"ScanNum", "sample_name", "Species_name", 
-dim(PFT_IMG_SPEC_clean_merge)
-dim(Cleaned_Speclib_Derivs_merge)
-dim(Cleaned_Speclib_merge)
-
-
-
 hist(Cleaned_Speclib_Derivs_merge %>% 
        dplyr::select(-UID,-Source, -Functional_group1) %>% 
        columnwise_min_max_scale() %>% #str()
