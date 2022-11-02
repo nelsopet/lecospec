@@ -8,12 +8,12 @@ require(glue)
 Cleaned_Speclib <- read.csv("./Output/C_001_SC3_Cleaned_SpectralLib.csv") 
 Cleaned_Speclib_derivs<-read.csv("./Output/D_002_SpecLib_Derivs.csv")
 
-#colnames(Cleaned_Speclib) %>% as.data.frame() %>% View()
-#unique(Cleaned_Speclib$Functional_group2)
-
-
 #List of column names to ignore 
 #ignore<-colnames(Cleaned_Speclib[,1:40])
+ground_cols_keep<-Cleaned_Speclib %>% dplyr::select(X:X2500) %>%
+  colnames() 
+  
+  
 ignore<-c(colnames(Cleaned_Speclib[,1:11]), "species_count")
 ignore_derivs<-c(colnames(Cleaned_Speclib_derivs[,1:31]), "species_count")
 
@@ -28,7 +28,7 @@ Cleaned_Speclib_tall_Fnc_grp1<-
     group_by(Functional_group1) %>%
     tally() %>% 
     dplyr::rename(species_count = n) %>%
-  inner_join(Cleaned_Speclib, by="Functional_group1") %>% colnames() %>% as.data.frame() %>% View()
+  inner_join(Cleaned_Speclib %>% dplyr::select(all_of(ground_cols_keep)), by="Functional_group1") %>% #colnames() %>% as.data.frame() %>% View()
   columnwise_min_max_scale(ignore_cols = ignore) %>% #head() %>% View()#colnames() #as.matrix() %>% hist()
   group_by(Functional_group1) %>% 
   dplyr::mutate(sample_size = n()) %>% 

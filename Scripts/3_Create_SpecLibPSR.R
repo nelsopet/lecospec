@@ -460,6 +460,75 @@ AllSpecRaw<-bind_rows(SpecLib_new, MissingSpecLib_new)
 
 meta_names<-colnames(AllSpecRaw[,1:10])
 
+SpecLib_new %>%
+  dplyr::select(`425`:`999`) %>% as.matrix() %>% hist()
+
+MissingSpecLib_new_tall<-MissingSpecLib_new %>%
+  dplyr::select(Functional_group1,`425`:`999`) %>%
+  pivot_longer(cols = `425`:`999`,  names_to  = "Wavelength", values_to = "Reflectance") %>%    
+  mutate(Wavelength = gsub("X","",Wavelength)) %>%
+  group_by(Functional_group1, Wavelength) %>%  
+  dplyr::summarise(Median_Reflectance = median(Reflectance),
+                   Max_Reflectance = max(Reflectance),
+                   Min_Reflectance = min(Reflectance),
+                   Pct_87_5_Reflectance = quantile(Reflectance, probs = 0.875),
+                   Pct_12_5_Reflectance = quantile(Reflectance, probs = 0.125),
+                   Upper_Reflectance = quantile(Reflectance, probs = 0.95),
+                   Lower_Reflectance = quantile(Reflectance, probs = 0.05))%>%
+  mutate(Wavelength = as.numeric(Wavelength))  %>%
+  as.data.frame() 
+
+jpeg("Output/MissingSpeclibRaw_VNIR_quantiles.jpg", height = 10000, width = 9000, res = 350)
+
+ggplot(MissingSpecLib_new_tall, aes(Wavelength, Median_Reflectance, group = Functional_group1), scales = "fixed")+
+  labs(title = c("Reflectance by plant functional group and sample size with median (red), 75% (dark) and 90% (grey) quantiles based on 1242 scans"), y="Reflectance")+
+  theme(panel.background = element_rect(fill = "white", colour = "grey50"), 
+        #legend.key.size = unit(0.5, "cm"),legend.text = element_text(size=25),
+        legend.position = "none",
+        title = element_text(size=25),
+        strip.text = element_text(size = 25),
+        axis.text = element_text(size = 20),
+        axis.text.x = element_text(angle = 90)) +
+  geom_line(aes(Wavelength, Median_Reflectance,color = "red"),size = 2)+  
+  geom_ribbon(aes(Wavelength, ymin = Pct_12_5_Reflectance, ymax = Pct_87_5_Reflectance), alpha = 0.3) +
+  geom_ribbon(aes(Wavelength, ymin = Lower_Reflectance, ymax = Upper_Reflectance), alpha = 0.2) +
+  facet_wrap(vars(Functional_group1), scales = "fixed", ncol = 3) 
+
+dev.off()
+
+
+SpecLib_new_tall<-SpecLib_new %>%
+  pivot_longer(cols = `350`:`2500`,  names_to  = "Wavelength", values_to = "Reflectance") %>%    
+  mutate(Wavelength = gsub("X","",Wavelength)) %>%
+  group_by(Functional_group1, Wavelength) %>%  
+  dplyr::summarise(Median_Reflectance = median(Reflectance),
+                   Max_Reflectance = max(Reflectance),
+                   Min_Reflectance = min(Reflectance),
+                   Pct_87_5_Reflectance = quantile(Reflectance, probs = 0.875),
+                   Pct_12_5_Reflectance = quantile(Reflectance, probs = 0.125),
+                   Upper_Reflectance = quantile(Reflectance, probs = 0.95),
+                   Lower_Reflectance = quantile(Reflectance, probs = 0.05))%>%
+  mutate(Wavelength = as.numeric(Wavelength))  %>%
+  as.data.frame() 
+
+jpeg("Output/OldSpeclibRaw_VNIR_quantiles.jpg", height = 10000, width = 9000, res = 350)
+
+ggplot(SpecLib_new_tall %>% dplyr::filter(Wavelength>424&Wavelength<1000), aes(Wavelength, Median_Reflectance, group = Functional_group1), scales = "fixed")+
+  labs(title = c("Reflectance by plant functional group and sample size with median (red), 75% (dark) and 90% (grey) quantiles based on 1242 scans"), y="Reflectance")+
+  theme(panel.background = element_rect(fill = "white", colour = "grey50"), 
+        #legend.key.size = unit(0.5, "cm"),legend.text = element_text(size=25),
+        legend.position = "none",
+        title = element_text(size=25),
+        strip.text = element_text(size = 25),
+        axis.text = element_text(size = 20),
+        axis.text.x = element_text(angle = 90)) +
+  geom_line(aes(Wavelength, Median_Reflectance,color = "red"),size = 2)+  
+  geom_ribbon(aes(Wavelength, ymin = Pct_12_5_Reflectance, ymax = Pct_87_5_Reflectance), alpha = 0.3) +
+  geom_ribbon(aes(Wavelength, ymin = Lower_Reflectance, ymax = Upper_Reflectance), alpha = 0.2) +
+  facet_wrap(vars(Functional_group1), scales = "fixed", ncol = 3) 
+
+dev.off()
+
 AllSpecRaw_tall<-AllSpecRaw %>%
 pivot_longer(cols = `350`:`2500`,  names_to  = "Wavelength", values_to = "Reflectance") %>%    
   mutate(Wavelength = gsub("X","",Wavelength)) %>%
