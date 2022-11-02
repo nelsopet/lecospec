@@ -621,3 +621,63 @@ inf_to_na <- function(df){
                 function(x) {return(replace(x, is.infinite(x), NA))}))
     )
 }
+
+detect_outliers_columnwise <- function(df, ignore_cols = NULL){
+    used_cols <- colnames(df)
+    if(!is.null(ignore_cols)){
+        used_cols <- setdiff(used_cols, ignore_cols)
+    }
+
+    outliers <- rep(c(FALSE), times = nrow(df))
+    
+    for(column_name in used_cols){
+        q1 <- stats::quantile(df[,column_name], 1/4, type = 4)
+        q3 <- stats::quantile(df[,column_name], 3/4, type = 4)
+        col_iqr <- q3 - q1
+
+        upper_fence <- q3 + (1.5 * col_iqr)
+        lower_fence <- q1 - (1.5 * col_iqr)
+
+        new_outliers <- (df[,column_name] > upper_fence) | 
+            (df[,column_name] < lower_fence)
+
+        for(index in seq_along(outliers)){
+            if(new_outliers[[index]]){
+                outliers[[index]] <- TRUE
+            }
+        }
+    }
+
+    return(outliers)
+}
+
+detect_outliers_by_distance <- function(df, ignore_cols = NULL){
+
+}
+
+outliers_to_na <- function(df, ignore_cols = NULL){
+    used_cols <- colnames(df)
+    if(!is.null(ignore_cols)){
+        used_cols <- setdiff(used_cols, ignore_cols)
+    }
+
+    new_df <- df
+    
+    for(column_name in used_cols){
+        q1 <- stats::quantile(df[,column_name], 1/4, type = 4)
+        q3 <- stats::quantile(df[,column_name], 3/4, type = 4)
+        col_iqr <- q3 - q1
+
+        upper_fence <- q3 + (1.5 * col_iqr)
+        lower_fence <- q1 - (1.5 * col_iqr)
+
+        new_outliers <- (df[,column_name] > upper_fence) | 
+            (df[,column_name] < lower_fence)
+
+
+        new_df[new_outliers, column_name] = NA
+
+    }
+    
+    return(new_df)
+}

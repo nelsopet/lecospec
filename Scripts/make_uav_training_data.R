@@ -1,7 +1,7 @@
 source("Functions/lecospectR.R")
 
 uav_speclib_df <- read.csv(
-    "Data/Ground_Validation/PFT_Image_spectra/PFT_Image_SpectralLib_Clean.csv", 
+    "Data/Ground_Validation/PFT_image_spectra/PFT_Image_SpectralLib_Clean_unsmoothed.csv", 
     header = TRUE)
 
 print(colnames(uav_speclib_df))
