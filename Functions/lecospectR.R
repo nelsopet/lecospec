@@ -279,7 +279,7 @@ process_tile <- function(
         
         imputed_df <- impute_spectra(cleaned_df_no_empty_cols, cluster = cluster)
 
-        veg_indices <- get_vegetation_indices(resampled_df, ml_model, cluster = cluster)
+        veg_indices <- get_vegetation_indices(imputed_df, ml_model, cluster = cluster)
 
         if(scale_input){
             imputed_df <- global_min_max_scale(

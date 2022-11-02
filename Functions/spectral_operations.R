@@ -154,7 +154,6 @@ get_vegetation_indices <- function(
     #colnames(veg_indices) <- target_indices
     index_df <- veg_indices %>% as.data.frame()
 
-    #print(veg_indices)
     colnames(index_df) <- clean_colnames(target_indices)
     
     return(index_df)
@@ -172,7 +171,6 @@ get_vegetation_indices <- function(
 #' @export 
 #' @examples Not Yet Implmented
 convert_wavelength_strings <- function(wavelengths) {
-    print(wavelengths)
     ncharacters <- nchar(wavelengths)
     corrected_values <- numeric(length = length(wavelengths))
     for (w in seq_along(wavelengths)){

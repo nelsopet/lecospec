@@ -8,6 +8,14 @@ get_prediction_distribution <- function(prediction_df){
     return(df)
 }
 
+get_prediction_distribution <- function(prediction_df){
+    num_observations <- nrow(prediction_df)
+    #print(colnames(prediction_df))
+    df <- prediction_df %>% dplyr::group_by(z) %>% tally() %>% as.data.frame()
+    #df$key <- unique(prediction_vec) %>% as.vector()
+    df$distribution <- df$n / num_observations
+    return(df)
+}
 
 
 validate_results <- function(
@@ -138,7 +146,7 @@ apply_KS_test <- function(validation_aggregates, type="two.sided", use_monte_car
 }
 
 
- aggregate_result_template <- function(df, validation_df, input_template ){
+aggregate_result_template <- function(df, validation_df, input_template ){
     num_rows_df <- nrow(df)
     num_rows_template <- nrow(input_template)
     num_rows_validation <- nrow(validation_df)
@@ -382,7 +390,7 @@ parse_path <- function(path) {
     } else {
         return(split_path[[1]][[2]])
     }
-}
+    }
 }
 
 # print(parse_path("figures/twelveMile2/tm2_validation_4.csv"))
@@ -391,6 +399,7 @@ load_and_label_data <- function(path) {
     label <- parse_path(path)
     df <- read.csv(path, header = TRUE) %>% as.data.frame()
     df$site <- label
+
     return(df %>% as.data.frame())
 }
 
