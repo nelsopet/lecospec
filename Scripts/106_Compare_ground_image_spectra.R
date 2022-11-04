@@ -111,10 +111,6 @@ boxplot(scores(tst_pca_pr)[,2]~PFT_SPEC_global_rescale$Functional_group1)
 title(main="PCA axis 2 of reflectance global minmax rescale after \n merging image and ground spectra libraries")
 dev.off()
 
-
-
-
-
 fnc_grp1_colors = createPalette(length(unique(PFT_SPEC$Functional_group1)),  c("#ff0000", "#00ff00", "#0000ff")) %>%
   as.data.frame() %>%
   dplyr::rename(Color = ".") %>%
@@ -134,6 +130,24 @@ heatmap(log10(tst_mat),
 legend(x='bottomright', legend=unique(fnc_grp1_color_list$Functional_group1), fill=unique(fnc_grp1_color_list$Color), cex=2)
 dev.off()
 
+
+
+##############Vegetation Indices
+
+##Read in vegetation indices of image spectra
+Cleaned_Speclib_derivs<-read.csv("./Data/D_002_SpecLib_Derivs.csv")
+
+Cleaned_Speclib_Derivs_merge <-
+  Cleaned_Speclib_derivs %>%
+  dplyr::select(ScanID, Functional_group1, Boochs:Vogelmann4) %>% #colnames()
+  #global_min_max_scale(ignore_cols = merge_ignore1) %>% #colnames() #dplyr::select(X398:X998) %>% as.matrix() %>% hist()
+  dplyr::rename(UID=ScanID) %>%
+  mutate(Source = "Ground") %>%
+  #mutate(UID=c(Source, ScanID,Functional_group1))
+  #dplyr::select(UID,Source, Functional_group1, X398:X998) %>%
+  as.data.frame()
+
+VI_DF<read.csv("./Data/D_002_Image_SpecLib_Derivs.csv")
 
 hist(Cleaned_Speclib_Derivs_merge %>% 
        dplyr::select(-UID,-Source, -Functional_group1) %>% 
@@ -159,6 +173,10 @@ legend(x='topright', legend=unique(fnc_grp1_color_list$Functional_group1), fill=
 hist(as.matrix(VI_DF %>% 
                  dplyr::select(-1:-5)) %>% columnwise_min_max_scale() %>% as.matrix())
 
+
+
+
+##Cast vegetation index VI to matrix and plot using heatmap and PCA
 image_PFT_derivs_mat<-as.matrix(VI_DF %>% 
                                   dplyr::select(-1:-5) %>%
                                   columnwise_min_max_scale()) 
@@ -174,13 +192,31 @@ heatmap.2(columnwise_min_max_scale(image_PFT_derivs_mat) %>% as.matrix(),
           RowSideColors = fnc_grp1_color_list$Color)
 legend(x='topright', legend=unique(fnc_grp1_color_list$Functional_group1), fill=unique(fnc_grp1_color_list$Color), cex=0.7)
 
+dim(ground_PFT_derivs_mat)
+dim(image_PFT_derivs_mat)
 
-hist(ground_PFT_derivs_mat)
-hist(image_PFT_derivs_mat)
+range(ground_PFT_derivs_mat, na.rm=TRUE)
+range(image_PFT_derivs_mat, na.rm=TRUE)
+
+hist(dist(ground_PFT_derivs_mat))
+hist(dist(image_PFT_derivs_mat))
 
 PFT_derivs_mat<-rbind(ground_PFT_derivs_mat, image_PFT_derivs_mat)
 
-hist(PFT_derivs_mat)
+hist(dist(PFT_derivs_mat))
+dim(PFT_derivs_mat)
+
+all_deriv_grp<-c(VI_DF_rescale$Functional_group1,Cleaned_Speclib_Derivs_merge$Functional_group1) %>% as.data.frame()
+colnames(all_deriv_grp)<-"Functional_group1"
+
+all_derivs_grp1_colors = createPalette(length(unique(all_deriv_grp$Functional_group1)),  c("#ff0000", "#00ff00", "#0000ff")) %>%
+  as.data.frame() %>%
+  dplyr::rename(Color = ".") %>%
+  mutate(Functional_group1 = unique(all_deriv_grp$Functional_group1)) %>%
+  mutate(ColorNum = seq(1:length(unique(all_deriv_grp$Functional_group1))));
+
+all_derivs_grp1_color_list<-all_deriv_grp %>% dplyr::select(Functional_group1) %>% inner_join(all_derivs_grp1_colors, by="Functional_group1", keep=FALSE)
+
 
 #PFT_derivs_mat_rescale<-PFT_derivs_mat %>% 
 #  columnwise_min_max_scale() %>% 
@@ -209,12 +245,12 @@ derivs_pca_pr<-prcomp(PFT_derivs_mat_rescale) #, center=FALSE, scale=FALSE)
 
 cols<-palette.colors(n=8)
 screeplot(derivs_pca_pr)
-plot(scores(derivs_pca_pr)[,1:2], col=source_color_list$Color)#, pch=c(1:2))
+plot(scores(derivs_pca_pr)[,2:3], col=all_derivs_grp1_color_list$Color)#, pch=c(1:2))
 title(main = "PCA of min max rescaled vegetations indices from ground and image")
 
 
 jpeg("./Output/PCA_Veg_Indices_boxplot_PC`.jpeg", width = 1200, height =400)
-boxplot(scores(derivs_pca_pr)[,2]~c(VI_DF_rescale$Functional_group1,Cleaned_Speclib_Derivs_merge$Functional_group1))
+boxplot(scores(derivs_pca_pr)[,]~c(VI_DF_rescale$Functional_group1,Cleaned_Speclib_Derivs_merge$Functional_group1))
 dev.off()
 
 

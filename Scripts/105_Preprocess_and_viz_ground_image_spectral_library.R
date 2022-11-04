@@ -29,7 +29,7 @@ Cleaned_Speclib_tall_Fnc_grp1<-
     tally() %>% 
     dplyr::rename(species_count = n) %>%
   inner_join(Cleaned_Speclib %>% dplyr::select(all_of(ground_cols_keep)), by="Functional_group1") %>% #colnames() %>% as.data.frame() %>% View()
-  columnwise_min_max_scale(ignore_cols = ignore) %>% #head() %>% View()#colnames() #as.matrix() %>% hist()
+  #columnwise_min_max_scale(ignore_cols = ignore) %>% #head() %>% View()#colnames() #as.matrix() %>% hist()
   group_by(Functional_group1) %>% 
   dplyr::mutate(sample_size = n()) %>% 
   dplyr::mutate(Functional_group1_wN = glue('{Functional_group1} {"(n="} {sample_size} {"scans,"} {species_count} {"species"})')) %>%
@@ -59,10 +59,9 @@ Cleaned_Speclib_tall_Fnc_grp1<-
                    Pct_87_5_Reflectance = quantile(Reflectance, probs = 0.875),
                    Pct_12_5_Reflectance = quantile(Reflectance, probs = 0.125),
                    Upper_Reflectance = quantile(Reflectance, probs = 0.95),
-                   Lower_Reflectance = quantile(Reflectance, probs = 0.05)) %>%
-  mutate(Wavelength = as.numeric(Wavelength),
-         Source = "Ground")  %>%
-  as.data.frame() %>% #str()
+                   Lower_Reflectance = quantile(Reflectance, probs = 0.05))%>%
+  mutate(Wavelength = as.numeric(Wavelength))  %>%
+  as.data.frame() %>%
  dplyr::filter(Wavelength>397 & Wavelength<1000)
 
   
@@ -70,8 +69,6 @@ write.csv(Cleaned_Speclib_tall_Fnc_grp1, "./Data/C_001_SC3_Cleaned_SpectralLib_t
 
 jpeg("Output/Fnc_grp1_spectral_profiles_AllSpectra.jpg", height = 10000, width = 9000, res = 350)
 ggplot(Cleaned_Speclib_tall_Fnc_grp1, aes(Wavelength, Median_Reflectance, group = Functional_group1), scales = "fixed")+
-  geom_ribbon(aes(Wavelength, ymin = Pct_12_5_Reflectance, ymax = Pct_87_5_Reflectance, alpha = 0.3))+
-  geom_ribbon(aes(Wavelength, ymin = Lower_Reflectance, ymax = Upper_Reflectance, alpha = 0.2))+
   labs(title = c("Reflectance by plant functional group and sample size with median (red), 75% (dark) and 90% (grey) quantiles based on 2561 scans"), y="Reflectance")+
   theme(panel.background = element_rect(fill = "white", colour = "grey50"), 
         #legend.key.size = unit(0.5, "cm"),legend.text = element_text(size=25),
@@ -80,7 +77,9 @@ ggplot(Cleaned_Speclib_tall_Fnc_grp1, aes(Wavelength, Median_Reflectance, group 
         strip.text = element_text(size = 25),
         axis.text = element_text(size = 20),
         axis.text.x = element_text(angle = 90)) +
-  geom_line(aes(Wavelength, Median_Reflectance,color = "red"),size = 2)+
+  geom_line(aes(Wavelength, Median_Reflectance,color = "red"),size = 2)+  
+  geom_ribbon(aes(Wavelength, ymin = Pct_12_5_Reflectance, ymax = Pct_87_5_Reflectance), alpha = 0.3) +
+  geom_ribbon(aes(Wavelength, ymin = Lower_Reflectance, ymax = Upper_Reflectance), alpha = 0.2) +
   facet_wrap(vars(Functional_group1_wN), scales = "fixed", ncol = 3) 
 dev.off()
 

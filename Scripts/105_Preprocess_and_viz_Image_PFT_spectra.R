@@ -134,6 +134,8 @@ title(main = "PCA of min max rescaled PFT spectra from images")
 #legend(x = -2, y =-1, legend=unique(PFT_IMG_SPEC_clean_merge$Functional_group1), lty=1, col=c(1:9), cex=0.5)
 #legend(x = -2, y =-1, legend=unique(PFT_IMG_SPEC_clean_merge$Functional_group1), lty=1, col=c(1:9), cex=0.5)
 
+##Read in vegetation indices of image spectrq
+VI_DF<-read.csv("./Data/D_002_Image_SpecLib_Derivs.csv")
 
 # Removes metadata before function can be applied
 
