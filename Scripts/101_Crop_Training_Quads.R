@@ -44,6 +44,10 @@ Chatanika_seg_path = "./Data/Vectors/ChatanikaQuads_georeferenced.shp"
 Chatanika_out<-ImgChopper(Chatanika_path,Chatanika_seg_path)
 #plot(TwelveMile_out[[2]])
 
+Bonanza_path = "M:/Alaska_DATA/Alaska_Summer2018/Workspaces/Alaska/DatabyDate/72518/ImagingSpectrometer/DataFiles/100066_2018_07_25_21_18_45/raw_6425_rd_rf_or"
+Bonanza_seg_path = "./Data/Vectors/Bonanza_N_Quads.shp"
+Bonanza_out<-ImgChopper(Bonanza_path,Bonanza_seg_path)
+
 writeRaster(Bison_out, "./Data/Ground_Validation/Imagery/BisonGulchQuads", format = "ENVI", overwrite = TRUE)
 writeRaster(Chatanika_out,   "./Data/Ground_Validation/Imagery/ChatanikaQuads", format  = "ENVI", overwrite = TRUE)
 writeRaster(EightMile_out,   "./Data/Ground_Validation/Imagery/EightMileQuads", format = "ENVI", overwrite = TRUE)
@@ -52,5 +56,6 @@ writeRaster(TwelveMile_out2, "./Data/Ground_Validation/Imagery/TwelveMileGulchQu
 writeRaster(MurphyDome_out1, "./Data/Ground_Validation/Imagery/MurphDomeQuads0_10", format = "ENVI", overwrite = TRUE)
 writeRaster(MurphyDome_out2, "./Data/Ground_Validation/Imagery/MurphDomeQuads20_50", format = "ENVI", overwrite = TRUE)
 writeRaster(MurphyDome_out3, "./Data/Ground_Validation/Imagery/MurphDomeQuads60_100", format = "ENVI", overwrite = TRUE)
+writeRaster(Bonanza_out, "./Data/Ground_Validation/Imagery/BonanzaQuads", format = "ENVI", overwrite = TRUE)
 
 
