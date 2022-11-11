@@ -55,6 +55,7 @@ update_filename <- function(prefix){
 ImgChopper <- function(img, quad) {
         tst_img <- brick(img)
         tst_quads <- readOGR(dsn = quad)
+        tst_quads<-sf::st_transform(sf::st_as_sf(tst_quads), crs(tst_img))
         tst_crop <- raster::crop(tst_img, tst_quads)
         tst_mask <- raster::mask(tst_crop, tst_quads)
         # tst_out<-c(tst_crop,tst_mask)
