@@ -5,7 +5,7 @@ library(tidyverse)
 library(sf)
 require(terra)
 require(maptiles)
-
+require(stars)
 
 #Custom function to get each KML
 allKmlLayers <- function(kmlfile){
@@ -26,19 +26,27 @@ UAS_extents<-allKmlLayers(UAS_path)
 UAS_all<-Reduce(raster::union, UAS_extents)
 UAS_all_centroids<-centroids(vect(UAS_all)) 
 writeVector(UAS_all_centroids, "./Output/UAV_VNIR_AK_centroids.kml") #", filetype = "ESRI Shapefile", overwrite= TRUE)
-readOGR("./Output/UAV_VNIR_AK_centroids.kml") 
+UAS_all_centroids<-readOGR("./Output/UAV_VNIR_AK_centroids.kml") 
 
 #Create a spatial object to plot locations where ground spectral measurements were made
-SpecLib_LatLong<-Speclib_metadata %>% dplyr::select(Latitude, Longitude) %>% unique() %>% filter(Latitude!="n/a")
+SpecLib_LatLong<-Speclib_metadata %>% 
+  dplyr::select(Latitude, Longitude) %>% 
+  unique() %>% 
+  filter(Latitude!="n/a")
 
 # Convert data frame to sf object
 SpecLib_LatLong_point <- st_as_sf(x = SpecLib_LatLong, 
                         coords = c("Longitude", "Latitude"),
                         crs = "+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0")
 
+st_write(SpecLib_LatLong_point, driver = "KML", "./Output/Ground_Spetra_AK_points.kml")
+SpecLib_LatLong_point<-readOGR("./Output/Ground_Spetra_AK_points.kml") 
+
 
 # Plot both UAV missions and SpecLib locations
+jpeg("./Output/StudyAreaGround_Airborne_Spectra_Locs.jpg")
 bg <- get_tiles(ext(SpecLib_LatLong_point))
 plotRGB(bg)
-points(UAS_all_centroids, col="blue", lwd=3)
-lines(SpecLib_LatLong, col="red", lwd=3)
+points(UAS_all_centroids, col="blue", lwd=10)
+points(SpecLib_LatLong_point, col="red", lwd=3)
+dev.off()
