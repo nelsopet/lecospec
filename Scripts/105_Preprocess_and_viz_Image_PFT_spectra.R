@@ -1,3 +1,6 @@
+require(Polychrome)
+require(glue)
+require(vegan)
 #Image spectra
 PFT_IMG_SPEC_clean <- read.csv("./Data/Ground_Validation/PFT_Image_spectra/PFT_Image_SpectralLib_Clean.csv")
 names_drop<-c("PFT.1",
@@ -29,8 +32,6 @@ site_colors = createPalette(length(unique(SiteNames$Site)), "#ff0000") %>%
   mutate(ColorNum = seq(1:length(unique(SiteNames$Site))));
 
 site_color_list<-SiteNames %>% dplyr::select(Site) %>% inner_join(site_colors, by="Site", keep=FALSE)
-
-
 
 names_ignore<-c("X" 
 ,"UID"
@@ -119,7 +120,9 @@ image_PFT_spectra_mat[is.na(image_PFT_spectra_mat)]<-0.00000001
 #image_pca<-princomp(sqrt(image_PFT_spectra_mat)) #, center=FALSE, scale=FALSE)
 image_pca_pr<-prcomp(image_PFT_spectra_mat) #, center=FALSE, scale=FALSE)
 plot(scores(image_pca_pr)[,1:2], col=unique(fnc_grp1_color_list$Color))#, pch=c(1:2))
-plot(scores(image_pca_pr)[,1:2], col=unique(site_color_list$Color))#, pch=c(1:2))
+plot(scores(image_pca_pr)[,1:2], col=site_color_list$Color, pch = PFT_IMG_SPEC_clean_merge$Functional_group1)#, pch=c(1:2))
+legend('bottomright', legend=unique(site_color_list$Site), lty=1, col=unique(site_color_list$Color), cex=0.5)
+legend('bottomleft', legend=unique(PFT_IMG_SPEC_clean_merge$Functional_group1), lty=1, col=unique(PFT_IMG_SPEC_clean_merge$Functional_group1), cex=0.5)
 
 jpeg("./Output/PCA_Image_boxplot_PC1.jpeg", width = 1200, height =400)
 boxplot((scores(image_pca_pr)[,1])*-1~PFT_IMG_SPEC_clean_merge$Functional_group1)
@@ -138,6 +141,8 @@ title(main = "PCA of min max rescaled PFT spectra from images")
 VI_DF<-read.csv("./Data/D_002_Image_SpecLib_Derivs.csv")
 
 # Removes metadata before function can be applied
+
+#ignore_derivs_image<-DEFINE
 
 image_derivs_rescale_tall<-VI_DF %>%
   group_by(Functional_group1, Species_name) %>% 
