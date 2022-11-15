@@ -53,9 +53,6 @@ collected are shown in the map.
 
 ![](README_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
 
-    ## null device 
-    ##           1
-
 1)  validation\_def.R sets all the input, output and needed associated
     files for building models and predicting images
 2)  Scripts/modelbuilding.ipynb Builds and visualizes model accuracy

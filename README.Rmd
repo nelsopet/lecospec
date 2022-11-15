@@ -1,6 +1,8 @@
 ---
 title: "Lecospec"
 output: github_document
+keep_md: true
+
 ---
 
 ```{r setup, include=FALSE}
@@ -52,7 +54,7 @@ bg <- get_tiles(ext(SpecLib_LatLong_point))
 plotRGB(bg)
 points(UAS_all_centroids, col="blue", lwd=10)
 points(SpecLib_LatLong_point, col="red", lwd=3)
-dev.off()
+
 ```
 
 1) validation_def.R sets all the input, output and needed associated files for building models and predicting images
