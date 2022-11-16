@@ -36,6 +36,8 @@ interquartile ranges of reflectance (75% black & 95% grey) with the
 sample size in number of scans distributed across a number of scans
 (ground measured) or pixels (airborne).
 
+<img src="./Output/Fnc_grp1_spectral_profiles_PFT_IMG_SPECTRA_ALL.jpg" width="1000" height="1000">
+
 ## Study StudyArea
 
 The centers of all UAV flights and points where ground scans were
@@ -52,7 +54,7 @@ collected are shown in the map.
     ## It has 2 fields
 
 ![](README_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
-<img src="./Output/StudyAreaGround_Airborne_Spectra_Locs.jpg" width="1000" height="1000">
+<img src="./Output/StudyAreaGround_Airborne_Spectra_Locs.jpg" width="250" height="250">
 
 1)  validation\_def.R sets all the input, output and needed associated
     files for building models and predicting images

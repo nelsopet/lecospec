@@ -40,6 +40,8 @@ After cleaning scans, the reflectance data can be summarized and visualized in v
 summary of the median and interquartile ranges of reflectance (75% black & 95% grey) with the sample size in 
 number of scans distributed across a number of scans (ground measured) or pixels (airborne).
 
+<img src="./Output/Fnc_grp1_spectral_profiles_PFT_IMG_SPECTRA_ALL.jpg" width="1000" height="1000">
+
 ```{r}
 
 ```
@@ -56,7 +58,7 @@ points(UAS_all_centroids, col="blue", lwd=10)
 points(SpecLib_LatLong_point, col="red", lwd=3)
 
 ```
-<img src="Output/StudyAreaGround_Airborne_Spectra_Locs.jpg" width="1000" height="1000">
+<img src="./Output/StudyAreaGround_Airborne_Spectra_Locs.jpg" width="250" height="250">
 
 1) validation_def.R sets all the input, output and needed associated files for building models and predicting images
 2) Scripts/modelbuilding.ipynb Builds and visualizes model accuracy
