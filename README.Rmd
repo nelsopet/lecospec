@@ -56,6 +56,7 @@ points(UAS_all_centroids, col="blue", lwd=10)
 points(SpecLib_LatLong_point, col="red", lwd=3)
 
 ```
+<img src="Output/StudyAreaGround_Airborne_Spectra_Locs.jpg" width="1000" height="1000">
 
 1) validation_def.R sets all the input, output and needed associated files for building models and predicting images
 2) Scripts/modelbuilding.ipynb Builds and visualizes model accuracy

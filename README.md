@@ -52,6 +52,7 @@ collected are shown in the map.
     ## It has 2 fields
 
 ![](README_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
+<img src="Output/StudyAreaGround_Airborne_Spectra_Locs.jpg" width="1000" height="1000">
 
 1)  validation\_def.R sets all the input, output and needed associated
     files for building models and predicting images
