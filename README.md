@@ -3,38 +3,38 @@ Lecospec
 
 ## Laboratory of Ecological Spectroscopy (lecospec)
 
-Lecospec is composed of people, hardware and code. This repository
-represents the code and some of the data needed for it to run. The
-purpose lecospec code is to take ground or image based reflectance
+The purpose lecospec code is to take ground or image based reflectance
 spectra, build a classifier or regression, apply that model to an
-imaging spectrometer data cube (aka hyperspectral image). \#\# How to
-run lecospec \#\#\#NOTE: Your data will need to be a spectral library
-with all files per site in a directory \#\#\#File naming structure etc.
-maybe different and therefore cleaning of scans below should be
-\#\#\#for demonstration only.
+imaging spectrometer data cube (aka hyperspectral image).
+
+## How to run lecospec
+
+### NOTE: Your data will need to be a spectral library with all files per site in a directory
+
+### File naming structure etc. maybe different and therefore cleaning of scans below should be
+
+### for demonstration only.
 
 1)  First, install dependencies /Scripts/install\_dependencies.R
-
 2)  Then source the package of lecospectR /Functions/lecospectR.R
-
 3)  Our workflow assumes a list of species with associated levels of
     taxonomic information (eg. functional group membership)
     /Data/SpeciesTable\_20220125.csv
-
-4)Build a spectral library from a range of field scans collected with
-Tungsten halogen illumination using a leaf clip or contact probe. These
-scripts delete bad scans and standardize the associated information into
-a single metadata format.
-
-/Scripts/2\_DataMunging.R  
-/Scripts/2B\_DataMunging\_missing\_spectra.R  
-/Scripts/3\_Create\_SpecLibPSR.R
+4)  Build a spectral library from a range of field scans collected with
+    Tungsten halogen illumination using a leaf clip or contact probe.
+    These scripts delete bad scans and standardize the associated
+    information into a single metadata format.
+    /Scripts/2\_DataMunging.R  
+    /Scripts/2B\_DataMunging\_missing\_spectra.R  
+    /Scripts/3\_Create\_SpecLibPSR.R
 
 After cleaning scans, the reflectance data can be summarized and
 visualized in various ways. Below is accuracy summary of the median and
 interquartile ranges of reflectance (75% black & 95% grey) with the
 sample size in number of scans distributed across a number of scans
 (ground measured) or pixels (airborne).
+
+<img src="./Output/Fnc_grp1_spectral_profiles_PFT_IMG_SPECTRA_ALL.jpg" width="1000" height="1000">
 
 ## Study StudyArea
 
@@ -52,9 +52,7 @@ collected are shown in the map.
     ## It has 2 fields
 
 ![](README_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
-
-    ## null device 
-    ##           1
+<img src="./Output/StudyAreaGround_Airborne_Spectra_Locs.jpg" width="250" height="250">
 
 1)  validation\_def.R sets all the input, output and needed associated
     files for building models and predicting images
