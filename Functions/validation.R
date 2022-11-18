@@ -266,7 +266,14 @@ save_validation <- function(template_dfs, base_filename = "validation"){
 }
 
 
-validate_model <- function(ml_model, save_directory, normalize_input = TRUE, scale_input = FALSE, cluster = NULL){
+validate_model <- function(
+    ml_model, 
+    save_directory, 
+    normalize_input = FALSE, 
+    scale_input = FALSE, 
+    robust_scale_input = FALSE,
+    standardize_input = FALSE,
+    cluster = NULL){
     source("Scripts/validation_defs.R")
 
 
@@ -281,6 +288,8 @@ validate_model <- function(ml_model, save_directory, normalize_input = TRUE, sca
             band_names = band_names,
             normalize_input = normalize_input,
             scale_input = scale_input,
+            robust_scale_input = robust_scale_input,
+            standardize_input = standardize_input,
             save_path = "./validation_saved_output.grd",
             suppress_output = FALSE)
 

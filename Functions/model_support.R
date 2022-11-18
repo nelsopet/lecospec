@@ -164,3 +164,18 @@ apply_model.train <- function(df, model, ...) {
     colnames(predictions) <- c("z")
     return(predictions)
 }
+
+apply_model.ksvm <- function(df, model, ...){
+    require(kernlab, quietly = TRUE)
+    predictions <- predict(model, as.data.frame(df))$response %>% as.data.frame()
+    colnames(predictions) <- c("z")
+    return(predictions)
+
+}
+
+apply_model.knn3 <- function(df, model, ...){
+    require(caret, quietly = TRUE)
+    predictions <- predict(model, df, type = "class") %>% as.data.frame()
+    colnames(predictions) <- c("z")
+    return(predictions)
+}

@@ -230,8 +230,10 @@ process_tile <- function(
     cluster = NULL,
     return_raster = TRUE,
     band_names=NULL,
-    normalize_input = TRUE,
+    standardize_input = FALSE,
+    normalize_input = FALSE,
     scale_input = FALSE,
+    robust_scale_input = FALSE,
     return_filename = FALSE,
     save_path = NULL,
     suppress_output = FALSE
@@ -281,12 +283,6 @@ process_tile <- function(
 
         veg_indices <- get_vegetation_indices(imputed_df, ml_model, cluster = cluster)
 
-        if(scale_input){
-            imputed_df <- global_min_max_scale(
-                imputed_df, 
-                ignore_cols = c("x", "y")) %>%
-                as.data.frame()
-        }
         
     
         try(
@@ -316,6 +312,24 @@ process_tile <- function(
         gc()
 
         imputed_df_full <- impute_spectra(df, method="median")
+
+        if(scale_input){
+            imputed_df_full <- columnwise_min_max_scale(
+                imputed_df_full, 
+                ignore_cols = c("x", "y")) %>%
+                as.data.frame()
+        }
+        if(robust_scale_input){
+            imputed_df_full <- columnwise_robust_scale(
+                imputed_df_full, 
+                ignore_cols = c("x", "y")
+                ) %>% as.data.frame()
+        }
+        
+        if(standardize_input){
+            imputed_df_full <- standardize_df(imputed_df_full, ignore_cols = c("x", "y"))
+        }
+
 
         
         prediction <- apply_model(imputed_df_full, ml_model)
