@@ -457,7 +457,7 @@ extract_bands <- function(df){
 
 resample_df <- function(
     df,
-    normalize = TRUE,
+    normalize = FALSE,
     min_wavelength = 397.593,
     max_wavelength = 995.716,
     delta = 5
@@ -680,4 +680,37 @@ outliers_to_na <- function(df, ignore_cols = NULL){
     }
     
     return(new_df)
+}
+
+
+standardize_df <- function(df, ignore_cols = NULL){
+    used_cols <- colnames(df)
+    if(!is.null(ignore_cols)){
+        used_cols <- setdiff(used_cols, ignore_cols)
+    }
+
+    scaled_df <- scale(df[,used_cols])
+
+    if(!is.null(ignore_cols)){
+        return(cbind(scaled_df, df[,ignore_cols]))
+    } else {
+        return(scaled_df)
+    }
+}
+
+columnwise_robust_scale <- function(df, ignore_cols = NULL){
+    used_cols <- colnames(df)
+    if(!is.null(ignore_cols)){
+        used_cols <- setdiff(used_cols, ignore_cols)
+    }
+
+    scaled_df <- df %>% as.data.frame()
+
+    for(col in used_cols){
+        col_centered <- scaled_df[,col] - median(scaled_df[,col], na.rm = TRUE)
+        col_c_iqr <- stats::IQR(col_centered)
+        scaled_df[,col] <- (col_centered / col_c_iqr)
+    }
+
+    return(scaled_df)
 }
