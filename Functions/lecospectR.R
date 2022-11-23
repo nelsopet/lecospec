@@ -295,7 +295,10 @@ process_tile <- function(
         resampled_df <- resample_df(imputed_df, normalize = normalize_input, max_wavelength = 995.716)
         gc()
 
-
+        print(summary(resampled_df$X672.593_5nm))
+        print(summary(resampled_df$X667.593_5nm))
+        print(summary(resampled_df$X667.593_5nm))
+        print(summary(resampled_df$X667.593_5nm))
 
         #print("Resampled Dataframe Dimensions:")
         #print(dim(resampled_df))
@@ -311,25 +314,27 @@ process_tile <- function(
         rm(resampled_df)
         gc()
 
-        imputed_df_full <- impute_spectra(df, method="median")
 
         if(scale_input){
-            imputed_df_full <- columnwise_min_max_scale(
-                imputed_df_full, 
+            df <- columnwise_min_max_scale(
+                df, 
                 ignore_cols = c("x", "y")) %>%
                 as.data.frame()
         }
         if(robust_scale_input){
-            imputed_df_full <- columnwise_robust_scale(
-                imputed_df_full, 
+            df <- columnwise_robust_scale(
+                df, 
                 ignore_cols = c("x", "y")
                 ) %>% as.data.frame()
         }
         
         if(standardize_input){
-            imputed_df_full <- standardize_df(imputed_df_full, ignore_cols = c("x", "y"))
+            df <- standardize_df(df, ignore_cols = c("x", "y"))
         }
 
+        imputed_df_full <- impute_spectra(df, method="median")
+
+        print(summary(imputed_df_full))
 
         
         prediction <- apply_model(imputed_df_full, ml_model)

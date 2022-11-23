@@ -31,6 +31,14 @@ get_required_veg_indices.LSModel <- function(ml_model, ...){
 
 get_required_veg_indices.ranger <- function(ml_model, ...) {
     var_names <- get_var_names(ml_model)
+
+    if(is.null(var_names)){
+        var_names <- read.csv(
+            "assets/vegIndicesUsed.csv",
+            header = TRUE
+        )$x %>% 
+        as.character()
+    }
      av <- sort(
                 c(
                     "NDVI","OSAVI","SAVI","MTVI","NDWI","PWI",

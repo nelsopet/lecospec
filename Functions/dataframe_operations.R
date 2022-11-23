@@ -689,7 +689,19 @@ standardize_df <- function(df, ignore_cols = NULL){
         used_cols <- setdiff(used_cols, ignore_cols)
     }
 
-    scaled_df <- scale(df[,used_cols])
+    scaled_df <- df[,used_cols]
+
+    
+    for(col in used_cols){
+        col_centered <- scaled_df[,col] - mean(scaled_df[,col], na.rm = TRUE)
+        col_c_sd <- sd(col_centered, na.rm = TRUE)
+        if(!is.null(col_c_sd) & !is.na(col_c_sd)){
+            scaled_df[,col] <- (col_centered / col_c_sd)
+        } else {
+            scaled_df[,col] <- col_centered
+        }
+    }
+
 
     if(!is.null(ignore_cols)){
         return(cbind(scaled_df, df[,ignore_cols]))
@@ -709,7 +721,11 @@ columnwise_robust_scale <- function(df, ignore_cols = NULL){
     for(col in used_cols){
         col_centered <- scaled_df[,col] - median(scaled_df[,col], na.rm = TRUE)
         col_c_iqr <- stats::IQR(col_centered)
-        scaled_df[,col] <- (col_centered / col_c_iqr)
+        if(!is.null(col_c_iqr) & !is.na(col_c_iqr)){
+            scaled_df[,col] <- (col_centered / col_c_iqr)
+        } else {
+            scaled_df[,col] <- col_centered
+        }
     }
 
     return(scaled_df)
