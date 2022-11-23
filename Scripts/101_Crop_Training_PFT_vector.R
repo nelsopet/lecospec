@@ -110,5 +110,25 @@ lapply(1:length(Chatanika_pft_vec),
        })
 
 
+Bonanza_path = "F:/ORNL_DAAC_DATA_ARCHIVE/Bonanza/raw_6425_rd_rf_or"
+Bonanza_pft_path = "./Data/Vectors/PFTs/BonanzaPFT_ROIs.shp"
+Bonanza_pft_vec=readOGR(dsn=Bonanza_pft_path)
+#Bonanza_pft_out<-ImgChopper(Bonanza_path,Bonanza_pft_path)
 
+lapply(1:length(Bonanza_pft_vec),  
+       function(x) {
+         tst_img <- brick(Bonanza_path)
+                  #tst_img <- terra::rast(Bonanza_path)
 
+         tst_quads<-Bonanza_pft_vec[x,]
+                  #tst_quads<-Bonanza_pft_vec[1,]
+
+         tst_quads<-sf::st_transform(sf::st_as_sf(tst_quads), crs(tst_img))
+                  #tst_img<-terra::project(tst_img, crs(tst_quads))
+
+        tst_crop <- raster::crop(tst_img, tst_quads)
+        tst_mask <- raster::mask(tst_crop, tst_quads)
+       # tst_out<-c(tst_crop,tst_mask)
+         writeRaster(tst_mask, paste("./Data/Ground_Validation/Imagery/BonanzaPFT/BonanzaPFTs", Bonanza_pft_vec[x,]$CLASS_NAME, sep=""), format = "ENVI", overwrite = TRUE)
+         #return(tst_mask)
+       })
