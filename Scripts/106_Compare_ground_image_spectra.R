@@ -1,18 +1,22 @@
+source("./Functions/lecospectR.R")
+
 Cleaned_Speclib_tall_Fnc_grp1<-read.csv("./Data/C_001_SC3_Cleaned_SpectralLib_tall_Fnc_grp1.csv")
+Cleaned_Speclib_tall_Fnc_grp1<-Cleaned_Speclib_tall_Fnc_grp1 %>% dplyr::mutate(Source = "Ground")
 PFT_IMG_SPEC_clean_tall<-read.csv("./Data/Ground_Validation/PFT_Image_spectra/PFT_Image_SpectralLib_Clean_tall.csv")
 
 
 ##Bind both ground and image spectra summaries (quantiles) together
 PFT_SPEC_GROUND_IMAGE <- bind_rows(Cleaned_Speclib_tall_Fnc_grp1, PFT_IMG_SPEC_clean_tall)
-
-
-#Plot median refl for one PFT from two different sources
+#
 
 ######## Functional group 1 spectral profiles
-jpeg("Output/Fnc_grp1_spectral_profiles_PFT_IMG_SPECTRA_ALL.jpg", height = 10000, width = 10000, res = 350)
-ggplot((PFT_SPEC_GROUND_IMAGE %>% dplyr::filter(Functional_group1 != "Forb") ), aes(Wavelength, Median_Reflectance,group = Functional_group1), scales = "fixed")+
+
+jpeg("Output/Fnc_grp1_spectral_profiles_PFT_IMG_SPECTRA_ALL_corrected.jpg", height = 10000, width = 10000, res = 350)
+ggplot((PFT_SPEC_GROUND_IMAGE %>% 
+    dplyr::filter(Functional_group1 != "Forb")), 
+    aes(Wavelength, Median_Reflectance,group = Functional_group1), scales = "fixed")+
   geom_ribbon(aes(Wavelength, ymin = Pct_12_5_Reflectance, ymax = Pct_87_5_Reflectance, alpha = 0.3))+
-  geom_ribbon(aes(Wavelength, ymin = Lower_Reflectance, ymax = Upper_Reflectance, alpha = 0.2))+
+  #geom_ribbon(aes(Wavelength, ymin = Lower_Reflectance, ymax = Upper_Reflectance, alpha = 0.2))+
   labs(title = c("Reflectance by plant functional group and sample size with median (red), 75% (dark) and 90% (grey) quantiles based on 1242 scans"), y="Reflectance")+
   theme(panel.background = element_rect(fill = "white", colour = "grey50"), 
         #legend.key.size = unit(0.5, "cm"),legend.text = element_text(size=25),
