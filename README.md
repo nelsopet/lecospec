@@ -11,9 +11,7 @@ imaging spectrometer data cube (aka hyperspectral image).
 
 ### NOTE: Your data will need to be a spectral library with all files per site in a directory
 
-### File naming structure etc. maybe different and therefore cleaning of scans below should be
-
-### for demonstration only.
+### File naming structure etc. maybe different and therefore cleaning of scans below is for demonstration only.
 
 1)  First, install dependencies /Scripts/install\_dependencies.R
 2)  Then source the package of lecospectR /Functions/lecospectR.R
@@ -23,16 +21,25 @@ imaging spectrometer data cube (aka hyperspectral image).
 4)  Build a spectral library from a range of field scans collected with
     Tungsten halogen illumination using a leaf clip or contact probe.
     These scripts delete bad scans and standardize the associated
-    information into a single metadata format.
-    /Scripts/2\_DataMunging.R  
+    information into a single metadata format. Around 90 vegetation
+    indices are also calculated and the narrow band reflectance is
+    resampled and smoothed to 5 nm bands. /Scripts/2\_DataMunging.R  
     /Scripts/2B\_DataMunging\_missing\_spectra.R  
     /Scripts/3\_Create\_SpecLibPSR.R
-
-After cleaning scans, the reflectance data can be summarized and
-visualized in various ways. Below is accuracy summary of the median and
-interquartile ranges of reflectance (75% black & 95% grey) with the
-sample size in number of scans distributed across a number of scans
-(ground measured) or pixels (airborne).
+5)  Collect spectra from pixels in images from UAV in quadrats and
+    patches of plant functional types visible in ground reference or
+    higher resolution RGB imagery. Calculate vegetation indices, smooth
+    and resample spectra to 5 nm wide bands.
+    /Scripts/101\_Crop\_Training\_PFT\_vector.R  
+    /Scripts/101\_Crop\_Training\_Quads.R  
+    /Scripts/102\_Parse\_training\_PFT\_vector\_spectra.R  
+    /Scripts/103\_Clean\_training\_PFT\_vector\_spectra.R  
+    /Scripts/104\_Calculate\_Vegindices\_Image\_Spectra.R  
+    er cleaning scans, the reflectance data can be summarized and
+    visualized in various ways. Below is accuracy summary of the median
+    and interquartile ranges of reflectance (75% black & 95% grey) with
+    the sample size in number of scans distributed across a number of
+    scans (ground measured) or pixels (airborne).
 
 <img src="./Output/Fnc_grp1_spectral_profiles_PFT_IMG_SPECTRA_ALL.jpg" width="1000" height="1000">
 
