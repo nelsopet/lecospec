@@ -704,7 +704,7 @@ standardize_df <- function(df, ignore_cols = NULL){
 
 
     if(!is.null(ignore_cols)){
-        return(cbind(scaled_df, df[,ignore_cols]))
+        return(cbind(scaled_df, df[,intersect(colnames(df),ignore_cols)]))
     } else {
         return(scaled_df)
     }
@@ -729,4 +729,46 @@ columnwise_robust_scale <- function(df, ignore_cols = NULL){
     }
 
     return(scaled_df)
+}
+
+
+create_matched_data <- function(left_df, right_df, cols = c("targets", "targets")){
+    shared_levels <- intersect(
+        levels(as.factor(left_df[, cols[1]])), 
+        levels(as.factor(right_df[, cols[[2]]]))
+        )
+
+    # store inermediate results in a list
+    level_dfs_l <- NULL
+    level_dfs_r <- NULL
+
+    for( level in shared_levels){
+        filtered_left <- left_df[(left_df[,cols[[1]]] == level),]
+        filtered_right <- right_df[right_df[,cols[[2]]] == level,]
+
+
+        num_records <- min(nrow(filtered_left), nrow(filtered_right))
+        
+        if(num_records > 0){
+            if(is.null(level_dfs_l)){
+                level_dfs_l <- filtered_left[1:num_records,]
+            } else {
+                level_dfs_l <- rbind(level_dfs_l, filtered_left[1:num_records,])
+            }
+
+            if(is.null(level_dfs_r)){
+                level_dfs_r <- filtered_right[1:num_records,]
+            } else {
+                level_dfs_r <- rbind(level_dfs_r, filtered_right[1:num_records,])
+            }
+
+        }
+    }
+
+    return(list(
+        left = level_dfs_l,
+        right = level_dfs_r
+    ))
+
+
 }
