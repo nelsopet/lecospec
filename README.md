@@ -119,28 +119,29 @@ produces the two .kml files plotted in the map below.
     lecospectR::validate\_model.R , whicih calls the input data, models
     and settings from validate\_def.R mle/
 
-4)  Visualize output for whole datacubes by running the parallelized
-    estimate\_landcover function from lecospectR. Set the number of
-    tiles carefully based on RAM and image size. To run the function
-    lecospectR::estimate\_landcover, check the settings in the
-    /config.json. The settings include automatic\_tiling: false,
-    max\_size: 200, x\_tiles: 2, \# Set to make about 10% of RAM size on
-    machine y\_tiles: 2, tile\_path: “./tiles/”, \#Intermediate products
-    go here, like /temp. Will need to be cleaned out every so often
-    model\_path: “./mle/”INSERT MOD NAME“.rda”, \#Models built in
-    /modelbuilding.ipynb can be pasted here clusterCores: (NUM CORES ON
-    MACHINE - 1), \#Speeds up the processing on larger images to have
-    more cores but tradeoff between handling tiles and creating tiles
-    exists parallelize\_by\_tiles: false, application: “Not yet
-    implemented”, cache\_path: “not yet implemented”, key\_path:
-    “./fg2key.json”, output\_path: “./”, install\_path: “./”,
-    external\_bands: “./bands.csv”, \#Bands used to rename spectral
-    objects consistently along the way output\_format: “grd”,
-    aggregation: 1 \#Depends on levels within data and only relevant for
-    taxonomic-like structured response categories
+4)  Generate predidctions for plant functional type occurence for whole
+    datacubes by running the parallelized estimate\_landcover function
+    from lecospectR. Set the number of tiles carefully based on RAM and
+    image size. To run the function lecospectR::estimate\_landcover,
+    check the settings in the /config.json. The settings include
+    -automatic\_tiling: false -max\_size: 200 -x\_tiles: 2 \# Set to
+    make about 10% of RAM size on machine -y\_tiles: 2 -tile\_path:
+    “./tiles/” \#Intermediate products go here, like /temp. Will need
+    to be cleaned out every so often -model\_path: “./mle/”INSERT MOD
+    NAME“.rda” \#Models built in /modelbuilding.ipynb can be pasted here
+    -clusterCores: (NUM CORES ON MACHINE - 1) \#Speeds up the processing
+    on larger images to have more cores but tradeoff between handling
+    tiles and creating tiles exists -parallelize\_by\_tiles: false"
+    -key\_path: “./fg2key.json” -external\_bands: “./bands.csv” \#Bands
+    used to rename spectral objects consistently along the way
+    -output\_format: “grd” -aggregation: 1 \#Depends on levels within
+    data and only relevant for taxonomic-like structured response
+    categories
 
 Once the /config.json is set to match what is needed, the following
 script shows specifying a single large image and smaller images used in
 estimate\_landcover.
 
 /Scripts/run.R
+
+5)  Visualize maps of
