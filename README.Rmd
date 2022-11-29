@@ -43,7 +43,8 @@ validation.R
 2) Build a spectral library from a range of field scans collected with Tungsten halogen illumination using a leaf clip or contact probe. 
 These scripts delete bad scans and standardize the associated information into a single metadata format. Around 90 vegetation indices are 
 also calculated and the narrow band reflectance is resampled and smoothed to 5 nm bands.
-/Scripts/2_DataMunging.R                                     
+
+/Scripts/2_DataMunging.R
 /Scripts/2B_DataMunging_missing_spectra.R   
 /Scripts/3_Create_SpecLibPSR.R
 
@@ -91,7 +92,7 @@ points(UAS_all_centroids, col="blue", lwd=10)
 points(SpecLib_LatLong_point, col="red", lwd=3)
 
 ```
-<img src="./Output/StudyAreaGround_Airborne_Spectra_Locs.jpg" width="250" height="250">
+<img src="./Output/StudyAreaGround_Airborne_Spectra_Locs.jpg" >
 
 ## Model training and validation
 1) validation_def.R sets all the input, output and needed associated files for building models and predicting images
@@ -100,10 +101,31 @@ the square quadrats 1m x 1m that were hand digitized in different study areas. M
 quadrats are set in tihe shape_paths. The names of each quadrat are listed manually to standardize across all since each vector layer of quadrats follow different order and have slightly 
 different names.The validation_path are the ground cover estimates by quadrat derived from ground photos by a single expert observer. 
 
-2) Scripts/modelbuilding.ipynb Builds and visualizes model accuracy
+2) Builds and visualizes model accuracy 
+/Scripts/modelbuilding.ipynb 
 
 3) Pick and model and explore results with lecospectR::validate_model.R , whicih calls the input data, models and settings from validate_def.R
-
+mle/
 4) Visualize output for whole datacubes by running the parallelized estimate_landcover function from lecospectR. Set the number of tiles carefully
-based on RAM and image size. 
+based on RAM and image size. To run the function lecospectR::estimate_landcover, check the settings in the /config.json. The settings include 
+automatic_tiling: false,
+max_size: 200,
+x_tiles: 2, # Set to make about 10% of RAM size on machine
+y_tiles: 2,
+tile_path: "./tiles/", #Intermediate products go here, like /temp. Will need to be cleaned out every so often
+model_path: "./mle/"INSERT MOD NAME".rda", #Models built in /modelbuilding.ipynb can be pasted here
+clusterCores: (NUM CORES ON MACHINE - 1), #Speeds up the processing on larger images to have more cores but tradeoff between handling tiles and creating tiles exists
+parallelize_by_tiles: false,
+application: "Not yet implemented",
+cache_path: "not yet implemented", 
+key_path: "./fg2key.json", 
+output_path: "./",
+install_path: "./",
+external_bands: "./bands.csv", #Bands used to rename spectral objects consistently along the way
+output_format: "grd",
+aggregation: 1 #Depends on levels within data and only relevant for taxonomic-like structured response categories
+
+Once the /config.json is set to match what is needed, the following script shows specifying a single large image and smaller images used in estimate_landcover.
+
+/Scripts/run.R 
 
