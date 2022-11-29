@@ -120,14 +120,14 @@ EightmileMap<-leaflet(EightmileQuads) %>%
 
 mapshot(EightmileMap, file = "Output/Prediction/EightmileQuads.jpeg")
 
-
+EightmileMap
 ```
 <img src="./Output/Prediction/EightmileQuads.jpeg" >
 
 
 2) Builds and visualizes model accuracy 
 
-    /Scripts/modelbuilding.ipynb 
+    /Scripts/modelbuilding.ipynb
 
 3) Pick and model and explore results with lecospectR::validate_model.R , whicih calls the input data, models and settings from validate_def.R
 mle/
