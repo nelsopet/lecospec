@@ -93,17 +93,18 @@ targets_to_weights <- function(target_factors){
 test_transferrability <- function(df1, df2, ignore_cols = NULL){
     used_cols <- intersect(colnames(df1), colnames(df2))
         if(!is.null(ignore_cols)){
-
         used_cols <- setdiff(used_cols, ignore_cols)
     }
 
     results <- list()
 
     for(col in used_cols){
-        test_result <- stats::ks.test(
-            df1[,col],
-            df2[,col]
-        )
+        if(is.numeric(df1[,col]) & is.numeric(df2[,col])){
+            test_result <- stats::ks.test(
+                df1[,col],
+                df2[,col]
+            )
+        }
 
         results[[col]] <- test_result
     }
