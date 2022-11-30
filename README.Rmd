@@ -17,6 +17,7 @@ library(sf)
 require(stars)
 ```
 ## Laboratory of Ecological Spectroscopy (lecospec)
+
 The purpose lecospec code is to take ground or image based reflectance spectra, build a classifier or regression,
 apply that model to an imaging spectrometer data cube (aka hyperspectral image). 
 
@@ -39,7 +40,7 @@ The functions in lecospectR are divided into sections, all of which are loaded b
     validation.R    
 
 
-#### How to run lecospec 
+## How to run lecospec 
 
 1) Our workflow assumes a list of species with associated levels of taxonomic information (eg. functional group membership) 
 /Data/SpeciesTable_20220125.csv. This table is used for several steps, including aggregating validation to the same taxonomic level as training data.
@@ -82,23 +83,25 @@ number of scans distributed across a number of scans (ground measured) or pixels
 
 
 ## Study Area and Data locations
+
 The centers of all UAV flights and points where ground scans were collected are shown in the map.
 Collecting these locations from the metadata and image centers for data collected as the Arctic boreal plant mapping use case for lecospectR using the 
 Scripts/7_Visualizations_Ground_and_UAS_Spectra_locations.R which produces the two .kml files plotted in the map below.
-```{r, echo=FALSE, include=FALSE}
-SpecLib_LatLong_point<-readOGR("./Output/Ground_Spetra_AK_points.kml") 
-UAS_all_centroids<-readOGR("./Output/UAV_VNIR_AK_centroids.kml") 
 
-bg <- get_tiles(ext(SpecLib_LatLong_point))
-plotRGB(bg)
-points(UAS_all_centroids, col="blue", lwd=10)
-points(SpecLib_LatLong_point, col="red", lwd=3)
+```{r, echo=FALSE, out.width="50%", include=TRUE}
+
+knitr::include_graphics(path=c("Output/StudyAreaGround_Airborne_Spectra_Locs.jpg", "Output/Prediction/EightmileQuads.jpeg"))
+#<img src="./Output/StudyAreaGround_Airborne_Spectra_Locs.jpg" width = 500 height = 500 >
+#<img src="./Output/Prediction/EightmileQuads.jpeg" width = 500 height = 500 >
 
 ```
-<img src="./Output/StudyAreaGround_Airborne_Spectra_Locs.jpg" >
 
 ## Model training and validation
-1) validation_def.R sets all the input, output and needed associated files for building models and predicting images
+
+1) Set all the input, output and needed associated files for building models and predicting images
+
+    /validation_def.R 
+
 In this script, The test_paths are set to the output of Script 101_Crop_Training_PFT_vector, which are a set of images with 326 bands from 400-1000nm covering only
 the square quadrats 1m x 1m that were hand digitized in different study areas. Model paths are set for different types to be evaluated. The vector layers of each hand digitized
 quadrats are set in tihe shape_paths. The names of each quadrat are listed manually to standardize across all since each vector layer of quadrats follow different order and have slightly 
@@ -120,17 +123,17 @@ EightmileMap<-leaflet(EightmileQuads) %>%
 
 mapshot(EightmileMap, file = "Output/Prediction/EightmileQuads.jpeg")
 
-
+#EightmileMap
 ```
-<img src="./Output/Prediction/EightmileQuads.jpeg" >
 
 
 2) Builds and visualizes model accuracy 
 
-    /Scripts/modelbuilding.ipynb 
+    /Scripts/modelbuilding.ipynb
 
 3) Pick and model and explore results with lecospectR::validate_model.R , whicih calls the input data, models and settings from validate_def.R
-mle/
+
+    /mle/"MODEL UUID HERE"
 
 4) Generate predidctions for plant functional type occurence for whole datacubes by running the parallelized estimate_landcover function from lecospectR. Set the number of tiles carefully
 based on RAM and image size. To run the function lecospectR::estimate_landcover, check the settings in the /config.json. The settings include 
