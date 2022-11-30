@@ -26,7 +26,7 @@ utilities.R
 validation.R    
 ```
 
-#### How to run lecospec
+## How to run lecospec
 
 1)  Our workflow assumes a list of species with associated levels of
     taxonomic information (eg. functional group membership)
@@ -94,24 +94,25 @@ mapping use case for lecospectR using the
 Scripts/7\_Visualizations\_Ground\_and\_UAS\_Spectra\_locations.R which
 produces the two .kml files plotted in the map below.
 
-<img src="./Output/StudyAreaGround_Airborne_Spectra_Locs.jpg" >
+<img src="Output/StudyAreaGround_Airborne_Spectra_Locs.jpg" width="50%" /><img src="Output/Prediction/EightmileQuads.jpeg" width="50%" />
 
 ## Model training and validation
 
-1)  validation\_def.R sets all the input, output and needed associated
-    files for building models and predicting images In this script, The
-    test\_paths are set to the output of Script
-    101\_Crop\_Training\_PFT\_vector, which are a set of images with 326
-    bands from 400-1000nm covering only the square quadrats 1m x 1m that
-    were hand digitized in different study areas. Model paths are set
-    for different types to be evaluated. The vector layers of each hand
-    digitized quadrats are set in tihe shape\_paths. The names of each
-    quadrat are listed manually to standardize across all since each
-    vector layer of quadrats follow different order and have slightly
-    different names.The validation\_path are the ground cover estimates
-    by quadrat derived from ground photos by a single expert observer.
+1)  Set all the input, output and needed associated files for building
+    models and predicting images
+    
+    /validation\_def.R
 
-<img src="./Output/Prediction/EightmileQuads.jpeg" >
+In this script, The test\_paths are set to the output of Script
+101\_Crop\_Training\_PFT\_vector, which are a set of images with 326
+bands from 400-1000nm covering only the square quadrats 1m x 1m that
+were hand digitized in different study areas. Model paths are set for
+different types to be evaluated. The vector layers of each hand
+digitized quadrats are set in tihe shape\_paths. The names of each
+quadrat are listed manually to standardize across all since each vector
+layer of quadrats follow different order and have slightly different
+names.The validation\_path are the ground cover estimates by quadrat
+derived from ground photos by a single expert observer.
 
 2)  Builds and visualizes model accuracy
     
@@ -119,7 +120,9 @@ produces the two .kml files plotted in the map below.
 
 3)  Pick and model and explore results with
     lecospectR::validate\_model.R , whicih calls the input data, models
-    and settings from validate\_def.R mle/
+    and settings from validate\_def.R
+    
+    /mle/“MODEL UUID HERE”
 
 4)  Generate predidctions for plant functional type occurence for whole
     datacubes by running the parallelized estimate\_landcover function
