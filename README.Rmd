@@ -28,16 +28,16 @@ apply that model to an imaging spectrometer data cube (aka hyperspectral image).
 
 The functions in lecospectR are divided into sections, all of which are loaded by sourcing /Functions/lecospectR.R
 
-    dataframe_operations.R  
-    model_support.R 
-    pfts.R  
-    pipeline.R  
-    raster_operations.R 
-    spectral_operations.R   
-    training_utilities.R    
-    type_conversion.R   
-    utilities.R 
-    validation.R    
+    /Functions/dataframe_operations.R  
+    /Functions/model_support.R 
+    /Functions/pfts.R  
+    /Functions/pipeline.R  
+    /Functions/raster_operations.R 
+    /Functions/spectral_operations.R   
+    /Functions/training_utilities.R    
+    /Functions/type_conversion.R   
+    /Functions/utilities.R 
+    /Functions/validation.R    
 
 
 ## How to run lecospec 
@@ -88,7 +88,7 @@ The centers of all UAV flights and points where ground scans were collected are 
 Collecting these locations from the metadata and image centers for data collected as the Arctic boreal plant mapping use case for lecospectR using the 
 Scripts/7_Visualizations_Ground_and_UAS_Spectra_locations.R which produces the two .kml files plotted in the map below.
 
-```{r, echo=FALSE, out.width="50%", include=TRUE}
+```{r, echo=FALSE, out.width="40%", include=TRUE}
 
 knitr::include_graphics(path=c("Output/StudyAreaGround_Airborne_Spectra_Locs.jpg", "Output/Prediction/EightmileQuads.jpeg"))
 #<img src="./Output/StudyAreaGround_Airborne_Spectra_Locs.jpg" width = 500 height = 500 >
@@ -105,7 +105,7 @@ knitr::include_graphics(path=c("Output/StudyAreaGround_Airborne_Spectra_Locs.jpg
 In this script, The test_paths are set to the output of Script 101_Crop_Training_PFT_vector, which are a set of images with 326 bands from 400-1000nm covering only
 the square quadrats 1m x 1m that were hand digitized in different study areas. Model paths are set for different types to be evaluated. The vector layers of each hand digitized
 quadrats are set in tihe shape_paths. The names of each quadrat are listed manually to standardize across all since each vector layer of quadrats follow different order and have slightly 
-different names.The validation_path are the ground cover estimates by quadrat derived from ground photos by a single expert observer. 
+different names. The validation_path are the ground cover estimates by quadrat derived from ground photos by a single expert observer. 
 
 ```{r, echo=FALSE, include=FALSE}
 require(leaflet)

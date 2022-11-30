@@ -14,16 +14,16 @@ The functions in lecospectR are divided into sections, all of which are
 loaded by sourcing /Functions/lecospectR.R
 
 ``` 
-dataframe_operations.R  
-model_support.R 
-pfts.R  
-pipeline.R  
-raster_operations.R 
-spectral_operations.R   
-training_utilities.R    
-type_conversion.R   
-utilities.R 
-validation.R    
+/Functions/dataframe_operations.R  
+/Functions/model_support.R 
+/Functions/pfts.R  
+/Functions/pipeline.R  
+/Functions/raster_operations.R 
+/Functions/spectral_operations.R   
+/Functions/training_utilities.R    
+/Functions/type_conversion.R   
+/Functions/utilities.R 
+/Functions/validation.R    
 ```
 
 ## How to run lecospec
@@ -94,7 +94,7 @@ mapping use case for lecospectR using the
 Scripts/7\_Visualizations\_Ground\_and\_UAS\_Spectra\_locations.R which
 produces the two .kml files plotted in the map below.
 
-<img src="Output/StudyAreaGround_Airborne_Spectra_Locs.jpg" width="50%" /><img src="Output/Prediction/EightmileQuads.jpeg" width="50%" />
+<img src="Output/StudyAreaGround_Airborne_Spectra_Locs.jpg" width="40%" /><img src="Output/Prediction/EightmileQuads.jpeg" width="40%" />
 
 ## Model training and validation
 
@@ -111,7 +111,7 @@ different types to be evaluated. The vector layers of each hand
 digitized quadrats are set in tihe shape\_paths. The names of each
 quadrat are listed manually to standardize across all since each vector
 layer of quadrats follow different order and have slightly different
-names.The validation\_path are the ground cover estimates by quadrat
+names. The validation\_path are the ground cover estimates by quadrat
 derived from ground photos by a single expert observer.
 
 2)  Builds and visualizes model accuracy
