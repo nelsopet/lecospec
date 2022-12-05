@@ -112,7 +112,7 @@ produces the two .kml files plotted in the map below.
     different names.The validation\_path are the ground cover estimates
     by quadrat derived from ground photos by a single expert observer.
 
-2)  Scripts/modelbuilding.ipynb Builds and visualizes model accuracy
+2)  Scripts/model\_building.ipynb Builds and visualizes model accuracy
 
 3)  Pick and model and explore results with
     lecospectR::validate\_model.R , whicih calls the input data, models
