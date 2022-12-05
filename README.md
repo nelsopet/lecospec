@@ -98,6 +98,7 @@ produces the two .kml files plotted in the map below.
 
 ## Model training and validation
 
+
 1)  Set all the input, output and needed associated files for building
     models and predicting images
     
