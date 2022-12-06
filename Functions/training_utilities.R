@@ -1,3 +1,12 @@
+
+#' 
+#' 
+#' Long
+#' 
+#' @param
+#' @return
+#' @export
+#' 
 add_noise <- function(df, noise_power, used_cols = NULL){
     output_df <- df
     total_observations <- nrow(df)
@@ -10,7 +19,14 @@ add_noise <- function(df, noise_power, used_cols = NULL){
 }
 
 
-
+#' 
+#' 
+#' Long
+#' 
+#' @param
+#' @return
+#' @export
+#' 
 check_output_distribution <- function(df, model, targets){
     predictions <- apply_model(df, model)$. %>% as.factor()
     correct_observations <- 0
@@ -68,7 +84,14 @@ automated_check <- function(input_df, ignore_cols = NULL){
     ))
 }
 
-
+#' 
+#' 
+#' Long
+#' 
+#' @param
+#' @return
+#' @export
+#' 
 targets_to_weights <- function(target_factors){
     weights_by_pft <- target_factors %>% 
         table() %>% 
@@ -89,7 +112,14 @@ targets_to_weights <- function(target_factors){
 
 }
 
-
+#' 
+#' 
+#' Long
+#' 
+#' @param
+#' @return
+#' @export
+#' 
 test_transferrability <- function(df1, df2, ignore_cols = NULL){
     used_cols <- intersect(colnames(df1), colnames(df2))
         if(!is.null(ignore_cols)){
@@ -110,3 +140,12 @@ test_transferrability <- function(df1, df2, ignore_cols = NULL){
     }
     return(results)
 }
+
+#' 
+#' 
+#' Long
+#' 
+#' @param
+#' @return
+#' @export
+#' 

@@ -33,10 +33,14 @@ clean_names <- function(variables){
 
 
 
-#'
+#' 
+#' 
+#' Long
+#' 
+#' @param
+#' @return
 #' @export
-
-
+#' 
 update_filename <- function(prefix){
     if(!file.exists(prefix)){return(prefix)}
     i=1
@@ -51,7 +55,14 @@ update_filename <- function(prefix){
 
 
 
-
+#' 
+#' 
+#' Long
+#' 
+#' @param
+#' @return
+#' @export
+#' 
 ImgChopper <- function(img, quad) {
         tst_img <- brick(img)
         tst_quads <- readOGR(dsn = quad)
@@ -62,7 +73,14 @@ ImgChopper <- function(img, quad) {
         return(tst_mask)
     }
 
-
+#' 
+#' 
+#' Long
+#' 
+#' @param
+#' @return
+#' @export
+#' 
 TileAssembler <- function(dir, out) {
     tiles <- list.files(dir)
     tiles <- grep("Pred", tiles, value = TRUE)
@@ -93,6 +111,14 @@ get_log_filename <- function(tile_path) {
     )
 }
 
+#' 
+#' 
+#' Long
+#' 
+#' @param
+#' @return
+#' @export
+#' 
 crs_from_epsg <- function(epsg_code) {
     target_wkt <- sf::st_crs(epsg_code)[[2]]
     target_crs <- sp::CRS(target_wkt)
@@ -117,4 +143,65 @@ crs_from_epsg <- function(epsg_code) {
             fixed = TRUE
             )[[1]]
     )
+}
+
+build_columnwise_sensor_correction_model <- function(
+    left_df, 
+    right_df, 
+    ignore_cols = NULL,
+    verbose = TRUE
+) {
+
+    used_cols <- intersect(
+        colnames(left_df),
+        colnames(right_df)
+    )
+
+    if(!is.null(ignore_cols)){
+        used_cols <- setdiff(used_cols, ignore_cols)
+    }
+
+
+    models  <- list()
+
+    for(col in used_cols){
+        left_vec <- sort(left_df[,col])
+        right_vec <- sort(right_df[,col])
+        if(is.numeric(left_vec) & is.numeric(right_vec)){
+            model <- lm(
+                left_vec~right_vec,
+                )
+
+            if(verbose){
+                print(summary(model))
+            }
+            models[[col]] <- model
+        }
+    }
+
+    return(models)
+}
+
+apply_sensor_correction_model <- function(
+    models,
+    data,
+    ignore_cols = NULL
+){
+    used_cols <- colnames(data)
+     if(!is.null(ignore_cols)){
+        used_cols <- setdiff(used_cols, ignore_cols)
+    }
+
+    df_corrected <- as.data.frame(data)
+
+    for(col in used_cols){
+        if(!is.null(models[[col]])){
+            print(paste0("Correcting ", col))
+            model_intercept <- summary(models[[col]])$coefficients[1,1]
+            model_slope <- summary(models[[col]])$coefficients[2,1]
+            df_corrected[,col] <- model_intercept + (data[,col]*model_slope)
+        }
+    }
+
+    return(df_corrected)
 }

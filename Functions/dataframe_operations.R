@@ -437,10 +437,10 @@ postprocess_prediction <- function(prediction_df, base_df){
 
 #' Extracts indices from data frame column names
 #' 
-#' Long Description here
+#' This utility function parses column names to extract only the numberic wavelength
 #' 
 #' @inheritParams None
-#' @return explanation
+#' @return A character vector of wavelengths
 #' @param df: A dataframe containing spectral data
 #' @seealso None
 #' @export 
@@ -455,6 +455,21 @@ extract_bands <- function(df){
     return(bands)
 }
 
+#' resamples a data.frame of spectra
+#'
+#' Resamples a data.frame of spectral information by converting it to a spectral library and back.
+#'
+#' @param df: a data.frame of spectra with column names as bands (possibly pre-pended with 'X')
+#' @param normalize: (defaul FALSE) whether or not the spectra should be normalized before resampling  
+#' @param min_wavelength: 
+#' @param max_wavelength: 
+#' @param delta: the distance (in the same ) 
+#' 
+#' @return a data.frame of spectra
+#'  
+#'  
+#' @seealso None
+#' @export 
 resample_df <- function(
     df,
     normalize = FALSE,
@@ -486,6 +501,20 @@ resample_df <- function(
     return(combined_df)
 }
 
+#' scales a data.frame based on the largest value across all rows and columns
+#'
+#' Scaled all the the data to the interval [0,1] using the global (as opposed to columnwise)
+#' minimum and maximum in the data.frame.  This transformation is not applied to columns 
+#' specified in ignore_cols
+#'
+#' @param df: the data.frame
+#' @param ignore_cols: NULL or a character vector specifying columns
+#' which should not be considered ro transformed
+#' @return a data.frame
+#'  
+#'  
+#' @seealso None
+#' @export 
 global_min_max_scale <- function(df, ignore_cols = NULL){
     used_cols <- colnames(df)
     if(!is.null(ignore_cols)){
@@ -511,14 +540,25 @@ global_min_max_scale <- function(df, ignore_cols = NULL){
 
 
 
-standardize <- function(df){
-    return(
-        df
-    )
-}
 
 
-# filters a data frame (using the columns specified) to be between the values provided
+#' Filters a data frame (using the columns specified) to be between the values provided
+
+#'
+#' Clips a data.frame to be between the min_value and max_value by dropping rows
+#'
+#' @param df: a data.frame of input data
+#' @param min_value: a number: the lowerest value that should remain in the data frame 
+#' (can be -Inf)
+#' @param max_vallue: the greatest number that should be allowed in the data.frame 
+#' (can be +Inf)
+#' @param ignore_cols: NULL or a character vector specifing columns that should not be 
+#' used for filtering
+#' @return a data.frame 
+#'  
+#'  
+#' @seealso None
+#' @export 
 filter_all_between <- function(
     df, 
     min_value, 
@@ -542,6 +582,16 @@ filter_all_between <- function(
         return(df_filtered)
 }
 
+#' performs rudamentory vector normalization
+#'
+#' long
+#'
+#' @param vec: a numeric vector
+#' @return a numeric vector
+#'  
+#'  
+#' @seealso None
+#' @export 
 normalize_vector <- function(vec){
     x <- vec[!is.na(vec)]
 
@@ -558,6 +608,17 @@ normalize_vector <- function(vec){
     return(y)
 }
 
+#' rescales a data.frame to have all columns to the interval [0,1]
+#'
+#' long
+#'
+#' @param df: a data.frame
+#' @param ignore_cols: NULL or a character vector of column names to ignore in the tranformation.
+#' @return a dataframe with rescaled columns
+#'  
+#'  
+#' @seealso None
+#' @export 
 columnwise_min_max_scale <- function(df, ignore_cols = NULL){
     used_cols <- colnames(df)
     if(!is.null(ignore_cols)){
@@ -572,6 +633,17 @@ columnwise_min_max_scale <- function(df, ignore_cols = NULL){
     return(new_df)
 }
 
+#' short
+#'
+#' long
+#'
+#' @param df:.  
+#' @param normalize:  
+#' @return 
+#'  
+#'  
+#' @seealso None
+#' @export 
 vector_normalize_df <- function(df, maintain_names = FALSE){
     band_cols <- c(
         grep(
@@ -611,7 +683,18 @@ vector_normalize_df <- function(df, maintain_names = FALSE){
     ))
 }
 
-
+#' Converts +/- infinity to NA in a data.frame
+#'
+#' 
+#'
+#' @param df: A data.frame
+#' @param ignore_cols: NULL or a character vector of column names specifying which columns should
+#' be ignored in the analysis 
+#' @return a data.frame
+#'  
+#'  
+#' @seealso None
+#' @export 
 inf_to_na <- function(df){
     return(
         do.call(
@@ -622,6 +705,21 @@ inf_to_na <- function(df){
     )
 }
 
+#' Locates the outliers in a data.frame
+#'
+#' Checks all columns of a data.frame and returns a boolean vector which is TRUE  at position i
+#' if there is an outlier in the i-th row of the data frame (in one or more columns) and FALSE 
+#' otherwise.  Outliers are detected using the IQR method.  
+#'
+#' @param df: a data.frame  
+#' @param ignore_cols: NULL or a character vector of column names that should be ignored
+#' in the analysis (defaults to NULL) 
+#' @return a boolean vector specifying whether an outlier is present in teh corresponding 
+#' row of the input data.frame df
+#'  
+#'  
+#' @seealso None
+#' @export 
 detect_outliers_columnwise <- function(df, ignore_cols = NULL){
     used_cols <- colnames(df)
     if(!is.null(ignore_cols)){
@@ -651,10 +749,32 @@ detect_outliers_columnwise <- function(df, ignore_cols = NULL){
     return(outliers)
 }
 
+#' Not Yet Implemented
+#'
+#' long
+#'
+#' @param df:.  
+#' @param normalize:  
+#' @return 
+#'  
+#'  
+#' @seealso None
+#' @export 
 detect_outliers_by_distance <- function(df, ignore_cols = NULL){
 
 }
 
+#' replaces outliers in a data.frame with NA
+#'
+#' Outliers are detected using inter-quartile range method.
+#'
+#' @param df: the data frame
+#' @param ignore_cols: columns that should be ignored (left unchanged) 
+#' @return a data.frame with NAs where there were previously outliers
+#'  
+#'  
+#' @seealso None
+#' @export 
 outliers_to_na <- function(df, ignore_cols = NULL){
     used_cols <- colnames(df)
     if(!is.null(ignore_cols)){
@@ -682,7 +802,17 @@ outliers_to_na <- function(df, ignore_cols = NULL){
     return(new_df)
 }
 
-
+#' scales each column to center using the column mean and the scales using the standard deviation.
+#'
+#' 
+#'
+#' @param df: a data.frame of the data that should be centered and scaled
+#' @param ignore_cols: data columns that should be ignored in the calculation (defaults to NULL) 
+#' @return a data.frame with the same column names, but the data (not in ignore_cols) centered and scaled
+#'  
+#'  
+#' @seealso None
+#' @export 
 standardize_df <- function(df, ignore_cols = NULL){
     used_cols <- colnames(df)
     if(!is.null(ignore_cols)){
@@ -710,7 +840,17 @@ standardize_df <- function(df, ignore_cols = NULL){
     }
 }
 
-
+#' scales each column to center using the column median and the scales using the inter-quartile range.
+#'
+#' 
+#'
+#' @param df: a data.frame of the data that should be centered and scaled
+#' @param ignore_cols: data columns that should be ignored in the calculation (defaults to NULL) 
+#' @return a data.frame with the same column names, but the data (not in ignore_cols) centered and scaled
+#'  
+#'  
+#' @seealso None
+#' @export 
 columnwise_robust_scale <- function(df, ignore_cols = NULL){
     used_cols <- colnames(df)
     if(!is.null(ignore_cols)){
@@ -732,7 +872,21 @@ columnwise_robust_scale <- function(df, ignore_cols = NULL){
     return(scaled_df)
 }
 
-
+#' matches two dataframes based on the levels of a categorical variable
+#'
+#' 
+#'
+#' @param left_df: a data.frame
+#' @param right_df: another data.frame
+#' @param cols: a character vector of length two specifying the column in each 
+#' dataframe that should be matched  
+#' @return a list with two fields (left and right) that are the left and right
+#'  dataframes (respectively) matched such that the ith row in each has the same 
+#' value of the categorical variable in cols
+#'  
+#'  
+#' @seealso None
+#' @export 
 create_matched_data <- function(left_df, right_df, cols = c("targets", "targets")){
     shared_levels <- intersect(
         levels(as.factor(left_df[, cols[1]])), 
