@@ -41,7 +41,7 @@ loaded by sourcing /Functions/lecospectR.R
     indices are also calculated and the narrow band reflectance is
     resampled and smoothed to 5 nm bands.
     
-    /Scripts/2\_DataMunging.R
+    /Scripts/2\_DataMunging.R  
     /Scripts/2B\_DataMunging\_missing\_spectra.R  
     /Scripts/3\_Create\_SpecLibPSR.R
 
@@ -49,8 +49,10 @@ The output of running these scripts are two spectral libraries, one of
 reflectance and one of vegetation indices along with the metadata for
 these reflectance measurements.
 
-    /Output/C_001_SC3_Cleaned_SpectralLib.csv
-    /Data/D_002_SpecLib_Derivs.csv
+``` 
+/Output/C_001_SC3_Cleaned_SpectralLib.csv   
+/Data/D_002_SpecLib_Derivs.csv  
+```
 
 3)  Collect spectra from pixels in images from UAV in quadrats and
     patches of plant functional types visible in ground reference or
@@ -74,8 +76,10 @@ After running these scripts, the outputs include the relectance and
 vegetation indices for each pixel from the patches of plants digitized
 from images.
 
-    /Data/D_002_Image_SpecLib_Derivs.csv
-    /Data/Ground_Validation/PFT_Image_spectra/PFT_Image_SpectralLib_Clean.csv
+``` 
+/Data/D_002_Image_SpecLib_Derivs.csv    
+/Data/Ground_Validation/PFT_Image_spectra/PFT_Image_SpectralLib_Clean.csv   
+```
 
 After cleaning scans, the reflectance data can be summarized and
 visualized in various ways. Below is accuracy summary of the median and
@@ -151,7 +155,9 @@ Once the /config.json is set to match what is needed, the following
 script shows specifying a single large image and smaller images used in
 estimate\_landcover.
 
-    /Scripts/run.R 
+``` 
+/Scripts/run.R   
+```
 
 5)  Visualize maps of full image output showing plant functional types
     
