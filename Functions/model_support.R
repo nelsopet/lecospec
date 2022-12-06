@@ -1,8 +1,23 @@
-
+#' 
+#' 
+#' Long
+#' 
+#' @param
+#' @return
+#' @export
+#' 
 get_var_names <- function(ml_model, ...) {
     return(UseMethod("get_var_names", ml_model))
 }
 
+#' 
+#' 
+#' Long
+#' 
+#' @param
+#' @return
+#' @export
+#' 
 get_var_names.default <- function(ml_model, ...){
     return(
         read.csv(
@@ -12,23 +27,63 @@ get_var_names.default <- function(ml_model, ...){
             as.character())
 }
 
+#' 
+#' 
+#' Long
+#' 
+#' @param
+#' @return
+#' @export
+#' 
 get_var_names.ranger <- function(ml_model, ...){
     Vars_names <- c(ml_model$forest$independent.variable.names)
     return( gsub("^X", "", Vars_names))
 }
 
+#' 
+#' 
+#' Long
+#' 
+#' @param
+#' @return
+#' @export
+#' 
 get_var_names.LSModel <- function(ml_model, ...){
     return(ml_model$indices)
 }
 
+#' 
+#' 
+#' Long
+#' 
+#' @param
+#' @return
+#' @export
+#' 
 get_required_veg_indices <- function(ml_model){
     return(UseMethod("get_required_veg_indices", ml_model))
 }
 
+#' 
+#' 
+#' Long
+#' 
+#' @param
+#' @return
+#' @export
+#' 
 get_required_veg_indices.LSModel <- function(ml_model, ...){
     return(ml_model$indices)
 }
 
+#' 
+#' 
+#' Long
+#' 
+#' @param
+#' @return
+#' @export
+#' 
 get_required_veg_indices.ranger <- function(ml_model, ...) {
     var_names <- get_var_names(ml_model)
 
@@ -91,6 +146,14 @@ get_required_veg_indices.ranger <- function(ml_model, ...) {
     return(veg_indices)
 }
 
+#' 
+#' 
+#' Long
+#' 
+#' @param
+#' @return
+#' @export
+#' 
 get_required_veg_indices.default <- function(ml_model, ...) {
     return(read.csv("assets/vegIndicesUsed.csv", header = TRUE)$x)
 }
@@ -128,12 +191,28 @@ LSModel <- function(
     return(output)
 }
 
+#' 
+#' 
+#' Long
+#' 
+#' @param
+#' @return
+#' @export
+#' 
 apply_model.LSModel <- function(df, model){
     return(
         as.data.frame(model$application(model$model, df))
     )
 }
 
+#' 
+#' 
+#' Long
+#' 
+#' @param
+#' @return
+#' @export
+#' 
 apply_model.ranger <- function(df, model){
     predictions <- tryCatch(
         {
@@ -159,11 +238,26 @@ apply_model.ranger <- function(df, model){
 }
 
 
-
+#' 
+#' 
+#' Long
+#' 
+#' @param
+#' @return
+#' @export
+#' 
 apply_model.xgboost <- function(){
 
 }
 
+#' 
+#' 
+#' Long
+#' 
+#' @param
+#' @return
+#' @export
+#' 
 apply_model.train <- function(df, model, ...) {
     predictions <- predict(
         model, 
@@ -173,6 +267,14 @@ apply_model.train <- function(df, model, ...) {
     return(predictions)
 }
 
+#' 
+#' 
+#' Long
+#' 
+#' @param
+#' @return
+#' @export
+#' 
 apply_model.ksvm <- function(df, model, ...){
     require(kernlab, quietly = TRUE)
     predictions <- predict(model, as.data.frame(df))$response %>% as.data.frame()
@@ -181,6 +283,14 @@ apply_model.ksvm <- function(df, model, ...){
 
 }
 
+#' 
+#' 
+#' Long
+#' 
+#' @param
+#' @return
+#' @export
+#' 
 apply_model.knn3 <- function(df, model, ...){
     require(caret, quietly = TRUE)
     predictions <- predict(model, df, type = "class") %>% as.data.frame()

@@ -46,7 +46,14 @@ resample_spectral_dataframe <- function(
 
 
 
-
+#' 
+#' 
+#' Long
+#' 
+#' @param
+#' @return
+#' @export
+#' 
 resample_df <- function(df, normalize = TRUE) {
     spec_library <- df_to_speclib(df, type="spectrolab")
     
@@ -71,7 +78,14 @@ resample_df <- function(df, normalize = TRUE) {
 }
 
 
-
+#' 
+#' 
+#' Long
+#' 
+#' @param
+#' @return
+#' @export
+#' 
 quick_veg_index <- function(df) {
     spec_lib <- df_to_speclib(df)
 
@@ -231,7 +245,14 @@ calc_veg_index <- function(spec_library, subset = NA, use_nearest = TRUE) {
             }
 }
 
-
+#' 
+#' 
+#' Long
+#' 
+#' @param
+#' @return
+#' @export
+#' 
 calc_headwall_veg_index <- function(spec_library) {
     headwall_bands <- -c(
                 3, 26, 27, 31, 32, 33,
@@ -257,7 +278,14 @@ calculate_aviris_veg_index <- function(spec_library) {
 
 
 
-
+#' 
+#' 
+#' Long
+#' 
+#' @param
+#' @return
+#' @export
+#' 
 quick_veg_index <- function(df) {
     spec_lib <- df_to_speclib(df)
 
@@ -272,7 +300,14 @@ quick_veg_index <- function(df) {
     combined_df <- cbind(df, veg_index_df)
     return(combined_df)
 }
-
+#' 
+#' 
+#' Long
+#' 
+#' @param
+#' @return
+#' @export
+#' 
 adjoin_veg_index <- function(df, index_names) {
     spec_lib <- dataframe_to_speclib(df)
     indices_lib <- hsdar::vegindex(

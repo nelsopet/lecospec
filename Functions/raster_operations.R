@@ -79,7 +79,14 @@ make_tiles <- function(
 }
 
 
-
+#' 
+#' 
+#' Long
+#' 
+#' @param
+#' @return
+#' @export
+#' 
 handle_empty_tile <- function(tile_raster, save_path = NULL, target_crs = NULL){
     # convert to a raster
     output_raster <- tile_raster[[1]]
@@ -284,7 +291,14 @@ calc_num_tiles <- function(file_path, max_size = 1024){
     return(num_xy)
 }
 
-
+#' 
+#' 
+#' Long
+#' 
+#' @param
+#' @return
+#' @export
+#' 
 safe_merge <- function(raster_one, raster_two, target_crs = NULL){
     template <- raster::projectRaster(from = raster_two, to= raster_one, alignOnly=TRUE)
     #template is an empty raster that has the projected extent of r2 but is aligned with r1 (i.e. same resolution, origin, and crs of r1)
@@ -299,7 +313,14 @@ safe_merge <- function(raster_one, raster_two, target_crs = NULL){
 }
 
 
-
+#' 
+#' 
+#' Long
+#' 
+#' @param
+#' @return
+#' @export
+#' 
 project_to_epsg <- function(raster_obj, epsg_code, categorical_raster = FALSE){
     target_wkt <- sf::st_crs(epsg_code)[[2]]
     target_crs <- sp::CRS(target_wkt)
@@ -336,6 +357,14 @@ assemble_tiles_from_disk <- function(tiles, output_path){
     return(pred_merged)
 }
 
+#' 
+#' 
+#' Long
+#' 
+#' @param
+#' @return
+#' @export
+#' 
 merge_tiles <- function(input_files, output_path = NULL, target_layer = 1) {
 
     master_raster <- raster::raster(input_files[[1]])
