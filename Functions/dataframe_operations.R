@@ -927,3 +927,88 @@ create_matched_data <- function(left_df, right_df, cols = c("targets", "targets"
 
 
 }
+
+
+#' Imputes the NAs and outliers in the provided data.frame
+#' 
+#' This function imputes the NAs and the outliers in the dataset in two passes,
+#' one for the NAs, then replaces the outliers with NA, then imputes again.  
+#' Missforest is used for each imputation
+#' 
+#' @param df: the data.frame to transform
+#' @param ignore_cols: data columns that should be ignored in the calculation (defaults to NULL) 
+#' @return 
+#' @export
+#' 
+#'
+impute_outliers_and_na <- function(df, ignore_cols=NULL){
+
+    used_cols <- colnames(df)
+    if(!is.null(ignore_cols)){
+
+        used_cols <- setdiff(colnames(df), ignore_cols)
+    }
+
+    transformed_df <- df[, used_cols]
+
+    transformed_df <- inf_to_na(transformed_df)
+    transformed_df <- impute_spectra(transformed_df)
+    transformed_df <- outliers_to_na(transformed_df)
+    transformed_df <- impute_spectra(transformed_df)
+
+    if(!is.null(ignore_cols)){
+        cols_to_reattach <- setdiff(ignore_cols, colnames(df))
+        transformed_df <- cbind(transformed_df, df[,cols_to_reattach])
+    }
+
+    return(transformed_df)
+}
+
+#' Clips outliers on the high and low ends
+#' 
+#' This function alters the data.frame to have have all outliers replaced 
+#' with the upper or lower fence, meaning low outliers are replaces with 
+#' $Q_1 - 1.5IQR $ and the high outliers are replaced with $Q_3 + 1.5IQR $
+#' 
+#' @param df, the data frame to clip
+#' @param ignore_cols: data columns that should be ignored in the calculation (defaults to NULL) 
+#' @return
+#' @export
+#' 
+#'
+clip_outliers <- function(df, ignore_cols=NULL){
+    new_df <- df %>% as.data.frame()
+    
+    used_cols <- colnames(df)
+    if(!is.null(ignore_cols)){
+        used_cols <- setdiff(colnames(df), ignore_cols)
+    }
+
+    for(column_name in used_cols){
+        if(is.numeric(df[,column_name])){
+
+            q1 <- stats::quantile(df[,column_name], 1/4, type = 4)
+            q3 <- stats::quantile(df[,column_name], 3/4, type = 4)
+            col_iqr <- q3 - q1
+
+            upper_fence <- q3 + (1.5 * col_iqr)
+            lower_fence <- q1 - (1.5 * col_iqr)
+
+            high_outliers <- df[,column_name] > upper_fence
+            low_outliers <- df[,column_name] < lower_fence
+
+            
+            new_df[high_outliers, column_name] = upper_fence
+            new_df[low_outliers, column_name] = lower_fence
+        } else {
+            warning(
+                paste0(
+                    "Skipping column ", 
+                    column_name,
+                    " as it is not numeric")
+                    )
+        }
+    }
+
+    return(new_df)
+}
