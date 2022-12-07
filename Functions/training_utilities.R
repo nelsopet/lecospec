@@ -141,11 +141,5 @@ test_transferrability <- function(df1, df2, ignore_cols = NULL){
     return(results)
 }
 
-#' 
-#' 
-#' Long
-#' 
-#' @param
-#' @return
-#' @export
-#' 
+
+
