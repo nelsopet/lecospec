@@ -29,7 +29,8 @@ Cleaned_Speclib_tall_Fnc_grp1<-
     tally() %>% 
     dplyr::rename(species_count = n) %>%
   inner_join(Cleaned_Speclib %>% dplyr::select(all_of(ground_cols_keep)), by="Functional_group1") %>% #colnames() %>% as.data.frame() %>% View()
-  #columnwise_min_max_scale(ignore_cols = ignore) %>% #head() %>% View()#colnames() #as.matrix() %>% hist()
+  #columnwise_robust_scale(ignore_cols = ignore) %>% #head() %>% View()#colnames() #as.matrix() %>% hist()
+  #standardize_df(ignore_cols = ignore) %>% #head() %>% View()#colnames() #as.matrix() %>% hist()
   group_by(Functional_group1) %>% 
   dplyr::mutate(sample_size = n()) %>% 
   dplyr::mutate(Functional_group1_wN = glue('{Functional_group1} {"(n="} {sample_size} {"scans,"} {species_count} {"species"})')) %>%

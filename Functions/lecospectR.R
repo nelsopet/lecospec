@@ -230,8 +230,10 @@ process_tile <- function(
     cluster = NULL,
     return_raster = TRUE,
     band_names=NULL,
-    normalize_input = TRUE,
+    standardize_input = FALSE,
+    normalize_input = FALSE,
     scale_input = FALSE,
+    robust_scale_input = FALSE,
     return_filename = FALSE,
     save_path = NULL,
     suppress_output = FALSE
@@ -276,15 +278,12 @@ process_tile <- function(
 
 
         cleaned_df_no_empty_cols <- drop_empty_columns(cleaned_df)
-
-        if(scale_input){
-            cleaned_df_no_empty_cols <- global_min_max_scale(
-                cleaned_df_no_empty_cols, 
-                ignore_cols = c("x", "y")) %>%
-                as.data.frame()
-        }
         
         imputed_df <- impute_spectra(cleaned_df_no_empty_cols, cluster = cluster)
+
+        veg_indices <- get_vegetation_indices(imputed_df, ml_model, cluster = cluster)
+
+        
     
         try(
             rm(cleaned_df)
@@ -296,8 +295,10 @@ process_tile <- function(
         resampled_df <- resample_df(imputed_df, normalize = normalize_input, max_wavelength = 995.716)
         gc()
 
-        veg_indices <- get_vegetation_indices(resampled_df, ml_model, cluster = cluster)
-
+        print(summary(resampled_df$X672.593_5nm))
+        print(summary(resampled_df$X667.593_5nm))
+        print(summary(resampled_df$X667.593_5nm))
+        print(summary(resampled_df$X667.593_5nm))
 
         #print("Resampled Dataframe Dimensions:")
         #print(dim(resampled_df))
@@ -313,7 +314,27 @@ process_tile <- function(
         rm(resampled_df)
         gc()
 
+
+        if(scale_input){
+            df <- columnwise_min_max_scale(
+                df, 
+                ignore_cols = c("x", "y")) %>%
+                as.data.frame()
+        }
+        if(robust_scale_input){
+            df <- columnwise_robust_scale(
+                df, 
+                ignore_cols = c("x", "y")
+                ) %>% as.data.frame()
+        }
+        
+        if(standardize_input){
+            df <- standardize_df(df, ignore_cols = c("x", "y"))
+        }
+
         imputed_df_full <- impute_spectra(df, method="median")
+
+        print(summary(imputed_df_full))
 
         
         prediction <- apply_model(imputed_df_full, ml_model)

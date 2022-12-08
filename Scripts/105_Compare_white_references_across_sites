@@ -1,0 +1,74 @@
+#Load packages
+source("Functions/lecospectR.R")
+
+#Read in white ref images
+path = "Data/Ground_Validation/WhiteRefs/"
+allfiles<-list.files(path) 
+imgs = grep(".hdr*", allfiles, value = TRUE)
+
+imgs_names<-c("BisonGulch_100251_Bison_Gulch_line2_2019_08_12_01_07_28_sceneWhiteReference"       
+,"Bonanza_100066_2018_07_25_21_18_45_sceneWhiteReference"
+,"Chatanika_100130_ChatanikaFlight3_attempt2_2018_07_29_20_32_59_sceneWhiteReference"
+,"EightMile_100124_BlacktandardFlight2_2018_07_28_22_56_17_sceneWhiteReference"
+,"MurphyDome_100158_MurphyDomeFlight1_2018_07_31_19_47_11_sceneWhiteReference"
+,"TwelveMile_100241_12mile_line3_2019_08_09_21_28_52_sceneWhiteReference")
+band_names <- read.csv("./assets/bands.csv")$x[1:band_count] %>% as.vector()
+
+#Unit test
+band_path<-brick(paste(path,imgs_names[1], sep=""))
+band_count<-names(band_path) %>% length()
+band_names <- read.csv("./assets/bands.csv")$x[1:band_count] %>% as.vector()
+names(band_path)<-band_names
+tst<-band_path
+df <- raster::rasterToPoints(tst) %>% 
+  as.data.frame()%>%
+  dplyr::select(-x,-y)
+new_names<-extract_bands(df)
+names(df)<-new_names
+#df <- filter_bands(df)
+df <- df_to_speclib(df, type="spectrolab")
+as.matrix(df)
+plot(df)
+#df<-spectrolab::resample(df, new_bands = seq(450, 850, 0.5), parallel = FALSE)
+#df<-spectrolab::resample(df, new_bands = seq(398, 999, 1), parallel = FALSE)
+
+
+#All images
+WhiteRef_df<-data.frame()
+WhiteRef_df<-lapply(1:length(imgs_names), function(x){ 
+band_path<-brick(paste(path,imgs_names[x], sep=""))
+band_count<-names(band_path) %>% length()
+#names(band_path)<-band_names
+tst<-band_path
+df <- raster::rasterToPoints(tst) %>% 
+  as.data.frame() %>%
+  dplyr::select(-x,-y) %>%
+  t() %>%
+  as.data.frame()
+#df<-as.data.frame(unlist(df))
+colnames(df)<-"Radiance"
+df$Site<-imgs_names[x]
+df$Bands<-band_names
+  return(df)
+})
+
+WhiteRef_df<-Reduce(function (x,y) merge(x, y, all=TRUE), WhiteRef_df)
+head(WhiteRef_df)
+
+ggplot(WhiteRef_df, aes(Bands, Radiance, color = Site), scales = "fixed")+
+  #geom_ribbon(aes(Wavelength, ymin = Pct_12_5_Diff, ymax = Pct_87_5_Diff, alpha = 0.3))+
+  #geom_ribbon(aes(Wavelength, ymin = Lower_Reflectance, ymax = Upper_Reflectance, alpha = 0.2))+
+  #labs(title = c("Reflectance by plant functional group and sample size with median (red), 75% (dark) and 90% (grey) quantiles based on 1242 scans"), y="Reflectance")+
+  theme(panel.background = element_rect(fill = "white", colour = "grey50"), 
+        #legend.key.size = unit(0.5, "cm"),legend.text = element_text(size=25),
+        #legend.position = "none",
+        title = element_text(size=25),
+        strip.text = element_text(size = 25),
+        axis.text = element_text(size = 20),
+        axis.text.x = element_text(angle = 90)) +
+  #geom_line(aes(Wavelength, Median_Reflectance,color = "red"),size = 2)+
+  geom_line(aes(Bands, Radiance), size = 2)#+
+  #geom_line(aes(Wavelength, Pct_12_5_Diff, col = "red"))+
+  #geom_line(aes(Wavelength, Pct_87_5_Diff, col = "blue"))+
+
+  #facet_wrap(vars(Site), scales = "fixed", ncol = 2) 

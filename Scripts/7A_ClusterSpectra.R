@@ -1,5 +1,6 @@
 
-
+##Read in spectral derivatives of ground spectra
+SpecLib_derivs<-read.csv("./Data/D_002_SpecLib_Derivs.csv")
 
 ##Cluster of all functional groups
 #Veg<-Cleaned_Speclib %>%  select(  -ScanID,-Code_name,-Functional_group1,-Functional_group2,-Area,-Species_name_Freq,-Functional_group1_Freq,-Functional_group2_Freq,-Species_name)

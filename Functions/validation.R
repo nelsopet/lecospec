@@ -1,4 +1,12 @@
-
+#' gets the class distribitions of the data.frame of predictions
+#' 
+#' Long
+#' 
+#' @param prediction_df: a data.frame of predictions.  
+#' Assumes the categories are in column 'z'
+#' @return a data.frame with the category-wise counts and proportions
+#' @export
+#' 
 get_prediction_distribution <- function(prediction_df){
     num_observations <- nrow(prediction_df)
     #print(colnames(prediction_df))
@@ -8,8 +16,20 @@ get_prediction_distribution <- function(prediction_df){
     return(df)
 }
 
-
-
+#' runs the validation pipeline on the predictions from one site
+#' 
+#' Long
+#' 
+#' @param prediction_ras: the raster output (predictions)
+#' @param quadrat_shapefile: the shapefile specifing how to crop the images
+#' @param validation_table: the validation data table
+#' @param pft_key: the plant functional type key
+#' @param template_path: the path to the aggregation template1
+#' @param aggregation_level: the aggregation level for comparing outputs
+#' @param save_path (default "./quadrat_") location to save outputs
+#' @return a list of data.frames containing the aggregated results
+#' @export
+#' 
 validate_results <- function(
     prediction_ras, 
     quadrat_shapefile, 
@@ -104,6 +124,14 @@ validate_results <- function(
     return(results)
  }
 
+#' 
+#' 
+#' Long
+#' 
+#' @param
+#' @return
+#' @export
+#' 
  apply_chi_squared_test <- function(validation_aggregates){
      results <- lapply(
          validation_aggregates, 
@@ -116,6 +144,14 @@ validate_results <- function(
      )
  }
 
+#' 
+#' 
+#' Long
+#' 
+#' @param
+#' @return
+#' @export
+#' 
 apply_KS_test <- function(validation_aggregates, type="two.sided", use_monte_carlo = FALSE, exact_p = NULL){
     
    return(
@@ -137,8 +173,15 @@ apply_KS_test <- function(validation_aggregates, type="two.sided", use_monte_car
     )
 }
 
-
- aggregate_result_template <- function(df, validation_df, input_template ){
+#' 
+#' 
+#' Long
+#' 
+#' @param
+#' @return
+#' @export
+#' 
+aggregate_result_template <- function(df, validation_df, input_template ){
     num_rows_df <- nrow(df)
     num_rows_template <- nrow(input_template)
     num_rows_validation <- nrow(validation_df)
@@ -192,7 +235,14 @@ apply_KS_test <- function(validation_aggregates, type="two.sided", use_monte_car
     return(template)
  }
 
-
+#' 
+#' 
+#' Long
+#' 
+#' @param
+#' @return
+#' @export
+#' 
 build_validation_template <- function(df, col = 5){
     pft_template <- df[, col] %>% unique() %>% as.data.frame()
     colnames(pft_template) <- c("key")
@@ -204,7 +254,14 @@ build_validation_template <- function(df, col = 5){
     return(pft_template) 
 }
 
-
+#' 
+#' 
+#' Long
+#' 
+#' @param
+#' @return
+#' @export
+#' 
 filter_aggregate <- function(quadrat_aggregate){
     data <- data.frame(quadrat_aggregate)
     pft_to_exclude <- (data$predicted_counts == 0) & (data$validation_counts == 0)
@@ -216,7 +273,15 @@ filter_aggregate <- function(quadrat_aggregate){
 
 
 
-# merge the validation templates 
+#' merge the validation templates 
+#' 
+#' 
+#' Long
+#' 
+#' @param
+#' @return
+#' @export
+#' 
 merge_validation_dfs <- function(df1, df2){
     output_df <- data.frame(df1)
 
@@ -248,7 +313,14 @@ coalesce_results <- function(df_list, aggregator_df){
     return(output_df)
 }
 
-# save the validation df to disk
+#' save the validation df to disk
+#' 
+#' Long
+#' 
+#' @param
+#' @return
+#' @export
+#' 
 save_validation <- function(template_dfs, base_filename = "validation"){
     for(i in seq_along(template_dfs)){
         write.csv(
@@ -257,8 +329,22 @@ save_validation <- function(template_dfs, base_filename = "validation"){
     }
 }
 
-
-validate_model <- function(ml_model, save_directory, normalize_input = TRUE, scale_input = FALSE, cluster = NULL){
+#' 
+#' 
+#' Long
+#' 
+#' @param
+#' @return
+#' @export
+#' 
+validate_model <- function(
+    ml_model, 
+    save_directory, 
+    normalize_input = FALSE, 
+    scale_input = FALSE, 
+    robust_scale_input = FALSE,
+    standardize_input = FALSE,
+    cluster = NULL){
     source("Scripts/validation_defs.R")
 
 
@@ -273,6 +359,8 @@ validate_model <- function(ml_model, save_directory, normalize_input = TRUE, sca
             band_names = band_names,
             normalize_input = normalize_input,
             scale_input = scale_input,
+            robust_scale_input = robust_scale_input,
+            standardize_input = standardize_input,
             save_path = "./validation_saved_output.grd",
             suppress_output = FALSE)
 
@@ -382,7 +470,7 @@ parse_path <- function(path) {
     } else {
         return(split_path[[1]][[2]])
     }
-}
+    }
 }
 
 # print(parse_path("figures/twelveMile2/tm2_validation_4.csv"))
@@ -391,6 +479,7 @@ load_and_label_data <- function(path) {
     label <- parse_path(path)
     df <- read.csv(path, header = TRUE) %>% as.data.frame()
     df$site <- label
+
     return(df %>% as.data.frame())
 }
 

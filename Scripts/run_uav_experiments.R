@@ -106,16 +106,14 @@ scale_flags <- c(
 
 
 # run the experiments
-
-for(model_idx in 12:length(model_paths)){
-    model <- load_model(model_paths[[model_idx]])
+for(model_idx in seq_along(scaled_ground_paths)){
+    model <- load_model(scaled_ground_paths[[model_idx]])
     results <- validate_model(
         model, 
-        experiment_save_paths[[model_idx]],
-        normalize_input = normalize_flags[[model_idx]],
-        scale_input = scale_flags[[model_idx]]
+        scaled_save_paths[[model_idx]],
+        normalize_input = FALSE,
+        scale_input = TRUE
     )
 }
 
-print(model$forest$independent.variable.names)
-print(model_idx)
+# this is currently running the MinMax Scaled Ground Spectra experiments...

@@ -1,12 +1,13 @@
 # Rasters
-test_path_1 <- "Data/Quadrats/BisonGulchQuads.envi"
-test_path_2 <- "Data/Quadrats/ChatanikaQuads.envi"
-test_path_3 <- "Data/Quads/TwelveMileGulchQuads1.envi"
-test_path_4 <- "Data/Quads/TwelveMileGulchQuads2.envi"
-test_path_5 <- "Data/Quads/EightMileQuads.envi"
-test_path_6 <- "Data/Quadrats/MurphDomeQuads0_10.envi"
-test_path_7 <- "Data/Quadrats/MurphDomeQuads20_50.envi"
-test_path_8 <- "Data/Quadrats/MurphDomeQuads60_100.envi"
+test_path_1 <- "Data/Ground_Validation/Imagery/BisonGulchQuads.envi"
+test_path_2 <- "Data/Ground_Validation/Imagery/ChatanikaQuads.envi"
+test_path_3 <- "Data/Ground_Validation/Imagery/TwelveMileGulchQuads1.envi"
+test_path_4 <- "Data/Ground_Validation/Imagery/TwelveMileGulchQuads2.envi"
+test_path_5 <- "Data/Ground_Validation/Imagery/EightMileQuads.envi"
+test_path_6 <- "Data/Ground_Validation/Imagery/MurphDomeQuads0_10.envi"
+test_path_7 <- "Data/Ground_Validation/Imagery/MurphDomeQuads20_50.envi"
+test_path_8 <- "Data/Ground_Validation/Imagery/MurphDomeQuads60_100.envi"
+test_path_9 <- "Data/Ground_Validation/Imagery/BonanzaQuads.envi"
 
 # ML models
 model_path_base <- "Output/E_003_Pred_Model_RandomForest_FncGrp1_1000trees.rda"
@@ -27,6 +28,7 @@ shape_path_5 <- "Data/Vectors/EightMile_Quadrats_revised.shp"
 shape_path_6 <- "Data/Vectors/MurphyQuads0_10m.shp"
 shape_path_7 <- "Data/Vectors/MurphyQuads20_50m.shp"
 shape_path_8 <- "Data/Vectors/MurphyQuads60_100m.shp"
+shape_path_9 <- "Data/Vectors/Bonanza_N_Quads.shp"
 
 
 
@@ -110,6 +112,20 @@ chatanika_names <- c(
     "Chatanika0"
 )
 
+bonanza_names <- c(
+    "Bonanza60",
+    "Bonanza100",
+    "Bonanza90",
+    "Bonanza80",
+    "Bonanza50",
+    "Bonanza40",
+    "Bonanza30",
+    "Bonanza20",
+    "Bonanza10",
+    "Bonanza0",
+    "Bonanza70"
+
+)
 
 quadrats <- list(
     test_path_1,
@@ -119,7 +135,8 @@ quadrats <- list(
     test_path_5,
     test_path_6,
     test_path_7,
-    test_path_8
+    test_path_8,
+    test_path_9
 )
 
 shapes <- list(
@@ -130,7 +147,8 @@ shapes <- list(
     shape_path_5,
     shape_path_6,
     shape_path_7,
-    shape_path_8
+    shape_path_8,
+    shape_path_9
 )
 
 
@@ -142,7 +160,8 @@ shape_names <- list(
     eight_mile_names,
     md_names_1,
     md_names_2,
-    md_names_3
+    md_names_3,
+    bonanza_names
 )
 
 save_paths <- list(
@@ -153,7 +172,8 @@ save_paths <- list(
     "figures/EightMile/",
     "figures/MurphyDome/Part1/",
     "figures/MurphyDome/Part2/",
-    "figures/MurphyDome/Part3/"
+    "figures/MurphyDome/Part3/",
+    "figures/Bonanza/"
 )
 
 

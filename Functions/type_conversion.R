@@ -6,12 +6,12 @@
 #' @param df: A dataframe to convert
 #' @export
 #'
-df_to_speclib <- function(df, type="hsdar") {
+df_to_speclib <- function(df, type="hsdar", use_external_bands = FALSE) {
     # Convert to a spectral library
     #print(colnames(df))
     df_no_metadata <- remove_meta_column(df)
 
-    
+
     bands <- extract_bands(df)
     spectral_lib <- NULL
     if (type=="hsdar"){
