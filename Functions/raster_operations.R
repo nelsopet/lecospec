@@ -385,3 +385,4 @@ merge_tiles <- function(input_files, output_path = NULL, target_layer = 1) {
     raster::dataType(master_raster) <- "INT2U"
     return(master_raster)
 }
+

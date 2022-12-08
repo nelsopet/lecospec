@@ -464,6 +464,8 @@ extract_bands <- function(df){
 #' @param min_wavelength: 
 #' @param max_wavelength: 
 #' @param delta: the distance (in the same ) 
+#' @param drop_existing (boolean, default FALSE).  If FALSE, the new columns will be added to the
+#' data frame.  If TRUE, only the new data will be returned.
 #' 
 #' @return a data.frame of spectra
 #'  
@@ -473,9 +475,10 @@ extract_bands <- function(df){
 resample_df <- function(
     df,
     normalize = FALSE,
-    min_wavelength = 397.593,
+    min_wavelength = 402.593,
     max_wavelength = 995.716,
-    delta = 5
+    delta = 5,
+    drop_existing = FALSE
     ) {
     spec_library <- df_to_speclib(df, type="spectrolab")
     
@@ -497,6 +500,10 @@ resample_df <- function(
         colnames(df_resampled),
         "_5nm"
     )
+
+    if(drop_existing){
+        return(df_resampled)
+    }
     combined_df <- cbind(remove_band_column(df), df_resampled)
     return(combined_df)
 }
@@ -972,7 +979,7 @@ impute_outliers_and_na <- function(df, ignore_cols=NULL){
 #' 
 #' @param df, the data frame to clip
 #' @param ignore_cols: data columns that should be ignored in the calculation (defaults to NULL) 
-#' @return
+#' @return a data.frame with outliers replaced
 #' @export
 #' 
 #'
