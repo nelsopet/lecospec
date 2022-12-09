@@ -86,13 +86,23 @@ number of scans distributed across a number of scans (ground measured) or pixels
 
 The centers of all UAV flights and points where ground scans were collected are shown in the map.
 Collecting these locations from the metadata and image centers for data collected as the Arctic boreal plant mapping use case for lecospectR using the 
-Scripts/7_Visualizations_Ground_and_UAS_Spectra_locations.R which produces the two .kml files plotted in the map below.
+Scripts/7_Visualizations_Ground_and_UAS_Spectra_locations.R which produces the two .kml files plotted in the map below. The image below it shows one site
+(Bison Gulch near Denali National Park) with ground validation quadrat locations (squares) along 100 m long transect with a white calibration tarp on one end.
 
-```{r, echo=FALSE, out.width="40%", include=TRUE}
+```{r, echo=FALSE, include=TRUE}
 
-knitr::include_graphics(path=c("Output/StudyAreaGround_Airborne_Spectra_Locs.jpg", "Output/Prediction/EightmileQuads.jpeg"))
-#<img src="./Output/StudyAreaGround_Airborne_Spectra_Locs.jpg" width = 500 height = 500 >
-#<img src="./Output/Prediction/EightmileQuads.jpeg" width = 500 height = 500 >
+knitr::include_graphics(path="Output/StudyAreaGround_Airborne_Spectra_Locs.jpg")
+knitr::include_graphics(path=c("Data/Ground_Validation/Imagery/snaphsots/BisonGulch.jpg"))#, "Data/Ground_Validation/Imagery/snaphsots/Bonanza.jpg"))
+
+#<img src="Output/StudyAreaGround_Airborne_Spectra_Locs.jpg">
+#<img src="Data/Ground_Validation/Imagery/snaphsots/BisonGulch.jpg" > 
+#<img src="Data/Ground_Validation/Imagery/snaphsots/Bonanza.jpg" > 
+#<img src="Data/Ground_Validation/Imagery/snaphsots/BisonGulch.jpg" width = 500 height = 500 >
+#<img src="Data/Ground_Validation/Imagery/snaphsots/Bonanza.jpg" width = 500 height = 500 >
+#<img src="Data/Ground_Validation/Imagery/snaphsots/BisonGulch.jpg" width = 500 height = 500 >
+#<img src="Data/Ground_Validation/Imagery/snaphsots/Bonanza.jpg" width = 500 height = 500 >
+#<img src="Data/Ground_Validation/Imagery/snaphsots/BisonGulch.jpg" width = 500 height = 500 >
+#<img src="Data/Ground_Validation/Imagery/snaphsots/Bonanza.jpg" width = 500 height = 500 >
 
 ```
 
@@ -131,7 +141,19 @@ mapshot(EightmileMap, file = "Output/Prediction/EightmileQuads.jpeg")
 
     /Scripts/modelbuilding.ipynb    
 
-3) Pick and model and explore results with lecospectR::validate_model.R , whicih calls the input data, models and settings from validate_def.R
+This R notebook (requires JupyterNotebook and Python to run) builds models of plant functional types as a function of reflectance spectra
+separately for ground and image based models. The blocks step through tranformation of the ground and image based reflectance spectra through removal of NAs,
+imputing missing values, normalization and ground-to-image instrument correction. 
+
+Here is an example confusion matrix from a model showing misclassification between plant funcational types.
+
+```{r, echo=FALSE, include=TRUE}
+
+knitr::include_graphics(path="figures/base_confusion.png")
+
+```
+
+3) After exploring models based on different input data, Pick and model and explore results with lecospectR::validate_model.R , whicih calls the input data, models and settings from validate_def.R
 
     /mle/"MODEL UUID HERE"  
 
@@ -158,3 +180,9 @@ Once the /config.json is set to match what is needed, the following script shows
 5) Visualize maps of full image output showing plant functional types
 
     /Scripts/visualizeRasters.R 
+
+Example predicted plant functional type map from one site (Bison Gulch near Denali National Park)
+```{r, echo=FALSE, include=TRUE}
+
+knitr::include_graphics(path="figures/bg_1Mpix_fng1_predictions.png")
+```
