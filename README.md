@@ -96,12 +96,14 @@ collected are shown in the map. Collecting these locations from the
 metadata and image centers for data collected as the Arctic boreal plant
 mapping use case for lecospectR using the
 Scripts/7\_Visualizations\_Ground\_and\_UAS\_Spectra\_locations.R which
-produces the two .kml files plotted in the map below.
+produces the two .kml files plotted in the map below. The image below it
+shows one site (Bison Gulch near Denali National Park) with ground
+validation quadrat locations (squares) along 100 m long transect with a
+white calibration tarp on one end.
 
-<img src="Output/StudyAreaGround_Airborne_Spectra_Locs.jpg" width="40%" /><img src="Output/Prediction/EightmileQuads.jpeg" width="40%" />
+<img src="Output/StudyAreaGround_Airborne_Spectra_Locs.jpg" width="480" /><img src="Data/Ground_Validation/Imagery/snaphsots/BisonGulch.jpg" width="1222" />
 
 ## Model training and validation
-
 
 1)  Set all the input, output and needed associated files for building
     models and predicting images
@@ -123,9 +125,21 @@ derived from ground photos by a single expert observer.
     
     /Scripts/modelbuilding.ipynb
 
-3)  Pick and model and explore results with
-    lecospectR::validate\_model.R , whicih calls the input data, models
-    and settings from validate\_def.R
+This R notebook (requires JupyterNotebook and Python to run) builds
+models of plant functional types as a function of reflectance spectra
+separately for ground and image based models. The blocks step through
+tranformation of the ground and image based reflectance spectra through
+removal of NAs, imputing missing values, normalization and
+ground-to-image instrument correction.
+
+Here is an example confusion matrix from a model showing
+misclassification between plant funcational types.
+
+<img src="figures/base_confusion.png" width="306" />
+
+3)  After exploring models based on different input data, Pick and model
+    and explore results with lecospectR::validate\_model.R , whicih
+    calls the input data, models and settings from validate\_def.R
     
     /mle/“MODEL UUID HERE”
 
@@ -163,3 +177,7 @@ estimate\_landcover.
 5)  Visualize maps of full image output showing plant functional types
     
     /Scripts/visualizeRasters.R
+
+Example predicted plant functional type map from one site (Bison Gulch
+near Denali National Park)
+<img src="figures/bg_1Mpix_fng1_predictions.png" width="1536" />
