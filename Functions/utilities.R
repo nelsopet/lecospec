@@ -273,3 +273,82 @@ apply_sensor_correction_model <- function(
 
     return(df_corrected)
 }
+
+
+create_stratified_sample <- function(
+    targets,
+    permutation = permute::shuffle(length(targets)),
+    samples_per_pft = 10){
+    #permutation <- permute::shuffle(length(targets))
+
+    val_t_chars <- targets[permutation] %>% as.character()
+    print(val_t_chars[1:5])
+    counts <- c(0,0,0,0,0,0,0,0,0)
+    samples <- vector(mode = "logical", length=length(targets))
+
+    for(i in seq_along(val_t_chars)){
+        samples[[i]] <- FALSE
+        if(val_t_chars[[i]] == "Abiotic"){
+            if(counts[[1]] < samples_per_pft){
+                samples[[i]] <-  TRUE
+                counts[[1]] <- counts[[1]] + 1
+            }
+
+        } else if (val_t_chars[[i]] == "Graminoid"){
+            if(counts[[2]] < samples_per_pft){
+                samples[[i]] <-  TRUE
+                counts[[2]] <- counts[[2]] + 1
+            }
+        } else if (val_t_chars[[i]] == "Forb"){
+            if(counts[[3]] < samples_per_pft){
+                samples[[i]] <-  TRUE
+                counts[[3]] <- counts[[3]] + 1
+            }
+        } else if (val_t_chars[[i]] == "Lichen"){
+            if(counts[[4]] < samples_per_pft){
+                samples[[i]] <-  TRUE
+                counts[[4]] <- counts[[4]] + 1
+            }
+        } else if (val_t_chars[[i]] == "Moss"){
+            if(counts[[5]] < samples_per_pft){
+                samples[[i]] <-  TRUE
+                counts[[5]] <- counts[[5]] + 1
+            }
+        } else if (val_t_chars[[i]] == "ShrubDecid"){
+            if(counts[[6]] < samples_per_pft){
+                samples[[i]] <-  TRUE
+                counts[[6]] <- counts[[6]] + 1
+            }
+        } else if (val_t_chars[[i]] == "ShrubEvergreen"){
+            if(counts[[7]] < samples_per_pft){
+                samples[[i]] <-  TRUE
+                counts[[7]] <- counts[[7]] + 1
+            }
+        } else if (val_t_chars[[i]] == "TreeConifer"){
+            if(counts[[8]] < samples_per_pft){
+                samples[[i]] <-  TRUE
+                counts[[8]] <- counts[[8]] + 1
+            }
+        } else if (val_t_chars[[i]] == "TreeBroadleaf"){
+            if(counts[[9]] < samples_per_pft){
+                samples[[i]] <-  TRUE
+                counts[[9]] <- counts[[9]] + 1
+            }
+        }
+    }
+
+    return(samples)
+}
+
+subsample_vector <- function(categorical_vec){
+
+    count_per_pft <- categorical_vec %>% as.factor() %>% table() %>% as.list()
+
+    target_num <- min(count_per_pft)
+
+    return(create_stratified_sample(categorical_vec, samples_per_pft = target_num))
+
+
+    
+
+}
