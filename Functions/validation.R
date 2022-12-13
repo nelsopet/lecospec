@@ -146,7 +146,7 @@ validate_results <- function(
 
 #' 
 #' 
-#' Long
+#' Applies the KS test to each 
 #' 
 #' @param
 #' @return
