@@ -144,10 +144,47 @@ crs_from_epsg <- function(epsg_code) {
             )[[1]]
     )
 }
+#' a quick function based on the original code
+#'
+#' Long Description here
+#'
+#' @return 
+#' @param df: A data.frame
+#' @seealso None
+#' @export 
+#' @examples Not Yet Implmented
+sort_df_within_categories <- function(df, categories, sort_col){
+    levels <- df[,categories] %>% as.factor() %>% levels()
+    # store inermediate results in a list
+    level_df <- NULL
 
+    for(level in levels){
+        filtered_df <- df[(df[,categories] == level),]
+        ordered_df <- filtered_df[order(filtered_df[,sort_col]),]
+            if(is.null(level_df)){
+                level_df <- ordered_df
+            } else {
+                level_df <- rbind(level_df, ordered_df)
+            }
+    }
+
+    return(level_df)
+
+}
+
+#' a quick function based on the original code
+#'
+#' Long Description here
+#'
+#' @return 
+#' @param df: A data.frame
+#' @seealso None
+#' @export 
+#' @examples Not Yet Implmented
 build_columnwise_sensor_correction_model <- function(
     left_df, 
     right_df, 
+    grouping_variables = c(NULL, NULL),
     ignore_cols = NULL,
     verbose = TRUE
 ) {
@@ -161,13 +198,35 @@ build_columnwise_sensor_correction_model <- function(
         used_cols <- setdiff(used_cols, ignore_cols)
     }
 
-
     models  <- list()
 
     for(col in used_cols){
-        left_vec <- sort(left_df[,col])
-        right_vec <- sort(right_df[,col])
-        if(is.numeric(left_vec) & is.numeric(right_vec)){
+        if(!is.null(grouping_variables[1])){
+            # group the dataframe if the user says there is a categorical column
+            left_sorted <- sort_df_within_categories(
+                subset(left_df, select = c(col,grouping_variables[[1]])),
+                categories = grouping_variables[[1]],
+                sort_col = col)
+            left_vec <- left_sorted[,col]
+        } else {
+            # just use the original dataframe if no grouping
+            left_vec <- left_df[,col]
+        }
+
+        if(!is.null(grouping_variables[[2]])){
+
+            right_sorted <- sort_df_within_categories(
+                subset(right_df, select = c(col,grouping_variables[[2]])),
+                categories = grouping_variables[[2]],
+                sort_col = col)
+                
+            right_vec <- right_sorted[,col]
+        } else {
+            right_vec <- right_df[,col]
+
+        }
+
+        if(is.numeric(left_vec) && is.numeric(right_vec)){
             model <- lm(
                 left_vec~right_vec,
                 )
@@ -182,6 +241,15 @@ build_columnwise_sensor_correction_model <- function(
     return(models)
 }
 
+#' a quick function based on the original code
+#'
+#' Long Description here
+#'
+#' @return 
+#' @param df: A data.frame
+#' @seealso None
+#' @export 
+#' @examples Not Yet Implmented
 apply_sensor_correction_model <- function(
     models,
     data,

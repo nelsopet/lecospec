@@ -895,8 +895,9 @@ columnwise_robust_scale <- function(df, ignore_cols = NULL){
 #' @seealso None
 #' @export 
 create_matched_data <- function(left_df, right_df, cols = c("targets", "targets")){
+    
     shared_levels <- intersect(
-        levels(as.factor(left_df[, cols[1]])), 
+        levels(as.factor(left_df[, cols[1]])),
         levels(as.factor(right_df[, cols[[2]]]))
         )
 
@@ -904,13 +905,12 @@ create_matched_data <- function(left_df, right_df, cols = c("targets", "targets"
     level_dfs_l <- NULL
     level_dfs_r <- NULL
 
-    for( level in shared_levels){
+    for(level in shared_levels){
         filtered_left <- left_df[(left_df[,cols[[1]]] == level),]
         filtered_right <- right_df[right_df[,cols[[2]]] == level,]
 
-
         num_records <- min(nrow(filtered_left), nrow(filtered_right))
-        
+
         if(num_records > 0){
             if(is.null(level_dfs_l)){
                 level_dfs_l <- filtered_left[1:num_records,]
@@ -923,7 +923,6 @@ create_matched_data <- function(left_df, right_df, cols = c("targets", "targets"
             } else {
                 level_dfs_r <- rbind(level_dfs_r, filtered_right[1:num_records,])
             }
-
         }
     }
 
