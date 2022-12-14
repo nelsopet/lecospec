@@ -1018,3 +1018,38 @@ clip_outliers <- function(df, ignore_cols=NULL){
 
     return(new_df)
 }
+
+apply_transform <- function(df, transform_type, ignore_cols = NULL){
+    if(transform_type %in% c("none", "None", NULL, "n", "N", "raw", "Raw")){
+        return(df)
+    } else if (transform_type %in% c("minmax", "min_max", "minMax", "MinMax", "m", "M")) {
+       return(columnwise_min_max_scale(df, ignore_cols = ignore_cols))
+    } else if(transform_type %in% c("standard", "standardize", "s", "S", "std")){
+        return(standardize_df(df, ignore_cols = ignore_cols))
+    } else if(transform_type %in% c("robust", "Robust", "r", "R")){
+        return(columnwise_robust_scale(df, ignore_cols = ignore_cols))
+    } else {
+        warning("Invalid transform specified, skipping...")
+        return(df)
+    }
+}
+
+handle_outliers <- function(df, transform_type, ignore_cols = NULL){
+    if(transform_type %in% c("clip", "clipped", "c", "C", "Clipped", "Clip")){
+        return(
+            clip_outliers(df, ignore_cols = ignore_cols)
+            )
+    } else if(transform_type %in% c("none", "None", NULL, "n", "N", "raw", "Raw")){
+        return(df)
+    } else if(transform_type %in% c("drop", "dropped", "d", "D", "Drop", "Dropped")){
+        
+        outlier_rows <- detect_outliers_columnwise(df, ignore_cols = ignore_cols)
+        return(
+            df[!outlier_rows,]
+            )
+    } else if(transform_type %in% c("impute", "imputed", "i", "I", "Impute", "Imputed")){
+        return(
+            impute_outliers_and_na(df, ignore_cols = ignore_cols)
+        )
+    }
+}

@@ -230,10 +230,12 @@ process_tile <- function(
     cluster = NULL,
     return_raster = TRUE,
     band_names=NULL,
-    standardize_input = FALSE,
-    normalize_input = FALSE,
-    scale_input = FALSE,
-    robust_scale_input = FALSE,
+    outlier_processing = "none",
+    transform_type = "none",
+    #standardize_input = FALSE,
+    #normalize_input = FALSE,
+    #scale_input = FALSE,
+    #robust_scale_input = FALSE,
     return_filename = FALSE,
     save_path = NULL,
     suppress_output = FALSE
@@ -277,11 +279,12 @@ process_tile <- function(
         gc()
 
 
-        cleaned_df_no_empty_cols <- drop_empty_columns(cleaned_df)
+        cleaned_df_no_empty_cols <- drop_empty_columns(cleaned_df) 
         
-        imputed_df <- impute_spectra(cleaned_df_no_empty_cols, cluster = cluster)
+        imputed_df <- impute_spectra(cleaned_df_no_empty_cols, cluster = cluster) %>% as.data.frame()
+        print(dim(imputed_df))
 
-        veg_indices <- get_vegetation_indices(imputed_df, ml_model, cluster = cluster)
+        veg_indices <- get_vegetation_indices(imputed_df, NULL, cluster = cluster)
 
         
     
@@ -292,20 +295,16 @@ process_tile <- function(
 
         # drop rows that are uniformly zero
       
-        resampled_df <- resample_df(imputed_df, normalize = normalize_input, max_wavelength = 995.716)
+        resampled_df <- resample_df(imputed_df, normalize = FALSE, max_wavelength = 995.716)
         gc()
 
-        print(summary(resampled_df$X672.593_5nm))
-        print(summary(resampled_df$X667.593_5nm))
-        print(summary(resampled_df$X667.593_5nm))
-        print(summary(resampled_df$X667.593_5nm))
-
+        
         #print("Resampled Dataframe Dimensions:")
         #print(dim(resampled_df))
         #print("Index Dataframe Dimensions:")
         #print(dim(veg_indices))
 
-        df <- cbind(resampled_df, veg_indices)
+        df_full <- cbind(resampled_df, veg_indices)
         #print("Input Data Columns")
         #print(colnames(df))
         #df <- df %>% dplyr::select(x, y, dplyr::all_of(target_model_cols)) 
@@ -314,31 +313,32 @@ process_tile <- function(
         rm(resampled_df)
         gc()
 
+        print(paste0("Handling Outliers with method: ", outlier_processing))
+        df_no_outliers <- handle_outliers(
+            df_full,
+            transform_type = outlier_processing,
+            ignore_cols = c("x", "y")
+        )
+        rm(df_full)
 
-        if(scale_input){
-            df <- columnwise_min_max_scale(
-                df, 
-                ignore_cols = c("x", "y")) %>%
-                as.data.frame()
-        }
-        if(robust_scale_input){
-            df <- columnwise_robust_scale(
-                df, 
-                ignore_cols = c("x", "y")
-                ) %>% as.data.frame()
-        }
+        print(paste0("Transforming the data with transform: ", transform_type))
+        df_preprocessed <- apply_transform(
+            df_no_outliers,
+            transform_type = transform_type,
+            ignore_cols = c("x", "y")
+        )
+        rm(df_no_outliers)
+        gc()
         
-        if(standardize_input){
-            df <- standardize_df(df, ignore_cols = c("x", "y"))
-        }
 
-        imputed_df_full <- impute_spectra(df, method="median")
+        imputed_df_full <- impute_spectra(df_preprocessed, method="median")
+
 
         print(summary(imputed_df_full))
 
         
         prediction <- apply_model(imputed_df_full, ml_model)
-        rm(df)
+        rm(df_preprocessed)
         gc()
         
         prediction <- postprocess_prediction(prediction, imputed_df_full)
