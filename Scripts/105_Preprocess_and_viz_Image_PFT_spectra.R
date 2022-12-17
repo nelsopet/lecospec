@@ -1,6 +1,7 @@
 require(Polychrome)
 require(glue)
 require(vegan)
+source("Functions/lecospectR.R")
 #Image spectra
 PFT_IMG_SPEC_clean <- read.csv("./Data/Ground_Validation/PFT_Image_spectra/PFT_Image_SpectralLib_Clean.csv")
 names_drop<-c("PFT.1",
@@ -124,6 +125,7 @@ PFT_IMG_SPEC_clean_merge %>%
   group_by(Area,Functional_group1, Source) %>% 
   tally() %>% pivot_wider(names_from = Functional_group1, values_from = n) 
 
+write.csv(PFT_IMG_SPEC_clean_merge_summary,"figures/PFT_IMG_SPEC_summary.csv")
 #PCA of ground spectra only
 image_PFT_spectra_mat<-PFT_IMG_SPEC_clean_merge %>% 
   dplyr::select(-UID,-Source, -Functional_group1, -Area) %>% 
