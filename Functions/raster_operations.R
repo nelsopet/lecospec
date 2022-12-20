@@ -132,32 +132,32 @@ preprocess_raster_to_df <- function(raster_obj, model, band_names=NULL) {
 
     filter_value <- mean(raster::values(raster_obj), na.rm = TRUE)# NA or 0 is bad
 
-    if( filter_value == 0 | is.na(filter_value)){
+    if( filter_value == 0 || is.na(filter_value)){
         return(data.frame())
     }
 
     saved_names <- names(raster_obj)
 
-    imputed_raster <- raster::approxNA(
-        raster_obj,
-        rule = 1
-    )
+   # imputed_raster <- raster::approxNA(
+   #     raster_obj,
+   #     rule = 1
+   # )
 
 
     if(!is.null(band_names)){
         #try assigning the names to the bands (ignoring extras)
         try({
-            names(imputed_raster) <- band_names[1:length(names(imputed_raster))]
+            names(raster_obj) <- band_names[1:length(names(raster_obj))]
         })
     } else {
-        names(imputed_raster) <- saved_names
+        names(raster_obj) <- saved_names
     }
 
     #print(names(imputed_raster))
 
-    rm(raster_obj)
+    #rm(raster_obj)
 
-    df <- raster::rasterToPoints(imputed_raster) %>% as.data.frame()
+    df <- raster::rasterToPoints(raster_obj) %>% as.data.frame()
     if(nrow(df) < 1){
         #return df here as filtering fails later
         return (df)

@@ -1020,13 +1020,24 @@ clip_outliers <- function(df, ignore_cols=NULL){
 }
 
 apply_transform <- function(df, transform_type, ignore_cols = NULL){
-    if(transform_type %in% c("none", "None", NULL, "n", "N", "raw", "Raw")){
+    if(is.function(transform_type)){
+        return(transform_type(df, ignore_cols = ignore_cols))
+    }
+
+    if(is.null(transform_type)){
         return(df)
-    } else if (transform_type %in% c("minmax", "min_max", "minMax", "MinMax", "m", "M")) {
+    }
+
+    if(transform_type == "none"){
+        return(df)
+    } else if (transform_type == "minmax") {
+        print("Min-Max scaling data")
        return(columnwise_min_max_scale(df, ignore_cols = ignore_cols))
-    } else if(transform_type %in% c("standard", "standardize", "s", "S", "std")){
+    } else if(transform_type == "standard"){
+        print("Standard scaling data")
         return(standardize_df(df, ignore_cols = ignore_cols))
-    } else if(transform_type %in% c("robust", "Robust", "r", "R")){
+    } else if(transform_type == "robust"){
+        print("Robust scaling data")
         return(columnwise_robust_scale(df, ignore_cols = ignore_cols))
     } else {
         warning("Invalid transform specified, skipping...")
@@ -1035,21 +1046,93 @@ apply_transform <- function(df, transform_type, ignore_cols = NULL){
 }
 
 handle_outliers <- function(df, transform_type, ignore_cols = NULL){
-    if(transform_type %in% c("clip", "clipped", "c", "C", "Clipped", "Clip")){
+
+    if(is.function(transform_type)){
+        return(transform_type(df, ignore_cols = ignore_cols))
+    }
+
+    if(is.null(transform_type)){
+        return(df)
+    }
+
+    if(transform_type == "clip"){
         return(
             clip_outliers(df, ignore_cols = ignore_cols)
             )
-    } else if(transform_type %in% c("none", "None", NULL, "n", "N", "raw", "Raw")){
+    } else if(transform_type == "none"){
         return(df)
-    } else if(transform_type %in% c("drop", "dropped", "d", "D", "Drop", "Dropped")){
+    } else if(transform_type == "drop"){
         
         outlier_rows <- detect_outliers_columnwise(df, ignore_cols = ignore_cols)
         return(
             df[!outlier_rows,]
             )
-    } else if(transform_type %in% c("impute", "imputed", "i", "I", "Impute", "Imputed")){
+    } else if(transform_type == "impute"){
         return(
             impute_outliers_and_na(df, ignore_cols = ignore_cols)
         )
     }
 }
+
+
+create_clip_transform <- function(df, ignore_cols = NULL){
+    new_df <- df %>% as.data.frame()
+    
+    used_cols <- colnames(df)
+    if(!is.null(ignore_cols)){
+        used_cols <- setdiff(colnames(df), ignore_cols)
+    }
+
+    fences <- list()
+
+    for(column_name in used_cols){
+        if(is.numeric(df[,column_name])){
+
+            q1 <- stats::quantile(df[,column_name], 1/4, type = 4)
+            q3 <- stats::quantile(df[,column_name], 3/4, type = 4)
+            col_iqr <- q3 - q1
+
+            upper_fence <- q3 + (1.5 * col_iqr)
+            lower_fence <- q1 - (1.5 * col_iqr)
+        }
+
+        fences[column_name] <- list(
+            upper = upper_fence,
+            lower = lower_fence
+        )
+    }
+
+    return(
+        function(
+            df, 
+            ignore_cols = NULL
+        ){
+            new_df <- df %>% as.data.frame()
+
+            used_cols <- colnames(df)
+            if(!is.null(ignore_cols)){
+                used_cols <- setdiff(
+                    intersect(
+                        names(fences),
+                        colnames(df)
+                    ), 
+                    ignore_cols
+                )
+            }
+
+            for(column_name in used_cols){
+                upper_fence <- fences[column_name]$upper
+                lower_fence <- fences[column_name]$lower
+
+                high_outliers <- df[,column_name] > upper_fence
+                low_outliers <- df[,column_name] < lower_fence
+
+                new_df[high_outliers, column_name] = upper_fence
+                new_df[low_outliers, column_name] = lower_fence
+            }
+
+            return(new_df)
+        }
+    )
+}
+

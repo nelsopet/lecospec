@@ -232,10 +232,6 @@ process_tile <- function(
     band_names=NULL,
     outlier_processing = "none",
     transform_type = "none",
-    #standardize_input = FALSE,
-    #normalize_input = FALSE,
-    #scale_input = FALSE,
-    #robust_scale_input = FALSE,
     return_filename = FALSE,
     save_path = NULL,
     suppress_output = FALSE
@@ -278,16 +274,10 @@ process_tile <- function(
         rm(base_df)
         gc()
 
-
         cleaned_df_no_empty_cols <- drop_empty_columns(cleaned_df) 
         
-        imputed_df <- impute_spectra(cleaned_df_no_empty_cols, cluster = cluster) %>% as.data.frame()
-        print(dim(imputed_df))
+        veg_indices <- get_vegetation_indices(cleaned_df_no_empty_cols, NULL, cluster = cluster)
 
-        veg_indices <- get_vegetation_indices(imputed_df, NULL, cluster = cluster)
-
-        
-    
         try(
             rm(cleaned_df)
         )# sometimes garbage collection gets there first, which is fine
@@ -295,7 +285,11 @@ process_tile <- function(
 
         # drop rows that are uniformly zero
       
-        resampled_df <- resample_df(imputed_df, normalize = FALSE, max_wavelength = 995.716)
+        resampled_df <- resample_df(
+            cleaned_df_no_empty_cols,
+            normalize = FALSE,
+            max_wavelength = 995.716,
+            drop_existing=TRUE)
         gc()
 
         
@@ -304,19 +298,24 @@ process_tile <- function(
         #print("Index Dataframe Dimensions:")
         #print(dim(veg_indices))
 
-        df_full <- cbind(resampled_df, veg_indices)
+        df_full <- cbind(
+            subset(cleaned_df_no_empty_cols, select=c("x","y")),
+            resampled_df,
+            veg_indices)
         #print("Input Data Columns")
+        imputed_df <- impute_spectra(df_full, cluster = cluster) %>% as.data.frame()
         #print(colnames(df))
         #df <- df %>% dplyr::select(x, y, dplyr::all_of(target_model_cols)) 
         # above line should not be needed, testing then deleting
         rm(veg_indices)
         rm(resampled_df)
+        rm(cleaned_df_no_empty_cols)
         gc()
 
         print(paste0("Handling Outliers with method: ", outlier_processing))
         df_no_outliers <- handle_outliers(
-            df_full,
-            transform_type = outlier_processing,
+            imputed_df,
+            outlier_processing,
             ignore_cols = c("x", "y")
         )
         rm(df_full)
@@ -324,24 +323,18 @@ process_tile <- function(
         print(paste0("Transforming the data with transform: ", transform_type))
         df_preprocessed <- apply_transform(
             df_no_outliers,
-            transform_type = transform_type,
+            transform_type,
             ignore_cols = c("x", "y")
         )
         rm(df_no_outliers)
         gc()
-        
-
-        imputed_df_full <- impute_spectra(df_preprocessed, method="median")
-
-
-        print(summary(imputed_df_full))
 
         
-        prediction <- apply_model(imputed_df_full, ml_model)
+        prediction <- apply_model(df_preprocessed, ml_model)
+        
+        prediction <- postprocess_prediction(prediction, df_preprocessed)
         rm(df_preprocessed)
         gc()
-        
-        prediction <- postprocess_prediction(prediction, imputed_df_full)
 
         prediction <- convert_and_save_output(
             prediction,

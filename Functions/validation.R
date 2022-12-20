@@ -362,7 +362,7 @@ validate_model <- function(
 
         # load shapefile and project to match
         shape <- sf::st_read(shapes[[i]])
-        print(shape_names[[i]])
+        #print(shape_names[[i]])
         shape$CLASS_NAME <- shape_names[[i]]
         projected_shapes <- sf::st_transform(shape, raster::crs(tile_results))
 
@@ -380,7 +380,7 @@ validate_model <- function(
             save_path = paste0(save_directory, "site_", i, "_quadrat_")
         )
 
-        print(names(tile_results))
+        #print(names(tile_results))
 
         # bar plots
         for(j in seq_along(validation_aggregates)){
