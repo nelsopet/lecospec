@@ -1075,8 +1075,9 @@ handle_outliers <- function(df, transform_type, ignore_cols = NULL){
 }
 
 
-create_clip_transform <- function(df, ignore_cols = NULL){
+create_clip_transform <- function(df, ignore_cols = NULL ){
     new_df <- df %>% as.data.frame()
+    cache_path <- "./assets/clip_data.json"
     
     used_cols <- colnames(df)
     if(!is.null(ignore_cols)){
@@ -1102,12 +1103,18 @@ create_clip_transform <- function(df, ignore_cols = NULL){
         )
     }
 
-    return(
-        function(
+    fence_json_str <- rjson::toJSON(fences)
+    write(fence_json_str, file = cache_path)
+
+
+    clip_transform <- function(
             df, 
             ignore_cols = NULL
         ){
             new_df <- df %>% as.data.frame()
+            cache_path <- "./assets/clip_data.json"
+
+            fences <- rjson::fromJSON(file=cache_path)
 
             used_cols <- colnames(df)
             if(!is.null(ignore_cols)){
@@ -1133,6 +1140,9 @@ create_clip_transform <- function(df, ignore_cols = NULL){
 
             return(new_df)
         }
+
+    return(
+        clip_transform
     )
 }
 

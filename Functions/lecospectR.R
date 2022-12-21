@@ -312,7 +312,9 @@ process_tile <- function(
         rm(cleaned_df_no_empty_cols)
         gc()
 
-        print(paste0("Handling Outliers with method: ", outlier_processing))
+        if(!is.function(outlier_processing)){
+            print(paste0("Handling Outliers with method: ", outlier_processing))
+        }
         df_no_outliers <- handle_outliers(
             imputed_df,
             outlier_processing,
@@ -320,7 +322,9 @@ process_tile <- function(
         )
         rm(df_full)
 
-        print(paste0("Transforming the data with transform: ", transform_type))
+        if(!is.function(outlier_processing)){
+            print(paste0("Transforming the data with transform: ", transform_type))
+        }
         df_preprocessed <- apply_transform(
             df_no_outliers,
             transform_type,
