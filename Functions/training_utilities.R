@@ -141,11 +141,9 @@ test_transferrability <- function(df1, df2, ignore_cols = NULL){
     return(results)
 }
 
-#' 
-#' 
-#' Long
-#' 
-#' @param
-#' @return
-#' @export
-#' 
+
+create_grid_search_registrator <- function(
+    base_path
+) {
+    
+}

@@ -146,7 +146,7 @@ validate_results <- function(
 
 #' 
 #' 
-#' Long
+#' Applies the KS test to each 
 #' 
 #' @param
 #' @return
@@ -340,10 +340,8 @@ save_validation <- function(template_dfs, base_filename = "validation"){
 validate_model <- function(
     ml_model, 
     save_directory, 
-    normalize_input = FALSE, 
-    scale_input = FALSE, 
-    robust_scale_input = FALSE,
-    standardize_input = FALSE,
+    outlier_processing = "none",
+    transform_type = "none",
     cluster = NULL){
     source("Scripts/validation_defs.R")
 
@@ -357,16 +355,14 @@ validate_model <- function(
             cluster = cluster,
             return_raster = TRUE,
             band_names = band_names,
-            normalize_input = normalize_input,
-            scale_input = scale_input,
-            robust_scale_input = robust_scale_input,
-            standardize_input = standardize_input,
+            outlier_processing = outlier_processing,
+            transform_type = transform_type,
             save_path = "./validation_saved_output.grd",
             suppress_output = FALSE)
 
         # load shapefile and project to match
         shape <- sf::st_read(shapes[[i]])
-        print(shape_names[[i]])
+        #print(shape_names[[i]])
         shape$CLASS_NAME <- shape_names[[i]]
         projected_shapes <- sf::st_transform(shape, raster::crs(tile_results))
 
@@ -384,7 +380,7 @@ validate_model <- function(
             save_path = paste0(save_directory, "site_", i, "_quadrat_")
         )
 
-        print(names(tile_results))
+        #print(names(tile_results))
 
         # bar plots
         for(j in seq_along(validation_aggregates)){
