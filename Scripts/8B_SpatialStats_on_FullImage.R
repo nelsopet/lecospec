@@ -7,22 +7,15 @@ source("Functions/lecospectR.R")
 
 Output_files<-list.files("Output/") # %>% 
 Output_PFT_names<-read.csv("assets/fg1RAT.csv") 
-Output_file_names<-
-str_match(Output_files, ".*fncgrp1_PREDICTIONS.tif") %>%
-  as.data.frame() %>% dplyr::filter(is.na(V1)==FALSE) %>% unique()
-  #dplyr::select(V2) #%>% 
-  #as.data.frame()
-str_match(Output_files, ".*fncgrp1_PREDICTIONS.tif") %>%
-  as.data.frame() %>% dplyr::filter(is.na(V1)==FALSE) %>% unique()
- 
+Output_file_names<-str_match(Output_files, ".*fncgrp1_PREDICTIONS.tif") %>%
+  as.data.frame() %>% 
+  dplyr::filter(is.na(V1)==FALSE) %>% 
+  unique()
+Output_file_names_valid_cubes<-c(
+bg_01_07_3511_fncgrp1_PREDICTIONS.tif
+
+) 
 #Read in images and project to NAD83 Alaska Albers so the units are meters
-pft_rst<-terra::rast(paste("Output/",Output_file_names[1,], sep=""))
-
-unique(values(pft_rst))
-
-pft_rst_proj<-terra::project(pft_rst, "epsg:6393")
-pft_rst_proj_int<- setValues(pft_rst_proj, as.integer(values(pft_rst_proj)))
-terra::writeRaster(pft_rst_proj_int,paste("Output/Projected/",Output_file_names[1,], sep=""))
 
 lapply(1:nrow(Output_file_names),function(x) {
 pft_rst<-terra::rast(paste("Output/",Output_file_names[x,], sep=""))
@@ -35,12 +28,80 @@ rm(pft_rst_proj_int)
 #return(pft_rst_proj_int)
 })
 
-pft_rst<-terra::rast(paste("Output/Projected/",Output_file_names[1,], sep=""))
-img_rst_tst_area<-landscapemetrics::lsm_p_area(pft_rst)
 
-rm(pft_rst)
-  rm(img_rst_tst_area)
+#Test landscape metrics out on one site
+rst<-terra::rast("M:/Alaska_Datacubes/Raw_files/BisonGulch_2019_08_12_01_07_28_1511_rd_rf_or")
+dim(rst)
+terra::plot(rst)
+#rst <-terra::rast(system.file("M:/Alaska_Datacubes/Raw_files/BisonGulch_2019_08_12_01_07_28_1511_rd_rf_or", package="terra"))   
 
+pft_rst_tst<-terra::rast(paste("Output/Projected/",Output_file_names[4,], sep=""))
+img_rst_tst_area_tst<-landscapemetrics::lsm_p_area(pft_rst_tst)
+img_rst_tst_patch_centers_tst<-landscapemetrics::get_centroids(pft_rst_tst)
+head(img_rst_tst_patch_centers_tst)
+
+#Summarize patch metrics by PFT
+min_patch_size = min(img_rst_tst_area_tst$value*100000) 
+
+img_rst_tst_area_tst %>% 
+group_by(class) %>%
+#dplyr::filter(value*100000>min_patch_size) %>% 
+dplyr::filter(value*100000>0.05) %>% 
+
+#summarize(total_area = sum(value*10000))) 
+summarize(
+       Min = min(value*100000),
+       Lower5 = quantile(value*100000, probs = 0.05),
+       Median = quantile(value*100000, probs = 0.5),
+       Upper95= quantile(value*100000, probs = 0.95),
+       Max = max(value*100000))
+
+
+jpeg("Output/test_patch_boxplot.jpg")
+#boxplot(log(value*10000, base = 10) ~ class, data = img_rst_tst_area_tst)
+boxplot(log(value*10000, base = 10) ~ class, data = img_rst_tst_area_tst %>% 
+group_by(class) %>%
+#dplyr::filter(value*100000>min_patch_size) %>% 
+dplyr::filter(value*100000<16))
+
+dev.off() 
+
+#Plot RGB of one site
+jpeg("Output/test_RGB.jpg", width=5000, height=4000)
+terra::plotRGB(rst, r="640.175 nm", g="569.808 nm", b="469.812 nm", stretch = "linear")
+#terra::plot(rst[c(132,83,40)])
+dev.off()
+
+#Plot the PFT predictions from lecospec
+jpeg("Output/test_PFT_output.jpg", width=5000, height=4000)
+plot(pft_rst_tst)
+dev.off()
+
+#Plot patch centers made by landscapemetrics::lsm_p_area
+jpeg("Output/test_patch_centers.jpg", width=5000, height=4000)
+plot(img_rst_tst_patch_centers_tst$x,img_rst_tst_patch_centers_tst$y)
+dev.off()
+
+#Show patches using landscapemetric
+jpeg("Output/test_patches.jpg", width=5000, height=4000)
+landscapemetrics::show_patches(pft_rst_tst) 
+dev.off()
+
+img_rst_tst_area_tst$log_value<-log10(img_rst_tst_area_tst$value*10000)
+
+#Histogram or violin plot of frequency of patch sizes by PFT
+jpeg("figures/PatchFrac_single_site_test.jpg", width=5000, height=4000)
+ggplot(img_rst_tst_area_tst, aes(group=class))+ 
+geom_violin(aes(y= log_value, x=class), adjust = 1.25)
+#geom_histogram(aes(x=log10(value*100000)))+
+#geom_histogram(aes(x=log_value))+
+
+#facet_grid(vars(class))
+
+dev.off()
+
+
+#Calculate a bunch of landscapemetrics, which ends up being way too big .. .several Gb
 pft_area_frac_all<-lapply(1:nrow(Output_file_names), function(x){
   pft_rst<-terra::rast(paste("Output/Projected/",Output_file_names[x,], sep=""))
   img_rst_tst_area<-landscapemetrics::lsm_p_area(pft_rst)
@@ -63,7 +124,6 @@ dim(pft_area_frac_all)
 pft_area_frac_all_wNames<-pft_area_frac_all %>% inner_join(Output_PFT_names, by=c("class"="ID"), keep=FALSE)
 
 write.csv(pft_area_all, "Output/pft_area_all.csv")
-min_patch_size = min(pft_area_frac_all_wNames %>% dplyr::filter(metric == "area") %>% dplyr::select(value))
 
 unique(pft_area_frac_all_wNames$metric)
 pft_area_frac_all_wNames %>% group_by(CAT) %>% filter(metric == "frac" ) %>% group_by(CAT) %>% dplyr::filter(value==1) %>% dim
@@ -76,7 +136,6 @@ ggplot(pft_area_frac_all_wNames %>% group_by(CAT) %>% filter(metric == "frac"), 
 geom_violin(aes(fill=CAT))
 dev.off()
 
-#min_patch_size = min(log10(pft_area_frac_all$value*100000)) 
 pfts<-unique(pft_area_all$class)
 #pft_area_frac_all_wNames_filt<- pft_area_frac_all_wNames %>% dplyr::filter(value>min_patch_size)  %>% dim
 
