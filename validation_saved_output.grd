@@ -1,6 +1,6 @@
 [general]
 creator=R package 'raster'
-created=2022-12-22 02:32:29
+created=2023-01-02 02:55:32
 [data]
 datatype=INT2U
 byteorder=little
@@ -8,7 +8,7 @@ nbands=1
 bandorder=BIL
 categorical=FALSE
 minvalue=1
-maxvalue=8
+maxvalue=1
 nodatavalue=65535
 [legend]
 legendtype=

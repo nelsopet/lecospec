@@ -147,3 +147,49 @@ create_grid_search_registrator <- function(
 ) {
     
 }
+
+calculate_posterior_weights <- function(validation_path ="figures/merged_validation_s.csv" ){
+
+    validation_df <- read.csv(validation_path, header = TRUE)
+    #print(head(validation_df))
+
+    total_observations <- sum(validation_df$validation_counts)
+    #print(total_observations)
+    weights <- (1/ validation_df$validation_prop)
+    #print(validation_df$validation_prop)
+
+    total_by_fg1 <- aggregate(
+        x = validation_df$validation_counts,
+        by = list(validation_df$key),
+        FUN = sum
+    )
+
+    fg1_weight_list <- list()
+
+    for( row_idx in seq(nrow(total_by_fg1))){
+        name <- total_by_fg1$Group.1[[row_idx]]
+        value <- total_by_fg1$x[[row_idx]]
+        fg1_weight_list[name] <- value
+    }
+    
+    return(fg1_weight_list)
+}
+
+get_posterior_weights_from_targets <- function(target_factor, posterior_weight = calculate_posterior_weights()){
+    unbiased_weights <- targets_to_weights(target_factor)
+
+    target_name_char <- target_factor %>% as.character()
+
+    output_weights <- seq_along(target_factor)
+
+    for(i in seq_along(target_factor)){
+        if(posterior_weight[[target_name_char[[i]]]] > 0){
+            fg1_weight <- 1 / posterior_weight[[target_name_char[[i]]]]
+        } else {
+            fg1_weight <- 0
+        }
+        output_weights[[i]] <- unbiased_weights[[i]] * fg1_weight
+    }
+
+    return(output_weights)
+}
