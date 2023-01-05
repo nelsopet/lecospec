@@ -333,8 +333,10 @@ process_tile <- function(
         rm(df_no_outliers)
         gc()
 
+        print(summary(df_preprocessed))
+
         
-        prediction <- apply_model(df_preprocessed, ml_model)
+        prediction <- apply_model(impute_spectra(df_preprocessed), ml_model)
         
         prediction <- postprocess_prediction(prediction, df_preprocessed)
         rm(df_preprocessed)

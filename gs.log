@@ -30287,3 +30287,264 @@ Balanced Accuracy                   0.500              0.500          NA
     ShrubDecid ShrubEvergreen  TreeBroadleaf    TreeConifer 
              0              0              0              0 
 [1] "-------------------------------------------------------"
+[1] "-------------------------------------------------------"
+[1] "---------------------- Model Data ---------------------"
+[1] "Model Type: Ranger (Random Forest)"
+[1] "Data Index: "
+[1] "Model UUID: e70339a8-8ae8-4cff-8527-7dfd8b33d0db"
+[1] "---------------------- Confusion Matrix ---------------------"
+Confusion Matrix and Statistics
+
+                Reference
+Prediction       Abiotic Graminoid Lichen Moss ShrubDecid ShrubEvergreen
+  Abiotic             15         0      0    0          0              0
+  Graminoid            0        13      0    5         10              0
+  Lichen               0         0     14    1          2              4
+  Moss                 0         2      1    8          2              1
+  ShrubDecid           0         0      0    0          0              0
+  ShrubEvergreen       0         0      0    0          1             10
+  TreeBroadleaf        0         0      0    0          0              0
+  TreeConifer          0         0      0    0          0              0
+  Forb                 0         0      0    1          0              0
+                Reference
+Prediction       TreeBroadleaf TreeConifer Forb
+  Abiotic                    0           0    0
+  Graminoid                 10           5    0
+  Lichen                     0           0    0
+  Moss                       0           0    0
+  ShrubDecid                 4           6    0
+  ShrubEvergreen             0           2    0
+  TreeBroadleaf              0           0    0
+  TreeConifer                0           0    0
+  Forb                       1           2    0
+
+Overall Statistics
+                                          
+               Accuracy : 0.5             
+                 95% CI : (0.4074, 0.5926)
+    No Information Rate : 0.125           
+    P-Value [Acc > NIR] : < 2.2e-16       
+                                          
+                  Kappa : 0.4313          
+                                          
+ Mcnemar's Test P-Value : NA              
+
+Statistics by Class:
+
+                     Class: Abiotic Class: Graminoid Class: Lichen Class: Moss
+Sensitivity                   1.000           0.8667        0.9333     0.53333
+Specificity                   1.000           0.7143        0.9333     0.94286
+Pos Pred Value                1.000           0.3023        0.6667     0.57143
+Neg Pred Value                1.000           0.9740        0.9899     0.93396
+Precision                     1.000           0.3023        0.6667     0.57143
+Recall                        1.000           0.8667        0.9333     0.53333
+F1                            1.000           0.4483        0.7778     0.55172
+Prevalence                    0.125           0.1250        0.1250     0.12500
+Detection Rate                0.125           0.1083        0.1167     0.06667
+Detection Prevalence          0.125           0.3583        0.1750     0.11667
+Balanced Accuracy             1.000           0.7905        0.9333     0.73810
+                     Class: ShrubDecid Class: ShrubEvergreen
+Sensitivity                    0.00000               0.66667
+Specificity                    0.90476               0.97143
+Pos Pred Value                 0.00000               0.76923
+Neg Pred Value                 0.86364               0.95327
+Precision                      0.00000               0.76923
+Recall                         0.00000               0.66667
+F1                                 NaN               0.71429
+Prevalence                     0.12500               0.12500
+Detection Rate                 0.00000               0.08333
+Detection Prevalence           0.08333               0.10833
+Balanced Accuracy              0.45238               0.81905
+                     Class: TreeBroadleaf Class: TreeConifer Class: Forb
+Sensitivity                         0.000              0.000          NA
+Specificity                         1.000              1.000     0.96667
+Pos Pred Value                        NaN                NaN          NA
+Neg Pred Value                      0.875              0.875          NA
+Precision                              NA                 NA     0.00000
+Recall                              0.000              0.000          NA
+F1                                     NA                 NA          NA
+Prevalence                          0.125              0.125     0.00000
+Detection Rate                      0.000              0.000     0.00000
+Detection Prevalence                0.000              0.000     0.03333
+Balanced Accuracy                   0.500              0.500          NA
+[1] "---------------------- Class Distribution ---------------------"
+.
+       Abiotic           Forb      Graminoid         Lichen           Moss 
+            15              4             43             21             14 
+    ShrubDecid ShrubEvergreen  TreeBroadleaf    TreeConifer 
+            10             13              0              0 
+[1] "-------------------------------------------------------"
+[1] "-------------------------------------------------------"
+[1] "---------------------- Model Data ---------------------"
+[1] "Model Type: Ranger (Random Forest)"
+[1] "Data Index: "
+[1] "Model UUID: 4c6e4914-73b4-41a5-8dcf-8b0ce3725c8d"
+[1] "---------------------- Confusion Matrix ---------------------"
+Confusion Matrix and Statistics
+
+                Reference
+Prediction       Abiotic Graminoid Lichen Moss ShrubDecid ShrubEvergreen
+  Abiotic             15         0      0    0          0              0
+  Graminoid            0        13      0    2         10              0
+  Lichen               0         0      7    1          2              4
+  Moss                 0         2      8    8          1              0
+  ShrubDecid           0         0      0    0          0              0
+  ShrubEvergreen       0         0      0    0          2             11
+  TreeBroadleaf        0         0      0    0          0              0
+  TreeConifer          0         0      0    0          0              0
+  Forb                 0         0      0    4          0              0
+                Reference
+Prediction       TreeBroadleaf TreeConifer Forb
+  Abiotic                    0           0    0
+  Graminoid                 13           6    0
+  Lichen                     0           0    0
+  Moss                       0           0    0
+  ShrubDecid                 1           2    0
+  ShrubEvergreen             1           5    0
+  TreeBroadleaf              0           0    0
+  TreeConifer                0           0    0
+  Forb                       0           2    0
+
+Overall Statistics
+                                          
+               Accuracy : 0.45            
+                 95% CI : (0.3591, 0.5435)
+    No Information Rate : 0.125           
+    P-Value [Acc > NIR] : < 2.2e-16       
+                                          
+                  Kappa : 0.3759          
+                                          
+ Mcnemar's Test P-Value : NA              
+
+Statistics by Class:
+
+                     Class: Abiotic Class: Graminoid Class: Lichen Class: Moss
+Sensitivity                   1.000           0.8667       0.46667     0.53333
+Specificity                   1.000           0.7048       0.93333     0.89524
+Pos Pred Value                1.000           0.2955       0.50000     0.42105
+Neg Pred Value                1.000           0.9737       0.92453     0.93069
+Precision                     1.000           0.2955       0.50000     0.42105
+Recall                        1.000           0.8667       0.46667     0.53333
+F1                            1.000           0.4407       0.48276     0.47059
+Prevalence                    0.125           0.1250       0.12500     0.12500
+Detection Rate                0.125           0.1083       0.05833     0.06667
+Detection Prevalence          0.125           0.3667       0.11667     0.15833
+Balanced Accuracy             1.000           0.7857       0.70000     0.71429
+                     Class: ShrubDecid Class: ShrubEvergreen
+Sensitivity                     0.0000               0.73333
+Specificity                     0.9714               0.92381
+Pos Pred Value                  0.0000               0.57895
+Neg Pred Value                  0.8718               0.96040
+Precision                       0.0000               0.57895
+Recall                          0.0000               0.73333
+F1                                 NaN               0.64706
+Prevalence                      0.1250               0.12500
+Detection Rate                  0.0000               0.09167
+Detection Prevalence            0.0250               0.15833
+Balanced Accuracy               0.4857               0.82857
+                     Class: TreeBroadleaf Class: TreeConifer Class: Forb
+Sensitivity                         0.000              0.000          NA
+Specificity                         1.000              1.000        0.95
+Pos Pred Value                        NaN                NaN          NA
+Neg Pred Value                      0.875              0.875          NA
+Precision                              NA                 NA        0.00
+Recall                              0.000              0.000          NA
+F1                                     NA                 NA          NA
+Prevalence                          0.125              0.125        0.00
+Detection Rate                      0.000              0.000        0.00
+Detection Prevalence                0.000              0.000        0.05
+Balanced Accuracy                   0.500              0.500          NA
+[1] "---------------------- Class Distribution ---------------------"
+.
+       Abiotic           Forb      Graminoid         Lichen           Moss 
+            15              6             44             14             19 
+    ShrubDecid ShrubEvergreen  TreeBroadleaf    TreeConifer 
+             3             19              0              0 
+[1] "-------------------------------------------------------"
+[1] "-------------------------------------------------------"
+[1] "---------------------- Model Data ---------------------"
+[1] "Model Type: Ranger (Random Forest)"
+[1] "Data Index: "
+[1] "Model UUID: d7bf51aa-297c-41e4-aa7e-8b2dd6c908c6"
+[1] "---------------------- Confusion Matrix ---------------------"
+Confusion Matrix and Statistics
+
+                Reference
+Prediction       Abiotic Graminoid Lichen Moss ShrubDecid ShrubEvergreen
+  Abiotic             15         0      0    0          0              0
+  Graminoid            0         0      0    0          4              0
+  Lichen               0         0      3    0          2              4
+  Moss                 0         2     11    9          2              6
+  ShrubDecid           0         0      0    0          0              0
+  ShrubEvergreen       0         0      0    0          1              0
+  TreeBroadleaf        0         0      0    0          0              0
+  TreeConifer          0         0      0    0          0              0
+  Forb                 0        13      1    6          6              5
+                Reference
+Prediction       TreeBroadleaf TreeConifer Forb
+  Abiotic                    0           0    0
+  Graminoid                  4           0    0
+  Lichen                     0           0    0
+  Moss                       0           0    0
+  ShrubDecid                 0           0    0
+  ShrubEvergreen             0           0    0
+  TreeBroadleaf              0           0    0
+  TreeConifer                0           0    0
+  Forb                      11          15    0
+
+Overall Statistics
+                                          
+               Accuracy : 0.225           
+                 95% CI : (0.1538, 0.3102)
+    No Information Rate : 0.125           
+    P-Value [Acc > NIR] : 0.001639        
+                                          
+                  Kappa : 0.1706          
+                                          
+ Mcnemar's Test P-Value : NA              
+
+Statistics by Class:
+
+                     Class: Abiotic Class: Graminoid Class: Lichen Class: Moss
+Sensitivity                   1.000          0.00000        0.2000      0.6000
+Specificity                   1.000          0.92381        0.9429      0.8000
+Pos Pred Value                1.000          0.00000        0.3333      0.3000
+Neg Pred Value                1.000          0.86607        0.8919      0.9333
+Precision                     1.000          0.00000        0.3333      0.3000
+Recall                        1.000          0.00000        0.2000      0.6000
+F1                            1.000              NaN        0.2500      0.4000
+Prevalence                    0.125          0.12500        0.1250      0.1250
+Detection Rate                0.125          0.00000        0.0250      0.0750
+Detection Prevalence          0.125          0.06667        0.0750      0.2500
+Balanced Accuracy             1.000          0.46190        0.5714      0.7000
+                     Class: ShrubDecid Class: ShrubEvergreen
+Sensitivity                      0.000              0.000000
+Specificity                      1.000              0.990476
+Pos Pred Value                     NaN              0.000000
+Neg Pred Value                   0.875              0.873950
+Precision                           NA              0.000000
+Recall                           0.000              0.000000
+F1                                  NA                   NaN
+Prevalence                       0.125              0.125000
+Detection Rate                   0.000              0.000000
+Detection Prevalence             0.000              0.008333
+Balanced Accuracy                0.500              0.495238
+                     Class: TreeBroadleaf Class: TreeConifer Class: Forb
+Sensitivity                         0.000              0.000          NA
+Specificity                         1.000              1.000       0.525
+Pos Pred Value                        NaN                NaN          NA
+Neg Pred Value                      0.875              0.875          NA
+Precision                              NA                 NA       0.000
+Recall                              0.000              0.000          NA
+F1                                     NA                 NA          NA
+Prevalence                          0.125              0.125       0.000
+Detection Rate                      0.000              0.000       0.000
+Detection Prevalence                0.000              0.000       0.475
+Balanced Accuracy                   0.500              0.500          NA
+[1] "---------------------- Class Distribution ---------------------"
+.
+       Abiotic           Forb      Graminoid         Lichen           Moss 
+            15             57              8              9             30 
+    ShrubDecid ShrubEvergreen  TreeBroadleaf    TreeConifer 
+             0              1              0              0 
+[1] "-------------------------------------------------------"
