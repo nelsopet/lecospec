@@ -130,7 +130,8 @@ models of plant functional types as a function of reflectance spectra
 separately for ground and image based models. The blocks step through
 tranformation of the ground and image based reflectance spectra through
 removal of NAs, imputing missing values, normalization and
-ground-to-image instrument correction.
+ground-to-image instrument correction. Each model is validated with
+ground data.
 
 Here is an example confusion matrix from a model showing
 misclassification between plant funcational types.
