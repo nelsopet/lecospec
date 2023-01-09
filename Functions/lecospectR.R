@@ -43,6 +43,9 @@ source("Functions/training_utilities.R")
 #'
 estimate_land_cover <- function(
     input_filepath,
+    model = NULL, 
+    outlier_processing = NULL,
+    transform_type = NULL,
     config_path = "./config.json",
     cache_filepath = "./",
     output_filepath =  paste(
@@ -57,25 +60,13 @@ estimate_land_cover <- function(
     # Read in the configuration file
     config <- rjson::fromJSON(file = config_path)
 
-    # determine the number of cores to use
-    num_cores <- parallel::detectCores() - 1#detect cores on system
-    # see if the number of cores to use is specified in the config
-    if(is.integer(config$clusterCores)){
-        num_cores <- config$clusterCores
-    }
-    # set up the parallel cluster
-    raster::beginCluster(num_cores)
-    cl <- raster::getCluster()
-    print(cl)
+    
 
-
-    print(paste0(parallel::detectCores(), " Cores Detected for processing..."))
-    print(paste0("Cluster initialized with ", num_cores, " processes"))
-    background_blas_threads <- RhpcBLASctl::get_num_procs()
-    background_omp_threads <- RhpcBLASctl::omp_get_max_threads()
 
     # Load the model
-    model <- load_model(config$model_path)
+    if(is.null(model)){
+        model <- load_model(config$model_path)
+    }
 
     # load the input datacube and split into tiles
     input_raster <- raster::brick(input_filepath)
@@ -111,9 +102,39 @@ estimate_land_cover <- function(
         num_x = num_tiles_x,
         num_y = num_tiles_y,
         save_path = config$tile_path,
-        cluster = cl,
         verbose = FALSE
     )
+
+    # determine the number of cores to use
+    num_cores <- parallel::detectCores() - 1#detect cores on system
+    # see if the number of cores to use is specified in the config
+    if(is.integer(config$clusterCores)){
+        num_cores <- config$clusterCores
+    }
+    # set up the parallel cluster
+    raster::beginCluster(num_cores)
+    cl <- raster::getCluster()
+    print(cl)
+
+
+    print(paste0(parallel::detectCores(), " Cores Detected for processing..."))
+    print(paste0("Cluster initialized with ", num_cores, " processes"))
+    background_blas_threads <- RhpcBLASctl::get_num_procs()
+    background_omp_threads <- RhpcBLASctl::omp_get_max_threads()
+
+    # load the outlier processing method if none is specified by user
+    outlier_processing_cfg <- outlier_processing
+    if(is.null(outlier_processing)){
+        outlier_processing_cfg <- config$outlier_processing
+    }
+
+    # load transform type if none is specified
+    transform_type_cfg <- transform_type
+    if(is.null(transform_type)){
+        transform_type_cfg <- config$transform_type
+    }
+
+
 
 
     rm(input_raster)
@@ -150,6 +171,8 @@ estimate_land_cover <- function(
                 cluster = NULL,
                 return_raster = TRUE,
                 band_names = bandnames,
+                outlier_processing = outlier_processing_cfg,
+                transform_type = transform_type_cfg,
                 return_filename = TRUE,
                 save_path = prediction_filenames[[i]],
                 suppress_output = TRUE)
@@ -169,6 +192,8 @@ estimate_land_cover <- function(
                 cluster = cl,
                 return_raster = TRUE,
                 band_names = bandnames,
+                outlier_processing = outlier_processing_cfg,
+                transform_type = transform_type_cfg,
                 return_filename = TRUE,
                 save_path = prediction_filenames[[i]],
                 suppress_output = TRUE)
@@ -322,6 +347,8 @@ process_tile <- function(
         )
         rm(df_full)
 
+        df_no_outliers <- inf_to_na(df_no_outliers)
+
         if(!is.function(outlier_processing)){
             print(paste0("Transforming the data with transform: ", transform_type))
         }
@@ -336,7 +363,11 @@ process_tile <- function(
         print(summary(df_preprocessed))
 
         
-        prediction <- apply_model(impute_spectra(df_preprocessed), ml_model)
+        prediction <- apply_model(
+            impute_spectra(
+                df_preprocessed,
+                method="median"),
+            ml_model)
         
         prediction <- postprocess_prediction(prediction, df_preprocessed)
         rm(df_preprocessed)
