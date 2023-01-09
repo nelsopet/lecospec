@@ -1,0 +1,16 @@
+ENVI
+description = {
+/home/krbundy/GitHub/lecospec/output-Mon-Jan-09-11-58-18-2023.envi}
+samples = 1033
+lines   = 1808
+bands   = 1
+header offset = 0
+file type = ENVI Standard
+data type = 12
+interleave = bsq
+byte order = 0
+map info = {Geographic Lat/Lon, 1, 1, -148.297225237329, 64.7043565932916, 1.02732408890915e-06, 4.39508923477661e-07,WGS-84}
+coordinate system string = {GEOGCS["GCS_unknown",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137.0,298.257223563]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]]}
+band names = {
+layer}
+data ignore value = 65535
