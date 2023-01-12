@@ -868,7 +868,7 @@ columnwise_robust_scale <- function(df, ignore_cols = NULL){
 
     for(col in used_cols){
         col_centered <- scaled_df[,col] - median(scaled_df[,col], na.rm = TRUE)
-        col_c_iqr <- stats::IQR(col_centered)
+        col_c_iqr <- stats::IQR(col_centered, na.rm = TRUE)
         if(!is.null(col_c_iqr) & !is.na(col_c_iqr)){
             scaled_df[,col] <- (col_centered / col_c_iqr)
         } else {
