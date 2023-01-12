@@ -339,6 +339,8 @@ process_tile <- function(
 
         if(!is.function(outlier_processing)){
             print(paste0("Handling Outliers with method: ", outlier_processing))
+        } else {
+            print("Handling Outliers with User supplied function")
         }
         df_no_outliers <- handle_outliers(
             imputed_df,
@@ -351,6 +353,8 @@ process_tile <- function(
 
         if(!is.function(outlier_processing)){
             print(paste0("Transforming the data with transform: ", transform_type))
+        } else {
+            print("Transforming Data with user supplied functions")
         }
         df_preprocessed <- apply_transform(
             df_no_outliers,
