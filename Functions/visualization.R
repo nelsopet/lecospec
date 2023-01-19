@@ -223,11 +223,15 @@ create_plot <- function(df, pft, legend = FALSE){
                 annotations = list(x = 0.0 , y = 1.1, text = pft, showarrow = F, 
                     xref='paper', yref='paper')
 
+            ) %>% plotly::add_lines(
+                x = c(0,1),
+                y = c(0,1),
+                color=I("black")
             )
     )
 }
 
-plot_by_pft <- function(df, save_path = NULL, open = TRUE){
+plot_by_pft <- function(df, save_path = NULL, open = TRUE, image_path = NULL){
     df <- df %>% group_by(site)
     plot_abiotic <- create_plot(df, "Abiotic", legend = TRUE)
     plot_forb <- create_plot(df, "Forb")
@@ -253,6 +257,12 @@ plot_by_pft <- function(df, save_path = NULL, open = TRUE){
         margin = 0.05)
     fig <- fig %>% plotly::layout(
         title = "Prediction and Ground Truth Labels",
+        scene = list(
+                    aspectratio = list(
+                        x = 1,
+                        y = 1
+                    )
+                ),
         hovermode = TRUE
     )
 
@@ -264,6 +274,15 @@ plot_by_pft <- function(df, save_path = NULL, open = TRUE){
     if(open){
         browseURL(fig_save_loc)
     }
+
+    if(!is.null(image_path)){
+        img_content <- plotly::plotly_IMAGE(
+            fig, 
+            file = image_path
+        )
+    }
+
+    return(fig)
 }
 
 calculate_r_squared <- function(

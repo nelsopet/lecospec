@@ -441,7 +441,8 @@ site_indices <- c(
     "EightMile",
     "MurphyDome",
     "MurphyDome",
-    "MurphyDome"
+    "MurphyDome",
+    "Bonanza"
 )
 
 parse_path <- function(path) {
@@ -463,8 +464,10 @@ parse_path <- function(path) {
             return("MurphyDome")
         } else if(stringr::str_detect(path, "site_8")[1]){
             return("MurphyDome")
+        } else if(stringr::str_detect(path, "site_9")[1]){
+            return("Bonanza")
     } else {
-        return(split_path[[1]][[2]])
+        return(split_path[[1]][[2]]) # default option
     }
     }
 }
