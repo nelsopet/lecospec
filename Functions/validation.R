@@ -482,3 +482,15 @@ load_and_label_data <- function(path) {
     return(df %>% as.data.frame())
 }
 
+calculate_chi_squared_probability <- function(aggregated_results){
+    test_results <- chisq.test(
+                aggregated_results$validation_counts,
+                aggregated_results$predicted_counts)
+
+    return(test_results$p.value)
+}
+
+calculate_validation_r2 <- function(aggregate_results){
+    lm_fit <- lm(aggregated_results$validation_counts~aggregated_results$predicted_counts)
+    return(summary(lm_fit)$adj.r.squared)
+}
