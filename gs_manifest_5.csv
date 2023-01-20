@@ -1,0 +1,15 @@
+source,outliers,preprocessing,weight,accuracy,r2,chi2prob,model_id
+grd_raw_raw.csv,no_treatment,robust,no_treatment,0.358333333333333,0.0423858942670774,5.44017921956235e-307,01233be9-bc10-4120-a03f-dcef650bec17
+grd_raw_raw.csv,no_treatment,robust,balanced,0.416666666666667,0.0799809501265041,0,28ab433e-bbc9-4e2d-9630-063bc4aa6c88
+grd_raw_raw.csv,no_treatment,robust,posterior,0.3,0.00704157005094364,0.999938409470468,a483bb6b-e23d-471d-8022-0c0afeb209cc
+grd_raw_raw.csv,no_treatment,min_max,no_treatment,0.275,0.00439384819810573,1,02bd4de8-4c8d-4630-b7df-34f8d905b5cc
+grd_raw_raw.csv,no_treatment,min_max,balanced,0.283333333333333,0.0132335678085232,7.42240965596924e-48,83e9242a-a5f5-4987-b721-af6e634ec24e
+grd_raw_raw.csv,no_treatment,min_max,posterior,0.225,0.016503584581169,1,c76a8a29-4426-4374-b28b-0bf06e61ce67
+grd_raw_raw.csv,no_treatment,no_treatment,no_treatment,0.483333333333333,0.156776475091627,0,c6b3200e-2059-470b-bbee-b2ceff06f8d4
+grd_raw_raw.csv,no_treatment,no_treatment,balanced,0.441666666666667,0.173984876822356,0,21146891-a40e-4f5e-a7b7-cc059ba5450b
+grd_raw_raw.csv,no_treatment,no_treatment,posterior,0.216666666666667,0.00112525527547336,1,6b1e3be0-2fb0-4ee9-9b97-cbb9634243bb
+grd_raw_raw.csv,no_treatment,standard,no_treatment,0.433333333333333,0.0458943566703581,5.2502360852301e-264,92f7d6c2-3c6c-4d85-9b99-5adf8f167755
+grd_raw_raw.csv,no_treatment,standard,balanced,0.475,0.0627883068978359,1.93873436690823e-257,7e116986-1483-4592-bd69-4422f898fc36
+grd_raw_raw.csv,no_treatment,standard,posterior,0.325,0.0109056770581438,1,c6ff416c-619f-4232-949c-1968e53598f5
+grd_raw_raw.csv,clip,robust,no_treatment,0.358333333333333,0.0423858942670774,5.44017921956235e-307,a0f90cc3-583d-4958-8cea-babaab471cb6
+grd_raw_raw.csv,clip,robust,balanced,0.416666666666667,0.0799809501265041,0,eaa2794f-9d5d-4c45-bd58-93306edbd848
