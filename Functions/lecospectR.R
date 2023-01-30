@@ -329,7 +329,7 @@ process_tile <- function(
             veg_indices)
         #print("Input Data Columns")
         print(summary(df_full))
-        imputed_df <- impute_spectra(df_full, cluster = cluster) %>% as.data.frame()
+        imputed_df <- impute_spectra(df_full, method="median", cluster = cluster) %>% as.data.frame()
         #print(colnames(df))
         #df <- df %>% dplyr::select(x, y, dplyr::all_of(target_model_cols)) 
         # above line should not be needed, testing then deleting
@@ -350,7 +350,9 @@ process_tile <- function(
         )
         rm(df_full)
 
+        # replace Inf and NaN values with NA (to be imputed later)
         df_no_outliers <- inf_to_na(df_no_outliers)
+        df_no_outliers[is.nan(df_no_outliers)] <- NA
 
         if(!is.function(outlier_processing)){
             print(paste0("Transforming the data with transform: ", transform_type))
@@ -365,14 +367,15 @@ process_tile <- function(
         rm(df_no_outliers)
         gc()
 
-        print(summary(df_preprocessed))
-
         
+        print(summary(df_preprocessed))
+        imputed_df_2 <- impute_spectra(
+                inf_to_na(df_preprocessed),
+                method="median")
+        print(summary(imputed_df_2))
+
         prediction <- apply_model(
-            impute_spectra(
-                df_preprocessed,
-                method="median",
-                transpose=TRUE),
+            imputed_df_2,
             ml_model)
         
         prediction <- postprocess_prediction(prediction, df_preprocessed)

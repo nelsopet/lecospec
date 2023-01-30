@@ -1146,3 +1146,8 @@ create_clip_transform <- function(df, ignore_cols = NULL ){
     )
 }
 
+# extend the is.nan prototype function for data frames
+is.nan.data.frame <- function(x){
+
+    do.call(cbind, lapply(x, is.nan))
+}
