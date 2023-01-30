@@ -1,12 +1,15 @@
 source("./Functions/lecospectR.R")
 
+
 test_path <- "./Data/Ground_Validation/Imagery/BisonGulchQuads.envi"
 
 raster::raster(test_path) %>% plot()
 
+tile_path <- "./tiles/tile_KvGld2ZCglTCZi75.envi"
 test_path_2 <- "F:/Lecospec/tiles/tile_W7u8XiTLq7S1hdvM.grd"
 model_path <- "C:/Users/kenne/Documents/GitHub/lecospec/mle/RandomForest_FncGrp1_1000trees_Augmented.rda"
-
+model_path_2 <- "./mle/models/0dbb4165-baf0-4ab8-a0a7-e571d7cabfaa.rda"
+model_path_3 <- "./mle/models/gs/9b33facc-6906-4313-9d9b-fc049cbab796.rda"
 big_test <- "E:/ORNL_DAAC_DATA_ARCHIVE/MurphyDome/MurphyDome_2018_07_31_19_47_11_10350_rd_rf_or"
 medium_test <- "./Data/SubsetDatacube"
 
@@ -54,11 +57,11 @@ png("./run_out.png", width = 1024, height = 1024)
 plot(output)
 dev.off()
 
-ml_model <- load_model(model_path)
+ml_model <- load_model(model_path_3)
 print(ml_model$forest$independent.variable.names)
 
 # load bands
-band_names <- read.csv("./bands.csv")$x %>% as.vector()
+band_names <- read.csv("./assets/bands.csv")$x %>% as.vector()
 print(band_names)
 
 
@@ -67,20 +70,23 @@ names(test_raster)
 
 cl <- raster::beginCluster()#this is actually quite slow, believe it or not
 
+sink("./debug2.log")
 print(date())
-profvis::profvis(
+#profvis::profvis(
     tile_results <- process_tile(
-        test_path_2, 
+        tile_path, 
         ml_model, 
         1,
         cluster = NULL, 
         return_raster = TRUE, 
         band_names = band_names,
         save_path = "./test_raster_save.grd", 
-        suppress_output = FALSE),
-    interval = 0.01
-)
+        suppress_output = FALSE)#,
+#    interval = 0.01
+#)
 print(date())
+sink(NULL)
+print("Processing complete")
 
 plot(tile_results)
 print(tile_results)
