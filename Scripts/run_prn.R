@@ -7,9 +7,9 @@ raster::raster(test_path) %>% plot()
 test_path_2 <- "tiles/tile_CpDHDDdNOXTuX0G4.tif"
 model_path <- "C:/Users/kenne/Documents/GitHub/lecospec/Output/E_003_Pred_Model_RandomForest_FncGrp1_1000trees.rda"
 
-#big_test <- "E:/ORNL_DAAC_DATA_ARCHIVE/WickershamDome/WickershamDome_2019_08_08_19_31_51_0_rd_rf_or"
+big_test <- "F:/ORNL_DAAC_DATA_ARCHIVE/WickershamDome/WickershamDome_2019_08_08_19_31_51_0_rd_rf_or"
 #big_test <- "E:/ORNL_DAAC_DATA_ARCHIVE/MurphyDome/MurphyDome_2018_07_31_19_47_11_10350_rd_rf_or"
-big_test <- "F:/ORNL_DAAC_DATA_ARCHIVE/Chatnika/Chatnika_2018_07_29_20_32_59_0_rd_rf_or"
+#big_test <- "F:/ORNL_DAAC_DATA_ARCHIVE/Chatnika/Chatnika_2018_07_29_20_32_59_0_rd_rf_or"
 #big_test<-"E:/ORNL_DAAC_DATA_ARCHIVE/LittleLake/LittleLake_2018_07_31_01_09_59_132_rd_rf_or"
 #big_test<-"E:/ORNL_DAAC_DATA_ARCHIVE/BigTrailLake/BigTrailLake_2019_08_07_21_33_06_0_rd_rf_or"
 #big_test<-"E:/ORNL_DAAC_DATA_ARCHIVE/BigTrailLake/BigTrailLake_2019_08_08_00_25_53_2000_rd_rf_or"
@@ -43,7 +43,7 @@ print(date())
 closeAllConnections()
 big_results <- estimate_land_cover(
   big_test,
-  output_filepath = "./Output/dev_FullCube/ch_59_0_fncgrp1_PREDICTIONS.grd")
+  output_filepath = "./Output/dev_FullCube/wd_51_0_fncgrp1_PREDICTIONS.grd")
 print(date())
 
 output <- raster::raster("./Output/bison_gulch_outputs_par.grd")
