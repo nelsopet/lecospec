@@ -5,7 +5,10 @@ test_path <- "./Data/Ground_Validation/Imagery/BisonGulchQuads.envi"
 raster::raster(test_path) %>% plot()
 
 test_path_2 <- "F:/Lecospec/tiles/tile_W7u8XiTLq7S1hdvM.grd"
-model_path <- "C:/Users/kenne/Documents/GitHub/lecospec/mle/RandomForest_FncGrp1_1000trees_Augmented.rda"
+model_path_r <- "./mle/models/gs/3bdfeb25-60d1-41eb-941a-6a620ab0064c.rda"
+model_path_a <- "./mle/models/gs/df4f745b-a12e-4b5c-b2dd-334cbc8f8f9e.rda"
+model_path <- "./mle/models/gs/3bdfeb25-60d1-41eb-941a-6a620ab0064c.rda"
+
 
 big_test <- "E:/ORNL_DAAC_DATA_ARCHIVE/MurphyDome/MurphyDome_2018_07_31_19_47_11_10350_rd_rf_or"
 medium_test <- "./Data/SubsetDatacube"
@@ -54,7 +57,7 @@ png("./run_out.png", width = 1024, height = 1024)
 plot(output)
 dev.off()
 
-ml_model <- load_model(model_path)
+ml_model <- load_model(model_path_a)
 print(ml_model$forest$independent.variable.names)
 
 # load bands

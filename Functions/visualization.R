@@ -220,13 +220,14 @@ create_plot <- function(df, pft, legend = FALSE){
                     range = c(0,1)
 
                 ),
-                annotations = list(x = 0.0 , y = 1.1, text = pft, showarrow = F, 
+                annotations = list(x = 0.0 , y = 1.1, text = pft, showarrow = FALSE, 
                     xref='paper', yref='paper')
 
             ) %>% plotly::add_lines(
                 x = c(0,1),
                 y = c(0,1),
-                color=I("black")
+                color=I("black"),
+                showlegend = FALSE
             )
     )
 }
