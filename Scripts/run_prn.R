@@ -4,17 +4,23 @@ test_path <- "./Data/Ground_Validation/Imagery/BisonGulchQuads.envi"
 
 raster::raster(test_path) %>% plot()
 
-test_path_2 <- "tiles/tile_CpDHDDdNOXTuX0G4.tif"
-model_path <- "C:/Users/kenne/Documents/GitHub/lecospec/Output/E_003_Pred_Model_RandomForest_FncGrp1_1000trees.rda"
 
-big_test <- "F:/ORNL_DAAC_DATA_ARCHIVE/WickershamDome/WickershamDome_2019_08_08_19_31_51_0_rd_rf_or"
+test_path_2 <- "tiles/tile_CpDHDDdNOXTuX0G4.tif"
+test_path_3<-"./tiles/tile_xnkSMENlt5EnFYz2.envi"
+
+#model_path <- "./mle/models/gs/b41093de-95ef-4bbc-927e-3e2483eb7e79.rda"
+#big_test <- "F:/ORNL_DAAC_DATA_ARCHIVE/BisonGulch/BisonGulch_2019_08_12_01_07_28_1511_rd_rf_or"
+#big_test <- "F:/ORNL_DAAC_DATA_ARCHIVE/WickershamDome/WickershamDome_2019_08_08_19_31_51_0_rd_rf_or"
 #big_test <- "E:/ORNL_DAAC_DATA_ARCHIVE/MurphyDome/MurphyDome_2018_07_31_19_47_11_10350_rd_rf_or"
 #big_test <- "F:/ORNL_DAAC_DATA_ARCHIVE/Chatnika/Chatnika_2018_07_29_20_32_59_0_rd_rf_or"
 #big_test<-"E:/ORNL_DAAC_DATA_ARCHIVE/LittleLake/LittleLake_2018_07_31_01_09_59_132_rd_rf_or"
-#big_test<-"E:/ORNL_DAAC_DATA_ARCHIVE/BigTrailLake/BigTrailLake_2019_08_07_21_33_06_0_rd_rf_or"
+#big_test<-"F:/ORNL_DAAC_DATA_ARCHIVE/BigTrailLake/BigTrailLake_2019_08_07_20_56_58_0_rd_rf_or"
 #big_test<-"E:/ORNL_DAAC_DATA_ARCHIVE/BigTrailLake/BigTrailLake_2019_08_08_00_25_53_2000_rd_rf_or"
 #big_test<-"E:/ORNL_DAAC_DATA_ARCHIVE/ClaytonLake/ClaytonLake_2018_07_27_01_22_25_4000_rd_rf_or"
 #big_test<-"E:/ORNL_DAAC_DATA_ARCHIVE/EagleSummit/EagleSummit_2019_08_06_00_57_02_2546_rd_rf_or"
+#big_test<-"F:/ORNL_DAAC_DATA_ARCHIVE/EightMile/EightMile_2018_07_28_22_56_17_5968_rd_rf_or"
+big_test<-"F:/ORNL_DAAC_DATA_ARCHIVE/TwelveMile/TwelveMile_2019_08_09_21_28_52_0_rd_rf_or"
+
 medium_test <- "./Data/SubsetDatacube"
 
 print(date())
@@ -43,7 +49,7 @@ print(date())
 closeAllConnections()
 big_results <- estimate_land_cover(
   big_test,
-  output_filepath = "./Output/dev_FullCube/wd_51_0_fncgrp1_PREDICTIONS.grd")
+  output_filepath = "./Output/dev_FullCube/tm_52_0_fncgrp1_PREDICTIONS_grd_corrected_balanced_10tree.grd")
 print(date())
 
 output <- raster::raster("./Output/bison_gulch_outputs_par.grd")
@@ -53,25 +59,26 @@ dev.off()
 
 ml_model <- load_model(model_path)
 print(ml_model$forest$independent.variable.names)
-
+ml_model$num.trees
 # load bands
-bandnames <- read.csv("./bands.csv")$x %>% as.vector()
+bandnames <- read.csv("./assets/bands.csv")$x %>% as.vector()
+band_names <- read.csv("./assets/bands.csv")$x %>% as.vector()
 
 cl <- raster::beginCluster()#this is actually quite slow, believe it or not
 
 print(date())
-profvis::profvis(
+#profvis::profvis(
   tile_results <- process_tile(
-    test_path, 
+    test_path_3, 
     ml_model, 
     1,
     cluster = NULL, 
     return_raster = TRUE, 
-    names = bandnames,
-    save_path = "./test_raster_save.grd", 
-    suppress_output = FALSE),
-  interval = 0.01
-)
+    band_names = bandnames,
+    save_path = "./test/test_raster3_save.grd", 
+    suppress_output = FALSE)#,
+  #interval = 0.01
+#)
 print(date())
 
 plot(tile_results)
