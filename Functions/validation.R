@@ -485,18 +485,21 @@ load_and_label_data <- function(path) {
 calculate_chi_squared_probability <- function(aggregated_results){
     # remove forbs
     row_filter <- aggregated_results$key != "Forb"
-
+    validation <- aggregated_results[row_filter,"validation_counts"] / sum(aggregated_results[row_filter,"validation_counts"])
+    prediction <- aggregated_results[row_filter, "predicted_counts"] / sum(aggregated_results[row_filter, "predicted_counts"])
     test_results <- chisq.test(
-                aggregated_results[row_filter,"validation_counts"],
-                aggregated_results[row_filter, "predicted_counts"])
+                validation,
+                prediction)
 
     return(test_results$p.value)
 }
 
 calculate_validation_r2 <- function(aggregated_results){
     row_filter <- aggregated_results$key != "Forb"
+    validation <- aggregated_results[row_filter,"validation_counts"] / sum(aggregated_results[row_filter,"validation_counts"])
+    prediction <- aggregated_results[row_filter, "predicted_counts"] / sum(aggregated_results[row_filter, "predicted_counts"])
     lm_fit <- lm(
-        aggregated_results[row_filter,"validation_counts"]~aggregated_results[row_filter, "predicted_counts"]
+        prediction~validation
     )
     return(summary(lm_fit)$adj.r.squared)
 }
