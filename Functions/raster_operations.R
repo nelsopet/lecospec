@@ -89,7 +89,8 @@ make_tiles <- function(
 #' 
 handle_empty_tile <- function(tile_raster, save_path = NULL, target_crs = NULL){
     # convert to a raster
-    output_raster <- tile_raster[[1]]
+    print("Processing empty tile")
+    output_raster <- tile_raster[[1]]# %>% raster::as.raster()
 
     
     if(!is.null(target_crs)){

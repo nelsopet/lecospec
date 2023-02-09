@@ -736,8 +736,8 @@ detect_outliers_columnwise <- function(df, ignore_cols = NULL){
     outliers <- rep(c(FALSE), times = nrow(df))
     
     for(column_name in used_cols){
-        q1 <- stats::quantile(df[,column_name], 1/4, type = 4)
-        q3 <- stats::quantile(df[,column_name], 3/4, type = 4)
+        q1 <- stats::quantile(df[,column_name], 1/4, type = 4, na.rm=TRUE)
+        q3 <- stats::quantile(df[,column_name], 3/4, type = 4, na.rm=TRUE)
         col_iqr <- q3 - q1
 
         upper_fence <- q3 + (1.5 * col_iqr)
@@ -791,8 +791,8 @@ outliers_to_na <- function(df, ignore_cols = NULL){
     new_df <- df
     
     for(column_name in used_cols){
-        q1 <- stats::quantile(df[,column_name], 1/4, type = 4)
-        q3 <- stats::quantile(df[,column_name], 3/4, type = 4)
+        q1 <- stats::quantile(df[,column_name], 1/4, type = 4, na.rm=TRUE)
+        q3 <- stats::quantile(df[,column_name], 3/4, type = 4, na.rm=TRUE)
         col_iqr <- q3 - q1
 
         upper_fence <- q3 + (1.5 * col_iqr)
@@ -993,8 +993,8 @@ clip_outliers <- function(df, ignore_cols=NULL){
     for(column_name in used_cols){
         if(is.numeric(df[,column_name])){
 
-            q1 <- stats::quantile(df[,column_name], 1/4, type = 4)
-            q3 <- stats::quantile(df[,column_name], 3/4, type = 4)
+            q1 <- stats::quantile(df[,column_name], 1/4, type = 4, na.rm=TRUE)
+            q3 <- stats::quantile(df[,column_name], 3/4, type = 4, na.rm=TRUE)
             col_iqr <- q3 - q1
 
             upper_fence <- q3 + (1.5 * col_iqr)
@@ -1089,8 +1089,8 @@ create_clip_transform <- function(df, ignore_cols = NULL ){
     for(column_name in used_cols){
         if(is.numeric(df[,column_name])){
 
-            q1 <- stats::quantile(df[,column_name], 1/4, type = 4)
-            q3 <- stats::quantile(df[,column_name], 3/4, type = 4)
+            q1 <- stats::quantile(df[,column_name], 1/4, type = 4, na.rm=TRUE)
+            q3 <- stats::quantile(df[,column_name], 3/4, type = 4, na.rm=TRUE)
             col_iqr <- q3 - q1
 
             upper_fence <- q3 + (1.5 * col_iqr)
@@ -1146,3 +1146,8 @@ create_clip_transform <- function(df, ignore_cols = NULL ){
     )
 }
 
+# extend the is.nan prototype function for data frames
+is.nan.data.frame <- function(x){
+
+    do.call(cbind, lapply(x, is.nan))
+}

@@ -2,7 +2,8 @@
 source("./Functions/lecospectR.R")
 require(vegan)
 require(glue)
-
+require(Polychrome)
+require(PERMANOVA)
 #Read in spectral libraries from both ground and image tagged with the same labels
 #Ground spectra
 Cleaned_Speclib <- read.csv("./Output/C_001_SC3_Cleaned_SpectralLib.csv") 
@@ -182,7 +183,7 @@ merge_ignore1<-c("ScanID", "Functional_group1", "Area") #, "Species_name")
 Cleaned_Speclib_merge <-
 Cleaned_Speclib %>%
   dplyr::select(ScanID, Functional_group1, Area, X398:X998) %>% #colnames()
-  columnwise_min_max_scale(ignore_cols = merge_ignore1) %>% #colnames() #dplyr::select(X398:X998) %>% as.matrix() %>% hist()
+  #columnwise_min_max_scale(ignore_cols = merge_ignore1) %>% #colnames() #dplyr::select(X398:X998) %>% as.matrix() %>% hist()
   dplyr::rename(UID=ScanID) %>%
   mutate(Source = "Ground") %>%
   #mutate(UID=c(Source, ScanID,Functional_group1))
@@ -201,6 +202,22 @@ hist(ground_PFT_spectra_mat)
 #ground_PFT_spectra_mat[ground_PFT_spectra_mat==0]<-0.00000001
 #ground_PFT_spectra_mat[is.na(ground_PFT_spectra_mat)]<-0.00000001
 
+##Test for differences between PFTs in spectral space using PERMANOVA
+D<- IniTransform(ground_PFT_spectra_mat)
+DD<- DistContinuous(D)
+DD_MANOVA<-MANOVA(ground_PFT_spectra_mat, Group = Cleaned_Speclib_merge$Functional_group1)
+plot(DD_MANOVA)
+DD_adonis<-adonis2(ground_PFT_spectra_mat~as.factor(Cleaned_Speclib_merge$Functional_group1), method="euclidean", permutations=500)
+DD_adonis
+#NMS very slow
+#DD_metaMDS<-vegan::metaMDS(ground_PFT_spectra_mat, dist="euclidean")
+plot(DD_metaMDS)
+DD_manova<-manova(ground_PFT_spectra_mat~Cleaned_Speclib_merge$Functional_group1)
+summary(DD_manova)
+#Runs very slow
+#DD_PERM<-PERMANOVA(DD, group = as.factor(Cleaned_Speclib_merge$Functional_group1))
+#DD_PERM
+system.time()
 #Build PCA with and without sqrt transform
 ground_pca<-princomp(ground_PFT_spectra_mat) #, center=FALSE, scale=FALSE)
 #ground_pca_pr<-prcomp(sqrt(ground_PFT_spectra_mat)) #, center=FALSE, scale=FALSE)

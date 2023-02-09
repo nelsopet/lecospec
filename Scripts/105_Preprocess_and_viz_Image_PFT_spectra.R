@@ -1,6 +1,7 @@
 require(Polychrome)
 require(glue)
 require(vegan)
+source("Functions/lecospectR.R")
 #Image spectra
 PFT_IMG_SPEC_clean <- read.csv("./Data/Ground_Validation/PFT_Image_spectra/PFT_Image_SpectralLib_Clean.csv")
 names_drop<-c("PFT.1",
@@ -109,7 +110,7 @@ merge_ignore2 = c("UID","FncGrp1")#, "PFT")
 PFT_IMG_SPEC_clean_merge<-
   PFT_IMG_SPEC_clean %>%
   dplyr::select(UID, FncGrp1, X398:X998) %>% #dplyr::select(X398:X998) %>% as.matrix() %>% hist()
-  columnwise_min_max_scale(ignore_cols = merge_ignore2) %>% #dplyr::select(X398:X998) %>% as.matrix() %>% hist()
+  #columnwise_min_max_scale(ignore_cols = merge_ignore2) %>% #dplyr::select(X398:X998) %>% as.matrix() %>% hist()
   dplyr::rename(Functional_group1 = FncGrp1) %>%
   mutate(Source = "Image",
          
@@ -124,6 +125,7 @@ PFT_IMG_SPEC_clean_merge %>%
   group_by(Area,Functional_group1, Source) %>% 
   tally() %>% pivot_wider(names_from = Functional_group1, values_from = n) 
 
+write.csv(PFT_IMG_SPEC_clean_merge_summary,"figures/PFT_IMG_SPEC_summary.csv")
 #PCA of ground spectra only
 image_PFT_spectra_mat<-PFT_IMG_SPEC_clean_merge %>% 
   dplyr::select(-UID,-Source, -Functional_group1, -Area) %>% 
@@ -132,6 +134,10 @@ image_PFT_spectra_mat<-PFT_IMG_SPEC_clean_merge %>%
 #Replace any NAs or Zeros with very small value
 image_PFT_spectra_mat[image_PFT_spectra_mat==0]<-0.00000001
 image_PFT_spectra_mat[is.na(image_PFT_spectra_mat)]<-0.00000001
+
+#Multivariate analysis of PFT groups 
+image_PFT_adonis<-adonis2(image_PFT_spectra_mat~as.factor(PFT_IMG_SPEC_clean_merge$Functional_group1), method="euclidean", permutations=500)
+image_PFT_adonis
 
 #Build PCA with and without sqrt transform
 #image_pca<-princomp(sqrt(image_PFT_spectra_mat)) #, center=FALSE, scale=FALSE)

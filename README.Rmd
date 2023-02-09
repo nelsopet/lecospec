@@ -22,9 +22,9 @@ The purpose lecospec code is to take ground or image based reflectance spectra, 
 apply that model to an imaging spectrometer data cube (aka hyperspectral image). 
 
 1) First, install dependencies 
-/Scripts/install_dependencies.R
+    /Scripts/install_dependencies.R
 2) Then source the package of lecospectR 
-/Functions/lecospectR.R
+    /Functions/lecospectR.R
 
 The functions in lecospectR are divided into sections, all of which are loaded by sourcing /Functions/lecospectR.R
 
@@ -48,15 +48,15 @@ The functions in lecospectR are divided into sections, all of which are loaded b
 These scripts delete bad scans and standardize the associated information into a single metadata format. Around 90 vegetation indices are 
 also calculated and the narrow band reflectance is resampled and smoothed to 5 nm bands.
 
-    /Scripts/2_DataMunging.R
+    /Scripts/2_DataMunging.R    
     /Scripts/2B_DataMunging_missing_spectra.R   
-    /Scripts/3_Create_SpecLibPSR.R
+    /Scripts/3_Create_SpecLibPSR.R  
 
 The output of running these scripts are two spectral libraries, one of reflectance and one of vegetation indices along with the metadata for these reflectance 
 measurements.
 
-    /Output/C_001_SC3_Cleaned_SpectralLib.csv
-    /Data/D_002_SpecLib_Derivs.csv
+    /Output/C_001_SC3_Cleaned_SpectralLib.csv   
+    /Data/D_002_SpecLib_Derivs.csv  
 
 3) Collect spectra from pixels in images from UAV in quadrats and patches of plant functional types visible in ground reference or higher 
 resolution RGB imagery. Calculate vegetation indices, smooth and resample spectra to 5 nm wide bands. Reflectance spectra are extracted from 
@@ -64,16 +64,16 @@ hand digitized patches of plant functional types provided as a shapefile to the 
 performed in the second script (101_Crop_Training_Quads) for hand digitzed quadrats of validation ground cover data.
 Script 102_Parse_training_PFT_vector_spectra adds metadata to each pixel by plant patch. 
 
-    /Scripts/101_Crop_Training_PFT_vector.R                        
-    /Scripts/101_Crop_Training_Quads.R                             
-    /Scripts/102_Parse_training_PFT_vector_spectra.R              
-    /Scripts/103_Clean_training_PFT_vector_spectra.R              
-    /Scripts/104_Calculate_Vegindices_Image_Spectra.R              
+    /Scripts/101_Crop_Training_PFT_vector.R     
+    /Scripts/101_Crop_Training_Quads.R      
+    /Scripts/102_Parse_training_PFT_vector_spectra.R    
+    /Scripts/103_Clean_training_PFT_vector_spectra.R    
+    /Scripts/104_Calculate_Vegindices_Image_Spectra.R   
 
 After running these scripts, the outputs include the relectance and vegetation indices for each pixel from the patches of plants digitized from images.
 
-    /Data/D_002_Image_SpecLib_Derivs.csv
-    /Data/Ground_Validation/PFT_Image_spectra/PFT_Image_SpectralLib_Clean.csv
+    /Data/D_002_Image_SpecLib_Derivs.csv    
+    /Data/Ground_Validation/PFT_Image_spectra/PFT_Image_SpectralLib_Clean.csv   
 
 After cleaning scans, the reflectance data can be summarized and visualized in various ways. Below is accuracy
 summary of the median and interquartile ranges of reflectance (75% black & 95% grey) with the sample size in 
@@ -86,13 +86,23 @@ number of scans distributed across a number of scans (ground measured) or pixels
 
 The centers of all UAV flights and points where ground scans were collected are shown in the map.
 Collecting these locations from the metadata and image centers for data collected as the Arctic boreal plant mapping use case for lecospectR using the 
-Scripts/7_Visualizations_Ground_and_UAS_Spectra_locations.R which produces the two .kml files plotted in the map below.
+Scripts/7_Visualizations_Ground_and_UAS_Spectra_locations.R which produces the two .kml files plotted in the map below. The image below it shows one site
+(Bison Gulch near Denali National Park) with ground validation quadrat locations (squares) along 100 m long transect with a white calibration tarp on one end.
 
-```{r, echo=FALSE, out.width="40%", include=TRUE}
+```{r, echo=FALSE, include=TRUE}
 
-knitr::include_graphics(path=c("Output/StudyAreaGround_Airborne_Spectra_Locs.jpg", "Output/Prediction/EightmileQuads.jpeg"))
-#<img src="./Output/StudyAreaGround_Airborne_Spectra_Locs.jpg" width = 500 height = 500 >
-#<img src="./Output/Prediction/EightmileQuads.jpeg" width = 500 height = 500 >
+knitr::include_graphics(path="Output/StudyAreaGround_Airborne_Spectra_Locs.jpg")
+knitr::include_graphics(path=c("Data/Ground_Validation/Imagery/snaphsots/BisonGulch.jpg"))#, "Data/Ground_Validation/Imagery/snaphsots/Bonanza.jpg"))
+
+#<img src="Output/StudyAreaGround_Airborne_Spectra_Locs.jpg">
+#<img src="Data/Ground_Validation/Imagery/snaphsots/BisonGulch.jpg" > 
+#<img src="Data/Ground_Validation/Imagery/snaphsots/Bonanza.jpg" > 
+#<img src="Data/Ground_Validation/Imagery/snaphsots/BisonGulch.jpg" width = 500 height = 500 >
+#<img src="Data/Ground_Validation/Imagery/snaphsots/Bonanza.jpg" width = 500 height = 500 >
+#<img src="Data/Ground_Validation/Imagery/snaphsots/BisonGulch.jpg" width = 500 height = 500 >
+#<img src="Data/Ground_Validation/Imagery/snaphsots/Bonanza.jpg" width = 500 height = 500 >
+#<img src="Data/Ground_Validation/Imagery/snaphsots/BisonGulch.jpg" width = 500 height = 500 >
+#<img src="Data/Ground_Validation/Imagery/snaphsots/Bonanza.jpg" width = 500 height = 500 >
 
 ```
 
@@ -100,7 +110,7 @@ knitr::include_graphics(path=c("Output/StudyAreaGround_Airborne_Spectra_Locs.jpg
 
 1) Set all the input, output and needed associated files for building models and predicting images
 
-    /validation_def.R 
+    /validation_def.R    
 
 In this script, The test_paths are set to the output of Script 101_Crop_Training_PFT_vector, which are a set of images with 326 bands from 400-1000nm covering only
 the square quadrats 1m x 1m that were hand digitized in different study areas. Model paths are set for different types to be evaluated. The vector layers of each hand digitized
@@ -129,11 +139,23 @@ mapshot(EightmileMap, file = "Output/Prediction/EightmileQuads.jpeg")
 
 2) Builds and visualizes model accuracy 
 
-    /Scripts/modelbuilding.ipynb
+    /Scripts/modelbuilding.ipynb    
 
-3) Pick and model and explore results with lecospectR::validate_model.R , whicih calls the input data, models and settings from validate_def.R
+This R notebook (requires JupyterNotebook and Python to run) builds models of plant functional types as a function of reflectance spectra
+separately for ground and image based models. The blocks step through tranformation of the ground and image based reflectance spectra through removal of NAs,
+imputing missing values, normalization and ground-to-image instrument correction. Each model is validated with ground data.
 
-    /mle/"MODEL UUID HERE"
+Here is an example confusion matrix from a model showing misclassification between plant funcational types.
+
+```{r, echo=FALSE, include=TRUE}
+
+knitr::include_graphics(path="figures/base_confusion.png")
+
+```
+
+3) After exploring models based on different input data, Pick and model and explore results with lecospectR::validate_model.R , whicih calls the input data, models and settings from validate_def.R
+
+    /mle/"MODEL UUID HERE"  
 
 4) Generate predidctions for plant functional type occurence for whole datacubes by running the parallelized estimate_landcover function from lecospectR. Set the number of tiles carefully
 based on RAM and image size. To run the function lecospectR::estimate_landcover, check the settings in the /config.json. The settings include 
@@ -153,8 +175,14 @@ based on RAM and image size. To run the function lecospectR::estimate_landcover,
 
 Once the /config.json is set to match what is needed, the following script shows specifying a single large image and smaller images used in estimate_landcover.
 
-    /Scripts/run.R 
+    /Scripts/run.R   
 
 5) Visualize maps of full image output showing plant functional types
 
-    /Scripts/visualizeRasters.R
+    /Scripts/visualizeRasters.R 
+
+Example predicted plant functional type map from one site (Bison Gulch near Denali National Park)
+```{r, echo=FALSE, include=TRUE}
+
+knitr::include_graphics(path="figures/bg_1Mpix_fng1_predictions.png")
+```

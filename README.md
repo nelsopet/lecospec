@@ -41,7 +41,7 @@ loaded by sourcing /Functions/lecospectR.R
     indices are also calculated and the narrow band reflectance is
     resampled and smoothed to 5 nm bands.
     
-    /Scripts/2\_DataMunging.R
+    /Scripts/2\_DataMunging.R  
     /Scripts/2B\_DataMunging\_missing\_spectra.R  
     /Scripts/3\_Create\_SpecLibPSR.R
 
@@ -49,8 +49,10 @@ The output of running these scripts are two spectral libraries, one of
 reflectance and one of vegetation indices along with the metadata for
 these reflectance measurements.
 
-    /Output/C_001_SC3_Cleaned_SpectralLib.csv
-    /Data/D_002_SpecLib_Derivs.csv
+``` 
+/Output/C_001_SC3_Cleaned_SpectralLib.csv   
+/Data/D_002_SpecLib_Derivs.csv  
+```
 
 3)  Collect spectra from pixels in images from UAV in quadrats and
     patches of plant functional types visible in ground reference or
@@ -74,8 +76,10 @@ After running these scripts, the outputs include the relectance and
 vegetation indices for each pixel from the patches of plants digitized
 from images.
 
-    /Data/D_002_Image_SpecLib_Derivs.csv
-    /Data/Ground_Validation/PFT_Image_spectra/PFT_Image_SpectralLib_Clean.csv
+``` 
+/Data/D_002_Image_SpecLib_Derivs.csv    
+/Data/Ground_Validation/PFT_Image_spectra/PFT_Image_SpectralLib_Clean.csv   
+```
 
 After cleaning scans, the reflectance data can be summarized and
 visualized in various ways. Below is accuracy summary of the median and
@@ -92,12 +96,14 @@ collected are shown in the map. Collecting these locations from the
 metadata and image centers for data collected as the Arctic boreal plant
 mapping use case for lecospectR using the
 Scripts/7\_Visualizations\_Ground\_and\_UAS\_Spectra\_locations.R which
-produces the two .kml files plotted in the map below.
+produces the two .kml files plotted in the map below. The image below it
+shows one site (Bison Gulch near Denali National Park) with ground
+validation quadrat locations (squares) along 100 m long transect with a
+white calibration tarp on one end.
 
-<img src="Output/StudyAreaGround_Airborne_Spectra_Locs.jpg" width="40%" /><img src="Output/Prediction/EightmileQuads.jpeg" width="40%" />
+<img src="Output/StudyAreaGround_Airborne_Spectra_Locs.jpg" width="480" /><img src="Data/Ground_Validation/Imagery/snaphsots/BisonGulch.jpg" width="1222" />
 
 ## Model training and validation
-
 
 1)  Set all the input, output and needed associated files for building
     models and predicting images
@@ -119,9 +125,22 @@ derived from ground photos by a single expert observer.
     
     /Scripts/modelbuilding.ipynb
 
-3)  Pick and model and explore results with
-    lecospectR::validate\_model.R , whicih calls the input data, models
-    and settings from validate\_def.R
+This R notebook (requires JupyterNotebook and Python to run) builds
+models of plant functional types as a function of reflectance spectra
+separately for ground and image based models. The blocks step through
+tranformation of the ground and image based reflectance spectra through
+removal of NAs, imputing missing values, normalization and
+ground-to-image instrument correction. Each model is validated with
+ground data.
+
+Here is an example confusion matrix from a model showing
+misclassification between plant funcational types.
+
+<img src="figures/base_confusion.png" width="306" />
+
+3)  After exploring models based on different input data, Pick and model
+    and explore results with lecospectR::validate\_model.R , whicih
+    calls the input data, models and settings from validate\_def.R
     
     /mle/“MODEL UUID HERE”
 
@@ -152,8 +171,14 @@ Once the /config.json is set to match what is needed, the following
 script shows specifying a single large image and smaller images used in
 estimate\_landcover.
 
-    /Scripts/run.R 
+``` 
+/Scripts/run.R   
+```
 
 5)  Visualize maps of full image output showing plant functional types
     
     /Scripts/visualizeRasters.R
+
+Example predicted plant functional type map from one site (Bison Gulch
+near Denali National Park)
+<img src="figures/bg_1Mpix_fng1_predictions.png" width="1536" />
