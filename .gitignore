@@ -37,11 +37,11 @@ tiles/*
 prediction*
 test/test_data/*
 lecospec.Rproj
+validation_saved_output.gri
+validation_saved_output.grd
 
 # forced includes
 !Data/Ground_Validation/training/*
 mle/experiments.zip
 mle/experiments/**/*
 mle/models/gs/*
-validation_saved_output.gri
-validation_saved_output.grd
