@@ -1,3 +1,6 @@
+bc_pred<-raster("./Output/dev_FullCube/bc_north_6425_fncgrp1_PREDICTIONS_grd_corrected_balanced_10tree.grd")
+    writeRaster(bc_pred,"./Output/dev_FullCube/bc_north_6425_fncgrp1_PREDICTIONS_grd_corrected_balanced_10tree.tif", overwrite=TRUE)
+
 bg_pred<-raster("./Output/dev_FullCube/bg_28_1511_fncgrp1_PREDICTIONS_grd_indices_only_no_treatment.grd")
     writeRaster(bg_pred,"./Output/dev_FullCube/bg_28_1511_fncgrp1_PREDICTIONS_grd_indices_only_no_treatment.tif", overwrite=TRUE)
 bg_pred2<-raster("./Output/dev_FullCube/bg_28_1511_fncgrp1_PREDICTIONS_img_indices_only_balanced.grd")
@@ -34,6 +37,8 @@ bt_pred<-raster("./Output/dev_FullCube/bt_58_0_fncgrp1_PREDICTIONS_grd_corrected
         writeRaster(bt_pred,"./Output/dev_FullCube/bt_58_0_fncgrp1_PREDICTIONS_grd_corrected_balanced_10tree.tif")
 tm_pred<-raster("./Output/dev_FullCube/tm_52_0_fncgrp1_PREDICTIONS_grd_corrected_balanced_10tree.grd")
         writeRaster(tm_pred,"./Output/dev_FullCube/tm_52_0_fncgrp1_PREDICTIONS_grd_corrected_balanced_10tree.tif", overwrite=TRUE)
+            tm_pred2<-raster("./Output/dev_FullCube/tm_22_2000_fncgrp1_PREDICTIONS_grd_corrected_balanced_10tree.grd")
+                writeRaster(tm_pred2,"./Output/dev_FullCube/tm_22_2000_fncgrp1_PREDICTIONS_grd_corrected_balanced_10tree.tif", overwrite=TRUE)
 
 
 raster("./Output/yk_11530_fncgrp1_PREDICTIONS.grd") %>% writeRaster("./Output/yk_11530_fncgrp1_PREDICTIONS.tiff")
