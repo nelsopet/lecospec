@@ -34,7 +34,7 @@ convert_fg2_string <- function(df) {
         z == "TreePopulus" ~ 22L,
         z == "TreeConiferOther" ~ 23L,
         z == "TreeSpruce" ~ 24L,
-        z == "Unknown" ~ 25L,
+        z == "Unknown" ~ 25L
     ), .keep = "unused") %>%
     dplyr::select(x,y,z)
 return(df_convert_results)
@@ -79,7 +79,7 @@ convert_fg2_int <- function(df) {
             z == 22L ~ "TreePopulus",
             z == 23L ~ "TreeConiferOther",
             z == 24L ~ "TreeSpruce",
-            z == 25L ~ "Unknown",
+            z == 25L ~ "Unknown"
 
         ), .keep = "unused"
     ) %>% 
@@ -139,7 +139,7 @@ convert_fg1_int <- function(df) {
             z == 6 ~ "ShrubEvergreen",
             z == 7 ~ "TreeBroadleaf",
             z == 8 ~ "TreeConifer",
-            z == 9 ~ "Unknown",
+            z == 9 ~ "Unknown"
     ), .keep = "unused") %>% 
     dplyr::select(x,y,z)
 }
@@ -281,7 +281,7 @@ convert_species_string <- function(df){
             z == "Thuja occidentalis" ~ 121L,
             z == "Tsuga canadensis" ~ 122L,
             z == "Picea mariana" ~ 123L,
-            z == "Picea rubens" ~ 124L,
+            z == "Picea rubens" ~ 124L
 
         ), .keep = "unused"
     ) %>% dplyr::select(x,y,z)
@@ -426,7 +426,7 @@ convert_species_int <- function(df){
             z == 121 ~ "Thuja occidentalis",
             z == 122 ~ "Tsuga canadensis",
             z == 123 ~ "Picea mariana",
-            z == 124 ~ "Picea rubens",
+            z == 124 ~ "Picea rubens"
         ), .keep = "unused") %>%
         dplyr::select(x,y,z)
     return(converted_df)
