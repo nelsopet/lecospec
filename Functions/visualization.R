@@ -271,7 +271,7 @@ plot_by_pft <- function(df, save_path = NULL, open = TRUE, image_path = NULL){
         plot_shrub_eve,
         plot_tree_bro,
         plot_tree_eve,
-        nrows = 3,
+        nrows = 5,
         margin = 0.05)
     fig <- fig %>% plotly::layout(
         title = "Prediction and Ground Truth Labels",
