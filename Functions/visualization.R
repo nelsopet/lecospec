@@ -1,26 +1,43 @@
 library(plotly)
 # talk to NASA spectral imaging working group r/e gaps
 
+
+
 visualize_prediction <- function(filepath, key_file, column){
     require(leaflet)
     color_map <- create_color_map(key_file, column)
     labels <- create_labels(key_file, column)
     layer <- raster::raster(filepath)
     epsg_code <- 3857
-    layer_projected <- project_to_epsg(layer, epsg_code, categorical_raster = TRUE)
+    layer_projected <- project_to_epsg(
+        layer, 
+        epsg_code, 
+        categorical_raster = TRUE)
     map <- leaflet::leaflet() %>%
-        leaflet::addTiles("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-             options = providerTileOptions(minZoom = 8, maxZoom = 100)) %>%
-        leaflet::addRasterImage(layer, layerId = "layer", colors = color_map) %>%
-        leaflet::addLegend("bottomleft", colors = color_map(labels), labels = labels, opacity = 1) %>%
+        leaflet::addTiles(
+            'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
+             options = providerTileOptions(
+                minZoom = 8, 
+                maxZoom = 100)) %>%
+        leaflet::addRasterImage(
+            layer,
+            layerId = "layer",
+            colors = color_map) %>%
+        leaflet::addLegend(
+            "bottomleft",
+            colors = color_map(labels), 
+            labels = labels,
+            opacity = 1) %>%
         leaflet.opacity::addOpacitySlider(layerId = "layer")
     return(map)
 }
 
 create_color_map <- function(filepath, column){
-    levels <- unlist(read.csv(filepath, header = TRUE)[column])
+    levels <- unlist(read.csv(filepath, header = TRUE)[,2])
     num_levels <- length(unique(levels))
-    palette <- leaflet::colorFactor(grDevices::topo.colors(num_levels), sort(levels))
+    palette <- leaflet::colorFactor(
+        grDevices::topo.colors(num_levels), 
+        sort(levels))
     return(palette)
 }
 
@@ -220,14 +237,19 @@ create_plot <- function(df, pft, legend = FALSE){
                     range = c(0,1)
 
                 ),
-                annotations = list(x = 0.0 , y = 1.1, text = pft, showarrow = F, 
+                annotations = list(x = 0.0 , y = 1.1, text = pft, showarrow = FALSE, 
                     xref='paper', yref='paper')
 
+            ) %>% plotly::add_lines(
+                x = c(0,1),
+                y = c(0,1),
+                color=I("black"),
+                showlegend = FALSE
             )
     )
 }
 
-plot_by_pft <- function(df, save_path = NULL, open = TRUE){
+plot_by_pft <- function(df, save_path = NULL, open = TRUE, image_path = NULL){
     df <- df %>% group_by(site)
     plot_abiotic <- create_plot(df, "Abiotic", legend = TRUE)
     plot_forb <- create_plot(df, "Forb")
@@ -253,6 +275,12 @@ plot_by_pft <- function(df, save_path = NULL, open = TRUE){
         margin = 0.05)
     fig <- fig %>% plotly::layout(
         title = "Prediction and Ground Truth Labels",
+        scene = list(
+                    aspectratio = list(
+                        x = 1,
+                        y = 1
+                    )
+                ),
         hovermode = TRUE
     )
 
@@ -264,6 +292,15 @@ plot_by_pft <- function(df, save_path = NULL, open = TRUE){
     if(open){
         browseURL(fig_save_loc)
     }
+
+    if(!is.null(image_path)){
+        img_content <- plotly::plotly_IMAGE(
+            fig, 
+            file = image_path
+        )
+    }
+
+    return(fig)
 }
 
 calculate_r_squared <- function(

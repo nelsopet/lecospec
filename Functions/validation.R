@@ -146,7 +146,7 @@ validate_results <- function(
 
 #' 
 #' 
-#' Long
+#' Applies the KS test to each 
 #' 
 #' @param
 #' @return
@@ -340,10 +340,8 @@ save_validation <- function(template_dfs, base_filename = "validation"){
 validate_model <- function(
     ml_model, 
     save_directory, 
-    normalize_input = FALSE, 
-    scale_input = FALSE, 
-    robust_scale_input = FALSE,
-    standardize_input = FALSE,
+    outlier_processing = "none",
+    transform_type = "none",
     cluster = NULL){
     source("Scripts/validation_defs.R")
 
@@ -357,16 +355,14 @@ validate_model <- function(
             cluster = cluster,
             return_raster = TRUE,
             band_names = band_names,
-            normalize_input = normalize_input,
-            scale_input = scale_input,
-            robust_scale_input = robust_scale_input,
-            standardize_input = standardize_input,
+            outlier_processing = outlier_processing,
+            transform_type = transform_type,
             save_path = "./validation_saved_output.grd",
             suppress_output = FALSE)
 
         # load shapefile and project to match
         shape <- sf::st_read(shapes[[i]])
-        print(shape_names[[i]])
+        #print(shape_names[[i]])
         shape$CLASS_NAME <- shape_names[[i]]
         projected_shapes <- sf::st_transform(shape, raster::crs(tile_results))
 
@@ -384,7 +380,7 @@ validate_model <- function(
             save_path = paste0(save_directory, "site_", i, "_quadrat_")
         )
 
-        print(names(tile_results))
+        #print(names(tile_results))
 
         # bar plots
         for(j in seq_along(validation_aggregates)){
@@ -445,7 +441,8 @@ site_indices <- c(
     "EightMile",
     "MurphyDome",
     "MurphyDome",
-    "MurphyDome"
+    "MurphyDome",
+    "Bonanza"
 )
 
 parse_path <- function(path) {
@@ -467,8 +464,10 @@ parse_path <- function(path) {
             return("MurphyDome")
         } else if(stringr::str_detect(path, "site_8")[1]){
             return("MurphyDome")
+        } else if(stringr::str_detect(path, "site_9")[1]){
+            return("Bonanza")
     } else {
-        return(split_path[[1]][[2]])
+        return(split_path[[1]][[2]]) # default option
     }
     }
 }
@@ -483,3 +482,24 @@ load_and_label_data <- function(path) {
     return(df %>% as.data.frame())
 }
 
+calculate_chi_squared_probability <- function(aggregated_results){
+    # remove forbs
+    row_filter <- aggregated_results$key != "Forb"
+    validation <- aggregated_results[row_filter,"validation_counts"] / sum(aggregated_results[row_filter,"validation_counts"])
+    prediction <- aggregated_results[row_filter, "predicted_counts"] / sum(aggregated_results[row_filter, "predicted_counts"])
+    test_results <- chisq.test(
+                validation,
+                prediction)
+
+    return(test_results$p.value)
+}
+
+calculate_validation_r2 <- function(aggregated_results){
+    row_filter <- aggregated_results$key != "Forb"
+    validation <- aggregated_results[row_filter,"validation_counts"] / sum(aggregated_results[row_filter,"validation_counts"])
+    prediction <- aggregated_results[row_filter, "predicted_counts"] / sum(aggregated_results[row_filter, "predicted_counts"])
+    lm_fit <- lm(
+        prediction~validation
+    )
+    return(summary(lm_fit)$adj.r.squared)
+}

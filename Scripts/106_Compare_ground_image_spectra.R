@@ -4,6 +4,20 @@ Cleaned_Speclib_tall_Fnc_grp1<-read.csv("./Data/C_001_SC3_Cleaned_SpectralLib_ta
 Cleaned_Speclib_tall_Fnc_grp1<-Cleaned_Speclib_tall_Fnc_grp1 %>% dplyr::mutate(Source = "Ground")
 PFT_IMG_SPEC_clean_tall<-read.csv("./Data/Ground_Validation/PFT_Image_spectra/PFT_Image_SpectralLib_Clean_tall.csv")
 
+Speclib_merged<- bind_rows(Cleaned_Speclib_merge, PFT_IMG_SPEC_clean_merge)
+
+spectra_mat<-Speclib_merged %>% 
+  dplyr::select(-UID,-Source, -Functional_group1, -Area) %>% 
+  as.matrix() 
+
+#Replace any NAs or Zeros with very small value
+spectra_mat[spectra_mat==0]<-0.00000001
+spectra_mat[is.na(spectra_mat)]<-0.00000001
+
+#Multivariate analysis of PFT groups 
+spectra_PFT_adonis<-adonis2(spectra_mat~as.factor(Speclib_merged$Source)*as.factor(Speclib_merged$Functional_group1), method="euclidean", permutations=100)
+spectra_PFT_adonis
+
 
 ##Bind both ground and image spectra summaries (quantiles) together
 PFT_SPEC_GROUND_IMAGE <- bind_rows(Cleaned_Speclib_tall_Fnc_grp1, PFT_IMG_SPEC_clean_tall)

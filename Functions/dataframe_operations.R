@@ -464,6 +464,8 @@ extract_bands <- function(df){
 #' @param min_wavelength: 
 #' @param max_wavelength: 
 #' @param delta: the distance (in the same ) 
+#' @param drop_existing (boolean, default FALSE).  If FALSE, the new columns will be added to the
+#' data frame.  If TRUE, only the new data will be returned.
 #' 
 #' @return a data.frame of spectra
 #'  
@@ -473,9 +475,10 @@ extract_bands <- function(df){
 resample_df <- function(
     df,
     normalize = FALSE,
-    min_wavelength = 397.593,
+    min_wavelength = 402.593,
     max_wavelength = 995.716,
-    delta = 5
+    delta = 5,
+    drop_existing = FALSE
     ) {
     spec_library <- df_to_speclib(df, type="spectrolab")
     
@@ -497,6 +500,10 @@ resample_df <- function(
         colnames(df_resampled),
         "_5nm"
     )
+
+    if(drop_existing){
+        return(df_resampled)
+    }
     combined_df <- cbind(remove_band_column(df), df_resampled)
     return(combined_df)
 }
@@ -729,8 +736,8 @@ detect_outliers_columnwise <- function(df, ignore_cols = NULL){
     outliers <- rep(c(FALSE), times = nrow(df))
     
     for(column_name in used_cols){
-        q1 <- stats::quantile(df[,column_name], 1/4, type = 4)
-        q3 <- stats::quantile(df[,column_name], 3/4, type = 4)
+        q1 <- stats::quantile(df[,column_name], 1/4, type = 4, na.rm=TRUE)
+        q3 <- stats::quantile(df[,column_name], 3/4, type = 4, na.rm=TRUE)
         col_iqr <- q3 - q1
 
         upper_fence <- q3 + (1.5 * col_iqr)
@@ -784,8 +791,8 @@ outliers_to_na <- function(df, ignore_cols = NULL){
     new_df <- df
     
     for(column_name in used_cols){
-        q1 <- stats::quantile(df[,column_name], 1/4, type = 4)
-        q3 <- stats::quantile(df[,column_name], 3/4, type = 4)
+        q1 <- stats::quantile(df[,column_name], 1/4, type = 4, na.rm=TRUE)
+        q3 <- stats::quantile(df[,column_name], 3/4, type = 4, na.rm=TRUE)
         col_iqr <- q3 - q1
 
         upper_fence <- q3 + (1.5 * col_iqr)
@@ -861,7 +868,7 @@ columnwise_robust_scale <- function(df, ignore_cols = NULL){
 
     for(col in used_cols){
         col_centered <- scaled_df[,col] - median(scaled_df[,col], na.rm = TRUE)
-        col_c_iqr <- stats::IQR(col_centered)
+        col_c_iqr <- stats::IQR(col_centered, na.rm = TRUE)
         if(!is.null(col_c_iqr) & !is.na(col_c_iqr)){
             scaled_df[,col] <- (col_centered / col_c_iqr)
         } else {
@@ -888,8 +895,9 @@ columnwise_robust_scale <- function(df, ignore_cols = NULL){
 #' @seealso None
 #' @export 
 create_matched_data <- function(left_df, right_df, cols = c("targets", "targets")){
+    
     shared_levels <- intersect(
-        levels(as.factor(left_df[, cols[1]])), 
+        levels(as.factor(left_df[, cols[1]])),
         levels(as.factor(right_df[, cols[[2]]]))
         )
 
@@ -897,13 +905,12 @@ create_matched_data <- function(left_df, right_df, cols = c("targets", "targets"
     level_dfs_l <- NULL
     level_dfs_r <- NULL
 
-    for( level in shared_levels){
+    for(level in shared_levels){
         filtered_left <- left_df[(left_df[,cols[[1]]] == level),]
         filtered_right <- right_df[right_df[,cols[[2]]] == level,]
 
-
         num_records <- min(nrow(filtered_left), nrow(filtered_right))
-        
+
         if(num_records > 0){
             if(is.null(level_dfs_l)){
                 level_dfs_l <- filtered_left[1:num_records,]
@@ -916,7 +923,6 @@ create_matched_data <- function(left_df, right_df, cols = c("targets", "targets"
             } else {
                 level_dfs_r <- rbind(level_dfs_r, filtered_right[1:num_records,])
             }
-
         }
     }
 
@@ -926,4 +932,222 @@ create_matched_data <- function(left_df, right_df, cols = c("targets", "targets"
     ))
 
 
+}
+
+
+#' Imputes the NAs and outliers in the provided data.frame
+#' 
+#' This function imputes the NAs and the outliers in the dataset in two passes,
+#' one for the NAs, then replaces the outliers with NA, then imputes again.  
+#' Missforest is used for each imputation
+#' 
+#' @param df: the data.frame to transform
+#' @param ignore_cols: data columns that should be ignored in the calculation (defaults to NULL) 
+#' @return 
+#' @export
+#' 
+#'
+impute_outliers_and_na <- function(df, ignore_cols=NULL){
+
+    used_cols <- colnames(df)
+    if(!is.null(ignore_cols)){
+
+        used_cols <- setdiff(colnames(df), ignore_cols)
+    }
+
+    transformed_df <- df[, used_cols]
+
+    transformed_df <- inf_to_na(transformed_df)
+    transformed_df <- impute_spectra(transformed_df)
+    transformed_df <- outliers_to_na(transformed_df)
+    transformed_df <- impute_spectra(transformed_df)
+
+    if(!is.null(ignore_cols)){
+        cols_to_reattach <- setdiff(ignore_cols, colnames(df))
+        transformed_df <- cbind(transformed_df, df[,cols_to_reattach])
+    }
+
+    return(transformed_df)
+}
+
+#' Clips outliers on the high and low ends
+#' 
+#' This function alters the data.frame to have have all outliers replaced 
+#' with the upper or lower fence, meaning low outliers are replaces with 
+#' $Q_1 - 1.5IQR $ and the high outliers are replaced with $Q_3 + 1.5IQR $
+#' 
+#' @param df, the data frame to clip
+#' @param ignore_cols: data columns that should be ignored in the calculation (defaults to NULL) 
+#' @return a data.frame with outliers replaced
+#' @export
+#' 
+#'
+clip_outliers <- function(df, ignore_cols=NULL){
+    new_df <- df %>% as.data.frame()
+    
+    used_cols <- colnames(df)
+    if(!is.null(ignore_cols)){
+        used_cols <- setdiff(colnames(df), ignore_cols)
+    }
+
+    for(column_name in used_cols){
+        if(is.numeric(df[,column_name])){
+
+            q1 <- stats::quantile(df[,column_name], 1/4, type = 4, na.rm=TRUE)
+            q3 <- stats::quantile(df[,column_name], 3/4, type = 4, na.rm=TRUE)
+            col_iqr <- q3 - q1
+
+            upper_fence <- q3 + (1.5 * col_iqr)
+            lower_fence <- q1 - (1.5 * col_iqr)
+
+            high_outliers <- df[,column_name] > upper_fence
+            low_outliers <- df[,column_name] < lower_fence
+
+            
+            new_df[high_outliers, column_name] = upper_fence
+            new_df[low_outliers, column_name] = lower_fence
+        } else {
+            warning(
+                paste0(
+                    "Skipping column ", 
+                    column_name,
+                    " as it is not numeric")
+                    )
+        }
+    }
+
+    return(new_df)
+}
+
+apply_transform <- function(df, transform_type, ignore_cols = NULL){
+    if(is.function(transform_type)){
+        return(transform_type(df, ignore_cols = ignore_cols))
+    }
+
+    if(is.null(transform_type)){
+        return(df)
+    }
+
+    if(transform_type == "none"){
+        return(df)
+    } else if (transform_type == "minmax") {
+        print("Min-Max scaling data")
+       return(columnwise_min_max_scale(df, ignore_cols = ignore_cols))
+    } else if(transform_type == "standard"){
+        print("Standard scaling data")
+        return(standardize_df(df, ignore_cols = ignore_cols))
+    } else if(transform_type == "robust"){
+        print("Robust scaling data")
+        return(columnwise_robust_scale(df, ignore_cols = ignore_cols))
+    } else {
+        warning("Invalid transform specified, skipping...")
+        return(df)
+    }
+}
+
+handle_outliers <- function(df, transform_type, ignore_cols = NULL){
+
+    if(is.function(transform_type)){
+        return(transform_type(df, ignore_cols = ignore_cols))
+    }
+
+    if(is.null(transform_type)){
+        return(df)
+    }
+
+    if(transform_type == "clip"){
+        return(
+            clip_outliers(df, ignore_cols = ignore_cols)
+            )
+    } else if(transform_type == "none"){
+        return(df)
+    } else if(transform_type == "drop"){
+        
+        outlier_rows <- detect_outliers_columnwise(df, ignore_cols = ignore_cols)
+        return(
+            df[!outlier_rows,]
+            )
+    } else if(transform_type == "impute"){
+        return(
+            impute_outliers_and_na(df, ignore_cols = ignore_cols)
+        )
+    }
+}
+
+
+create_clip_transform <- function(df, ignore_cols = NULL ){
+    new_df <- df %>% as.data.frame()
+    cache_path <- "./assets/clip_data.json"
+    
+    used_cols <- colnames(df)
+    if(!is.null(ignore_cols)){
+        used_cols <- setdiff(colnames(df), ignore_cols)
+    }
+
+    fences <- list()
+
+    for(column_name in used_cols){
+        if(is.numeric(df[,column_name])){
+
+            q1 <- stats::quantile(df[,column_name], 1/4, type = 4, na.rm=TRUE)
+            q3 <- stats::quantile(df[,column_name], 3/4, type = 4, na.rm=TRUE)
+            col_iqr <- q3 - q1
+
+            upper_fence <- q3 + (1.5 * col_iqr)
+            lower_fence <- q1 - (1.5 * col_iqr)
+        }
+
+        fences[column_name] <- list(
+            upper = upper_fence,
+            lower = lower_fence
+        )
+    }
+
+    fence_json_str <- rjson::toJSON(fences)
+    write(fence_json_str, file = cache_path)
+
+
+    clip_transform <- function(
+            df, 
+            ignore_cols = NULL
+        ){
+            new_df <- df %>% as.data.frame()
+            cache_path <- "./assets/clip_data.json"
+
+            fences <- rjson::fromJSON(file=cache_path)
+
+            used_cols <- colnames(df)
+            if(!is.null(ignore_cols)){
+                used_cols <- setdiff(
+                    intersect(
+                        names(fences),
+                        colnames(df)
+                    ), 
+                    ignore_cols
+                )
+            }
+
+            for(column_name in used_cols){
+                upper_fence <- fences[column_name]$upper
+                lower_fence <- fences[column_name]$lower
+
+                high_outliers <- df[,column_name] > upper_fence
+                low_outliers <- df[,column_name] < lower_fence
+
+                new_df[high_outliers, column_name] = upper_fence
+                new_df[low_outliers, column_name] = lower_fence
+            }
+
+            return(new_df)
+        }
+
+    return(
+        clip_transform
+    )
+}
+
+# extend the is.nan prototype function for data frames
+is.nan.data.frame <- function(x){
+
+    do.call(cbind, lapply(x, is.nan))
 }

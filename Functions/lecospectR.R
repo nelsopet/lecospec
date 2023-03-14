@@ -43,6 +43,9 @@ source("Functions/training_utilities.R")
 #'
 estimate_land_cover <- function(
     input_filepath,
+    model = NULL, 
+    outlier_processing = NULL,
+    transform_type = NULL,
     config_path = "./config.json",
     cache_filepath = "./",
     output_filepath =  paste(
@@ -57,25 +60,13 @@ estimate_land_cover <- function(
     # Read in the configuration file
     config <- rjson::fromJSON(file = config_path)
 
-    # determine the number of cores to use
-    num_cores <- parallel::detectCores() - 1#detect cores on system
-    # see if the number of cores to use is specified in the config
-    if(is.integer(config$clusterCores)){
-        num_cores <- config$clusterCores
-    }
-    # set up the parallel cluster
-    raster::beginCluster(num_cores)
-    cl <- raster::getCluster()
-    print(cl)
+    
 
-
-    print(paste0(parallel::detectCores(), " Cores Detected for processing..."))
-    print(paste0("Cluster initialized with ", num_cores, " processes"))
-    background_blas_threads <- RhpcBLASctl::get_num_procs()
-    background_omp_threads <- RhpcBLASctl::omp_get_max_threads()
 
     # Load the model
-    model <- load_model(config$model_path)
+    if(is.null(model)){
+        model <- load_model(config$model_path)
+    }
 
     # load the input datacube and split into tiles
     input_raster <- raster::brick(input_filepath)
@@ -111,9 +102,39 @@ estimate_land_cover <- function(
         num_x = num_tiles_x,
         num_y = num_tiles_y,
         save_path = config$tile_path,
-        cluster = cl,
         verbose = FALSE
     )
+
+    # determine the number of cores to use
+    num_cores <- parallel::detectCores() - 1#detect cores on system
+    # see if the number of cores to use is specified in the config
+    if(is.integer(config$clusterCores)){
+        num_cores <- config$clusterCores
+    }
+    # set up the parallel cluster
+    raster::beginCluster(num_cores)
+    cl <- raster::getCluster()
+    print(cl)
+
+
+    print(paste0(parallel::detectCores(), " Cores Detected for processing..."))
+    print(paste0("Cluster initialized with ", num_cores, " processes"))
+    background_blas_threads <- RhpcBLASctl::get_num_procs()
+    background_omp_threads <- RhpcBLASctl::omp_get_max_threads()
+
+    # load the outlier processing method if none is specified by user
+    outlier_processing_cfg <- outlier_processing
+    if(is.null(outlier_processing)){
+        outlier_processing_cfg <- config$outlier_processing
+    }
+
+    # load transform type if none is specified
+    transform_type_cfg <- transform_type
+    if(is.null(transform_type)){
+        transform_type_cfg <- config$transform_type
+    }
+
+
 
 
     rm(input_raster)
@@ -150,6 +171,8 @@ estimate_land_cover <- function(
                 cluster = NULL,
                 return_raster = TRUE,
                 band_names = bandnames,
+                outlier_processing = outlier_processing_cfg,
+                transform_type = transform_type_cfg,
                 return_filename = TRUE,
                 save_path = prediction_filenames[[i]],
                 suppress_output = TRUE)
@@ -169,6 +192,8 @@ estimate_land_cover <- function(
                 cluster = cl,
                 return_raster = TRUE,
                 band_names = bandnames,
+                outlier_processing = outlier_processing_cfg,
+                transform_type = transform_type_cfg,
                 return_filename = TRUE,
                 save_path = prediction_filenames[[i]],
                 suppress_output = TRUE)
@@ -230,10 +255,8 @@ process_tile <- function(
     cluster = NULL,
     return_raster = TRUE,
     band_names=NULL,
-    standardize_input = FALSE,
-    normalize_input = FALSE,
-    scale_input = FALSE,
-    robust_scale_input = FALSE,
+    outlier_processing = "none",
+    transform_type = "none",
     return_filename = FALSE,
     save_path = NULL,
     suppress_output = FALSE
@@ -276,15 +299,10 @@ process_tile <- function(
         rm(base_df)
         gc()
 
-
-        cleaned_df_no_empty_cols <- drop_empty_columns(cleaned_df)
+        cleaned_df_no_empty_cols <- drop_empty_columns(cleaned_df) 
         
-        imputed_df <- impute_spectra(cleaned_df_no_empty_cols, cluster = cluster)
+        veg_indices <- get_vegetation_indices(cleaned_df_no_empty_cols, NULL, cluster = cluster)
 
-        veg_indices <- get_vegetation_indices(imputed_df, ml_model, cluster = cluster)
-
-        
-    
         try(
             rm(cleaned_df)
         )# sometimes garbage collection gets there first, which is fine
@@ -292,56 +310,77 @@ process_tile <- function(
 
         # drop rows that are uniformly zero
       
-        resampled_df <- resample_df(imputed_df, normalize = normalize_input, max_wavelength = 995.716)
+        resampled_df <- resample_df(
+            cleaned_df_no_empty_cols,
+            normalize = FALSE,
+            max_wavelength = 995.716,
+            drop_existing=TRUE)
         gc()
 
-        print(summary(resampled_df$X672.593_5nm))
-        print(summary(resampled_df$X667.593_5nm))
-        print(summary(resampled_df$X667.593_5nm))
-        print(summary(resampled_df$X667.593_5nm))
-
+        
         #print("Resampled Dataframe Dimensions:")
         #print(dim(resampled_df))
         #print("Index Dataframe Dimensions:")
         #print(dim(veg_indices))
 
-        df <- cbind(resampled_df, veg_indices)
+        df_full <- cbind(
+            subset(cleaned_df_no_empty_cols, select=c("x","y")),
+            resampled_df,
+            veg_indices)
         #print("Input Data Columns")
+        print(summary(df_full))
+        imputed_df <- impute_spectra(df_full, method="median", cluster = cluster) %>% as.data.frame()
         #print(colnames(df))
         #df <- df %>% dplyr::select(x, y, dplyr::all_of(target_model_cols)) 
         # above line should not be needed, testing then deleting
         rm(veg_indices)
         rm(resampled_df)
+        rm(cleaned_df_no_empty_cols)
         gc()
 
-
-        if(scale_input){
-            df <- columnwise_min_max_scale(
-                df, 
-                ignore_cols = c("x", "y")) %>%
-                as.data.frame()
+        if(!is.function(outlier_processing)){
+            print(paste0("Handling Outliers with method: ", outlier_processing))
+        } else {
+            print("Handling Outliers with User supplied function")
         }
-        if(robust_scale_input){
-            df <- columnwise_robust_scale(
-                df, 
-                ignore_cols = c("x", "y")
-                ) %>% as.data.frame()
+        df_no_outliers <- handle_outliers(
+            imputed_df,
+            outlier_processing,
+            ignore_cols = c("x", "y")
+        )
+        rm(df_full)
+
+        # replace Inf and NaN values with NA (to be imputed later)
+        df_no_outliers <- inf_to_na(df_no_outliers)
+        df_no_outliers[is.nan(df_no_outliers)] <- NA
+
+        if(!is.function(outlier_processing)){
+            print(paste0("Transforming the data with transform: ", transform_type))
+        } else {
+            print("Transforming Data with user supplied functions")
         }
-        
-        if(standardize_input){
-            df <- standardize_df(df, ignore_cols = c("x", "y"))
-        }
-
-        imputed_df_full <- impute_spectra(df, method="median")
-
-        print(summary(imputed_df_full))
-
-        
-        prediction <- apply_model(imputed_df_full, ml_model)
-        rm(df)
+        df_preprocessed <- apply_transform(
+            df_no_outliers,
+            transform_type,
+            ignore_cols = c("x", "y")
+        )
+        rm(df_no_outliers)
         gc()
+
         
-        prediction <- postprocess_prediction(prediction, imputed_df_full)
+        print(summary(df_preprocessed))
+        imputed_df_2 <- impute_spectra(
+                inf_to_na(df_preprocessed),
+                method="median")
+        print(summary(imputed_df_2))
+
+        prediction <- apply_model(
+            imputed_df_2,
+            ml_model)
+        
+        prediction <- postprocess_prediction(prediction, df_preprocessed)
+        rm(df_preprocessed)
+        gc()
 
         prediction <- convert_and_save_output(
             prediction,
