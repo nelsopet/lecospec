@@ -9,8 +9,83 @@ require(vegan)
 require(leaflet)
 require(sf)
 require(htmlwidgets)
+source("Functions/lecospectR.R")
 
-output<-raster("./Output/bg_outputs_m.grd")
+output<-raster("./Output/dev_FullCube/bg_28_1511_fncgrp1_PREDICTIONS_grd_corrected_balanced_10tree.tif")
+plot(output)
+########New way
+
+windows();plot_categorical_raster(
+    #raster::raster(output),
+    output,
+    define_plot_options(
+        title = "Bison Gulch Predicted Plant Functional Type",
+        xLabel = "Latitude",
+        yLabel = "Longitude"#,
+        #legend = c("Prediction", "Validation"),
+    )
+)
+
+output<-raster("./Output/dev_FullCube/ch_59_10_fncgrp1_PREDICTIONS_grd_corrected_balanced_10tree.tif")
+windows();plot_categorical_raster(
+    #raster::raster(output),
+    output,
+    define_plot_options(
+        title = "Chatanika Predicted Plant Functional Type",
+        xLabel = "Latitude",
+        yLabel = "Longitude",
+        legend = c("Prediction", "Validation"),
+    )
+)
+
+output<-raster("./Output/dev_FullCube/bc_north_6425_fncgrp1_PREDICTIONS_grd_corrected_balanced_10tree.tif")
+windows();plot_categorical_raster(
+    #raster::raster(output),
+    output,
+    define_plot_options(
+        title = "Bonanza Predicted Plant Functional Type",
+        xLabel = "Latitude",
+        yLabel = "Longitude",
+        legend = c("Prediction", "Validation"),
+    )
+)
+
+output<-raster("./Output/dev_FullCube/tm_22_2000_fncgrp1_PREDICTIONS_grd_corrected_balanced_10tree.tif")
+windows();plot_categorical_raster(
+    #raster::raster(output),
+    output,
+    define_plot_options(
+        title = "Twelve Mile Predicted Plant Functional Type",
+        xLabel = "Latitude",
+        yLabel = "Longitude",
+        legend = c("Prediction", "Validation"),
+    )
+)
+
+output<-raster("./Output/dev_FullCube/tm_52_0_fncgrp1_PREDICTIONS_grd_corrected_balanced_10tree.tif")
+windows();plot_categorical_raster(
+    #raster::raster(output),
+    output,
+    define_plot_options(
+        title = "Twelve Mile Predicted Plant Functional Type",
+        xLabel = "Latitude",
+        yLabel = "Longitude",
+        legend = c("Prediction", "Validation"),
+    )
+)
+
+output<-raster("./Output/dev_FullCube/em_17_5968_fncgrp1_PREDICTIONS_grd_corrected_balanced_10tree.tif")
+windows();plot_categorical_raster(
+    #raster::raster(output),
+    output,
+    define_plot_options(
+        title = "Eight Mile Predicted Plant Functional Type",
+        xLabel = "Latitude",
+        yLabel = "Longitude",
+        legend = c("Prediction", "Validation"),
+    )
+)
+#########Old way
 output_df<-rasterToPoints(output) %>% as.data.frame() %>% rename(z = layer)
 output_df_string<-convert_pft_codes(output_df, 1, to="string")
 output_df_fin<-raster::rasterFromXYZ(output_df_string, digits=4)
@@ -55,3 +130,5 @@ maprint<-leaflet(output) %>%
 #    leaflet.opacity::addOpacitySlider(layerId = "layer")
 #  return(map)
 #}
+
+
