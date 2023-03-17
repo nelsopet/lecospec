@@ -46,6 +46,7 @@ rm(pft_rst_proj_int)
 #rm(pft_rst)
 #rm(img_rst_tst_area)
 
+#Calculate a bunch of landscapemetrics, which ends up being way too big .. .several Gb
 pft_area_frac_all<-lapply(1:nrow(Output_file_names), function(x){
   pft_rst<-terra::rast(paste("Output/Projected/",Output_file_names[x,], sep=""))
   img_rst_tst_area<-landscapemetrics::lsm_p_area(pft_rst)
