@@ -1,0 +1,167 @@
+---
+title: "tarp_elm_radiance_to_refl"
+output: html_document
+date: "2023-03-17"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(fs)
+library(terra)
+library(sf)
+library(mapview)
+
+wDir <- path('/data/gis/gis_projects/2019/19-301_ABoVE_Biome_Shift/manuscript/pft_peter/100066_2018_07_25_21_18_45_raw_6425_rd_or')
+# wDir <- path('C:/Data/rad2refl')
+```
+
+```{r ingest}
+rad <- rast(path(wDir, 'raw_6425_rd_or.bsq'))
+NAflag(rad) <- 0
+mem_info(rad)
+
+# tarp <- vect(path(wDir, 'tarp_4326.shp'))
+tarp_sf <- read_sf(path(wDir, 'tarp_4326.shp'))
+
+tarp56 <- tarp_sf %>%
+  filter(refl == 56) %>%
+  vect()
+
+tarp56_pix <- extract(rad, 
+                      tarp_sf %>% filter(refl == 56) %>% vect()) %>%
+  t() %>% #Transpose
+  as_tibble(rownames='bandName') %>%
+  filter(bandName != 'ID') %>%
+  mutate(band_nm = as.numeric(str_split_i(bandName,' ',1)),
+         bandNum = row_number(band_nm)) %>%
+  select(starts_with('band'), everything()) %>%
+  pivot_longer(-starts_with('band'), values_to = 'radiance') %>%
+  select(-name)
+
+tarp56_percentiles <- tarp56_pix %>%
+  group_by(bandName, band_nm, bandNum) %>%
+  summarize(p000.56 = quantile(radiance, 0.00, na.rm=T),
+            p005.56 = quantile(radiance, 0.05, na.rm=T),
+            p010.56 = quantile(radiance, 0.10, na.rm=T),
+            p025.56 = quantile(radiance, 0.25, na.rm=T),
+            p050.56 = quantile(radiance, 0.50, na.rm=T),
+            p075.56 = quantile(radiance, 0.75, na.rm=T),
+            p090.56 = quantile(radiance, 0.90, na.rm=T),
+            p095.56 = quantile(radiance, 0.95, na.rm=T),
+            p100.56 = quantile(radiance, 1.00, na.rm=T))
+
+tarp32_pix <- extract(rad, 
+                      tarp_sf %>% filter(refl == 32) %>% vect()) %>%
+  t() %>% #Transpose
+  as_tibble(rownames='bandName') %>%
+  filter(bandName != 'ID') %>%
+  mutate(band_nm = as.numeric(str_split_i(bandName,' ',1)),
+         bandNum = row_number(band_nm)) %>%
+  select(starts_with('band'), everything()) %>%
+  pivot_longer(-starts_with('band'), values_to = 'radiance') %>%
+  select(-name)
+
+tarp32_percentiles <- tarp32_pix %>%
+  group_by(bandName, band_nm, bandNum) %>%
+  summarize(p000 = quantile(radiance, 0.00, na.rm=T),
+            p005 = quantile(radiance, 0.05, na.rm=T),
+            p010 = quantile(radiance, 0.10, na.rm=T),
+            p025 = quantile(radiance, 0.25, na.rm=T),
+            p050 = quantile(radiance, 0.50, na.rm=T),
+            p075 = quantile(radiance, 0.75, na.rm=T),
+            p090 = quantile(radiance, 0.90, na.rm=T),
+            p095 = quantile(radiance, 0.95, na.rm=T),
+            p100 = quantile(radiance, 1.00, na.rm=T))
+
+tarp11_pix <- extract(rad, 
+                      tarp_sf %>% filter(refl == 11) %>% vect()) %>%
+  t() %>% #Transpose
+  as_tibble(rownames='bandName') %>%
+  filter(bandName != 'ID') %>%
+  mutate(band_nm = as.numeric(str_split_i(bandName,' ',1)),
+         bandNum = row_number(band_nm)) %>%
+  select(starts_with('band'), everything()) %>%
+  pivot_longer(-starts_with('band'), values_to = 'radiance') %>%
+  select(-name)
+
+tarp11_percentiles <- tarp11_pix %>%
+  group_by(bandName, band_nm, bandNum) %>%
+  summarize(p000 = quantile(radiance, 0.00, na.rm=T),
+            p005 = quantile(radiance, 0.05, na.rm=T),
+            p010 = quantile(radiance, 0.10, na.rm=T),
+            p025 = quantile(radiance, 0.25, na.rm=T),
+            p050 = quantile(radiance, 0.50, na.rm=T),
+            p075 = quantile(radiance, 0.75, na.rm=T),
+            p090 = quantile(radiance, 0.90, na.rm=T),
+            p095 = quantile(radiance, 0.95, na.rm=T),
+            p100 = quantile(radiance, 1.00, na.rm=T))
+
+tarp_percentiles <- tarp11_percentiles %>%
+  left_join(tarp32_percentiles, by=c('bandName','bandNum','band_nm'), suffix=c('.11','.32')) %>%
+  left_join(tarp56_percentiles, by=c('bandName','bandNum','band_nm')) %>%
+  mutate(refl.11 = 0.11, refl.32 = 0.32, refl.56 = 0.56,
+         rad2ref_slope_p090 = (refl.56 - refl.11) / (p090.56 - p090.11),
+         rad2ref_intercept_p090 = refl.56 - (rad2ref_slope_p090 * p090.56),
+         rad2ref_slope_p025d_p075b = (refl.56 - refl.11) / (p075.56 - p025.11),
+         rad2ref_intercept_p025d_p075b = refl.56 - (rad2ref_slope_p025d_p075b * p075.56),
+         rad2ref_slope_p075 = (refl.56 - refl.11) / (p075.56 - p075.11),
+         rad2ref_intercept_p075 = refl.56 - (rad2ref_slope_p075 * p075.56),
+         rad2ref_slope_p050 = (refl.56 - refl.11) / (p050.56 - p050.11),
+         rad2ref_intercept_p050 = refl.56 - (rad2ref_slope_p050 * p050.56)) %>%
+  select(starts_with('band'), starts_with('rad2ref'), everything())
+
+s2_bands <- c(26,46,83,143,167,186,209,241)
+tarp_percentiles_s2 <- tarp_percentiles %>%
+  filter(bandNum %in% s2_bands)
+
+slope <- tarp_percentiles$rad2ref_slope_p025d_p075b %>%
+  as.numeric()
+class(slope)
+slope
+
+intercept <- tarp_percentiles$rad2ref_intercept_p025d_p075b %>%
+  as.numeric()
+class(intercept)
+intercept
+
+# test_rad <- rad[[1:10]]
+# test_rad
+# slope[1:10]
+
+tmpFiles(remove=T)
+
+mem_info(rad[[1:100]])
+ref1 <- ((rad[[1:100]] * slope[1:100]) + intercept[1:100])
+mem_info(rad[[101:200]])
+ref2 <- ((rad[[101:200]] * slope[101:200]) + intercept[101:200])
+mem_info(rad[[201:300]])
+ref3 <- ((rad[[201:300]] * slope[201:300]) + intercept[201:300])
+mem_info(rad[[301:326]])
+ref4 <- ((rad[[301:326]] * slope[301:326]) + intercept[301:326])
+
+mem_info(ref1)
+
+writeRaster(c(ref1, ref2, ref3, ref4), path(wDir, 'raw_6425_or_ref_p025d_p075b_v20230317.bsq'), filetype='ENVI', gdal=c("INTERLEAVE=BSQ"))
+file_copy(path(wDir, 'raw_6425_or_ref_p025d_p075b_v20230317.hdr'), path(wDir, 'raw_6425_or_ref_p025d_p075b_v20230317.hdr.backup'))
+file_copy(path(wDir, 'raw_6425_rd_or.hdr'), path(wDir, 'raw_6425_or_ref_p025d_p075b_v20230317.hdr'), overwrite=T)
+gdaladdo raw_6425_or_ref_p025d_p075b_v20230317.bsq -r average
+gdalinfo -stats raw_6425_or_ref_p025d_p075b_v20230317.bsq
+
+ref <- c(ref1, ref2, ref3, ref4)
+
+
+test_ref
+writeRaster(test_ref, path(wDir, 'test_ref.tif'))
+
+s2_bands <- c(26,46,83,143,167,186,209,241)
+tarp_percentiles_s2 <- tarp_percentiles %>%
+  filter(bandNum %in% s2_bands)
+
+reflectance <- (rad * slope) + intercept
+
+writeRaster(ref, path(wDir, 'raw_6425_rd_or_reflectance.bsq'), filetype='ENVI', gdal=c("INTERLEAVE=BSQ"))
+#gdaladdo raw_6425_rd_or_reflectance.bsq -r average
+#gdalinfo -stats 
+
+```
