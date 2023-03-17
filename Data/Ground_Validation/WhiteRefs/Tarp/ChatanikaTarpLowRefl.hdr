@@ -9,7 +9,7 @@ file type = ENVI Standard
 data type = 4
 interleave = bsq
 byte order = 0
-map info = {Geographic Lat/Lon, 1, 1, -147.480639545843, 65.1528514251249, 1.10860573040891e-06, 4.66389234600827e-07,WGS-84}
+map info = {Geographic Lat/Lon, 1, 1, -147.480639689669, 65.1528514480652, 1.10860574988305e-06, 4.66389234600827e-07,WGS-84}
 coordinate system string = {GEOGCS["GCS_WGS_84_with_axis_order_normalized_for_visualization",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137.0,298.257223563]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]]}
 band names = {
 layer.1,

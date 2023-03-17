@@ -1,7 +1,7 @@
 ENVI
 description = {
 M:/lecospec/lecospec/Data/Ground_Validation/WhiteRefs/Tarp/MurphyDomeTarpLowRefl.envi}
-samples = 52
+samples = 53
 lines   = 31
 bands   = 326
 header offset = 0
@@ -9,7 +9,7 @@ file type = ENVI Standard
 data type = 4
 interleave = bsq
 byte order = 0
-map info = {Geographic Lat/Lon, 1, 1, -148.353553925731, 64.953673558424, 1.05804252443092e-06, 4.48463222457371e-07,WGS-84}
+map info = {Geographic Lat/Lon, 1, 1, -148.353553541159, 64.9536734385783, 1.03688168933932e-06, 4.39493958072401e-07,WGS-84}
 coordinate system string = {GEOGCS["GCS_WGS_84_with_axis_order_normalized_for_visualization",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137.0,298.257223563]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]]}
 band names = {
 layer.1,
