@@ -99,7 +99,9 @@ ggplot(PFT_IMG_SPEC_clean_tall, aes(Wavelength, Median_Reflectance, group = Func
         strip.text = element_text(size = 25),
         axis.text = element_text(size = 20),
         axis.text.x = element_text(angle = 90)) +
-  geom_line(aes(Wavelength, Median_Reflectance,color = "red"),size = 2)+  
+  #geom_line(aes(Wavelength, Median_Reflectance,color = "red"),size = 2)+  
+    geom_line(aes(Wavelength, Median_Reflectance,color = Site),size = 2)+  
+
   geom_ribbon(aes(Wavelength, ymin = Pct_12_5_Reflectance, ymax = Pct_87_5_Reflectance), alpha = 0.3) +
   geom_ribbon(aes(Wavelength, ymin = Lower_Reflectance, ymax = Upper_Reflectance), alpha = 0.2) +
   facet_wrap(vars(Functional_group1_wN), scales = "fixed", ncol = 3) 
