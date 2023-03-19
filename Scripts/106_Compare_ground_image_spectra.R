@@ -11,8 +11,8 @@ spectra_mat<-Speclib_merged %>%
   as.matrix() 
 
 #Replace any NAs or Zeros with very small value
-spectra_mat[spectra_mat==0]<-0.00000001
-spectra_mat[is.na(spectra_mat)]<-0.00000001
+spectra_mat[spectra_mat==0] <- 0.00000001
+spectra_mat[is.na(spectra_mat)] <- 0.00000001
 
 #Multivariate analysis of PFT groups 
 spectra_PFT_adonis<-adonis2(spectra_mat~as.factor(Speclib_merged$Source)*as.factor(Speclib_merged$Functional_group1), method="euclidean", permutations=100)
