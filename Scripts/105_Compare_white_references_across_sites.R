@@ -101,7 +101,7 @@ group_by(site, refl, Wavelength) %>%
 
 unique(tarp_refl_tall$site)
 
-jpeg("figures/WhiteTarp_by_Site.jpg", height = 3000, width = 7000, res = 350)
+jpeg("figures/WhiteTarp_by_Site_reprocessedChatanika_BisonGulch_TwelveMile_EightMile_Bonanza_MurphyDome.jpg", height = 10000, width = 10000, res = 350)
 
 ggplot(tarp_refl_tall, aes(Wavelength, Median_Reflectance, color = refl), scales = "fixed")+
   theme(panel.background = element_rect(fill = "white", colour = "grey50"), 
@@ -111,14 +111,15 @@ ggplot(tarp_refl_tall, aes(Wavelength, Median_Reflectance, color = refl), scales
         strip.text = element_text(size = 25),
         axis.text = element_text(size = 20),
         axis.text.x = element_text(angle = 90)) +
-  geom_line(aes(Wavelength, Median_Reflectance, color = site), size = 1.5) +
+  geom_line(aes(Wavelength, Median_Reflectance, color = "black"), size = 1.5) +
   #scale_color_grey() +
-  #geom_ribbon(aes(Wavelength, ymin = Pct_12_5_Reflectance, ymax = Pct_87_5_Reflectance), alpha = 0.3) +
-  #geom_ribbon(aes(Wavelength, ymin = Lower_Reflectance, ymax = Upper_Reflectance), alpha = 0.2) +
+  geom_ribbon(aes(Wavelength, ymin = Pct_12_5_Reflectance, ymax = Pct_87_5_Reflectance), alpha = 0.3) +
+  geom_ribbon(aes(Wavelength, ymin = Lower_Reflectance, ymax = Upper_Reflectance), alpha = 0.2) +
   labs(title = "Tarp reflectance from imagery by site with image name",
   x = "Wavelength (nm)",
   y = "Reflectance") +
   ggplot2::geom_hline(yintercept = c(0.55, 0.32, 0.1))+
-  facet_wrap(vars(refl), scales = "free_y", ncol = 3)
+  facet_wrap(vars(site, refl), scales = "free_y", ncol = 3)
  dev.off()
 
+table(tarp_refl_tall_)

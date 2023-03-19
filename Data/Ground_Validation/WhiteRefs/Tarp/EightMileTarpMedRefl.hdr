@@ -2,14 +2,14 @@ ENVI
 description = {
 M:/lecospec/lecospec/Data/Ground_Validation/WhiteRefs/Tarp/EightMileTarpMedRefl.envi}
 samples = 24
-lines   = 53
+lines   = 55
 bands   = 326
 header offset = 0
 file type = ENVI Standard
 data type = 4
 interleave = bsq
 byte order = 0
-map info = {Geographic Lat/Lon, 1, 1, -149.254634209827, 63.8766543866018, 9.35967458796464e-07, 4.12647156327428e-07,WGS-84}
+map info = {Geographic Lat/Lon, 1, 1, -149.254633800073, 63.8766545470305, 9.15620349909811e-07, 4.03676565952082e-07,WGS-84}
 coordinate system string = {GEOGCS["GCS_WGS_84_with_axis_order_normalized_for_visualization",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137.0,298.257223563]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]]}
 band names = {
 layer.1,
