@@ -15,7 +15,7 @@ imgs_names<-c("BisonGulch_100251_Bison_Gulch_line2_2019_08_12_01_07_28_sceneWhit
 ,"TwelveMile_100241_12mile_line3_2019_08_09_21_28_52_sceneWhiteReference")
 
 #Read in the band names
-band_names <- read.csv("./assets/bands.csv")$x[1:band_count] %>% as.vector()
+band_names <- read.csv("./assets/bands.csv")$x[1:326] %>% as.vector()
 
 #For each white reference, read in the image, cast it to dataframe, add site and band info
 # and rename columns
@@ -35,6 +35,8 @@ df$Wavelength<-band_names
 })
 
 WhiteRef_df<-Reduce(function (x,y) merge(x, y, all=TRUE), WhiteRef_df)
+colnames(WhiteRef_df)
+
 
 jpeg("figures/WhiteRef_by_Site.jpg", height = 3000, width = 5000, res = 350)
 

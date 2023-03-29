@@ -1,9 +1,10 @@
 source("./Functions/lecospectR.R")
 
-Cleaned_Speclib_tall_Fnc_grp1<-read.csv("./Data/C_001_SC3_Cleaned_SpectralLib_tall_Fnc_grp1.csv")
+#Cleaned_Speclib_tall_Fnc_grp1<-read.csv("./Data/C_001_SC3_Cleaned_SpectralLib_tall_Fnc_grp1.csv")
+Cleaned_Speclib_tall_Fnc_grp1<-read.csv("./Data/C_001_SC3_Cleaned_SpectralLib_CenAkCommonSp_tall_Fnc_grp1.csv")
 Cleaned_Speclib_tall_Fnc_grp1<-Cleaned_Speclib_tall_Fnc_grp1 %>% dplyr::mutate(Source = "Ground")
 PFT_IMG_SPEC_clean_tall<-read.csv("./Data/Ground_Validation/PFT_Image_spectra/PFT_Image_SpectralLib_Clean_tall.csv")
-
+head(Cleaned_Speclib_merge)
 Speclib_merged<- bind_rows(Cleaned_Speclib_merge, PFT_IMG_SPEC_clean_merge)
 Speclib_merged %>% 
   dplyr::mutate(Area= case_when(Area == "EightMile" ~ "Eight Mile",
