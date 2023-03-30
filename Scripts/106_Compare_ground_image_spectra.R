@@ -117,8 +117,8 @@ biplot(img_pca_pr)
 spectra_mat<-rbind(img_mat, grd_mat)
 
 #Replace any NAs or Zeros with very small value
-spectra_mat[spectra_mat==0]<-0.00000001
-spectra_mat[is.na(spectra_mat)]<-0.00000001
+spectra_mat[spectra_mat==0] <- 0.00000001
+spectra_mat[is.na(spectra_mat)] <- 0.00000001
 
 #Remove columns not usable in PCA
 tst_mat<-spectra_mat

@@ -23,8 +23,13 @@ RawUID<-PFT_IMG_SPEC_clean %>%
   dplyr::select(UID) %>% as.data.frame() #%>%
   #imgs_names<-
 
-SiteNames<-str_split(RawUID[,1], "PFT") %>% as.data.frame() %>% t %>% as.data.frame() %>%dplyr::rename(Site = V1) %>% dplyr::select(Site)
-rownames(SiteNames)<-NULL
+SiteNames<-str_split(RawUID[,1], "PFT") %>% 
+  as.data.frame() %>% 
+  t %>% 
+  as.data.frame() %>%
+  dplyr::rename(Site = V1) %>% 
+  dplyr::select(Site)
+rownames(SiteNames) <- NULL
 
 
 site_colors = createPalette(length(unique(SiteNames$Site)), "#ff0000") %>%
@@ -33,7 +38,9 @@ site_colors = createPalette(length(unique(SiteNames$Site)), "#ff0000") %>%
   mutate(Site = unique(SiteNames$Site)) %>%
   mutate(ColorNum = seq(1:length(unique(SiteNames$Site))));
 
-site_color_list<-SiteNames %>% dplyr::select(Site) %>% inner_join(site_colors, by="Site", keep=FALSE)
+site_color_list <- SiteNames %>% 
+  dplyr::select(Site) %>% 
+  inner_join(site_colors, by="Site", keep=FALSE)
 
 names_ignore<-c("X" 
 ,"UID"
@@ -41,7 +48,7 @@ names_ignore<-c("X"
 ,"ScanNum"
 ,"Functional_group1"
 ,"species_count", 
-"PFT")
+"PFT")# this is so SQL lol 
 
 PFT_IMG_SPEC_clean_tall<-
 PFT_IMG_SPEC_clean %>% 
