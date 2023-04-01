@@ -1,5 +1,6 @@
 source("./Functions/lecospectR.R")
 
+<<<<<<< HEAD
 Cleaned_Speclib_tall_Fnc_grp1 <- read.csv("./Data/C_001_SC3_Cleaned_SpectralLib_tall_Fnc_grp1.csv")
 Cleaned_Speclib_tall_Fnc_grp1 <- Cleaned_Speclib_tall_Fnc_grp1 %>% dplyr::mutate(Source = "Ground")
 PFT_IMG_SPEC_clean_tall <- read.csv("./Data/Ground_Validation/PFT_Image_spectra/PFT_Image_SpectralLib_Clean_tall.csv")
@@ -9,13 +10,174 @@ Speclib_merged <- bind_rows(Cleaned_Speclib_merge, PFT_IMG_SPEC_clean_merge)
 spectra_mat <- Speclib_merged %>%
   dplyr::select(-UID, -Source, -Functional_group1, -Area) %>%
   as.matrix()
+=======
+#Cleaned_Speclib_tall_Fnc_grp1<-read.csv("./Data/C_001_SC3_Cleaned_SpectralLib_tall_Fnc_grp1.csv")
+Cleaned_Speclib_tall_Fnc_grp1<-read.csv("./Data/C_001_SC3_Cleaned_SpectralLib_CenAkCommonSp_tall_Fnc_grp1.csv")
+Cleaned_Speclib_tall_Fnc_grp1<-Cleaned_Speclib_tall_Fnc_grp1 %>% dplyr::mutate(Source = "Ground")
+PFT_IMG_SPEC_clean_tall<-read.csv("./Data/Ground_Validation/PFT_Image_spectra/PFT_Image_SpectralLib_Clean_tall.csv")
+head(Cleaned_Speclib_merge)
+Speclib_merged<- bind_rows(Cleaned_Speclib_merge, PFT_IMG_SPEC_clean_merge)
+Speclib_merged %>% 
+  dplyr::mutate(Area= case_when(Area == "EightMile" ~ "Eight Mile",
+                                Area == "Murphy"  ~ "Murphy Dome",
+                                Area == "Big Trail" ~ "Fairbanks Area Big Trail Lake",
+                                Area == "12mile" ~ "Twelve Mile",
+                                Area == "Chatanika" ~ "Caribou Poker", 
+                                TRUE ~ Area)) %>%
+  group_by(Area,Functional_group1, Source) %>% 
+  tally() %>% 
+  pivot_wider(names_from = Functional_group1, values_from = n) %>% 
+  arrange(Area, Source) %>%
+  write.csv("./Output/TableScansPFTSiteAllSpectra.csv")
+
+img_mat<-PFT_IMG_SPEC_clean_merge %>% 
+  dplyr::select(-UID,-Source, -Functional_group1, -Area) %>% 
+  as.matrix() #%>% hist()
+img_mat<-img_mat*100
+img_mat_indices<-get_vegetation_indices(img_mat, ml_model = "mle/gs/models/b105c68f-c0df-45e6-97b5-f9e8c299752b")
+
+#windows()
+#Replace any NAs or Zeros with very small value
+#img_mat<-img_mat+0.00000001
+#tst_mat[is.na(tst_mat)]<-0.00000001
+#tst_na<-tst_mat[is.nan(tst_mat)==TRUE]
+
+#Build PCA with and without sqrt transform
+img_pca<-princomp(img_mat) #, center=FALSE, scale=FALSE)
+img_pca_pr<-prcomp(img_mat[,25:500])#, center=FALSE, scale=FALSE)
+
+#How many values in 
+seq(1:length(unique(PFT_IMG_SPEC_clean_merge$Functional_group1))) %>% max()
+cols<-palette.colors(n=8)
+windows()
+screeplot(img_pca_pr)
+windows()
+plot(scores(img_pca_pr)[,1:2], col=cols)#, pch=c(1:length(unique(PFT_IMG_SPEC_clean_merge$Area))))
+#biplot(tst_pca)
+title(main="PCA reflectance of PFT image spectra only (no veg indices)")
+legend(x = 200, y =100, legend=unique(PFT_IMG_SPEC_clean_merge$Functional_group1), lty=1, col=c(1:8), cex=1)
+#legend(x = -200, y =-700, legend=unique(Speclib_merged$Source), pch=c(1:2), cex=0.5)
+legend(x = 300, y =100, legend=unique(PFT_IMG_SPEC_clean_merge$Area), pch=c(1:length(unique(PFT_IMG_SPEC_clean_merge$Area))), cex=0.8)
+
+windows()
+boxplot(scores(img_pca_pr)[,1]~PFT_IMG_SPEC_clean_merge$Functional_group1)
+title(main="PCA axis 2 of reflectance of PFT image spectra only (no veg indices)")
+
+str(img_mat_indices)
+img_veg_pca_pr<-prcomp(img_mat_indices)#, center=FALSE, scale=FALSE)
+windows()
+
+
+plot(scores(img_veg_pca_pr)[,1:2], col=cols)#, pch=c(1:length(unique(PFT_IMG_SPEC_clean_merge$Area))))
+
+
+#######Ground
+grd_mat<-Cleaned_Speclib_merge %>% 
+  dplyr::select(-UID,-Source, -Functional_group1, -Area) %>% 
+  as.matrix() #%>% hist()
+
+grd_mat_indices<-get_vegetation_indices(grd_mat, ml_model = "mle/gs/models/b105c68f-c0df-45e6-97b5-f9e8c299752b")
+grd_mat_indices[is.na(grd_mat_indices)]<-0.00000001
+
+#Replace any NAs or Zeros with very small value
+grd_mat<-grd_mat+0.00000001
+grd_mat[is.na(grd_mat)]<-0.00000001
+#tst_na<-tst_mat[is.nan(tst_mat)==TRUE]
+
+#Build PCA with and without sqrt transform
+grd_pca<-princomp(grd_mat) #, center=FALSE, scale=FALSE)
+grd_pca_pr<-prcomp(grd_mat[,25:500])#, center=FALSE, scale=FALSE)
+
+#How many values in 
+seq(1:length(unique(Cleaned_Speclib_merge$Functional_group1)))
+cols<-palette.colors(n=9)
+windows()
+screeplot(grd_pca_pr)
+windows()
+plot(scores(grd_pca_pr)[,1:2], col=cols, pch=c(1:length(unique(Cleaned_Speclib_merge$Area))))
+#biplot(tst_pca)
+title(main="PCA of reflectance of PFT ground spectra only (no veg indices)")
+#legend(x = -6, y =10, legend=unique(PFT_SPEC$Functional_group1), lty=1, col=c(1:9), cex=0.5)
+#legend(x = -6, y =3, legend=unique(PFT_SPEC$Source), pch=c(1:2), cex=0.5)
+legend(x = -300, y =800, legend=unique(Cleaned_Speclib_merge$Functional_group1), lty=1, col=cols, cex=0.5)
+#legend(x = -200, y =-700, legend=unique(Speclib_merged$Source), pch=c(1:2), cex=0.5)
+legend(x = -800, y =800, legend=unique(Cleaned_Speclib_merge$Area), pch=c(1:length(unique(Cleaned_Speclib_merge$Area))), cex=0.8)
+
+
+windows()
+boxplot(scores(grd_pca_pr)[,2]~Cleaned_Speclib_merge$Functional_group1)
+title(main="PCA axis 2 of reflectance of PFT ground spectra only (no veg indices)")
+
+grd_pca_pr<-princomp(grd_mat_indices)#, center=FALSE, scale=FALSE)
+hist(grd_mat)
+
+
+predction_img_to_grd<-predict(img_pca_pr, grd_mat)
+predction_grd_to_img<-predict(grd_pca_pr, img_mat)
+
+tst<-c(predction_img_to_grd,scores(img_pca)[,1:2])
+str(predction_img_to_grd)
+plot(predction_img_to_grd)
+str(predction_grd_to_img)
+str(predction_img_to_grd)
+biplot(img_pca_pr)
+
+
+###########Merged ground and image
+
+spectra_mat<-rbind(img_mat, grd_mat)
+>>>>>>> origin/dev
 
 # Replace any NAs or Zeros with very small value
 spectra_mat[spectra_mat == 0] <- 0.00000001
 spectra_mat[is.na(spectra_mat)] <- 0.00000001
 
+<<<<<<< HEAD
 # Multivariate analysis of PFT groups
 spectra_PFT_adonis <- adonis2(spectra_mat ~ as.factor(Speclib_merged$Source) * as.factor(Speclib_merged$Functional_group1), method = "euclidean", permutations = 100)
+=======
+#Remove columns not usable in PCA
+tst_mat<-spectra_mat
+
+windows()
+hist(tst_mat)
+#Replace any NAs or Zeros with very small value
+tst_mat<-tst_mat+0.00000001
+#tst_mat[is.na(tst_mat)]<-0.00000001
+#tst_na<-tst_mat[is.nan(tst_mat)==TRUE]
+
+#Build PCA with and without sqrt transform
+tst_pca<-princomp(tst_mat) #, center=FALSE, scale=FALSE)
+tst_pca_pr<-prcomp(tst_mat[,40:450])#, center=FALSE, scale=FALSE)
+
+
+#How many values in 
+seq(1:length(unique(Speclib_merged$Functional_group1)))
+cols<-palette.colors(n=9)
+windows()
+screeplot(tst_pca_pr)
+windows()
+plot(scores(tst_pca_pr)[,1:2], col=cols, pch=c(1:2))
+#biplot(tst_pca)
+title(main="PCA reflectance merging image and ground spectra libraries (no veg indices)")
+#legend(x = -6, y =10, legend=unique(PFT_SPEC$Functional_group1), lty=1, col=c(1:9), cex=0.5)
+#legend(x = -6, y =3, legend=unique(PFT_SPEC$Source), pch=c(1:2), cex=0.5)
+legend(x = 200, y =-400, legend=unique(Speclib_merged$Functional_group1), lty=1, col=c(1:9), cex=0.8)
+legend(x = 0, y =-500, legend=unique(Speclib_merged$Source), pch=c(1:2), cex=0.8)
+#legend(x = 200, y =-100, legend=unique(Speclib_merged$Area), pch=c(1:length(unique(Speclib_merged$Area))), cex=0.8)
+
+tst_mat_clust<-hclust(dist(tst_mat))
+tst_mat_clust_dend<-as.dendrogram(tst_mat_clust)
+plot(tst_mat_clust, group = as.factor(PFT_SPEC$Source))
+
+jpeg("./Output/PCA_ALL_SPECTRA_boxplot_PC2.jpeg", width = 1200, height =400)
+windows()
+boxplot(scores(tst_pca_pr)[,3]~Speclib_merged$Functional_group1) # nolint
+title(main="PCA axis 2 of reflectance merging image and ground spectra libraries (no veg indices)")
+dev.off()
+#Multivariate analysis of PFT groups 
+spectra_PFT_adonis<-adonis2(spectra_mat~as.factor(Speclib_merged$Source)*as.factor(Speclib_merged$Functional_group1), method="euclidean", permutations=100)
+>>>>>>> origin/dev
 spectra_PFT_adonis
 
 

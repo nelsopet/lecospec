@@ -52,6 +52,10 @@ PFT_IMG_SPEC <-
   dplyr::select(UID, ScanNum, sample_name, PFT, FncGrp1, Site, everything()) %>%
   dplyr::select(-X)
 
+str(PFT_IMG_SPEC)
+PFT_IMG_SPEC$Site<-PFT_IMG_SPEC$Site$Site
+str(PFT_IMG_SPEC)
+
 
 write.csv(PFT_IMG_SPEC, "./Data/Ground_Validation/PFT_image_spectra/PFT_Image_SpectralLib_Clean.csv")
 save(PFT_IMG_SPEC, file = "./Data/Ground_Validation/PFT_image_spectra/PFT_Image_SpectralLib_Clean.rda")

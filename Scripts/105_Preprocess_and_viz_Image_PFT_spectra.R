@@ -4,6 +4,7 @@ require(vegan)
 source("Functions/lecospectR.R")
 #Image spectra
 PFT_IMG_SPEC_clean <- read.csv("./Data/Ground_Validation/PFT_Image_spectra/PFT_Image_SpectralLib_Clean.csv")
+head(PFT_IMG_SPEC_clean)
 names_drop<-c("PFT.1",
               "PFT.2",
               "PFT.3", 

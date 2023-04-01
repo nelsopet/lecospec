@@ -6,7 +6,10 @@ require(Polychrome)
 require(PERMANOVA)
 #Read in spectral libraries from both ground and image tagged with the same labels
 #Ground spectra
-Cleaned_Speclib <- read.csv("./Output/C_001_SC3_Cleaned_SpectralLib.csv") 
+#Cleaned_Speclib <- read.csv("./Output/C_001_SC3_Cleaned_SpectralLib.csv") 
+#Cleaned_Speclib <- read.csv("./Output/C_001_SC3_Cleaned_SpectralLib_CommonSp.csv") 
+Cleaned_Speclib <- read.csv("./Output/C_001_SC3_Cleaned_SpectralLib_CenAkCommonSp.csv") 
+
 Cleaned_Speclib_derivs<-read.csv("./Output/D_002_SpecLib_Derivs.csv")
 
 #List of column names to ignore 
@@ -67,7 +70,8 @@ Cleaned_Speclib_tall_Fnc_grp1<-
  dplyr::filter(Wavelength>397 & Wavelength<1000)
 
   
-write.csv(Cleaned_Speclib_tall_Fnc_grp1, "./Data/C_001_SC3_Cleaned_SpectralLib_tall_Fnc_grp1.csv")
+#write.csv(Cleaned_Speclib_tall_Fnc_grp1, "./Data/C_001_SC3_Cleaned_SpectralLib_tall_Fnc_grp1.csv")
+write.csv(Cleaned_Speclib_tall_Fnc_grp1, "./Data/C_001_SC3_Cleaned_SpectralLib_CenAkCommonSp_tall_Fnc_grp1.csv")
 
 jpeg("Output/Fnc_grp1_spectral_profiles_AllSpectra.jpg", height = 10000, width = 9000, res = 350)
 ggplot(Cleaned_Speclib_tall_Fnc_grp1, aes(Wavelength, Median_Reflectance, group = Functional_group1), scales = "fixed")+
