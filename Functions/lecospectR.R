@@ -294,7 +294,7 @@ process_tile <- function(
 
         rm(raster_obj)
         gc()
-
+        print(colnames(base_df))
         cleaned_df <- drop_zero_rows(base_df)
         rm(base_df)
         gc()

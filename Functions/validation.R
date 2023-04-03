@@ -511,5 +511,5 @@ calculate_validation_r2 <- function(aggregated_results) {
     lm_fit <- lm(
         prediction ~ validation
     )
-    return(summary(lm_fit)$adj.r.squared)
+    return(summary(lm_fit)$r.squared)
 }
