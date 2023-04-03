@@ -4,6 +4,7 @@ require(vegan)
 source("Functions/lecospectR.R")
 #Image spectra
 PFT_IMG_SPEC_clean <- read.csv("./Data/Ground_Validation/PFT_Image_spectra/PFT_Image_SpectralLib_Clean.csv")
+head(PFT_IMG_SPEC_clean)
 names_drop<-c("PFT.1",
               "PFT.2",
               "PFT.3", 
@@ -22,8 +23,13 @@ RawUID<-PFT_IMG_SPEC_clean %>%
   dplyr::select(UID) %>% as.data.frame() #%>%
   #imgs_names<-
 
-SiteNames<-str_split(RawUID[,1], "PFT") %>% as.data.frame() %>% t %>% as.data.frame() %>%dplyr::rename(Site = V1) %>% dplyr::select(Site)
-rownames(SiteNames)<-NULL
+SiteNames<-str_split(RawUID[,1], "PFT") %>% 
+  as.data.frame() %>% 
+  t %>% 
+  as.data.frame() %>%
+  dplyr::rename(Site = V1) %>% 
+  dplyr::select(Site)
+rownames(SiteNames) <- NULL
 
 
 site_colors = createPalette(length(unique(SiteNames$Site)), "#ff0000") %>%
@@ -32,7 +38,9 @@ site_colors = createPalette(length(unique(SiteNames$Site)), "#ff0000") %>%
   mutate(Site = unique(SiteNames$Site)) %>%
   mutate(ColorNum = seq(1:length(unique(SiteNames$Site))));
 
-site_color_list<-SiteNames %>% dplyr::select(Site) %>% inner_join(site_colors, by="Site", keep=FALSE)
+site_color_list <- SiteNames %>% 
+  dplyr::select(Site) %>% 
+  inner_join(site_colors, by="Site", keep=FALSE)
 
 names_ignore<-c("X" 
 ,"UID"
@@ -40,7 +48,7 @@ names_ignore<-c("X"
 ,"ScanNum"
 ,"Functional_group1"
 ,"species_count", 
-"PFT")
+"PFT")# this is so SQL lol 
 
 PFT_IMG_SPEC_clean_tall<-
 PFT_IMG_SPEC_clean %>% 
@@ -99,7 +107,9 @@ ggplot(PFT_IMG_SPEC_clean_tall, aes(Wavelength, Median_Reflectance, group = Func
         strip.text = element_text(size = 25),
         axis.text = element_text(size = 20),
         axis.text.x = element_text(angle = 90)) +
-  geom_line(aes(Wavelength, Median_Reflectance,color = "red"),size = 2)+  
+  #geom_line(aes(Wavelength, Median_Reflectance,color = "red"),size = 2)+  
+    geom_line(aes(Wavelength, Median_Reflectance,color = Site),size = 2)+  
+
   geom_ribbon(aes(Wavelength, ymin = Pct_12_5_Reflectance, ymax = Pct_87_5_Reflectance), alpha = 0.3) +
   geom_ribbon(aes(Wavelength, ymin = Lower_Reflectance, ymax = Upper_Reflectance), alpha = 0.2) +
   facet_wrap(vars(Functional_group1_wN), scales = "fixed", ncol = 3) 

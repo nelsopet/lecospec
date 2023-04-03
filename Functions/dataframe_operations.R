@@ -738,7 +738,7 @@ detect_outliers_columnwise <- function(df, ignore_cols = NULL){
     for(column_name in used_cols){
         q1 <- stats::quantile(df[,column_name], 1/4, type = 4, na.rm=TRUE)
         q3 <- stats::quantile(df[,column_name], 3/4, type = 4, na.rm=TRUE)
-        col_iqr <- q3 - q1
+        col_iqr <- (q3 - q1)
 
         upper_fence <- q3 + (1.5 * col_iqr)
         lower_fence <- q1 - (1.5 * col_iqr)
@@ -906,22 +906,31 @@ create_matched_data <- function(left_df, right_df, cols = c("targets", "targets"
     level_dfs_r <- NULL
 
     for(level in shared_levels){
+        # filter only to the selected PFT
         filtered_left <- left_df[(left_df[,cols[[1]]] == level),]
         filtered_right <- right_df[right_df[,cols[[2]]] == level,]
 
+        # get the number of records to include in the output
         num_records <- min(nrow(filtered_left), nrow(filtered_right))
 
         if(num_records > 0){
+            # shuffle the data before selecting rows
+            shuffle_left <- permute::shuffle(nrow(filtered_left))
+            shuffle_right <- permute::shuffle(nrow(filtered_right))
             if(is.null(level_dfs_l)){
-                level_dfs_l <- filtered_left[1:num_records,]
+                level_dfs_l <- filtered_left[shuffle_left,][1:num_records,]
             } else {
-                level_dfs_l <- rbind(level_dfs_l, filtered_left[1:num_records,])
+                level_dfs_l <- rbind(
+                    level_dfs_l, 
+                    filtered_left[shuffle_left,][1:num_records,])
             }
 
             if(is.null(level_dfs_r)){
-                level_dfs_r <- filtered_right[1:num_records,]
+                level_dfs_r <- filtered_right[shuffle_right,][1:num_records,]
             } else {
-                level_dfs_r <- rbind(level_dfs_r, filtered_right[1:num_records,])
+                level_dfs_r <- rbind(
+                    level_dfs_r, 
+                    filtered_right[shuffle_right,][1:num_records,])
             }
         }
     }
@@ -956,7 +965,6 @@ impute_outliers_and_na <- function(df, ignore_cols=NULL){
     }
 
     transformed_df <- df[, used_cols]
-
     transformed_df <- inf_to_na(transformed_df)
     transformed_df <- impute_spectra(transformed_df)
     transformed_df <- outliers_to_na(transformed_df)
@@ -1150,4 +1158,12 @@ create_clip_transform <- function(df, ignore_cols = NULL ){
 is.nan.data.frame <- function(x){
 
     do.call(cbind, lapply(x, is.nan))
+}
+
+
+filter_df_bands <- function(df){
+    bands_col_names <- read.csv("assets/band_cols.csv")$names %>% as.character()
+    df_cols <- colnames(df) %>% as.character()
+    target_cols <- intersect(df_cols, bands_col_names)
+    return(df[,target_cols])
 }

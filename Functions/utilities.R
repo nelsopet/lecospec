@@ -284,7 +284,7 @@ create_stratified_sample <- function(
     val_t_chars <- targets[permutation] %>% as.character()
     print(val_t_chars[1:5])
     counts <- c(0,0,0,0,0,0,0,0,0)
-    samples <- vector(mode = "logical", length=length(targets))
+    samples <- vector(mode = "logical", length = length(targets))
 
     for(i in seq_along(val_t_chars)){
         samples[[i]] <- FALSE
