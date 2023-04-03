@@ -165,10 +165,13 @@ preprocess_raster_to_df <- function(raster_obj, model, band_names=NULL) {
     }
     print("Converted to Data frame?")
     print(is.data.frame(df))
+    print(colnames(df))
     df <- remove_noisy_cols(df, max_index = 326) %>% as.data.frame()
     print("Noisy columns removed")
     print(is.data.frame(df))
     df <- filter_bands(df)
+    print(colnames(df))
+
     #df <- filter_empty_points(df)
     print("Filtered")
     print(is.data.frame(df))
