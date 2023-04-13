@@ -505,11 +505,32 @@ calculate_chi_squared_probability <- function(aggregated_results) {
 }
 
 calculate_validation_r2 <- function(aggregated_results) {
-    row_filter <- aggregated_results$key != "Forb"
-    validation <- aggregated_results[row_filter, "validation_counts"] / sum(aggregated_results[row_filter, "validation_counts"])
-    prediction <- aggregated_results[row_filter, "predicted_counts"] / sum(aggregated_results[row_filter, "predicted_counts"])
+    forb_filter <- aggregated_results$key != "Forb"
+    validation <- aggregated_results[forb_filter, "validation_counts"] / sum(aggregated_results[forb_filter, "validation_counts"])
+    prediction <- aggregated_results[forb_filter, "predicted_counts"] / sum(aggregated_results[forb_filter, "predicted_counts"])
     lm_fit <- lm(
         prediction ~ validation
     )
     return(summary(lm_fit)$r.squared)
+}
+
+
+calculate_rpd <- function(aggregated_results){
+    #forb_filter <- aggregated_results$key != "Forb"
+    df <- aggregated_results#[forb_filter]
+
+    pred <- df$prediction_prop %>% as.numeric()
+    val <- df$validation_prop %>% as.numeric()
+
+    #print(pred)
+    #print(val)
+
+    rpds <- numeric(length = nrow(df))
+    for(i in seq_len(nrow(df))){
+        rpd <- 2 * abs(val[[i]] - pred[[i]] ) / ( pred[[i]] + val[[i]]) 
+        rpds[[i]] <- rpd
+    }
+
+    #print(rpds)
+    return(mean(rpds, na.rm = TRUE))
 }

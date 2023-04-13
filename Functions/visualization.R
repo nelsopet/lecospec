@@ -310,6 +310,8 @@ calculate_r_squared <- function(
     linear_model <- lm(
         df[,dependent_var] ~ df[,independent_var]
     )
+
+    
     return(summary(linear_model)$r.squared)
 }
 
