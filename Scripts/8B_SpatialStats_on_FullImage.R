@@ -5,15 +5,16 @@ source("Functions/lecospectR.R")
 
 #List all images that are predictions
 
-Output_files<-list.files("Output/") # %>% 
+Output_files<-list.files("Output/dev_FullCube") # %>% 
 Output_PFT_names<-read.csv("assets/fg1RAT.csv") 
 Output_file_names<-
-str_match(Output_files, ".*fncgrp1_PREDICTIONS.tif") %>%
+str_match(Output_files, ".*10tree.tif") %>%
   as.data.frame() %>% dplyr::filter(is.na(V1)==FALSE) %>% unique()
   #dplyr::select(V2) #%>% 
   #as.data.frame()
-str_match(Output_files, ".*fncgrp1_PREDICTIONS.tif") %>%
-  as.data.frame() %>% dplyr::filter(is.na(V1)==FALSE) %>% unique()
+  #str_match(Output_files, ".*fncgrp1_PREDICTIONS.tif") %>%
+  #as.data.frame() %>% dplyr::filter(is.na(V1)==FALSE) %>% unique()
+Output_file_names<-Output_file_names[c(-1,-4),]
 
 #UNIT TEST: PASS 
 #Read in images and project to NAD83 Alaska Albers so the units are meters
@@ -27,11 +28,11 @@ str_match(Output_files, ".*fncgrp1_PREDICTIONS.tif") %>%
 #terra::writeRaster(pft_rst_proj_int,paste("Output/Projected/",Output_file_names[1,], sep=""))
 
 #
-lapply(1:nrow(Output_file_names),function(x) {
-pft_rst<-terra::rast(paste("Output/",Output_file_names[x,], sep=""))
+lapply(1:length(Output_file_names),function(x) {
+pft_rst<-terra::rast(paste("Output/dev_FullCube/",Output_file_names[x], sep=""))
 pft_rst_proj<-terra::project(pft_rst, "epsg:6393")
 pft_rst_proj_int<- setValues(pft_rst_proj, as.integer(values(pft_rst_proj)))
-terra::writeRaster(pft_rst_proj_int,paste("Output/Projected/",Output_file_names[x,], sep=""), overwrite = T)
+terra::writeRaster(pft_rst_proj_int,paste("Output/Projected/",Output_file_names[x], sep=""), overwrite = T)
 
 rm(pft_rst)
 rm(pft_rst_proj)
@@ -40,20 +41,19 @@ rm(pft_rst_proj_int)
 })
 
 #UNIT TEST: PASS
-#pft_rst<-terra::rast(paste("Output/Projected/",Output_file_names[1,], sep=""))
+#pft_rst<-terra::rast(paste("Output/Projected/",Output_file_names[1], sep=""))
 #img_rst_tst_area<-landscapemetrics::lsm_p_area(pft_rst)
 #img_tst_lsm<-calculate_lsm(pft_rst)
 #rm(pft_rst)
 #rm(img_rst_tst_area)
 
-#Calculate a bunch of landscapemetrics, which ends up being way too big .. .several Gb
-pft_area_frac_all<-lapply(1:nrow(Output_file_names), function(x){
-  pft_rst<-terra::rast(paste("Output/Projected/",Output_file_names[x,], sep=""))
+pft_area_frac_all<-lapply(1:length(Output_file_names), function(x){
+  pft_rst<-terra::rast(paste("Output/Projected/",Output_file_names[x], sep=""))
   img_rst_tst_area<-landscapemetrics::lsm_p_area(pft_rst)
-  img_rst_tst_area$image<-Output_file_names[x,]
+  img_rst_tst_area$image<-Output_file_names[x]
   #img_rst_tst_area$PFT<-Output_PFT_names$CAT[x]
   img_rst_tst_frac<-landscapemetrics::lsm_p_frac(pft_rst)
-  img_rst_tst_frac$image<-Output_file_names[x,]
+  img_rst_tst_frac$image<-Output_file_names[x]
   #img_rst_tst_frac$PFT<-Output_PFT_names$CAT[x]
   img_rst_tst_area_frac<-rbind(img_rst_tst_area,img_rst_tst_frac)
   return(img_rst_tst_area_frac)  
@@ -153,5 +153,5 @@ theme(panel.background = element_rect(fill = "white"),
   geom_vline(xintercept = log10(3^2), color="red") +
   geom_vline(xintercept = log10(10^2), color = "blue") +
   geom_vline(xintercept = log10(30^2), color= "grey") +
-  facet_wrap(vars(CAT), scales = "free_y", ncol = 3) 
+  facet_wrap(vars(CAT), scales = "fixed", ncol = 3) 
   dev.off()
