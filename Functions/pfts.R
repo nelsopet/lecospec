@@ -142,6 +142,42 @@ convert_fg1_int <- function(df) {
             z == 9 ~ "Unknown"
     ), .keep = "unused") %>% 
     dplyr::select(x,y,z)
+
+    return(converted_df)
+}
+
+convert_fg0_int <- function(df){
+    converted_df <- df %>% dplyr::mutate(
+        z = case_when(
+            z == 0 ~ "Abiotic",
+            z == 1 ~ "BroadleafDecid",
+            z == 2 ~ "ConiferEvergreen",
+            z == 3 ~ "Forb",
+            z == 4 ~ "Graminoid",
+            z == 5 ~ "Lichen",
+            z == 6 ~ "Moss",
+            z == 7 ~ "Unknown"
+        ), .keep = "unused"
+    ) %>% dplyr::select(x,y,z)
+
+    return(converted_df)
+}
+
+convert_fg0_string <- function(df){
+    converted_df <- df %>% dplyr::mutate(
+        z = case_when(
+            z == "Abiotic" ~ 0L,
+            z == "BroadleafDecid" ~ 1L,
+            z == "ConiferEvergreen" ~ 2L,
+            z == "Forb" ~ 3L,
+            z == "Graminoid" ~ 4L,
+            z == "Lichen" ~ 5L,
+            z == "Moss" ~ 6L,
+            z == "Unknown" ~ 7L
+    ), .keep = "unused") %>%
+    dplyr::select(x,y,z)
+
+    return(converted_df)
 }
 
 #' converts the species names on the 
@@ -615,10 +651,11 @@ convert_genus_string <- function(df) {
 }
 
 
-convert_pft_codes <- function(df, aggregation_level, to="int"){
+convert_pft_codes <- function(df, aggregation_level, to = "int"){
 
     # list of functions for converting the data from strings to integers
     to_int = list(
+        Functional_group0 = convert_fg0_string,
         Functional_group1 = convert_fg1_string,
         Functional_group2 = convert_fg2_string,
         Genus = convert_genus_string,
@@ -627,6 +664,7 @@ convert_pft_codes <- function(df, aggregation_level, to="int"){
 
     # list of functions for converting from integers to strings
     to_string = list(
+        Functional_group0 = convert_fg0_int,
         Functional_group1 = convert_fg1_int,
         Functional_group2 = convert_fg2_int,
         Genus = convert_genus_int,
@@ -634,12 +672,12 @@ convert_pft_codes <- function(df, aggregation_level, to="int"){
     )
 
     # split by conversion type, then use the appropriate function based on the aggregation level
-    if( to == "int" | to =="Int" | to == "integer"){
-        result <- to_int[[aggregation_level]](df)
+    if( to == "int" || to =="Int" || to == "integer"){
+        result <- to_int[[aggregation_level+1]](df)
         #result$z <- as.integer(result$z)
         return( result )
-    } else if( to == "string" | to == "String") {
-        return( to_string[[aggregation_level]](df) )
+    } else if( to == "string" || to == "String") {
+        return( to_string[[aggregation_level+1]](df) )
     } else {
         # catch invalid 'to' parameter
         stop(paste0("Cannot convert to type ", to))
@@ -667,7 +705,9 @@ build_adjacency_list <- function(filepath) {
                 }
                 counter <- counter + 1
             }
-            adjacency_list[[key]] <- values[2:(num_levels)]
+            if(!(key %in% names(adjacency_list))){
+                adjacency_list[[key]] <- values[2:(num_levels)]
+            }
         }
     }
 
@@ -675,6 +715,10 @@ build_adjacency_list <- function(filepath) {
 }
 
 enum_pfts <- function(pft){
+    if(pft == 0){
+        return("Functional_Group0")
+    }
+
     if(pft == 1){
         return("Functional_Group1")
     }
@@ -687,6 +731,10 @@ enum_pfts <- function(pft){
     if(pft == 4){
         return("Species")
     } 
+
+    if(pft == "Functional_Group0"){
+        return(0)
+    }
     if(pft == "Functional_Group1"){
         return(1)
     } 
@@ -713,13 +761,16 @@ enum_pfts <- function(pft){
 #' @export 
 #' @examples Not Yet Implmented
 change_aggregation <- function(prediction_vec, aggregation_level, aggregation_key){
-    updated_predictions <- vector("character", length=length(prediction_vec))
+    print(prediction_vec)
+    prediction_char <- prediction_vec %>% as.character()
+    updated_predictions <- vector("character", length = length(prediction_vec))
     for(i in seq_along(prediction_vec)){
-        aggregation_idx <- 5-aggregation_level
-        prediction <- prediction_vec[[i]]
-        #print(prediction)
+        aggregation_idx <- 5 - aggregation_level
+        prediction <- prediction_char[[i]]
+        print(prediction)
         updated_predictions[[i]] <- aggregation_key[[prediction]][[aggregation_idx]]
     }
 
     return(updated_predictions)
 }
+
