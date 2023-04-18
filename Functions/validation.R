@@ -38,7 +38,7 @@ validate_results <- function(prediction_ras,
                              validation_table,
                              pft_key,
                              template_path,
-                             aggregation_level = 1,
+                             aggregation_level = 0,
                              save_path = "./quadrat_") {
     # Need to make keys shared and unique.  Really need the R equivalent of spark's RDD.reduceByKey()
     # store the results
@@ -80,13 +80,27 @@ validate_results <- function(prediction_ras,
         quadrat_df <- raster::rasterToPoints(quadrat_ras) %>% as.data.frame()
 
         # print(quadrat_df %>% group_by(z) %>% tally())
-
-
+        print("Quadrat data loaded from file")
+        print(head(quadrat_df))
         # prediction
-        predictions <- convert_pft_codes(quadrat_df, aggregation_level = aggregation_level, to = "string")
+
+        predictions <- convert_pft_codes(quadrat_df, aggregation_level = 1, to = "string")
         # print(predictions %>% group_by(z) %>% tally())
 
+        
 
+        aggregation_key <- rjson::fromJSON(file="./assets/pft_adj_list.json")
+
+        converted_predictions <- change_aggregation(
+            predictions$z,
+            aggregation_level = aggregation_level,
+            aggregation_key = aggregation_key
+        )
+
+        print("Converted Predictions")
+        print(converted_predictions)
+
+        predictions$z <- converted_predictions
         # extract the validation data for this quadrat
         quadrat_validation_df <- get_prediction_distribution(predictions)
 
@@ -191,7 +205,7 @@ aggregate_result_template <- function(df, validation_df, input_template) {
     # print(num_rows_validation)
     num_observations <- sum(df$n)
     if (num_rows_df == 0) {
-        warning(
+        stop(
             "Input (Prediction) Data is empty"
         )
     }
@@ -200,7 +214,7 @@ aggregate_result_template <- function(df, validation_df, input_template) {
     # copy the template
     template <- data.frame(input_template)
     if (num_rows_validation == 0) {
-        warning(
+        stop(
             "Input (Validation) Data is empty"
         )
     }
@@ -348,7 +362,9 @@ validate_model <- function(ml_model,
                            save_directory,
                            outlier_processing = "none",
                            transform_type = "none",
+                           pft_aggregation = 0,
                            cluster = NULL) {
+    # defines validation_df, etc.
     source("Scripts/validation_defs.R")
 
 
@@ -373,6 +389,7 @@ validate_model <- function(ml_model,
         shape$CLASS_NAME <- shape_names[[i]]
         projected_shapes <- sf::st_transform(shape, raster::crs(tile_results))
 
+
         # Validation data
         # validation_df <- read.csv(validation_paths[[i]], na.strings=c("NA", "n/a"))
 
@@ -382,10 +399,12 @@ validate_model <- function(ml_model,
             projected_shapes,
             validation_df,
             rjson::fromJSON(file = "./assets/pft_adj_list.json"),
-            "./assets/pft1_template.csv",
-            aggregation = 1,
+            paste0("./assets/pft",pft_aggregation,"_template.csv"),
+            aggregation = pft_aggregation,
             save_path = paste0(save_directory, "site_", i, "_quadrat_")
         )
+
+        print(validation_aggregates)
 
         # print(names(tile_results))
 
@@ -428,7 +447,7 @@ validate_model <- function(ml_model,
 
 aggregate_results <- function(directory,
                               template = "assets/pft1_template.json",
-                              aggregation_level = 1) {
+                              aggregation_level = 0) {
     files <- list.files(
         directory,
         pattern = "*.csv",
@@ -438,6 +457,9 @@ aggregate_results <- function(directory,
 
     # load & merge data
     loaded_validation <- purrr::map(files, load_and_label_data)
+
+
+
 
     return(Reduce(rbind, loaded_validation))
 }
@@ -534,3 +556,4 @@ calculate_rpd <- function(aggregated_results){
     #print(rpds)
     return(mean(rpds, na.rm = TRUE))
 }
+

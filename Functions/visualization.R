@@ -147,6 +147,17 @@ fg1_palette <- c(
         "#000000"
 )
 
+fg0_names <- c(
+    "Abiotic",
+    "BroadleafDecid",
+    "ConiferEvergreen",
+    "Forb",
+    "Graminoid",
+    "Lichen",
+    "Moss",
+    "Unknown"
+)
+
 fg1_names <- c(
     "Abiotic",
     "Forb",
