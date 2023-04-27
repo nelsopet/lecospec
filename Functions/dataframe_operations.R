@@ -157,7 +157,7 @@ impute_spectra <- function(x, cluster = NULL, method = "missForest", transpose=F
         as.data.frame()
     }
 
-    print("Imputing...")
+    #print("Imputing...")
     if (method == "missForest") {
         output_data <- missForest::missForest(df, maxiter = 1,)$ximp
     } else if(method == "median"){
@@ -332,17 +332,17 @@ convert_and_save_output <- function(
         aggregation_level = aggregation_level,
         to = "int")
 
-    print(head(prediction))
+    #print(head(prediction))
 
     # convert the precition values to integers
     prediction$z <- prediction$z %>% round() %>% as.integer()
 
-    print(head(prediction))
+    #print(head(prediction))
 
-    print(paste0("Attempting to save to ", save_path))
+    #print(paste0("Attempting to save to ", save_path))
     if(return_raster){
         prediction <- raster::rasterFromXYZ(prediction, digits=4)
-        print("Converted to Raster")
+        #print("Converted to Raster")
 
         # set to int datatype (unsigned int // 2 bytes)
         raster::dataType(prediction) <- "INT2U" 
@@ -381,8 +381,8 @@ convert_and_save_output <- function(
 #' @export 
 #' @examples Not Yet Implmented
 filter_empty_points <- function(df){
-    print("Data summary before filtering")
-    print(dim(df))
+    #print("Data summary before filtering")
+    #print(dim(df))
     drop_cols <- c("x","y")
     columns_to_check <- setdiff(colnames(df), drop_cols)
 
@@ -392,8 +392,8 @@ filter_empty_points <- function(df){
             .vars = vars(one_of(columns_to_check)),
             ~!is.na(.)
         ) 
-    print("data summary after filtering")
-    print(dim(df_no_empty_rows))
+    #print("data summary after filtering")
+    #print(dim(df_no_empty_rows))
     return(df_no_empty_rows)
 }
 
@@ -1039,13 +1039,13 @@ apply_transform <- function(df, transform_type, ignore_cols = NULL){
     if(transform_type == "none"){
         return(df)
     } else if (transform_type == "minmax") {
-        print("Min-Max scaling data")
+        #print("Min-Max scaling data")
        return(columnwise_min_max_scale(df, ignore_cols = ignore_cols))
     } else if(transform_type == "standard"){
-        print("Standard scaling data")
+        #print("Standard scaling data")
         return(standardize_df(df, ignore_cols = ignore_cols))
     } else if(transform_type == "robust"){
-        print("Robust scaling data")
+        #print("Robust scaling data")
         return(columnwise_robust_scale(df, ignore_cols = ignore_cols))
     } else {
         warning("Invalid transform specified, skipping...")

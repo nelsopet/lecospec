@@ -328,7 +328,7 @@ process_tile <- function(
             resampled_df,
             veg_indices)
         #print("Input Data Columns")
-        print(summary(df_full))
+        #print(summary(df_full))
         imputed_df <- impute_spectra(df_full, method="median", cluster = cluster) %>% as.data.frame()
         #print(colnames(df))
         #df <- df %>% dplyr::select(x, y, dplyr::all_of(target_model_cols)) 
@@ -368,11 +368,11 @@ process_tile <- function(
         gc()
 
         
-        print(summary(df_preprocessed))
+        #print(summary(df_preprocessed))
         imputed_df_2 <- impute_spectra(
                 inf_to_na(df_preprocessed),
                 method="median")
-        print(summary(imputed_df_2))
+        #print(summary(imputed_df_2))
 
         prediction <- apply_model(
             imputed_df_2,

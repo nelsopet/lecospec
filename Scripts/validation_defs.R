@@ -129,50 +129,50 @@ bonanza_names <- c(
 
 quadrats <- list(
     test_path_1,
-    test_path_2,
-    test_path_3,
-    test_path_4,
+    #test_path_2,
+    #test_path_3,
+    #test_path_4,
     test_path_5,
-    test_path_6,
-    test_path_7,
-    test_path_8,
+    #test_path_6,
+    #test_path_7,
+    #test_path_8,
     test_path_9
 )
 
 shapes <- list(
     shape_path_1,
-    shape_path_2,
-    shape_path_3,
-    shape_path_4,
+    #shape_path_2,
+    #shape_path_3,
+    #shape_path_4,
     shape_path_5,
-    shape_path_6,
-    shape_path_7,
-    shape_path_8,
+    #shape_path_6,
+    #shape_path_7,
+    #shape_path_8,
     shape_path_9
 )
 
 
 shape_names <- list(
     bison_gulch_names,
-    chatanika_names,
-    twelve_mile_names_1,
-    twelve_mile_names_2,
+    #chatanika_names,
+    #twelve_mile_names_1,
+    #twelve_mile_names_2,
     eight_mile_names,
-    md_names_1,
-    md_names_2,
-    md_names_3,
+    #md_names_1,
+    #md_names_2,
+    #md_names_3,
     bonanza_names
 )
 
 save_paths <- list(
     "figures/BisonGulch/",
-    "figures/Chatanika/",
-    "figures/twelveMile1/",
-    "figures/twelveMile2/",
+    #"figures/Chatanika/",
+    #"figures/twelveMile1/",
+    #"figures/twelveMile2/",
     "figures/EightMile/",
-    "figures/MurphyDome/Part1/",
-    "figures/MurphyDome/Part2/",
-    "figures/MurphyDome/Part3/",
+    #"figures/MurphyDome/Part1/",
+    #"figures/MurphyDome/Part2/",
+    #"figures/MurphyDome/Part3/",
     "figures/Bonanza/"
 )
 
