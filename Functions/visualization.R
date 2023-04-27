@@ -260,28 +260,35 @@ create_plot <- function(df, pft, legend = FALSE){
     )
 }
 
-plot_by_pft <- function(df, save_path = NULL, open = TRUE, image_path = NULL){
+plot_by_pft <- function(df, save_path = NULL, open = TRUE, image_path = NULL, aggregation=1){
     df <- df %>% group_by(site)
-    plot_abiotic <- create_plot(df, "Abiotic", legend = TRUE)
-    plot_forb <- create_plot(df, "Forb")
-    plot_graminoid <- create_plot(df, "Graminoid")
-    plot_lichen <- create_plot(df, "Lichen")
-    plot_moss <- create_plot(df, "Moss")
-    plot_shrub_bro <- create_plot(df, "ShrubDecid")
-    plot_shrub_eve <- create_plot(df, "ShrubEvergreen")
-    plot_tree_bro <- create_plot(df, "TreeBroadleaf")
-    plot_tree_eve <- create_plot(df, "TreeConifer")
+    plots <- list()
+    if(aggregation == 1){
+        plots <- list(
+            create_plot(df, "Abiotic", legend = TRUE),
+            create_plot(df, "Forb"),
+            create_plot(df, "Graminoid"),
+            create_plot(df, "Lichen"),
+            create_plot(df, "Moss"),
+            create_plot(df, "ShrubDecid"),
+            create_plot(df, "ShrubEvergreen"),
+            create_plot(df, "TreeBroadleaf"),
+            create_plot(df, "TreeConifer")
+        )
+    } else if( aggregation == 0){
+        plots <- list(
+            create_plot(df, "Abiotic", legend = TRUE),
+            create_plot(df, "Forb"),
+            create_plot(df, "Graminoid"),
+            create_plot(df, "Lichen"),
+            create_plot(df, "Moss"),
+            create_plot(df, "BroadleafDecid"),
+            create_plot(df, "ConiferEvergreen")
+        )
+    } # should eventually implement the other PFTs, eh?
 
     fig <- plotly::subplot(
-        plot_abiotic,
-        plot_forb,
-        plot_graminoid,
-        plot_lichen,
-        plot_moss,
-        plot_shrub_bro,
-        plot_shrub_eve,
-        plot_tree_bro,
-        plot_tree_eve,
+        plots,
         nrows = 5,
         margin = 0.05)
     fig <- fig %>% plotly::layout(

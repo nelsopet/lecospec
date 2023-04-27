@@ -761,13 +761,13 @@ enum_pfts <- function(pft){
 #' @export 
 #' @examples Not Yet Implmented
 change_aggregation <- function(prediction_vec, aggregation_level, aggregation_key){
-    print(prediction_vec)
+    #print(prediction_vec)
     prediction_char <- prediction_vec %>% as.character()
     updated_predictions <- vector("character", length = length(prediction_vec))
     for(i in seq_along(prediction_vec)){
         aggregation_idx <- 5 - aggregation_level
         prediction <- prediction_char[[i]]
-        print(prediction)
+        #print(prediction)
         updated_predictions[[i]] <- aggregation_key[[prediction]][[aggregation_idx]]
     }
 

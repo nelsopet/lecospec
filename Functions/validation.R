@@ -50,7 +50,7 @@ validate_results <- function(prediction_ras,
 
         # crop the raster to the quadrat
         quadrat_shape <- quadrat_shapefile[i, ]
-        print(quadrat_shape)
+        #print(quadrat_shape)
         quadrat_ras <- raster::crop(prediction_ras, quadrat_shape)
 
         plot_options <- define_plot_options(
@@ -80,8 +80,8 @@ validate_results <- function(prediction_ras,
         quadrat_df <- raster::rasterToPoints(quadrat_ras) %>% as.data.frame()
 
         # print(quadrat_df %>% group_by(z) %>% tally())
-        print("Quadrat data loaded from file")
-        print(head(quadrat_df))
+        #print("Quadrat data loaded from file")
+        #print(head(quadrat_df))
         # prediction
 
         predictions <- convert_pft_codes(quadrat_df, aggregation_level = 1, to = "string")
@@ -97,8 +97,8 @@ validate_results <- function(prediction_ras,
             aggregation_key = aggregation_key
         )
 
-        print("Converted Predictions")
-        print(converted_predictions)
+        #print("Converted Predictions")
+        #print(converted_predictions)
 
         predictions$z <- converted_predictions
         # extract the validation data for this quadrat
@@ -404,7 +404,7 @@ validate_model <- function(ml_model,
             save_path = paste0(save_directory, "site_", i, "_quadrat_")
         )
 
-        print(validation_aggregates)
+        #print(validation_aggregates)
 
         # print(names(tile_results))
 
