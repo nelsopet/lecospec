@@ -49,8 +49,14 @@ MurphyDome_out3<-ImgChopper(MurphyDome_path3, MurphyDome_seg_path3)
 #Chatanika_path = "F:/ORNL_DAAC_DATA_ARCHIVE/Chatnika/Chatnika_2018_07_29_20_32_59_0_rd_rf_or"
 Chatanika_path = "M:/Alaska_DATA/Alaska_Summer2018/Workspaces/Alaska/DatabyDate/72918/ImagingSpectrometer/DataFolders/100130_ChatanikaFlight3_attempt2_2018_07_29_20_32_59/raw_0_rd_rf_56pctWhiteRef_or"
 Chatanika_seg_path = "./Data/Vectors/ChatanikaQuads_georeferenced.shp"
-Chatanika_out<-ImgChopper(Chatanika_path,Chatanika_seg_path)
-#plot(TwelveMile_out[[2]])
+#Remove quadrat 100m since it has not validation data due to scanline chatter
+tst <- terra::vect(Chatanika_seg_path)
+tst[-1,] %>% dim
+terra::writeVector(tst[-1,], "./Data/Vectors/ChatanikaQuads_georeferenced_0_90m.shp")
+Chatanika_seg_path_0_90m = "./Data/Vectors/ChatanikaQuads_georeferenced_0_90m.shp"
+Chatanika_out<-ImgChopper(Chatanika_path,Chatanika_seg_path_0_90m)
+
+
 
 #Bonanza_path = "M:/Alaska_DATA/Alaska_Summer2018/Workspaces/Alaska/DatabyDate/72518/ImagingSpectrometer/DataFiles/100066_2018_07_25_21_18_45/raw_6425_rd_rf_or"
 Bonanza_path ="M:/Alaska_DATA/Alaska_Summer2018/Workspaces/Alaska/DatabyDate/72518/ImagingSpectrometer/DataFiles/100066_2018_07_25_21_18_45/raw_6425_rd_rf_55pctWhiteRef_or"
