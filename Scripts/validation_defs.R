@@ -99,7 +99,7 @@ bison_gulch_names <- c(
 )
 
 chatanika_names <- c(
-    "Chatanika100",
+    #"Chatanika100",
     "Chatanika90",
     "Chatanika70",
     "Chatanika80",
@@ -129,7 +129,7 @@ bonanza_names <- c(
 
 quadrats <- list(
     test_path_1,
-    #test_path_2,
+    test_path_2,
     #test_path_3,
     #test_path_4,
     test_path_5,
@@ -141,7 +141,7 @@ quadrats <- list(
 
 shapes <- list(
     shape_path_1,
-    #shape_path_2,
+    shape_path_2,
     #shape_path_3,
     #shape_path_4,
     shape_path_5,
@@ -154,7 +154,7 @@ shapes <- list(
 
 shape_names <- list(
     bison_gulch_names,
-    #chatanika_names,
+    chatanika_names,
     #twelve_mile_names_1,
     #twelve_mile_names_2,
     eight_mile_names,
@@ -166,7 +166,7 @@ shape_names <- list(
 
 save_paths <- list(
     "figures/BisonGulch/",
-    #"figures/Chatanika/",
+    "figures/Chatanika/",
     #"figures/twelveMile1/",
     #"figures/twelveMile2/",
     "figures/EightMile/",

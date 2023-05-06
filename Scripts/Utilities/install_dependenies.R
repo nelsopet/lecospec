@@ -23,9 +23,10 @@ lecospec_depenencies <- c(
     "gplots",
     "rasterVis",
     "RColorBrewer",
-    "leaflet",
-    "leaflet.opacity",
-    "leaflegend",
+    # should remove the below dependencies:
+    #"leaflet",
+    #"leaflet.opacity",
+    #"leaflegend",
     "naniar",
     "rasterVis",
     "doSNOW",
@@ -38,10 +39,16 @@ lecospec_depenencies <- c(
     "plotly",
     "readr",
     "pivottabler",
-    "webshot"
+    "webshot",
+    "xgboost" # added this one, will need to add PLS packages as well
 )
 
 install.packages(lecospec_depenencies, repos = "http://cran.rstudio.com/")
 update.packages(repos = "http://cran.rstudio.com/", ask=FALSE)
 
 #webshot::install_phantomjs()
+
+# NOTE: on debian linux, it is recommended to use
+# r2u to aid in the installation of the above packages.
+#
+# Time-out issues are also possible when installing terra (it's big!)

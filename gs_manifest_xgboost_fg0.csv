@@ -1,0 +1,5 @@
+source,outliers,preprocessing,weight,n,oob,accuracy,r2,chi2prob,model_id
+img_raw_raw.csv,no_treatment,no_treatment,no_treatment,NA,,1,0.351062500930821,2.02435225765331e-131,47385b7a-8a7b-4f22-ae7c-e984167ba1d7
+grd_raw_raw.csv,no_treatment,no_treatment,no_treatment,NA,,0.225,Skipped,Skipped,945d642a-fcf6-4a5f-b2ae-f65a71e73af0
+corrected_and_img.csv,no_treatment,no_treatment,no_treatment,NA,,1,0.367434841393746,1.49891623431531e-143,a16741fc-5838-4964-8b17-68adbe4282c2
+grd_corrected_only_bands.csv,no_treatment,no_treatment,no_treatment,NA,,0.291666666666667,Skipped,Skipped,b8a7215c-ba4c-44d8-8468-5f3b8a650d98
