@@ -174,6 +174,30 @@ save_paths <- list(
     #"figures/MurphyDome/Part2/",
     #"figures/MurphyDome/Part3/",
     "figures/Bonanza/"
+) 
+
+site_names <- list(
+    "Bison Gulch",
+    #"Chatanika",
+    #"Twelve Mile",
+    #"Twelve Mile",
+    "Eight Mile",
+    #"Murphy Dome",
+    #"Murphy Dome",
+    #"Murphy Dome",
+    "Bonanza"
+)
+
+site_indices <- c(
+    "BisonGulch",
+    #"Chatanika",
+    #"TwelveMile",
+    #"TwelveMile",
+    "EightMile",
+    #"MurphyDome",
+    #"MurphyDome",
+    #"MurphyDome",
+    "Bonanza"
 )
 
 

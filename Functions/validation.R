@@ -464,39 +464,29 @@ aggregate_results <- function(directory,
     return(Reduce(rbind, loaded_validation))
 }
 
-site_indices <- c(
-    "BisonGulch",
-    "Chatanika",
-    "TwelveMile",
-    "TwelveMile",
-    "EightMile",
-    "MurphyDome",
-    "MurphyDome",
-    "MurphyDome",
-    "Bonanza"
-)
+
 
 parse_path <- function(path) {
     split_path <- strsplit(path, split = "/", fixed = TRUE)
     if (stringr::str_detect(path, "experiments")[1]) {
         if (stringr::str_detect(path, "site_1")[1]) {
-            return("BisonGulch")
+            return(site_indices[[1]])
         } else if (stringr::str_detect(path, "site_2")[1]) {
-            return("Chatanika")
+            return(site_indices[[2]])
         } else if (stringr::str_detect(path, "site_3")[1]) {
-            return("TwelveMile")
+            return(site_indices[[3]])
         } else if (stringr::str_detect(path, "site_4")[1]) {
-            return("TwelveMile")
+            return(site_indices[[4]])
         } else if (stringr::str_detect(path, "site_5")[1]) {
-            return("EightMile")
+            return(site_indices[[5]])
         } else if (stringr::str_detect(path, "site_6")[1]) {
-            return("MurphyDome")
+            return(site_indices[[6]])
         } else if (stringr::str_detect(path, "site_7")[1]) {
-            return("MurphyDome")
+            return(site_indices[[7]])
         } else if (stringr::str_detect(path, "site_8")[1]) {
-            return("MurphyDome")
+            return(site_indices[[8]])
         } else if (stringr::str_detect(path, "site_9")[1]) {
-            return("Bonanza")
+            return(site_indices[[9]])
         } else {
             return(split_path[[1]][[2]]) # default option
         }
