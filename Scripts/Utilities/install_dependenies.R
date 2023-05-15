@@ -38,13 +38,16 @@ lecospec_depenencies <- c(
     "RhpcBLASctl",
     "plotly",
     "readr",
+    "terra",
     "pivottabler",
     "webshot",
-    "xgboost" # added this one, will need to add PLS packages as well
+    "xgboost",
+    "permute",
+    "pls" # added this one, will need to add PLS packages as well
 )
 
 install.packages(lecospec_depenencies, repos = "http://cran.rstudio.com/")
-update.packages(repos = "http://cran.rstudio.com/", ask=FALSE)
+update.packages(ask=FALSE)
 
 #webshot::install_phantomjs()
 
