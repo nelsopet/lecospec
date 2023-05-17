@@ -14,7 +14,9 @@ plot_options <- define_plot_options(
     yLabel = "Latitude"
 )
 
-bg_filepath <- "E:/Predictions/bg_01_07_1511_fncgrp1_PREDICTIONS.tif"
+#bg_filepath <- "E:/Predictions/bg_01_07_1511_fncgrp1_PREDICTIONS.tif"
+bg_filepath <- "Output/dev_FullCube/bg_1511_fncgrp1_PREDICTIONS_img_balanced_1tree_ranger.tif"
+
 bg_predictions <- raster::raster(bg_filepath)
 
 bg_map <- plot_categorical_raster(bg_predictions, plot_options)
@@ -33,7 +35,7 @@ plot_options <- define_plot_options(
     yLabel = "Latitude"
 )
 
-em_filepath <- "E:/Predictions/em_17_5968_fncgrp1_PREDICTIONS.tif"
+em_filepath <- "./Output/dev_FullCube/em_5968_fncgrp1_PREDICTIONS_img_balanced_1tree_ranger.tif"
 em_predictions <- raster::raster(em_filepath)
 
 em_map <- plot_categorical_raster(em_predictions, plot_options)
@@ -53,7 +55,8 @@ plot_options <- define_plot_options(
     yLabel = "Latitude"
 )
 
-tm_filepath <- "E:/Predictions/tm_0_fncgrp1_PREDICTIONS.tif"
+tm_filepath <- "./Output/dev_FullCube/tm_0_fncgrp1_PREDICTIONS_img_balanced_1tree_ranger.tif"
+
 tm_predictions <- raster::raster(tm_filepath)
 
 tm_map <- plot_categorical_raster(tm_predictions, plot_options)
@@ -82,7 +85,7 @@ plot_options <- define_plot_options(
     yLabel = "Latitude"
 )
 
-ca_filepath <- "E:/Predictions/ch_0_fncgrp1_PREDICTIONS.tif"
+ca_filepath <- "./Output/dev_FullCube/ch_0_fncgrp1_PREDICTIONS_img_balanced_1tree_ranger.tif"
 ca_predictions <- raster::raster(ca_filepath)
 
 ca_map <- plot_categorical_raster(ca_predictions, plot_options)
@@ -118,3 +121,26 @@ md_map_2 <- plot_categorical_raster(md_predictions_2, plot_options)
 windows();md_map_2
 
 ggsave("./md_map_2.png")
+
+####################################################
+#       Bonanza Dome
+####################################################
+plot_options <- define_plot_options(
+    title = "Bonanza Predictions",
+    xLabel = "Longitude",
+    yLabel = "Latitude"
+)
+
+bz_filepath_1 <- "./Output/dev_FullCube/bz_6425_fncgrp1_PREDICTIONS_img_balanced_1tree_ranger.tif"
+bz_predictions_1 <- raster::raster(bz_filepath_1)
+
+bz_map_1 <- plot_categorical_raster(bz_predictions_1, plot_options)
+
+windows();bz_map_1
+
+ggsave("./bz_map_1.png")
+
+
+
+
+
