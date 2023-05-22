@@ -261,11 +261,12 @@ process_tile <- function(
     save_path = NULL,
     suppress_output = FALSE
     ) {
+    set.seed(61718)
     raster_obj <- raster::brick(tile_filename)
     input_crs <- raster::crs(raster_obj)
     print(paste0("preprocessing raster at ", tile_filename))
     base_df <- preprocess_raster_to_df(raster_obj, ml_model, band_names=band_names)
-    #print(input_crs)
+    
     
     if(nrow(base_df) < 2){
         #print("The tile has no rows!")

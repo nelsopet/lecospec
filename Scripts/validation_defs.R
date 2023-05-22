@@ -21,7 +21,7 @@ model_normed_training_weighted <- "mle/fg1_model_normed_weighted.rda"
 
 # Shapefiles
 shape_path_1 <- "Data/Vectors/Bisoon_Quadrats_georeferenced.shp"
-shape_path_2 <- "Data/Vectors/ChatanikaQuads_georeferenced.shp"
+shape_path_2 <- "Data/Vectors/ChatanikaQuads_georeferenced_0_90m.shp"
 shape_path_3 <- "Data/Vectors/TwelveMileQ0_10_20_30_40m.shp"
 shape_path_4 <- "Data/Vectors/TwelveMileQ70_80_90_100m.shp"
 shape_path_5 <- "Data/Vectors/EightMile_Quadrats_revised.shp"
@@ -129,7 +129,7 @@ bonanza_names <- c(
 
 quadrats <- list(
     test_path_1,
-    #test_path_2,
+    test_path_2,
     #test_path_3,
     #test_path_4,
     test_path_5,
@@ -141,7 +141,7 @@ quadrats <- list(
 
 shapes <- list(
     shape_path_1,
-    #shape_path_2,
+    shape_path_2,
     #shape_path_3,
     #shape_path_4,
     shape_path_5,
@@ -154,7 +154,7 @@ shapes <- list(
 
 shape_names <- list(
     bison_gulch_names,
-    #chatanika_names,
+    chatanika_names,
     #twelve_mile_names_1,
     #twelve_mile_names_2,
     eight_mile_names,
@@ -166,7 +166,7 @@ shape_names <- list(
 
 save_paths <- list(
     "figures/BisonGulch/",
-    #"figures/Chatanika/",
+    "figures/Chatanika/",
     #"figures/twelveMile1/",
     #"figures/twelveMile2/",
     "figures/EightMile/",
@@ -178,7 +178,7 @@ save_paths <- list(
 
 site_names <- list(
     "Bison Gulch",
-    #"Chatanika",
+    "Chatanika",
     #"Twelve Mile",
     #"Twelve Mile",
     "Eight Mile",
@@ -190,7 +190,7 @@ site_names <- list(
 
 site_indices <- c(
     "BisonGulch",
-    #"Chatanika",
+    "Chatanika",
     #"TwelveMile",
     #"TwelveMile",
     "EightMile",
