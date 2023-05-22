@@ -4,9 +4,8 @@ test_path <- "./Data/Ground_Validation/Imagery/BisonGulchQuads.envi"
 
 raster::raster(test_path) %>% plot()
 
-
 test_path_2 <- "tiles/tile_CpDHDDdNOXTuX0G4.tif"
-test_path_3<-"./tiles/tile_xnkSMENlt5EnFYz2.envi"
+test_path_3<-"./tiles/tile_34M0bC2ZrwSZkgXo.envi"
 #
 model_path <- "./mle/models/gs/31024810-ee27-49e7-8247-e83ac0b738df.rda"
 Bison_path ="M:/Alaska_DATA/Alaska_Summer2019/Data_by_site/Bison_Gulch/Imagery_60m/100251_Bison_Gulch_line2_2019_08_12_01_07_28/raw_1511_rd_rf_55pctWhiteRef_or"
@@ -14,6 +13,7 @@ Bonanza_path ="M:/Alaska_DATA/Alaska_Summer2018/Workspaces/Alaska/DatabyDate/725
 EightMile_path = "M:/Alaska_DATA/Alaska_Summer2018/Workspaces/Alaska/DatabyDate/72818/ImagingSpectrometer/DataFolders/100124_BlacktandardFlight2_2018_07_28_22_56_17/raw_5968_rd_rf_55pctWhiteRef_or"
 Chatanika_path = "M:/Alaska_DATA/Alaska_Summer2018/Workspaces/Alaska/DatabyDate/72918/ImagingSpectrometer/DataFolders/100130_ChatanikaFlight3_attempt2_2018_07_29_20_32_59/raw_0_rd_rf_56pctWhiteRef_or"
 TwelveMile_path = "M:/Alaska_DATA/Alaska_Summer2019/Data_by_site/12mile/Imagery/100241_12mile_line3_2019_08_09_21_28_52/raw_0_rd_rf_55pctWhiteRef_or"
+TwelveMile_path2 ="M:/Alaska_DATA/Alaska_Summer2019/Data_by_site/12mile/Imagery/100241_12mile_line3_2019_08_09_21_28_52/raw_2000_rd_rf_55pctWhiteRef_or"
 
 #big_test <- "F:/ORNL_DAAC_DATA_ARCHIVE/BisonGulch/BisonGulch_2019_08_12_01_07_28_1511_rd_rf_or" 
 #big_test <-"F:/ORNL_DAAC_DATA_ARCHIVE/Bonanza/raw_6425_rd_rf_or"
@@ -30,13 +30,40 @@ TwelveMile_path = "M:/Alaska_DATA/Alaska_Summer2019/Data_by_site/12mile/Imagery/
 #big_test<-"F:/ORNL_DAAC_DATA_ARCHIVE/TwelveMile/TwelveMile_2019_08_09_21_10_22_2000_rd_rf_or"
 medium_test <- "./Data/SubsetDatacube"
 
+#1 tree model
+#load_model("mle/models/gs/9cc7039c-c787-4ff4-8f44-b9ceaec36204.rda")
+
+#2 tree model
+#load_model("mle/models/gs/3012f5ed-7d17-4e94-a454-24d8a65f5b4f.rda") %>% str()
+
+set.seed(61718)
 print(date())
 quad_results <- estimate_land_cover(
-  test_path, 
-  output_filepath = "./Output/bg_fncgrp1_outputs_m.grd",
+  test_path_3, 
+  output_filepath = "./test_pred_2tree_tile_34M0bC2ZrwSZkgXo_4.grd",
   use_external_bands = TRUE)
 closeAllConnections()
 print(date())
+
+as_tiff<-function(path) {raster::raster(paste0("./",path,".grd")) %>% raster::writeRaster(paste0("./test/",path,".tif"), overwrite=TRUE)}
+
+test_tif<-as_tiff("test_pred_2tree_tile_34M0bC2ZrwSZkgXo_4")
+
+plot_options <- define_plot_options(
+    title = "Test Predictions",
+    xLabel = "Longitude",
+    yLabel = "Latitude"
+)
+
+predictions_1 <- raster::raster("./test/test_pred_2tree_tile_34M0bC2ZrwSZkgXo_4.tif")
+
+map_1 <- plot_categorical_raster(predictions_1, plot_options)
+
+windows();map_1
+
+ggsave("./test_pred_2tree_tile_34M0bC2ZrwSZkgXo_map_4.png")
+
+
 
 print(quad_results)
 png("./test_results.png")
@@ -55,8 +82,8 @@ medium_results  <- estimate_land_cover(
 print(date())
 closeAllConnections()
 big_results <- estimate_land_cover(
-  TwelveMile_path,
-  output_filepath = "./Output/dev_FullCube/tm_0_fncgrp1_PREDICTIONS_img_balanced_1tree_ranger.grd")
+  Bonanza_path,
+  output_filepath = "./Output/dev_FullCube/bz_6425_fncgrp1_PREDICTIONS_img_balanced_1tree_ranger_2.grd")
 print(date())
 
 
