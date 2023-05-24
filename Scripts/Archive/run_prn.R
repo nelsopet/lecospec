@@ -5,7 +5,7 @@ test_path <- "./Data/Ground_Validation/Imagery/BisonGulchQuads.envi"
 raster::raster(test_path) %>% plot()
 
 test_path_2 <- "tiles/tile_CpDHDDdNOXTuX0G4.tif"
-test_path_3<-"./tiles/tile_34M0bC2ZrwSZkgXo.envi"
+test_path_3<-"./test/tile_34M0bC2ZrwSZkgXo.envi"
 #
 model_path <- "./mle/models/gs/31024810-ee27-49e7-8247-e83ac0b738df.rda"
 Bison_path ="M:/Alaska_DATA/Alaska_Summer2019/Data_by_site/Bison_Gulch/Imagery_60m/100251_Bison_Gulch_line2_2019_08_12_01_07_28/raw_1511_rd_rf_55pctWhiteRef_or"
@@ -34,20 +34,20 @@ medium_test <- "./Data/SubsetDatacube"
 #load_model("mle/models/gs/9cc7039c-c787-4ff4-8f44-b9ceaec36204.rda")
 
 #2 tree model
-#load_model("mle/models/gs/3012f5ed-7d17-4e94-a454-24d8a65f5b4f.rda") %>% str()
+load_model("mle/models/gs/3012f5ed-7d17-4e94-a454-24d8a65f5b4f.rda") %>% str()
 
-set.seed(61718)
+#set.seed(1234)
 print(date())
 quad_results <- estimate_land_cover(
   test_path_3, 
-  output_filepath = "./test_pred_2tree_tile_34M0bC2ZrwSZkgXo_4.grd",
+  output_filepath = "./test_pred_2tree_tile_34M0bC2ZrwSZkgXo_patch_seed1234.grd",
   use_external_bands = TRUE)
 closeAllConnections()
 print(date())
 
 as_tiff<-function(path) {raster::raster(paste0("./",path,".grd")) %>% raster::writeRaster(paste0("./test/",path,".tif"), overwrite=TRUE)}
 
-test_tif<-as_tiff("test_pred_2tree_tile_34M0bC2ZrwSZkgXo_4")
+test_tif<-as_tiff("test_pred_2tree_tile_34M0bC2ZrwSZkgXo_patch_seed1234")
 
 plot_options <- define_plot_options(
     title = "Test Predictions",
@@ -55,13 +55,13 @@ plot_options <- define_plot_options(
     yLabel = "Latitude"
 )
 
-predictions_1 <- raster::raster("./test/test_pred_2tree_tile_34M0bC2ZrwSZkgXo_4.tif")
+predictions_1 <- raster::raster("./test/test_pred_2tree_tile_34M0bC2ZrwSZkgXo_patch_seed1234.tif")
 
 map_1 <- plot_categorical_raster(predictions_1, plot_options)
 
 windows();map_1
 
-ggsave("./test_pred_2tree_tile_34M0bC2ZrwSZkgXo_map_4.png")
+ggsave("./test_pred_2tree_tile_34M0bC2ZrwSZkgXo_patch_seed1234.png")
 
 
 
@@ -82,9 +82,14 @@ medium_results  <- estimate_land_cover(
 print(date())
 closeAllConnections()
 big_results <- estimate_land_cover(
-  Bonanza_path,
-  output_filepath = "./Output/dev_FullCube/bz_6425_fncgrp1_PREDICTIONS_img_balanced_1tree_ranger_2.grd")
+  Chatanika_path,
+  output_filepath = "./Output/dev_FullCube/ch_0_fncgrp1_PREDICTIONS_img_balanced_2tree_ranger_patch.grd")
 print(date())
+
+
+
+
+
 
 
 output <- raster::raster("./Output/bison_gulch_outputs_par.grd")
