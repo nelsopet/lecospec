@@ -43,7 +43,9 @@ lecospec_depenencies <- c(
     "webshot",
     "xgboost",
     "permute",
-    "pls" # added this one, will need to add PLS packages as well
+    "pls",
+    "landscapemetrics",
+    "landscapetools" # added this one, will need to add PLS packages as well
 )
 
 install.packages(lecospec_depenencies, repos = "http://cran.rstudio.com/")
