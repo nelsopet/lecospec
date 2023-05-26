@@ -22,14 +22,17 @@ print(estimate_land_cover)
 
 datacube_path <- "Data/raw_0_rd_rf_56pctWhiteRef_or"
 test_path <- "Data/tile_34M0bC2ZrwSZkgXo.envi"
+test_path_1 <- "Data/Ground_Validation/Imagery/BisonGulchQuads.envi"
 
 
-results_3 <- estimate_land_cover(
-    test_path,
+results_full <- estimate_land_cover(
+    test_path_1,
     model = c_model
 )
 
-X11();plot(results_3)
+
+
+X11();plot(results_full)
 X11();plot(results_4)
 
 X11();plot(results_4 - results_3)
