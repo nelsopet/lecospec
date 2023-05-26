@@ -87,7 +87,11 @@ make_tiles <- function(
 #' @return
 #' @export
 #' 
-handle_empty_tile <- function(tile_raster, save_path = NULL, target_crs = NULL){
+handle_empty_tile <- function(
+    tile_raster, 
+    save_path = NULL, 
+    target_crs = NULL, 
+    no_data = 65535){
     # convert to a raster
     print("Processing empty tile")
     output_raster <- tile_raster[[1]]# %>% raster::as.raster()
@@ -99,6 +103,7 @@ handle_empty_tile <- function(tile_raster, save_path = NULL, target_crs = NULL){
 
     names(output_raster) <- c("predictions")
     raster::dataType(output_raster) <- "INT2U"
+    raster::NAvalue(output_raster) <- no_data
     
     print(raster::NAvalue(output_raster))
     if(!is.null(save_path)){
