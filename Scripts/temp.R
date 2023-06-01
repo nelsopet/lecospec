@@ -1,4 +1,5 @@
 source("Functions/lecospectR.R")
+source("Scripts/validation_defs.R")
 
 c_model <- load_model("mle/models/gs/3012f5ed-7d17-4e94-a454-24d8a65f5b4f.rda")
 
@@ -22,17 +23,17 @@ print(estimate_land_cover)
 
 datacube_path <- "Data/raw_0_rd_rf_56pctWhiteRef_or"
 test_path <- "Data/tile_34M0bC2ZrwSZkgXo.envi"
-test_path_1 <- "Data/Ground_Validation/Imagery/BisonGulchQuads.envi"
+#test_path_1 <- "Data/Ground_Validation/Imagery/BisonGulchQuads.envi"
 
 
-results_full <- estimate_land_cover(
-    test_path_1,
+results <- estimate_land_cover(
+    test_path_3,
     model = c_model
 )
 
+raster::NAvalue(results)
 
-
-X11();plot(results_full)
+plot(results)
 X11();plot(results_4)
 
 X11();plot(results_4 - results_3)

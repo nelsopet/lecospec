@@ -91,7 +91,7 @@ handle_empty_tile <- function(
     tile_raster, 
     save_path = NULL, 
     target_crs = NULL, 
-    no_data = 65535){
+    no_data = -Inf){
     # convert to a raster
     print("Processing empty tile")
     output_raster <- tile_raster[[1]]# %>% raster::as.raster()
@@ -104,6 +104,7 @@ handle_empty_tile <- function(
     names(output_raster) <- c("predictions")
     raster::dataType(output_raster) <- "INT2U"
     raster::NAvalue(output_raster) <- no_data
+    raster::values(output_raster) <- NA
     
     print(raster::NAvalue(output_raster))
     if(!is.null(save_path)){
