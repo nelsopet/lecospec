@@ -50,7 +50,7 @@ validate_results <- function(prediction_ras,
 
         # crop the raster to the quadrat
         quadrat_shape <- quadrat_shapefile[i, ]
-        #print(quadrat_shape)
+        # print(quadrat_shape)
         quadrat_ras <- raster::crop(prediction_ras, quadrat_shape)
 
         plot_options <- define_plot_options(
@@ -80,16 +80,16 @@ validate_results <- function(prediction_ras,
         quadrat_df <- raster::rasterToPoints(quadrat_ras) %>% as.data.frame()
 
         # print(quadrat_df %>% group_by(z) %>% tally())
-        #print("Quadrat data loaded from file")
-        #print(head(quadrat_df))
+        # print("Quadrat data loaded from file")
+        # print(head(quadrat_df))
         # prediction
 
         predictions <- convert_pft_codes(quadrat_df, aggregation_level = 1, to = "string")
         # print(predictions %>% group_by(z) %>% tally())
 
-        
 
-        aggregation_key <- rjson::fromJSON(file="./assets/pft_adj_list.json")
+
+        aggregation_key <- rjson::fromJSON(file = "./assets/pft_adj_list.json")
 
         converted_predictions <- change_aggregation(
             predictions$z,
@@ -97,8 +97,8 @@ validate_results <- function(prediction_ras,
             aggregation_key = aggregation_key
         )
 
-        #print("Converted Predictions")
-        #print(converted_predictions)
+        # print("Converted Predictions")
+        # print(converted_predictions)
 
         predictions$z <- converted_predictions
         # extract the validation data for this quadrat
@@ -228,7 +228,7 @@ aggregate_result_template <- function(df, validation_df, input_template) {
                 template[[template_row_idx, "predicted_counts"]] <- df$n[[df_row_idx]]
             }
         }
-        
+
         # iterate over validation
         for (val_row_idx in 1:num_rows_validation) {
             # print(validation_df[[val_row_idx, "Plant"]])
@@ -399,12 +399,12 @@ validate_model <- function(ml_model,
             projected_shapes,
             validation_df,
             rjson::fromJSON(file = "./assets/pft_adj_list.json"),
-            paste0("./assets/pft",pft_aggregation,"_template.csv"),
+            paste0("./assets/pft", pft_aggregation, "_template.csv"),
             aggregation = pft_aggregation,
             save_path = paste0(save_directory, "site_", i, "_quadrat_")
         )
 
-        #print(validation_aggregates)
+        # print(validation_aggregates)
 
         # print(names(tile_results))
 
@@ -517,33 +517,33 @@ calculate_chi_squared_probability <- function(aggregated_results) {
 }
 
 calculate_validation_r2 <- function(aggregated_results) {
-    forb_filter <- aggregated_results$key != "Forb"
+    forb_filter <- (aggregated_results$key != "Forb") & (aggregated_results$key != "Unknown")
+    print(forb_filter)
     validation <- aggregated_results[forb_filter, "validation_counts"] / sum(aggregated_results[forb_filter, "validation_counts"])
     prediction <- aggregated_results[forb_filter, "predicted_counts"] / sum(aggregated_results[forb_filter, "predicted_counts"])
     lm_fit <- lm(
-        prediction ~ validation
+        validation ~ prediction
     )
     return(summary(lm_fit)$r.squared)
 }
 
 
-calculate_rpd <- function(aggregated_results){
-    #forb_filter <- aggregated_results$key != "Forb"
-    df <- aggregated_results#[forb_filter]
+calculate_rpd <- function(aggregated_results) {
+    # forb_filter <- aggregated_results$key != "Forb"
+    df <- aggregated_results # [forb_filter]
 
     pred <- df$prediction_prop %>% as.numeric()
     val <- df$validation_prop %>% as.numeric()
 
-    #print(pred)
-    #print(val)
+    # print(pred)
+    # print(val)
 
     rpds <- numeric(length = nrow(df))
-    for(i in seq_len(nrow(df))){
-        rpd <- 2 * abs(val[[i]] - pred[[i]] ) / ( pred[[i]] + val[[i]]) 
+    for (i in seq_len(nrow(df))) {
+        rpd <- 2 * abs(val[[i]] - pred[[i]]) / (pred[[i]] + val[[i]])
         rpds[[i]] <- rpd
     }
 
-    #print(rpds)
+    # print(rpds)
     return(mean(rpds, na.rm = TRUE))
 }
-
