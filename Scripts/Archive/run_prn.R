@@ -6,8 +6,41 @@ raster::raster(test_path) %>% plot()
 
 #Model path but only useful for looking at model. Specify model in config.json
 model_path <- "./mle/models/gs/3012f5ed-7d17-4e94-a454-24d8a65f5b4f.rda"
-load_model(model_path)$confusion.matrix
-#Paths to images
+load_model(model_path) %>% str
+load_model(model_path)$forest %>% str
+load_model(model_path)$forest$independent.variable.names
+tree1Info<-treeInfo(load_model(model_path), tree=1)
+tree1Info$tree<-"tree1"
+tree2Info<-treeInfo(load_model(model_path), tree=2)
+tree2Info$tree<-"tree2"
+
+bothtreeinfo<-rbind(tree1Info,tree2Info)
+
+bothtreeinfo %>% group_by(tree,splitvarName, splitval) %>% tally() %>% pivot_wider(names_from = tree, values_from = n) %>% arrange(splitvarName, splitval) %>% print(n=500)
+bothtreeinfo %>% group_by(tree,prediction) %>% tally() %>% pivot_wider(names_from = tree, values_from = n) %>% arrange(prediction) %>% print(n=500)
+
+load_model(model_path) %>% treeInfo(tree=2) %>% group_by(splitvarName) %>% tally %>% print(n=80)
+load_model("./mle/models/gs/3012f5ed-7d17-4e94-a454-24d8a65f5b4f.rda")$call
+
+tree1<-as.data.frame(load_model(model_path)$forest$split.varIDs[1])
+tree2<-as.data.frame(load_model(model_path)$forest$split.varIDs[2])
+colnames(tree1)<-"splitVarIDs"
+colnames(tree2)<-"splitVarIDs"
+  branch1<-load_model(model_path)$forest$split.values[1] %>% as.data.frame()
+  colnames(branch1)<-"splitVals"
+  branch2<-load_model(model_path)$forest$split.values[2] %>% as.data.frame()
+  colnames(branch2)<-"splitVals"
+
+  tree1.2<-cbind(tree1,branch1)
+  tree2.2<-cbind(tree2,branch2)
+
+  tree1.2$tree<-"1"
+  tree2.2$tree<-"2"
+
+  tree3<-rbind(tree1.2,tree2.2)
+  head(tree3)
+  tree3 %>% group_by(splitVarIDs,tree) %>% tally() %>% print(n=142)
+
 Bison_path ="M:/Alaska_DATA/Alaska_Summer2019/Data_by_site/Bison_Gulch/Imagery_60m/100251_Bison_Gulch_line2_2019_08_12_01_07_28/raw_1511_rd_rf_55pctWhiteRef_or"
 Bonanza_path ="M:/Alaska_DATA/Alaska_Summer2018/Workspaces/Alaska/DatabyDate/72518/ImagingSpectrometer/DataFiles/100066_2018_07_25_21_18_45/raw_6425_rd_rf_55pctWhiteRef_or"
 EightMile_path = "M:/Alaska_DATA/Alaska_Summer2018/Workspaces/Alaska/DatabyDate/72818/ImagingSpectrometer/DataFolders/100124_BlacktandardFlight2_2018_07_28_22_56_17/raw_5968_rd_rf_55pctWhiteRef_or"
