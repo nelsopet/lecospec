@@ -126,8 +126,9 @@ ggplot(tarp_refl_tall, aes(Wavelength, Median_Reflectance, color = site), scales
   x = "Wavelength (nm)",
   y = "Reflectance") +
   ggplot2::geom_hline(yintercept = c(0.55, 0.32, 0.1))+
-  ##facet_wrap(vars(site, refl), scales = "free_y", ncol = 3)
-  facet_wrap(vars(refl), scales = "free_y", ncol = 3)
+  ##facet_wrap(vars(site, refl), scales = "free_y", ncol = 3)+
+  scale_y_continuous(limits = c(0, 1))+
+  facet_wrap(vars(refl), scales = "fixed", ncol = 3)
 
  dev.off()
 
