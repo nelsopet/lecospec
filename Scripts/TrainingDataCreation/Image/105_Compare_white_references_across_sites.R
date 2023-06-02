@@ -110,7 +110,7 @@ unique(tarp_refl_tall$site)
 
 jpeg("figures/WhiteTarp_by_Site_reprocessed_all.jpg", height = 3000, width = 7000, res = 350)
 
-ggplot(tarp_refl_tall, aes(Wavelength, Median_Reflectance, color = site), scales = "fixed")+
+ggplot(tarp_refl_tall %>% dplyr::filter(site != "TwelveMile") %>% dplyr::filter(site != "MurphyDome"), aes(Wavelength, Median_Reflectance, color = site), scales = "fixed")+
   theme(panel.background = element_rect(fill = "white", colour = "grey50"), 
         #legend.key.size = unit(0.5, "cm"),legend.text = element_text(size=25),
         #legend.position = "none",
