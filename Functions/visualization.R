@@ -135,7 +135,7 @@ define_plot_options <- function(
 
 
 fg1_palette <- c(
-        "#ffffff",
+        "#000000",
         "#db2a53",
         "#c9ae69",
         "#faf87d",
@@ -144,7 +144,7 @@ fg1_palette <- c(
         "#db2ad2",
         "#03fc2c",
         "#2ac4db",
-        "#000000"
+        "#ffffff"
 )
 
 fg0_names <- c(
@@ -194,13 +194,15 @@ plot_categorical_raster <- function(ras,  plot_options, colors = fg1_palette) {
             breaks = fg1_breaks,
             labels = fg1_names,
             values = fg1_palette, 
-            name = "Functional Type"
+            name = "Functional Type",
+            na.value = "white"
             ) + 
         geom_tile(aes(
             fill = factor(
                 value,
                 ordered = FALSE))) + 
         coord_quickmap()
+        
 
 
     return(ras_plot)
