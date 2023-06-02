@@ -6,7 +6,7 @@ raster::raster(test_path) %>% plot()
 
 #Model path but only useful for looking at model. Specify model in config.json
 model_path <- "./mle/models/gs/3012f5ed-7d17-4e94-a454-24d8a65f5b4f.rda"
-
+load_model(model_path)$confusion.matrix
 #Paths to images
 Bison_path ="M:/Alaska_DATA/Alaska_Summer2019/Data_by_site/Bison_Gulch/Imagery_60m/100251_Bison_Gulch_line2_2019_08_12_01_07_28/raw_1511_rd_rf_55pctWhiteRef_or"
 Bonanza_path ="M:/Alaska_DATA/Alaska_Summer2018/Workspaces/Alaska/DatabyDate/72518/ImagingSpectrometer/DataFiles/100066_2018_07_25_21_18_45/raw_6425_rd_rf_55pctWhiteRef_or"
