@@ -17,7 +17,7 @@ plot_options <- define_plot_options(
 #bg_filepath <- "E:/Predictions/bg_01_07_1511_fncgrp1_PREDICTIONS.tif"
 #bg_filepath <- "Output/dev_FullCube/bg_1511_fncgrp1_PREDICTIONS_img_balanced_1tree_ranger.tif"
 #bg_filepath <- "Output/dev_FullCube/bg_1511_fncgrp1_PREDICTIONS_grd_correccted_img_balanced_14comp_PLS.tif"
-bg_filepath <- "./Output/dev_FullCube/bg_1511_fncgrp1_PREDICTIONS_img_balanced_2tree_ranger_patch.tif"
+bg_filepath <- "./Output/dev_FullCube/bg_1511_fncgrp1_PREDICTIONS_img_balanced_2tree_ranger_NoDataFix.tif"
 
 bg_predictions <- raster::raster(bg_filepath)
 
@@ -25,7 +25,7 @@ bg_map <- plot_categorical_raster(bg_predictions, plot_options)
 
 windows();bg_map
 
-ggsave("./bg_map_ranger_img_raw_balanced_2tree_patch.png")
+ggsave("./figures/bg_map_ranger_img_raw_balanced_2tree_NoDataFix.png", dpi = 350, width = 12, height = 8, units = "in")
 
 
 ####################################################
@@ -39,14 +39,14 @@ plot_options <- define_plot_options(
 
 #em_filepath <- "./Output/dev_FullCube/em_5968_fncgrp1_PREDICTIONS_img_balanced_1tree_ranger.tif"
 #em_filepath <-"./Output/dev_FullCube/em_5968_fncgrp1_PREDICTIONS_img_balanced_2tree_ranger.tif"
-em_filepath <-"./Output/dev_FullCube/em_5968_fncgrp1_PREDICTIONS_img_balanced_2tree_ranger_patch.tif"
+em_filepath <-"./Output/dev_FullCube/em_5968_fncgrp1_PREDICTIONS_img_balanced_2tree_ranger_NoDataFix.tif"
 em_predictions <- raster::raster(em_filepath)
 
 em_map <- plot_categorical_raster(em_predictions, plot_options)
 
 windows();em_map
 
-ggsave("./em_2tree_ranger_img_raw_balanced_map_patch.png")
+ggsave("./figures/em_2tree_ranger_img_raw_balanced_map_NoDataFix.png", dpi = 350, width = 12, height = 8, units = "in")
 
 ####################################################
 #       Twelve Mile
@@ -91,7 +91,7 @@ plot_options <- define_plot_options(
 
 #ca_filepath <- "./Output/dev_FullCube/ch_0_fncgrp1_PREDICTIONS_img_balanced_1tree_ranger.tif"
 #ca_filepath <- "./Output/dev_FullCube/ch_0_fncgrp1_PREDICTIONS_img_balanced_2tree_ranger.tif"
-ca_filepath <- "./Output/dev_FullCube/ch_0_fncgrp1_PREDICTIONS_img_balanced_2tree_ranger_patch.tif"
+ca_filepath <- "./Output/dev_FullCube/ch_0_fncgrp1_PREDICTIONS_img_balanced_2tree_ranger_NoDataFix.tif"
 
 ca_predictions <- raster::raster(ca_filepath)
 
@@ -99,7 +99,7 @@ ca_map <- plot_categorical_raster(ca_predictions, plot_options)
 
 windows();ca_map
 
-ggsave("./ca_2tree_ranger_img_raw_balanced_map_patch.png")
+ggsave("./figures/ca_2tree_ranger_img_raw_balanced_map_NoDataFix.png", dpi = 350, width = 12, height = 8, units = "in")
 
 
 ####################################################
@@ -141,14 +141,14 @@ plot_options <- define_plot_options(
 #bz_filepath_1 <- "./Output/dev_FullCube/bz_6425_fncgrp1_PREDICTIONS_img_balanced_1tree_ranger.tif"
 #bz_filepath_1 <- "./Output/dev_FullCube/bz_6425_fncgrp1_PREDICTIONS_img_balanced_2tree_ranger.tif"
 #bz_filepath_1 <- "./Output/dev_FullCube/bz_6425_fncgrp1_PREDICTIONS_img_balanced_1tree_ranger_2.tif"
-bz_filepath_1 <-"./Output/dev_FullCube/bz_6425_fncgrp1_PREDICTIONS_img_balanced_2tree_ranger_patch.grd"
+bz_filepath_1 <-"./Output/dev_FullCube/bz_6425_fncgrp1_PREDICTIONS_img_balanced_2tree_ranger_NoDataFix.grd"
 bz_predictions_1 <- raster::raster(bz_filepath_1)
 
 bz_map_1 <- plot_categorical_raster(bz_predictions_1, plot_options)
 
 windows();bz_map_1
 
-ggsave("./bz_2tree_ranger_img_raw_balanced_map_patch.png")
+ggsave("./figures/bz_2tree_ranger_img_raw_balanced_map_NoDataFix.png", dpi = 350, width = 12, height = 8, units = "in")
 
 
 
