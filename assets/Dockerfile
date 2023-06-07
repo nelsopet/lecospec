@@ -12,8 +12,8 @@ ARG CRAN
 ARG CTAN_REPO=${CTAN_REPO:-https://www.texlive.info/tlnet-archive/2019/02/27/tlnet}
 ENV CTAN_REPO=${CTAN_REPO}
 ENV PATH=$PATH:/opt/TinyTeX/bin/x86_64-linux/
-ENV BUILD_DATE ${BUILD_DATE:-2020-08-24}
-ENV R_VERSION=${R_VERSION:-4.0.4} \
+ENV BUILD_DATE ${BUILD_DATE:-2023-06-07}
+ENV R_VERSION=${R_VERSION:-4.3.0} \
     CRAN=${CRAN:-https://cran.rstudio.com} \ 
     TERM=xterm
 
@@ -149,7 +149,7 @@ RUN apt-get update \
     tk-dev \
     unixodbc-dev
 
-ENV R_BASE_VERSION 4.0.4
+ENV R_BASE_VERSION 4.3.0
 
 ## During the freeze, new (source) packages are in experimental and we place the binaries in our PPA
 ##RUN echo "deb [trusted=yes] http://deb.debian.org/debian experimental main" > /etc/apt/sources.list.d/experimental.list \
