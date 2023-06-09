@@ -17,12 +17,6 @@ ENV R_VERSION=${R_VERSION:-4.3.0} \
     CRAN=${CRAN:-https://cran.rstudio.com} \ 
     TERM=xterm
 
-RUN useradd docker \
-	&& mkdir /home/docker \
-	&& chown docker:docker /home/docker \
-	&& addgroup docker staff
-
-  
 RUN apt-get update \
 	&& apt-get install -y --no-install-recommends \
 		ed \
@@ -31,16 +25,7 @@ RUN apt-get update \
 		vim-tiny \
 		wget \
 		ca-certificates \
-		fonts-texgyre \
-	&& rm -rf /var/lib/apt/lists/*
-
-## Configure default locale, see https://github.com/rocker-org/rocker/issues/19
-RUN echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen \
-	&& locale-gen en_US.utf8 \
-	&& /usr/sbin/update-locale LANG=en_US.UTF-8
-
-ENV LC_ALL en_US.UTF-8
-ENV LANG en_US.UTF-8
+		fonts-texgyre 
 
 RUN apt-get update \
   && apt-get install -y --no-install-recommends \
@@ -187,6 +172,42 @@ RUN apt-get update \
 
 
 
-RUN install2.r --error \
-   --deps TRUE \
-    tidyverse 
+RUN useradd -s /bin/bash -m docker \
+	&& usermod -a -G staff docker \
+## Refresh apt, install minimal tools
+  && apt-get update \
+	&& apt-get install -y --no-install-recommends \
+		ca-certificates \
+		wget \
+## Install key and setup R repo at CRAN
+        && wget -q -O - https://cloud.r-project.org/bin/linux/ubuntu/marutter_pubkey.asc \
+                | tee -a /etc/apt/trusted.gpg.d/cran_ubuntu_key.asc  \
+        && echo "deb [arch=amd64 signed-by=/etc/apt/trusted.gpg.d/cran_ubuntu_key.asc] https://cloud.r-project.org/bin/linux/ubuntu jammy-cran40/" \
+                > /etc/apt/sources.list.d/cran.list \
+## Install key and setup r2u repo, also set 'pin preference'
+        && wget -q -O - https://r2u.stat.illinois.edu/ubuntu/dirk_eddelbuettel_pubkey.asc \
+                | tee -a /etc/apt/trusted.gpg.d/dirk_eddelbuettel_pubkey.asc \
+        && echo "deb [arch=amd64 signed-by=/etc/apt/trusted.gpg.d/dirk_eddelbuettel_pubkey.asc] https://r2u.stat.illinois.edu/ubuntu jammy main" \
+                > /etc/apt/sources.list.d/r2u.list \
+        && echo "Package: *" > /etc/apt/preferences.d/99r2u \
+        && echo "Pin: release o=CRAN-Apt Project" >> /etc/apt/preferences.d/99r2u \
+        && echo "Pin: release l=CRAN-Apt Packages" >> /etc/apt/preferences.d/99r2u \
+        && echo "Pin-Priority: 700"  >> /etc/apt/preferences.d/99r2u \
+## Configure default locale, see https://github.com/rocker-org/rocker/issues/19
+        && echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen \
+	&& locale-gen en_US.utf8 \
+	&& /usr/sbin/update-locale LANG=en_US.UTF-8
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        r-base \
+        r-base-dev \
+        r-recommended \
+## Install bspm for r2u as well as remotes and docopt used in littler script
+                 r-cran-bspm \
+                 r-cran-docopt \
+                 r-cran-littler \
+                 r-cran-remotes \
+## Support user-level installation of R packages
+	&& chown root:staff "/usr/local/lib/R/site-library" \
+	&& chmod g+ws "/usr/local/lib/R/site-library" 
