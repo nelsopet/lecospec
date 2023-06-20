@@ -94,7 +94,7 @@ for(filepath in base_paths){
                     r2 = r2,
                     chi2prob = rpd,
                     seed = seed,
-                    logpath=manifest_path
+                    logpath = manifest_path
                 )
 
                 plot_by_pft(

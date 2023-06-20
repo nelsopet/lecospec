@@ -384,13 +384,13 @@ train_model <- function(
         # generate the confusion matrix
         print(model_predictions %>% levels())
         print(test_labels %>% levels())
-print(model_predictions %>% to_fg0() %>% levels())
-print(test_labels %>% to_fg0() %>% levels())
+        print(model_predictions %>% to_fg0() %>% levels())
+        print(test_labels %>% to_fg0() %>% levels())
 
 
         confusion_matrix <- caret::confusionMatrix(
             model_predictions %>% to_fg0(), 
-            test_labels %>% as.factor() %>% to_fg0(),
+            test_labels %>% as.factor() %>% to_fg0() %>% add_forb(),
             mode = "everything"
         )
 
