@@ -560,8 +560,8 @@ train_pls_lda <- function(
     # generate the confusion matrix
 
     confusion_matrix <- caret::confusionMatrix(
-        test_labels,
-        model_predictions %>% as.factor(),
+        model_predictions %>% as.factor() %>% to_fg0() %>% as.factor(),
+        test_labels %>% as.factor() %>% to_fg0() %>% add_forb() %>% as.factor(),
         mode = "everything"
     )
 
