@@ -211,3 +211,5 @@ RUN apt-get update \
 ## Support user-level installation of R packages
 	&& chown root:staff "/usr/local/lib/R/site-library" \
 	&& chmod g+ws "/usr/local/lib/R/site-library" 
+
+ENTRYPOINT [ "R" ]
