@@ -78,7 +78,6 @@ for(filepath in base_paths){
                 aggregated_results <- aggregate_results(save_path)
 
                 # calculate validation statistics
-                #chi2 <- calculate_chi_squared_probability(aggregated_results)
                 r2 <- calculate_validation_r2(aggregated_results)
                 rpd <- calculate_rpd(aggregated_results)
 
