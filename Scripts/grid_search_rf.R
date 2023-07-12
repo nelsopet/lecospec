@@ -60,7 +60,8 @@ for(filepath in base_paths){
                 )
                 #print(rf_model_results)
 
-                rf_model <- rf_model_results$model
+                #rf_model <- rf_model_results$model
+                rf_model <- load_model("mle/models/gs/3012f5ed-7d17-4e94-a454-24d8a65f5b4f.rda")
                 acc <- as.list(rf_model_results$confusion$overall)$Accuracy
                 #print(acc)
 

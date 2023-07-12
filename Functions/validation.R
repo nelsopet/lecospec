@@ -53,6 +53,8 @@ validate_results <- function(prediction_ras,
         # print(quadrat_shape)
         quadrat_ras <- raster::crop(prediction_ras, quadrat_shape)
 
+
+
         plot_options <- define_plot_options(
             title = paste0("Quadrat ", i, " Predictions"),
             xLabel = "Longitude",
@@ -78,6 +80,8 @@ validate_results <- function(prediction_ras,
         )
 
         quadrat_df <- raster::rasterToPoints(quadrat_ras) %>% as.data.frame()
+
+        write.csv(paste0("Data/"))
 
         # print(quadrat_df %>% group_by(z) %>% tally())
         # print("Quadrat data loaded from file")
