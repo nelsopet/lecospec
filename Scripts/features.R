@@ -42,9 +42,13 @@ create_patch_balanced_sample <- function(
     patch_col = "UID", 
     class_col = "FncGrp1", 
     test_count = 15L, 
-    train_count = 300L,
+    train_count = 300L,# rename this to reflect function
+    seed = NULL,
     verbose = FALSE){
 
+        if(!is.null(seed)){
+            set.seed(seed)
+        }
         train_samples <- NULL
         test_samples <- NULL
 
@@ -154,7 +158,11 @@ create_patch_balanced_sample <- function(
     )
 }
 
-train_test_data <- create_patch_balanced_sample(data, test_count = 15, train_count = 100)
+train_test_data <- create_patch_balanced_sample(
+    data, 
+    test_count = 15, 
+    train_count = 100, 
+    verbose = TRUE)
 
 table(as.factor(train_test_data$test$FncGrp1))
 table(as.factor(train_test_data$train$FncGrp1))

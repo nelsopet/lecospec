@@ -29,7 +29,7 @@ for( i in seq_along(quadrats)){
         colnames(df) <- band_names
         head(df)
 
-         veg_indices <- get_vegetation_indices(df, NULL, cluster = NULL)
+        veg_indices <- get_vegetation_indices(df, NULL, cluster = NULL)
 
         # drop rows that are uniformly zero
       
@@ -206,16 +206,14 @@ turbo_validate <- function(model){
     head(predictions)
     data$predictions <- as.factor(predictions$.)
     
-    by_quad <- data %>% 
+    by_quad <- data %>% # check this 
         group_by(location, predictions) %>%   
         summarise(n = n()) %>%
         mutate(freq = n / sum(n))
 
 
     validation_col <- list()
-    summary(by_quad)
 
-by_quad
     for(i in seq(nrow(by_quad))){
         loc <- by_quad$location[[i]]
         key <- by_quad$predictions[[i]]
