@@ -7,9 +7,7 @@ test_path_5 <- "Data/Ground_Validation/Imagery/EightMileQuads.envi"
 test_path_6 <- "Data/Ground_Validation/Imagery/MurphDomeQuads0_10.envi"
 test_path_7 <- "Data/Ground_Validation/Imagery/MurphDomeQuads20_50.envi"
 test_path_8 <- "Data/Ground_Validation/Imagery/MurphDomeQuads60_100.envi"
-#test_path_9 <- "Data/Ground_Validation/Imagery/BonanzaQuads.envi"
-test_path_9 <- "Data/Ground_Validation/Imagery/bonanza_upper.envi.tif"
-test_path_10 <- "Data/Ground_Validation/Imagery/bonanza_lower.envi.tif"
+test_path_9 <- "Data/Ground_Validation/Imagery/BonanzaQuads.envi"
 
 # ML models
 model_path_base <- "Output/E_003_Pred_Model_RandomForest_FncGrp1_1000trees.rda"
@@ -30,8 +28,7 @@ shape_path_5 <- "Data/Vectors/EightMile_Quadrats_revised.shp"
 shape_path_6 <- "Data/Vectors/MurphyQuads0_10m.shp"
 shape_path_7 <- "Data/Vectors/MurphyQuads20_50m.shp"
 shape_path_8 <- "Data/Vectors/MurphyQuads60_100m.shp"
-shape_path_9 <- "Data/Vectors/bonanza_upper.shp"
-shape_path_10 <- "Data/Vectors/bonanza_lower.shp"
+shape_path_9 <- "Data/Vectors/Bonanza_N_Quads.shp"
 
 
 
@@ -115,21 +112,19 @@ chatanika_names <- c(
     "Chatanika0"
 )
 
-bonanza_upper_names <- c(
+bonanza_names <- c(
     "Bonanza60",
     "Bonanza100",
     "Bonanza90",
     "Bonanza80",
     "Bonanza50",
-    "Bonanza70"
-)
-
-bonanza_lower_names <- c(
     "Bonanza40",
     "Bonanza30",
     "Bonanza20",
     "Bonanza10",
-    "Bonanza0"
+    "Bonanza0",
+    "Bonanza70"
+
 )
 
 quadrats <- list(
@@ -141,8 +136,7 @@ quadrats <- list(
     #test_path_6,
     #test_path_7,
     #test_path_8,
-    test_path_9,
-    test_path_10
+    test_path_9
 )
 
 shapes <- list(
@@ -154,8 +148,7 @@ shapes <- list(
     #shape_path_6,
     #shape_path_7,
     #shape_path_8,
-    shape_path_9,
-    shape_path_10
+    shape_path_9
 )
 
 
@@ -168,8 +161,7 @@ shape_names <- list(
     #md_names_1,
     #md_names_2,
     #md_names_3,
-    bonanza_upper_names,
-    bonanza_lower_names
+    bonanza_names
 )
 
 save_paths <- list(
@@ -181,7 +173,6 @@ save_paths <- list(
     #"figures/MurphyDome/Part1/",
     #"figures/MurphyDome/Part2/",
     #"figures/MurphyDome/Part3/",
-    "figures/Bonanza/",
     "figures/Bonanza/"
 ) 
 
@@ -194,8 +185,7 @@ site_names <- list(
     #"Murphy Dome",
     #"Murphy Dome",
     #"Murphy Dome",
-    "Bonanza (Upper)",
-    "Bonanza (Lower)"
+    "Bonanza"
 )
 
 site_indices <- c(
@@ -207,7 +197,6 @@ site_indices <- c(
     #"MurphyDome",
     #"MurphyDome",
     #"MurphyDome",
-    "Bonanza",
     "Bonanza"
 )
 
