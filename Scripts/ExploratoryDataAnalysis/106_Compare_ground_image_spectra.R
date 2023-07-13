@@ -166,6 +166,8 @@ spectra_PFT_adonis
 
 ## Bind both ground and image spectra summaries (quantiles) together
 PFT_SPEC_GROUND_IMAGE <- bind_rows(Cleaned_Speclib_tall_Fnc_grp1, PFT_IMG_SPEC_clean_tall)
+
+PFT_SPEC_GROUND_IMAGE$Source_Color<-ifelse(PFT_SPEC_GROUND_IMAGE$Source == "Ground", "green", "blue")
 #
 
 ######## Functional group 1 spectral profiles
@@ -177,7 +179,7 @@ aes(Wavelength, Median_Reflectance, group = Functional_group1),
 scales = "fixed"
 ) +
   geom_ribbon(aes(Wavelength, ymin = Pct_12_5_Reflectance, ymax = Pct_87_5_Reflectance, alpha = 0.3)) +
-  # geom_ribbon(aes(Wavelength, ymin = Lower_Reflectance, ymax = Upper_Reflectance, alpha = 0.2))+
+  geom_ribbon(aes(Wavelength, ymin = Lower_Reflectance, ymax = Upper_Reflectance, alpha = 0.2))+
   labs(title = c("Reflectance by plant functional group and sample size with median (red), 75% (dark) and 90% (grey) quantiles based on 1242 scans"), y = "Reflectance") +
   theme(
     panel.background = element_rect(fill = "white", colour = "grey50"),
@@ -189,9 +191,33 @@ scales = "fixed"
     axis.text.x = element_text(angle = 90)
   ) +
   # geom_line(aes(Wavelength, Median_Reflectance,color = "red"),size = 2)+
-  geom_line(aes(Wavelength, Median_Reflectance, color = Source), size = 2) +
+      geom_line(aes(Wavelength, Median_Reflectance, colour = Source_Color), size = 2) +
+
+  annotate("rect", xmin = 492.4 - (66 / 2), xmax = 492.4 + (66 / 2), ymin = 0, ymax = 1, alpha = .7, color = color[2], fill = color[2]) +
+  # Band3 559.8 36, fill =
+  annotate("rect", xmin = 559.8 - (36 / 2), xmax = 559.8 + (36 / 2), ymin = 0, ymax = 1, alpha = .7, color = color[3], fill = color[3]) +
+  # Band4 664.6 31, fill =
+  annotate("rect", xmin = 664.6 - (31 / 2), xmax = 664.6 + (31 / 2), ymin = 0, ymax = 1, alpha = .7, color = color[4], fill = color[4]) +
+  # Band5 704.1 15, fill =
+  annotate("rect", xmin = 704.1 - (15 / 2), xmax = 704.1 + (15 / 2), ymin = 0, ymax = 1, alpha = .7, color = color[5], fill = color[5]) +
+  # Band6<-740.5 15, fill =
+  annotate("rect", xmin = 740.5 - (15 / 2), xmax = 740.5 + (15 / 2), ymin = 0, ymax = 1, alpha = .7, color = color[6], fill = color[6]) +
+  # Band7<-782.8 20
+  annotate("rect", xmin = 782.8 - (20 / 2), xmax = 782.8 + (20 / 2), ymin = 0, ymax = 1, alpha = .2) +
+  # Band8<- 864 21
+  annotate("rect", xmin = 864 - (21 / 2), xmax = 864 + (21 / 2), ymin = 0, ymax = 1, alpha = .2) +
+  # Band9<-945.1 20
+  annotate("rect", xmin = 945.1 - (20 / 2), xmax = 945.1 + (20 / 2), ymin = 0, ymax = 1, alpha = .2) +
+  # Band10<-1373.5 31
+  #annotate("rect", xmin = 1373.5 - (31 / 2), xmax = 1373.5 + (31 / 2), ymin = 0, ymax = 100, alpha = .2) +
+  ## Band11<-1613.7 91
+  #annotate("rect", xmin = 1613.7 - (91 / 2), xmax = 1613.7 + (91 / 2), ymin = 0, ymax = 100, alpha = .2) +
+  ## Band12<-2202.4 175
+  #annotate("rect", xmin = 2202.4 - (175 / 2), xmax = 2202.4 + (175), ymin = 0, ymax = 100, alpha = .2) +
+  #scale_color_grey() +
+
   facet_wrap(vars(Functional_group1_wN), scales = "fixed", ncol = 4)
-# facet_wrap(vars(Functional_group1), scales = "fixed", ncol = 3)
+# facet_wrap(reorder(~Functional_group1_wN, Source_Color), scales = "fixed", ncol = 4)
 
 dev.off()
 
