@@ -1,7 +1,7 @@
 
 base_paths <- c(
-    "corrected_and_img.csv",
     "img_raw_raw.csv",
+    #"corrected_and_img.csv",
     "grd_raw_raw.csv"
     #"bison_gulch_stratified.csv",
     #"grd_raw_corrected.csv",
