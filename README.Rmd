@@ -37,8 +37,8 @@ The functions in lecospectR are divided into sections, Some functions are found 
     /Functions/pfts.R  
     /Functions/pipeline.R  
     /Functions/raster_operations.R 
-    /Functions/spectral_operations.R
     /Functions/site_specific_processing.R   
+    /Functions/spectral_operations.R
     /Functions/training_utilities.R    
     /Functions/type_conversion.R   
     /Functions/utilities.R 
@@ -68,10 +68,10 @@ hand digitized patches of plant functional types provided as a shapefile to the 
 performed in the second script (101_Crop_Training_Quads) for hand digitzed quadrats of validation ground cover data.
 Script 102_Parse_training_PFT_vector_spectra adds metadata to each pixel by plant patch. 
 
-    "/Scripts/TrainingDataCreation/Image/101_Crop_Training_PFT_vector.R"
-    "/Scripts/TrainingDataCreation/Image/101_Crop_Training_Quads.R"
-    "/Scripts/TrainingDataCreation/Image/102_Parse_training_PFT_vector_spectra.R"   
-    "/Scripts/TrainingDataCreation/Image/103_Clean_training_PFT_vector_spectra.R"   
+    /Scripts/TrainingDataCreation/Image/101_Crop_Training_PFT_vector.R
+    /Scripts/TrainingDataCreation/Image/101_Crop_Training_Quads.R
+    /Scripts/TrainingDataCreation/Image/102_Parse_training_PFT_vector_spectra.R
+    /Scripts/TrainingDataCreation/Image/103_Clean_training_PFT_vector_spectra.R
 
 After running these scripts, the output is relectance for each pixel from the patches of plants digitized from images.
 
@@ -82,7 +82,7 @@ For example, running elements of the /Scripts/ExploratoryDataAnalysis/7_Visualiz
 the figure below, which shows the median and interquartile ranges of reflectance (75% black & 95% grey) with the sample size in 
 number of scans distributed across a number of scans (ground measured) or pixels (airborne).
 
-<img src="./Output/Fnc_grp1_spectral_profiles_PFT_IMG_SPECTRA_ALL.jpg" width="1000" height="1000">
+<img src="./Output/Fnc_grp1_spectral_profiles_PFT_IMG_SPECTRA_ALL_corrected.jpg" width="1000" height="1000">
 
 
 ## Study Area and Data locations
@@ -166,7 +166,7 @@ Here is an example confusion matrix from a model showing misclassification betwe
 
 ```{r, echo=FALSE, include=TRUE}
 
-knitr::include_graphics(path="figures/base_confusion.png")
+#knitr::include_graphics(path="figures/base_confusion.png")
 
 ```
 
@@ -201,5 +201,5 @@ Once the /config.json is set to match what is needed, the following script shows
 Example predicted plant functional type map from one site (Bison Gulch near Denali National Park)
 ```{r, echo=FALSE, include=TRUE}
 
-#knitr::include_graphics(path="figures/bg_1Mpix_fng1_predictions.png")
+knitr::include_graphics(path="bg_map_ranger_img_raw_balanced_2tree_NoDataFix.png")
 ```
