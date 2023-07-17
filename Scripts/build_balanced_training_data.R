@@ -32,16 +32,9 @@ data$site <- as.factor(data$Site)
 
 summary(data)
 
-band_correlation <- cor(img_resampled_bands)
-index_correlation <- cor(img_indices)
-X11();heatmap(index_correlation)
-X11();heatmap(band_correlation)
-print(band_correlation)
-
-
-X11();qgraph::qgraph(band_correlation, minimum=0.9,cut=0.95,vsize=2,legend=TRUE,borders=FALSE)
-
-
+if(!dir.exists("Data/v2")){
+    dir.create("Data/v2")
+}
 
 create_patch_balanced_sample <- function(
     data, 
