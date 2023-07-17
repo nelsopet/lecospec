@@ -1,9 +1,4 @@
 
-test_data <- subset(read.csv("Data/gs/x_test/img_raw_raw.csv"), select = -c(X))
-test_labels <- read.csv("Data/gs/y_test/img_raw_raw.csv")$x %>% as.factor()
-
-
-
 base_paths <- c(
     "img_raw_raw.csv",
     #"corrected_and_img.csv",

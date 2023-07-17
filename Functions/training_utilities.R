@@ -582,3 +582,19 @@ train_pls_lda <- function(
     
 
 }
+
+
+extract_features <- function(data){
+
+
+    return(
+        subset(
+            data, 
+            select = c(
+
+            )
+        )
+    )
+
+}
+
