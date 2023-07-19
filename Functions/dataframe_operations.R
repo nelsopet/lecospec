@@ -1167,3 +1167,11 @@ filter_df_bands <- function(df){
     target_cols <- intersect(df_cols, bands_col_names)
     return(df[,target_cols])
 }
+
+filter_df_indices <- function(df){
+    #index_col_names <- read.csv("assets/vegIndicesUsed.csv")$x %>% as.character()
+    df_cols <- colnames(df) %>% as.character()
+    target_cols<-df_cols[grepl("_5nm",df_cols)]
+    #target_cols <- setdiff(df_cols, index_col_names)
+    return(df[,target_cols])
+}
