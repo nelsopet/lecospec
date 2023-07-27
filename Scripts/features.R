@@ -1,5 +1,4 @@
 source("Functions/lecospectR.R")
-
 img_base_path <- "Data/Ground_Validation/PFT_image_spectra/PFT_Image_SpectralLib_Clean.csv"
 full_data <- read.csv(img_base_path)
 
@@ -25,13 +24,6 @@ metadata <- subset(
 img_indices <- impute_spectra(get_vegetation_indices(img_bands, NULL))
 img_resampled_bands <- resample_df(img_bands, delta = 100, drop_existing=TRUE)
 
-data <- cbind(metadata, img_resampled_bands, img_indices)
-data$FncGrp1 <- as.factor(data$FncGrp1)
-data$site <- as.factor(data$Site)
-
-
-summary(data)
-
 band_correlation <- cor(img_resampled_bands)
 index_correlation <- cor(img_indices)
 X11();heatmap(index_correlation)
@@ -39,139 +31,211 @@ X11();heatmap(band_correlation)
 print(band_correlation)
 
 
-X11();qgraph::qgraph(band_correlation, minimum=0.9,cut=0.95,vsize=2,legend=TRUE,borders=FALSE)
+X11();qgraph::qgraph(
+    band_correlation,
+    minimum = 0.9,
+    cut = 0.95,
+    vsize = 4,
+    legend = TRUE,
+    borders = FALSE)
+X11();qgraph::qgraph(
+    index_correlation,
+    minimum = 0.9,
+    cut = 0.95,
+    vsize = 4,
+    legend = TRUE,
+    borders = FALSE)
+
+index_uncor <- abs(index_correlation) < 0.3
+X11();qgraph::qgraph(
+    index_uncor,
+    minimum = 0.9,
+    cut = 0.5,
+    vsize = 4,
+    legend = TRUE,
+    borders = FALSE)
+
+print(colnames(img_resampled_bands))
+
+colnames(img_indices)
+
+selected_bands <- c("X502.593_5nm", "X702.593_5nm", "X802.593_5nm")
+NUM_INDICES <- 50
+
+random_selection_indices <- permute::shuffle(ncol(img_indices))[1:NUM_INDICES]
+tier_1_indices <- c(
+    "D1",
+    "Vogelmann3",
+    "DPI",
+    "mSR",
+    "REPLE",
+    "REPLi",
+    "Datt",
+    "Datt3"
+)
+
+tier_2_indices <- c(
+    "MTCI",
+    "PRI",
+    "SR7",
+    "Datt4",
+    "Carter",
+    "PRInorm",
+    "CARI",
+    "SRPI",
+    "NPCI"
+)
+tier_3_indices <- c(
+    "SIPI",
+    "CRI3",
+    "CRI4",
+    "CRI2",
+    "MTVI",
+    "OSAVI2",
+    "PARS",
+    "OSAVI",
+    "PSSR",
+    "EGFR",
+    "TGI",
+    "TCARI",
+    "SR8",
+    "CRI1"
+)
+colnames(img_indices)
+
+
+selected_cols <- c(
+    selected_bands,
+    tier_1_indices,
+    tier_2_indices,
+    tier_3_indices
+)
+
+
+#sample_perm <- permute::shuffle(nrow(img_indices))
+data_split <- create_patch_balanced_sample(
+    cbind(
+    img_indices,
+    img_resampled_bands,
+    metadata
+    ),
+    train_count = 300
+)
+
+subsampled_data <- subsample_by_class(data_split$train, "FncGrp1")
+x_train <- subset(subsampled_data, select = -c(FncGrp1, Site, UID))
+#[,c(selected_bands, selected_indices)]
+
+y_train <- subsampled_data$FncGrp1 %>% as.factor()
+nrow(x_train)
 
 
 
-create_patch_balanced_sample <- function(
-    data, 
-    patch_col = "UID", 
-    class_col = "FncGrp1", 
-    test_count = 15L, 
-    train_count = 300L,# rename this to reflect function
-    seed = NULL,
-    verbose = FALSE){
+svm_grid <- expand.grid(
+    cost = c(11, 12, 13, 14, 15, 16, 17, 18, 19),
+    Loss = c("L1", "L2")
+)
 
-        if(!is.null(seed)){
-            set.seed(seed)
-        }
-        train_samples <- NULL
-        test_samples <- NULL
+rf_grid <- expand_grid(
 
-        split_data <- list()
-        patches_by_pft <- list()
-        samples_per_patch <- list()
-        samples_per_pft <- list()
+)
 
-        split_levels <- unique(as.character(data[,patch_col]))
-        class_levels <- unique(as.character(data[,class_col]))
 
-        
-        for(li in class_levels){
-            patches_by_pft[[li]] <- list()
-            samples_per_pft[[li]] <- 0
-            
-        }
+training_options <- caret::trainControl(
+    method = "repeatedcv",
+    number = 100,
+    repeats = 3,
+    search = "random"
+)
 
-        for(p in split_levels){
-            samples_per_patch[[p]] <- 0
-        }
+getModelInfo("AdaBoost.M1")
+model_svm <- caret::train(
+    x = round(x_train[, selected_cols], digits = 1),
+    y = y_train[,included_columns],
+    method = "svmLinear3",
+    #preProcess = c("center", "scale", "knnImpute"),
+    #weights = targets_to_weights(y_train),
+    trControl = training_options,
+    tuneGrid = svm_grid
+)
+model_svm
 
-        if(verbose){
-            print("Building data for the following classes:")
-            print(class_levels)
-            print("Splitting evenly across the following patches")
-            print(split_levels)
-        }
+model_fit <- caret::train(
+    x = x_train[, included_columns],
+    y = y_train,
+    method = "rpart",
+    #preProcess = c("center", "scale", "knnImpute"),
+    #weights = targets_to_weights(y_train),
+    trControl = training_options#,
+    #tuneGrid = grid
+)
+model_fit
 
-        for( i in seq_along(split_levels)){
-            # extract data for the given level
-            patch_id <- split_levels[[i]]
-            filtered_data <- data[data[,patch_col] == patch_id, ]
-            # get the PFT for the patch
-            patch_pft <- filtered_data[1,class_col]
-            # store the data in the data structures for the processing
-            split_data[[patch_id]] <- filtered_data
-            patches_by_pft[[patch_pft]] <- append(
-                patches_by_pft[[patch_pft]],
-                patch_id
-                )
-        }
+model <- ranger::ranger(
+    num.trees = 64,
+    #max.depth = 8,
+    case.weights = targets_to_weights(y_train),
+    x = bin_df(x_train),
+    y = y_train
+)
+print(model)
+head(x_train)
+print(model_fit)
+print(model_fit$results)
+model_svm
 
-        # calculate the number of samples from each patch
-        for(j in seq_along(class_levels)){
-            # some
-            pft <- class_levels[[j]]
-            for(k in 1:test_count){
-                for(m in seq_along(patches_by_pft[[pft]])){
-                    if(samples_per_pft[[pft]] < test_count){
-                        current_patch_id <- patches_by_pft[[pft]][[m]]
-                        samples_per_patch[[current_patch_id]] <- samples_per_patch[[current_patch_id]] + 1
-                        samples_per_pft[[pft]] <- samples_per_pft[[pft]] + 1
-                    }
-                }
-            }
-
-        }
-
-        if(verbose){
-            print("Samples per patch")
-            print(samples_per_patch)
-            print("Samples per PFT")
-            print(samples_per_pft)
-        }
-        
-
-        # get the samples from the patches
-        for(st in split_levels){
-            
-            df <- split_data[[st]]
-            n_samp <- samples_per_patch[[st]]
-            permutation <- permute::shuffle(nrow(df))
-            if(n_samp > 0){
-
-                test_indices <- permutation[1:n_samp]
-
-                if(is.null(test_samples)){
-                    test_samples <- df[test_indices, ]
-                } else {
-                    test_samples <- rbind(test_samples, df[test_indices,])
-                    if(verbose){
-                        print(table(test_samples$FncGrp1))
-                    }
-
-                }
-            }
-
-            num_train <- min(train_count, nrow(df) - test_count)
-            train_indices <- permutation[(n_samp+1):(num_train + test_count)] %>% as.numeric()
-            if(is.null(train_samples)){
-                train_samples <- df[train_indices,]
-            } else {
-                train_samples <- rbind(train_samples, df[train_indices,])
-            }
-        }
-
-        if(sum(unlist(samples_per_patch)) != nrow(test_samples)){
-            warning("the number of rows in the dataframe are not as expected")
-        }
-
-    return(list(
-        test = test_samples,
-        train = train_samples,
-        samples_per_patch = samples_per_patch,
-        samples_per_pft = samples_per_pft)
-    )
+if(!dir.exists("mle/experiments/manual")){
+    dir.create("mle/experiments/manual")
 }
 
-train_test_data <- create_patch_balanced_sample(
-    data, 
-    test_count = 15, 
-    train_count = 100, 
-    verbose = TRUE)
+model_id <- uuid::UUIDgenerate()
+model_dir <- paste0("mle/experiments/manual/", model_id, "/")
+dir.create(model_dir)
+print(model_dir)
 
-table(as.factor(train_test_data$test$FncGrp1))
-table(as.factor(train_test_data$train$FncGrp1))
-print(train_test_data$samples_per_patch)
-write.csv(train_test_data$test, "Data/v2/test.csv")
-write.csv(train_test_data$train, "Data/v2/train.csv")
+validate_model(
+    model_fit,
+    save_directory = model_dir
+)
+
+aggregated_results <- aggregate_results(model_dir)
+r2 <- calculate_validation_r2(aggregated_results)
+print(r2)
+
+save(model_fit, file = paste0(model_dir, "model.rda"))
+
+print(model_dir)
+plt <- plot_by_pft(
+    aggregated_results,
+    save_path = paste0(model_dir, "aggregate.html"),
+    open = FALSE,
+    image_path = NULL,
+    aggregation=0
+)
+
+
+subsample_by_class <- function(df, by_col){
+
+    train_labels <- df[, by_col]
+    sample_perm <- permute::shuffle(nrow(df))
+    sample_index <- create_stratified_sample(
+        train_labels,
+        permutation = sample_perm,
+        samples_per_pft = 300
+    )
+
+    return(df[sample_perm,][sample_index,])
+}
+
+
+bin_df <- function(df, num_bins = 10){
+    binned_df <- as.data.frame(df)
+
+    for(col in colnames(df)){
+
+        binned_df[,col] <- cut(df[,col], breaks = num_bins)
+    }
+
+    return(binned_df)
+
+}
