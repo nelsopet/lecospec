@@ -314,7 +314,8 @@ process_tile <- function(
         resampled_df <- resample_df(
             cleaned_df_no_empty_cols,
             normalize = FALSE,
-            max_wavelength = 995.716,
+            delta = 5,
+            #max_wavelength = 995.716,
             drop_existing=TRUE)
         gc()
 
