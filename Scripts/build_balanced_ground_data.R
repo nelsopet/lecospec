@@ -2,9 +2,10 @@ source("Functions/lecospectR.R")
 
 
 set.seed(61718)
-base_path <- "Data/D_002_SpecLib_Derivs.csv"
+base_path <- "Output/C_001_SC3_Cleaned_SpectralLib.csv"
 full_data <- read.csv(base_path)
 colnames(full_data)
+summary(full_data)
 
 
 
