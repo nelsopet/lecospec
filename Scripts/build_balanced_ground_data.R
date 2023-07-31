@@ -8,7 +8,6 @@ colnames(full_data)
 summary(full_data)
 
 
-
 grd_train <- subset(
     full_data, 
     select=-c(
