@@ -151,12 +151,12 @@ for(feature in colnames(uncorrelated_features)[2:ncol(uncorrelated_features)]){
 
     
 
-    n_comp <- min(length(used_cols), 32)
+    n_comp <- #min(length(used_cols), 32)
     model <- caret::train(
-        x = uncorrelated_features[row_balance,used_cols],
+        x = uncorrelated_features[row_balance,],
         y = labels[row_balance],
         method = "svmLinear3",
-        #preProcess = c("center", "scale", "knnImpute"),
+        preProcess = c("center", "scale", "knnImpute"),
         #weights = targets_to_weights(labels),
         trControl = training_options#,
         #tuneGrid = svm_grid
