@@ -5,9 +5,12 @@ source("Functions/lecospectR.R")
 ########################################
 
 # model-independent search parameters
-max_per_pft <- c(77, 100, 200, 300)
+max_per_pft <- c(75, 150)
+bandwidths <- c(5, 25, 50)
+correlation_thresholds <- c(0.95)
+#TODO: add aggregation_level <- c(0, 1)
 filter_features <- c(TRUE, FALSE)
-transform_names <- c()
+transform_names <- c("Nothing")
 
 # model hyperparameters
 num_components <- 2^seq(0, 10)
@@ -24,6 +27,27 @@ caret::getModelInfo("rpart")
 transforms <- list()
 transforms[["Nothing"]] <- identity_fn
 print(transforms[["Nothing"]]("test"))
+
+
+get_filename <- function(bandwidth, count, is_train = TRUE, base_path = "Data/v2/"){
+        if(is_train){
+            train_test_string <- "train"
+        } else {
+            train_test_string <- "test"
+        }
+
+        return(
+            paste0(
+                base_path,
+                train_test_string,
+                "_",
+                bandwidth,
+                "nm_",
+                count,
+                ".csv"
+                )
+        )
+}
 
 ########################################
 ##  Load Data 
@@ -82,12 +106,58 @@ caret::getModelInfo("rpart2")
 ########################################
 ##  Run Grid Search
 ########################################
-
+for(bandwidth_index in seq_along(bandwidths)){
+    bandwidth <- bandwidths[[bandwidth_index]]
 for(count in max_per_pft){
+
+
+    test_path <- get_filename(
+        bandwidth = bandwidth,
+        count = count,
+        is_train = FALSE
+    )
+    training_path <- get_filename(
+        bandwidth = bandwidth,
+        count = count
+    )
+
+    test_data_full <- read.csv(test_path)
+    test_labels <- test_data_full$FncGrp1 %>% as.factor()
+    test_data <- subset(
+        test_data_full,
+        select = -c(
+            X,
+            UID,
+            FncGrp1,
+            Site,
+            site
+            ))
+
+    rm(test_data_full)
+    gc()
+
+    train_data_full <- read.csv(training_path)
+    train_data <- subset(
+        train_data_full,
+        select = -c(
+            X,
+            UID,
+            FncGrp1,
+            Site,
+            site
+            ))
+    labels <- train_data_full$FncGrp1 %>% as.factor()
+
+    rm(train_data_full)
+    gc()
+
+
+
+
     for(use_filter in filter_features){
         for(transform_name in transform_names){
-            for(n in num_components){
-                for(a in alpha){
+            for(max_correlation in correlation_thresholds){
+                #for(a in alpha){
 
                     
 
@@ -98,22 +168,32 @@ for(count in max_per_pft){
                     dir.create(model_dir)
                     print(model_dir)
 
-                    row_balance <- create_stratified_sample(
-                            labels, 
-                            samples_per_pft = count
-                        )
+
 
                     data <- NULL
+                    if(use_filter) {
+                        data <- train_data[row_balance, selected_cols]
+                    } else {
+                        data <- remove_intercorrelated_variables(
+                            train_data[row_balance, ]
+                            )
+                    }
+
+                       data <- NULL
                     if(use_filter){
                         data <- train_data[row_balance, selected_cols]
                     } else {
-                        data <- remove_intercorrelated_variables(train_data[row_balance, ])
+                        data <- remove_intercorrelated_variables(
+                            train_data[row_balance, ],
+                            threshold = max_correlation
+                            )
                     }
+
 
                     training_options <- caret::trainControl(
                         method = "cv",
                         number = 3,
-                        search = "random"
+                        search = "grid"
                     )
                     
 
@@ -189,8 +269,8 @@ for(count in max_per_pft){
                         logpath = manifest_path
                     )
 
-                }
+               # }
             }
         }
     }
-}
+}}

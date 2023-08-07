@@ -151,10 +151,6 @@ for(count in max_per_pft){
                     dir.create(model_dir)
                     print(model_dir)
 
-                    row_balance <- create_stratified_sample(
-                            labels, 
-                            samples_per_pft = count
-                        )
 
                     data <- NULL
                     if(use_filter){

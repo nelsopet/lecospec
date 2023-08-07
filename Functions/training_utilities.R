@@ -732,3 +732,28 @@ create_patch_balanced_sample <- function(
         )
     )
 }
+
+
+
+
+remove_intercorrelated_variables <- function(data, col_order, threshold = 0.95){
+
+    correlation_matrix <- cor(data[, col_order], method = "spearman")
+
+    is_included <- rep_len(TRUE, length(col_order))
+
+    for(i in seq_along(col_order)){
+        if(is_included[[i]]){
+            if(i < length(col_order) - 1){
+
+            for(j in (i+1):length(col_order)){
+                if(abs(correlation_matrix[i,j]) > threshold){
+                    is_included[[j]] <- FALSE
+                }
+            }
+            }
+        }
+    }
+
+    return(data[,col_order[is_included]])
+}
