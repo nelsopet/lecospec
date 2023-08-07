@@ -3,7 +3,8 @@ library(sf)
 library(tidyverse)
 library(arrow)
 library(stringr)
-
+library(DBI)
+library(RSQLite)
 
 source("Scripts/validation_defs.R")
 
@@ -250,3 +251,34 @@ get_r2 <- function(t_results){
 }
 
 get_r2(t)
+
+validate_model_at_quadrat <- function(
+    model,
+    quadrat_id,
+    connection = NULL,
+    save_graphs = TRUE,
+    save_html = TRUE,
+    verbose = FALSE
+    ){
+
+        query_start <- "SELECT * FROM validation_data WHERE quadrat_id="
+        query_end <- " ORDER BY x;"
+        query <- paste0(query_start, quadrat_id, query_end)
+
+
+
+        data <- RSQLite::dbExecute(connection, query)
+        return(data)
+}
+
+
+get_features <- function(feature_names, conn){
+
+    query_start <- "SELECT "
+    query_end <- "FROM features;"
+    name_string <- paste(unlist(feature_names), sep = ", ")
+    query <- paste0(query_start, name_string, query_end)
+    return(RSQLite::dbExecute(conn = conn, statement = query))
+}
+
+get_training_data <- 
