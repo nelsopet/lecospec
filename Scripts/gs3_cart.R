@@ -16,7 +16,7 @@ alpha <- seq(0, 1, 0.1)
 ########################################
 ##  Define Assets
 ########################################
-manifest_path <- "./gs3_svm.csv"
+manifest_path <- "./gs3_cart.csv"
 identity_fn <- function(dx){
     return(dx)
 }
@@ -77,6 +77,7 @@ selected_cols <- c(
 )
 
 
+caret::getModelInfo("rpart2")
 
 ########################################
 ##  Run Grid Search
@@ -106,7 +107,7 @@ for(count in max_per_pft){
                     if(use_filter){
                         data <- train_data[row_balance, selected_cols]
                     } else {
-                        data <- train_data[row_balance, ]
+                        data <- remove_intercorrelated_variables(train_data[row_balance, ])
                     }
 
                     training_options <- caret::trainControl(

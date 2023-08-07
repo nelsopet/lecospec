@@ -151,26 +151,16 @@ for(feature in colnames(uncorrelated_features)[2:ncol(uncorrelated_features)]){
 
     
 
-    n_comp <- #min(length(used_cols), 32)
-    model <- caret::train(
-        x = uncorrelated_features[row_balance,],
-        y = labels[row_balance],
-        method = "svmLinear3",
-        preProcess = c("center", "scale", "knnImpute"),
-        #weights = targets_to_weights(labels),
-        trControl = training_options#,
-        #tuneGrid = svm_grid
-    )
-
-#ranger::ranger(
-#            num.trees = n_comp,
-#            replace = TRUE,
-#            case.weights = targets_to_weights(labels),
-#            classification = TRUE,
-#            #alpha = 0.75,
-#            x = train_data[, used_cols],
-#            y = labels
-#        )
+    n_comp <- 8 #min(length(used_cols), 32)
+    model <- ranger::ranger(
+            num.trees = n_comp,
+            replace = TRUE,
+            case.weights = targets_to_weights(labels),
+            classification = TRUE,
+            #alpha = 0.75,
+            x = train_data[, used_cols],
+            y = labels
+        )
 colnames(train_data)
 uncorrelated_features
     if(("Forb" %in% levels(labels)) && !("Forb"  %in% levels(test_labels))){

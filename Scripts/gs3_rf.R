@@ -5,13 +5,53 @@ source("Functions/lecospectR.R")
 ########################################
 
 # model-independent search parameters
-max_per_pft <- c(77, 100, 200, 300)
+max_per_pft <- c(75, 150)
+bandwidths <- c(5, 25, 50)
+correlation_thresholds <- c(0.95)
+#TODO: add aggregation_level <- c(0, 1)
 filter_features <- c(TRUE, FALSE)
-transform_names <- c()
+transform_names <- c("Nothing")
+
+get_filename <- function(bandwidth, count, is_train = TRUE, base_path = "Data/v2/"){
+        if(is_train){
+            train_test_string <- "train"
+        } else {
+            train_test_string <- "test"
+        }
+
+        return(
+            paste0(
+                base_path,
+                train_test_string,
+                "_",
+                bandwidth,
+                "nm_",
+                count,
+                ".csv"
+                )
+        )
+}
+
+#TODO: investigate include_site <- c(TRUE, FALSE)
+
+
 
 # model hyperparameters
-num_components <- 2^seq(0, 10)
-alpha <- seq(0, 1, 0.1)
+num_components <- 2^seq(1, 9, 2)# 1-1024, doubling each time
+alpha <- seq(0.25, 1, 0.25)
+
+# number of states: 
+num_states <- length(num_components) * 
+    length(alpha) * 
+    length(filter_features) * 
+    length(max_per_pft) * 
+    length(bandwidths) * 
+    length(correlation_thresholds) * 
+    length(transform_names)
+
+print(paste0("Grid search states: ", num_states))
+print(paste0("Grid search estimated time: ", 7 / 60 * num_states, " hours"))
+
 
 ########################################
 ##  Define Assets
@@ -19,8 +59,9 @@ alpha <- seq(0, 1, 0.1)
 manifest_path <- "./gs3_ranger.csv"
 
 transforms <- list()
-transforms[["Nothing"]] <- identity_fn
-print(transforms[["Nothing"]]("test"))
+transforms[["Nothing"]] <- function(dx){
+    return(dx)
+}
 
 ########################################
 ##  Load Data 
@@ -28,33 +69,6 @@ print(transforms[["Nothing"]]("test"))
 training_path <- "Data/v2/train.csv"
 test_path <- "Data/v2/test.csv"
 
-test_data_full <- read.csv(test_path)
-test_labels <- test_data_full$FncGrp1 %>% as.factor()
-test_data <- subset(
-    test_data_full,
-    select = -c(
-        X,
-        UID,
-    	FncGrp1,
-        Site,
-        site
-        ))
-
-
-rm(test_data_full)
-gc()
-
-train_data_full <- read.csv(training_path)
-train_data <- subset(
-    train_data_full,
-    select = -c(
-        X,
-        UID,
-    	FncGrp1,
-        Site,
-        site
-        ))
-labels <- train_data_full$FncGrp1 %>% as.factor()
 
 rm(train_data_full)
 gc()
@@ -73,17 +87,63 @@ selected_cols <- c(
     "EVI"
 )
 
+# raster::beginCluster()
+
 ########################################
 ##  Run Grid Search
 ########################################
 
+for(bandwidth_index in seq_along(bandwidths)){
+    bandwidth <- bandwidths[[bandwidth_index]]
 for(count in max_per_pft){
+
+    test_path <- get_filename(
+        bandwidth = bandwidth,
+        count = count,
+        is_train = FALSE
+    )
+    training_path <- get_filename(
+        bandwidth = bandwidth,
+        count = count
+    )
+
+    test_data_full <- read.csv(test_path)
+    test_labels <- test_data_full$FncGrp1 %>% as.factor()
+    test_data <- subset(
+        test_data_full,
+        select = -c(
+            X,
+            UID,
+            FncGrp1,
+            Site,
+            site
+            ))
+
+    rm(test_data_full)
+    gc()
+
+    train_data_full <- read.csv(training_path)
+    train_data <- subset(
+        train_data_full,
+        select = -c(
+            X,
+            UID,
+            FncGrp1,
+            Site,
+            site
+            ))
+    labels <- train_data_full$FncGrp1 %>% as.factor()
+
+    rm(train_data_full)
+    gc()
+
     for(use_filter in filter_features){
         for(transform_name in transform_names){
+                for(max_correlation in correlation_thresholds){
+
+            # iterate over model hyperparameters
             for(n in num_components){
                 for(a in alpha){
-
-
 
                     model_id <- uuid::UUIDgenerate()
                     model_dir <- paste0("mle/experiments/manual/", model_id, "/")
@@ -100,22 +160,12 @@ for(count in max_per_pft){
                     if(use_filter){
                         data <- train_data[row_balance, selected_cols]
                     } else {
-                        data <- train_data[row_balance, ]
+                        data <- remove_intercorrelated_variables(
+                            train_data[row_balance, ],
+                            threshold = max_correlation
+                            )
                     }
 
-                    training_options <- caret::trainControl(
-                        method = "cv",
-                        repeats = 3,
-                        number = 3,
-                        search = "grid"
-                    )
-                    
-                    grid <- expand.grid(
-                        C = n,
-                        loss = c("L1", "L2")
-                    )
-
-                    #n_comp <- #min(length(used_cols), 32)
                     model <- ranger::ranger(
                             num.trees = n,
                             replace = TRUE,
@@ -135,10 +185,10 @@ for(count in max_per_pft){
                     )$prediction %>% as.factor()
 
                     # generate the confusion matrix
-                    print(model_predictions %>% levels())
-                    print(test_labels %>% levels())
-                    print(model_predictions %>% to_fg0() %>% levels())
-                    print(test_labels %>% to_fg0() %>% levels())
+                    #print(model_predictions %>% levels())
+                    #print(test_labels %>% levels())
+                    #print(model_predictions %>% to_fg0() %>% levels())
+                    #print(test_labels %>% to_fg0() %>% levels())
 
 
                     confusion_matrix <- caret::confusionMatrix(
@@ -151,7 +201,8 @@ for(count in max_per_pft){
 
                     validate_model(
                         model,
-                        save_directory = model_dir
+                        save_directory = model_dir#,
+                        #cluster = raster::getCluster()
                     )
 
                     aggregated_results <- aggregate_results(model_dir)
@@ -189,6 +240,10 @@ for(count in max_per_pft){
 
                 }
             }
+                }  
+            }
         }
     }
 }
+
+#raster::endCluster()

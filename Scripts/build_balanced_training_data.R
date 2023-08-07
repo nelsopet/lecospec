@@ -23,17 +23,19 @@ metadata <- subset(
 )
 
 img_indices <- impute_spectra(get_vegetation_indices(img_bands, NULL))
-img_resampled_bands <- resample_df(img_bands, delta = 100, drop_existing=TRUE)
+img_resampled_bands_5nm <- resample_df(img_bands, delta = 5, drop_existing=TRUE)
+img_resampled_bands_25nm <- resample_df(img_bands, delta = 25, drop_existing=TRUE)
+img_resampled_bands_50nm <- resample_df(img_bands, delta = 50, drop_existing=TRUE)
 
-data <- cbind(metadata, img_resampled_bands, img_indices)
+data <- cbind(metadata, img_resampled_bands_50nm, img_indices)
 data$FncGrp1 <- as.factor(data$FncGrp1)
 data$site <- as.factor(data$Site)
 
 
 summary(data)
 
-if(!dir.exists("Data/v2")){
-    dir.create("Data/v2")
+if(!dir.exists("Data/v3")){
+    dir.create("Data/v3")
 }
 
 create_patch_balanced_sample <- function(
@@ -59,6 +61,8 @@ create_patch_balanced_sample <- function(
         split_levels <- unique(as.character(data[,patch_col]))
         class_levels <- unique(as.character(data[,class_col]))
 
+        count_per_patch <- as.list(table(as.character(data[,patch_col])))
+        
         
         for(li in class_levels){
             patches_by_pft[[li]] <- list()
@@ -95,12 +99,15 @@ create_patch_balanced_sample <- function(
         for(j in seq_along(class_levels)){
             # some
             pft <- class_levels[[j]]
-            for(k in 1:test_count){
+            for(k in 1:(test_count)){
                 for(m in seq_along(patches_by_pft[[pft]])){
                     if(samples_per_pft[[pft]] < test_count){
                         current_patch_id <- patches_by_pft[[pft]][[m]]
-                        samples_per_patch[[current_patch_id]] <- samples_per_patch[[current_patch_id]] + 1
-                        samples_per_pft[[pft]] <- samples_per_pft[[pft]] + 1
+                        current_patch_size <- count_per_patch[[current_patch_id]]
+                        if(samples_per_patch[[current_patch_id]] < current_patch_size){
+                            samples_per_patch[[current_patch_id]] <- samples_per_patch[[current_patch_id]] + 1
+                            samples_per_pft[[pft]] <- samples_per_pft[[pft]] + 1
+                        }
                     }
                 }
             }
@@ -145,26 +152,41 @@ create_patch_balanced_sample <- function(
             }
         }
 
+        # verify that the number of samples of each class matches,
+        # otherwise sample more at random from
+
+        for(pft in class_levels){
+
+        }
+
         if(sum(unlist(samples_per_patch)) != nrow(test_samples)){
             warning("the number of rows in the dataframe are not as expected")
         }
 
     return(list(
-        test = test_samples,
-        train = train_samples,
+        selection = test_samples,
+        remainder = train_samples,
         samples_per_patch = samples_per_patch,
-        samples_per_pft = samples_per_pft)
+        samples_per_class = samples_per_pft
+        )
     )
 }
 
 train_test_data <- create_patch_balanced_sample(
-    data, 
-    test_count = 15, 
-    train_count = 100, 
+    data,
+    test_count = 15,
+    train_count = NULL,
     verbose = TRUE)
 
-table(as.factor(train_test_data$test$FncGrp1))
-table(as.factor(train_test_data$train$FncGrp1))
-print(train_test_data$samples_per_patch)
-write.csv(train_test_data$test, "Data/v2/test.csv")
-write.csv(train_test_data$train, "Data/v2/train.csv")
+split_2_train <- create_patch_balanced_sample(
+    train_test_data$remainder,
+    test_count = 300,
+    train_count = 1000,
+    verbose = TRUE
+)
+
+
+write.csv(train_test_data$selection, "Data/v2/test_50nm_300.csv")
+write.csv(split_2_train$selection, "Data/v2/train_50nm_300.csv")
+
+

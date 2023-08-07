@@ -599,7 +599,6 @@ extract_features <- function(data){
 }
 
 
-
 create_patch_balanced_sample <- function(
     data, 
     patch_col = "UID", 
@@ -623,6 +622,8 @@ create_patch_balanced_sample <- function(
         split_levels <- unique(as.character(data[,patch_col]))
         class_levels <- unique(as.character(data[,class_col]))
 
+        count_per_patch <- as.list(table(as.character(data[,patch_col])))
+        
         
         for(li in class_levels){
             patches_by_pft[[li]] <- list()
@@ -659,12 +660,15 @@ create_patch_balanced_sample <- function(
         for(j in seq_along(class_levels)){
             # some
             pft <- class_levels[[j]]
-            for(k in 1:test_count){
+            for(k in 1:(test_count)){
                 for(m in seq_along(patches_by_pft[[pft]])){
                     if(samples_per_pft[[pft]] < test_count){
                         current_patch_id <- patches_by_pft[[pft]][[m]]
-                        samples_per_patch[[current_patch_id]] <- samples_per_patch[[current_patch_id]] + 1
-                        samples_per_pft[[pft]] <- samples_per_pft[[pft]] + 1
+                        current_patch_size <- count_per_patch[[current_patch_id]]
+                        if(samples_per_patch[[current_patch_id]] < current_patch_size){
+                            samples_per_patch[[current_patch_id]] <- samples_per_patch[[current_patch_id]] + 1
+                            samples_per_pft[[pft]] <- samples_per_pft[[pft]] + 1
+                        }
                     }
                 }
             }
@@ -709,14 +713,22 @@ create_patch_balanced_sample <- function(
             }
         }
 
+        # verify that the number of samples of each class matches,
+        # otherwise sample more at random from
+
+        for(pft in class_levels){
+
+        }
+
         if(sum(unlist(samples_per_patch)) != nrow(test_samples)){
             warning("the number of rows in the dataframe are not as expected")
         }
 
     return(list(
-        test = test_samples,
-        train = train_samples,
+        selection = test_samples,
+        remainder = train_samples,
         samples_per_patch = samples_per_patch,
-        samples_per_pft = samples_per_pft)
+        samples_per_class = samples_per_pft
+        )
     )
 }
