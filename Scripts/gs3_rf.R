@@ -5,9 +5,9 @@ source("Functions/lecospectR.R")
 ########################################
 
 # model-independent search parameters
-max_per_pft <- c(75, 150)
+max_per_pft <- c(75, 150, 300)
 bandwidths <- c(5, 25, 50)
-correlation_thresholds <- c(0.95)
+correlation_thresholds <- c(0.96, 0.97, 0.98, 0.99)
 #TODO: add aggregation_level <- c(0, 1)
 filter_features <- c(TRUE, FALSE)
 transform_names <- c("Nothing")
@@ -38,7 +38,7 @@ get_filename <- function(bandwidth, count, is_train = TRUE, base_path = "Data/v2
 
 # model hyperparameters
 num_components <- 2^seq(1, 9, 2)# 1-1024, doubling each time
-alpha <- seq(0.25, 1, 0.25)
+#alpha <- seq(0.25, 1, 0.25)
 
 # number of states: 
 num_states <- length(num_components) * 
@@ -86,6 +86,7 @@ selected_cols <- c(
     "Datt3",
     "EVI"
 )
+variable_importance <- read.csv("./assets/variable_importance.csv")
 
 # raster::beginCluster()
 
@@ -134,8 +135,6 @@ for(count in max_per_pft){
             ))
     labels <- train_data_full$FncGrp1 %>% as.factor()
 
-    rm(train_data_full)
-    gc()
 
     for(use_filter in filter_features){
         for(transform_name in transform_names){
@@ -154,10 +153,11 @@ for(count in max_per_pft){
 
                     data <- NULL
                     if(use_filter){
-                        data <- train_data[row_balance, selected_cols]
+                        data <- train_data[, selected_cols]
                     } else {
                         data <- remove_intercorrelated_variables(
-                            train_data[row_balance, ],
+                            train_data,
+                            col_order = variable_importance$variable,
                             threshold = max_correlation
                             )
                     }
@@ -168,7 +168,7 @@ for(count in max_per_pft){
                             classification = TRUE,
                             alpha = a,
                             x = transforms[[transform_name]](data),
-                            y = labels[row_balance]
+                            y = labels
                         )
                     if(("Forb" %in% levels(labels)) && !("Forb"  %in% levels(test_labels))){
                             levels(test_labels) <- c(levels(test_labels), "Forb")
@@ -223,10 +223,10 @@ for(count in max_per_pft){
                         outlier = "Random Forest",
                         preprocessing = paste0(
                             transform_name),
-                        source = "v2",
+                        source = max_correlation,
                         weight = a,
                         n = n,
-                        oob_error = model$prediction.error,
+                        #oob_error = model$prediction.error,
                         accuracy = acc,
                         r2 = r2,
                         chi2prob = rpd,
@@ -243,3 +243,4 @@ for(count in max_per_pft){
 }
 
 #raster::endCluster()
+
