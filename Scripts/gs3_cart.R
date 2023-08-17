@@ -68,8 +68,7 @@ test_data <- subset(
         ))
 
 
-rm(test_data_full)
-gc()
+
 
 train_data_full <- read.csv(training_path)
 train_data <- subset(
@@ -83,8 +82,7 @@ train_data <- subset(
         ))
 labels <- train_data_full$FncGrp1 %>% as.factor()
 
-rm(train_data_full)
-gc()
+
 
 selected_cols <- c(
     "PRInorm",
@@ -100,6 +98,7 @@ selected_cols <- c(
     "EVI"
 )
 
+variable_importance <- read.csv("./assets/variable_importance.csv")
 
 caret::getModelInfo("rpart2")
 
@@ -169,22 +168,13 @@ for(count in max_per_pft){
                     print(model_dir)
 
 
-
-                    data <- NULL
-                    if(use_filter) {
-                        data <- train_data[row_balance, selected_cols]
-                    } else {
-                        data <- remove_intercorrelated_variables(
-                            train_data[row_balance, ]
-                            )
-                    }
-
                        data <- NULL
                     if(use_filter){
-                        data <- train_data[row_balance, selected_cols]
+                        data <- train_data[, selected_cols]
                     } else {
                         data <- remove_intercorrelated_variables(
-                            train_data[row_balance, ],
+                            train_data,
+                            col_order = variable_importance$variable,
                             threshold = max_correlation
                             )
                     }
@@ -201,7 +191,7 @@ for(count in max_per_pft){
                     #n_comp <- #min(length(used_cols), 32)
                     model <- caret::train(
                         x = transforms[[transform_name]](data),
-                        y = labels[row_balance],
+                        y = labels,
                         method = "rpart1SE",
                         trControl = training_options#,
                     )
@@ -256,16 +246,15 @@ for(count in max_per_pft){
                     add_model_to_manifest(
                         model_id = model_id,
                         outlier = "CART (non-ordinal/SE)",
-                        preprocessing = paste0(
-                            transform_name),
+                        preprocessing = as.character(transform_name),
                         source = "v2",
                         weight = "balanced",
                         n = n,
-                        oob_error = model$prediction.error,
+                        oob_error = "na", #model$prediction.error,
                         accuracy = acc,
                         r2 = r2,
                         chi2prob = rpd,
-                        seed = 61718L,
+                        seed = 61718,
                         logpath = manifest_path
                     )
 

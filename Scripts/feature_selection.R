@@ -64,6 +64,7 @@ model <- ranger::ranger(
 var_imp <- as.data.frame(sort(model$variable.importance, decreasing = TRUE))
 colnames(var_imp) <- c("importance")
 var_imp
+write.csv(var_imp, file="./assets/variable_importance.csv")
 sqrt(ncol(train_data))
 ######################################################
 ## Progressive Elimination Feature Selection

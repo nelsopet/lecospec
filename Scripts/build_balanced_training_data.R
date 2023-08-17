@@ -27,7 +27,7 @@ img_resampled_bands_5nm <- resample_df(img_bands, delta = 5, drop_existing=TRUE)
 img_resampled_bands_25nm <- resample_df(img_bands, delta = 25, drop_existing=TRUE)
 img_resampled_bands_50nm <- resample_df(img_bands, delta = 50, drop_existing=TRUE)
 
-data <- cbind(metadata, img_resampled_bands_50nm, img_indices)
+data <- cbind(metadata, img_resampled_bands_25nm, img_indices)
 data$FncGrp1 <- as.factor(data$FncGrp1)
 data$site <- as.factor(data$Site)
 
@@ -180,13 +180,11 @@ train_test_data <- create_patch_balanced_sample(
 
 split_2_train <- create_patch_balanced_sample(
     train_test_data$remainder,
-    test_count = 300,
+    test_count = 75,
     train_count = 1000,
     verbose = TRUE
 )
 
 
-write.csv(train_test_data$selection, "Data/v2/test_50nm_300.csv")
-write.csv(split_2_train$selection, "Data/v2/train_50nm_300.csv")
-
-
+write.csv(train_test_data$selection, "Data/v2/test_25nm_75.csv")
+write.csv(split_2_train$selection, "Data/v2/train_25nm_75.csv")

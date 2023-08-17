@@ -5,7 +5,10 @@ source("Functions/lecospectR.R")
 ########################################
 
 # model-independent search parameters
-max_per_pft <- c(77, 100, 200, 300)
+max_per_pft <- c(75, 150)
+bandwidths <- c(5, 25, 50)
+correlation_thresholds <- c(0.96, 0.97,0.98,0.99)
+#TODO: add aggregation_level <- c(0, 1)
 filter_features <- c(TRUE, FALSE)
 transform_names <- c("Nothing")
 
@@ -16,9 +19,34 @@ alpha <- seq(0, 1, 0.1)
 ########################################
 ##  Define Assets
 ########################################
-manifest_path <- "./gs3_svm.csv"
+manifest_path <- "./gs3_gbm.csv"
 identity_fn <- function(dx){
     return(dx)
+}
+
+
+get_filename <- function(
+    bandwidth, 
+    count, 
+    is_train = TRUE, 
+    base_path = "Data/v2/") {
+        if(is_train){
+            train_test_string <- "train"
+        } else {
+            train_test_string <- "test"
+        }
+
+        return(
+            paste0(
+                base_path,
+                train_test_string,
+                "_",
+                bandwidth,
+                "nm_",
+                count,
+                ".csv"
+                )
+        )
 }
 
 transforms <- list()
@@ -43,9 +71,6 @@ test_data <- subset(
         site
         ))
 
-
-rm(test_data_full)
-gc()
 
 train_data_full <- read.csv(training_path)
 train_data <- subset(
@@ -84,10 +109,58 @@ variable_importance <- read.csv("./assets/variable_importance.csv")
 ##  Run Grid Search
 ########################################
 
+for(bandwidth_index in seq_along(bandwidths)){
+    bandwidth <- bandwidths[[bandwidth_index]]
 for(count in max_per_pft){
+
+
+    test_path <- get_filename(
+        bandwidth = bandwidth,
+        count = count,
+        is_train = FALSE
+    )
+    training_path <- get_filename(
+        bandwidth = bandwidth,
+        count = count
+    )
+
+    test_data_full <- read.csv(test_path)
+    test_labels <- test_data_full$FncGrp1 %>% as.factor()
+    test_data <- subset(
+        test_data_full,
+        select = -c(
+            X,
+            UID,
+            FncGrp1,
+            Site,
+            site
+            ))
+
+    rm(test_data_full)
+    gc()
+
+    train_data_full <- read.csv(training_path)
+    train_data <- subset(
+        train_data_full,
+        select = -c(
+            X,
+            UID,
+            FncGrp1,
+            Site,
+            site
+            ))
+    labels <- train_data_full$FncGrp1 %>% as.factor()
+
+    rm(train_data_full)
+    gc()
+
     for(use_filter in filter_features){
         for(transform_name in transform_names){
             for(n in num_components){
+                for(max_correlation in correlation_thresholds){
+
+
+
 
                     model_id <- uuid::UUIDgenerate()
                     model_dir <- paste0("mle/experiments/manual/", model_id, "/")
@@ -95,11 +168,16 @@ for(count in max_per_pft){
                     dir.create(model_dir)
                     print(model_dir)
 
+                   
+
                     data <- NULL
                     if(use_filter){
                         data <- train_data[, selected_cols]
                     } else {
-                        data <- remove_intercorrelated_variables(train_data)
+                        data <- remove_intercorrelated_variables(
+                            train_data,
+                            col_order = variable_importance$variable,
+                            threshold = max_correlation)
                     }
 
                     training_options <- caret::trainControl(
@@ -110,15 +188,14 @@ for(count in max_per_pft){
                     )
                     
                     grid <- expand.grid(
-                        C = n,
-                        loss = c("L1", "L2")
+                        mfinal = n
                     )
 
                     #n_comp <- #min(length(used_cols), 32)
                     model <- caret::train(
                         x = transforms[[transform_name]](data),
                         y = labels,
-                        method = "svmLinear3",
+                        method = "AdaBoost.M1",
                         preProcess = c("center", "scale"),
                         trControl = training_options#,
                     )
@@ -181,23 +258,24 @@ for(count in max_per_pft){
 
                     add_model_to_manifest(
                         model_id = model_id,
-                        outlier = "SVM",
+                        outlier = "no_treatment",
                         preprocessing = paste0(
                             "center & ",
                             "scale & ",
                             transform_name),
-                        source = "v2",
+                        source = max_correlation,
                         weight = "balanced",
                         n = n,
-                        oob_error = "na",#model$prediction.error,
+                        oob_error = model$prediction.error,
                         accuracy = acc,
                         r2 = r2,
                         chi2prob = rpd,
                         seed = 61718L,
                         logpath = manifest_path
                     )
-
+                }
             }
         }
     }
+}
 }
