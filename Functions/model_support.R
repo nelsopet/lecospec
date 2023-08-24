@@ -297,3 +297,30 @@ apply_model.knn3 <- function(df, model, ...){
     colnames(predictions) <- c("z")
     return(predictions)
 }
+
+apply_model.lgb.Booster <- function(df, model, ...){
+    # should load factor levels, column names from assets?
+    require(lightgbm)
+    print("Applying LightGBM Model")
+
+    # get the class probabilities
+    lgm_metadata <- rjson::fromJSON(file = "assets/lightgbm_metadata.json")
+    prediction_matrix <- predict(
+        model,
+        as.matrix(df[,lgm_metadata$columns]),
+        reshape = TRUE
+    )
+
+    # convert to factor and reset class names
+    prediction_factor <- as.factor(ramify::argmax(prediction_matrix, rows = TRUE) - 1)
+    levels(predictions) <- lgm_metadata$levels
+    
+    # convert to data.frame for downstream processing
+    predictions <- as.data.frame(prediction_factor)
+    colnames(predictions) <- c("z")
+
+    print(summary(predictions))
+
+    return(predictions)
+
+}

@@ -171,6 +171,7 @@ estimate_land_cover <- function(
                 cluster = NULL,
                 return_raster = TRUE,
                 band_names = bandnames,
+                bandwidth = config$bandwidth,
                 outlier_processing = outlier_processing_cfg,
                 transform_type = transform_type_cfg,
                 return_filename = TRUE,
@@ -192,6 +193,7 @@ estimate_land_cover <- function(
                 cluster = cl,
                 return_raster = TRUE,
                 band_names = bandnames,
+                bandwidth = config$bandwidth,
                 outlier_processing = outlier_processing_cfg,
                 transform_type = transform_type_cfg,
                 return_filename = TRUE,
@@ -255,6 +257,7 @@ process_tile <- function(
     cluster = NULL,
     return_raster = TRUE,
     band_names=NULL,
+    bandwidth = 5,
     outlier_processing = "none",
     transform_type = "none",
     return_filename = FALSE,
@@ -314,7 +317,7 @@ process_tile <- function(
         resampled_df <- resample_df(
             cleaned_df_no_empty_cols,
             normalize = FALSE,
-            delta = 5,
+            delta = bandwidth,
             #max_wavelength = 995.716,
             drop_existing=TRUE)
         gc()

@@ -363,11 +363,12 @@ save_validation <- function(template_dfs, base_filename = "validation") {
 #' @export
 #'
 validate_model <- function(ml_model,
-                           save_directory,
-                           outlier_processing = "none",
-                           transform_type = "none",
-                           pft_aggregation = 0,
-                           cluster = NULL) {
+                        save_directory,
+                        outlier_processing = "none",
+                        transform_type = "none",
+                        bandwidth = 5,
+                        pft_aggregation = 0,
+                        cluster = NULL) {
     # defines validation_df, etc.
     source("Scripts/validation_defs.R")
 
@@ -381,6 +382,7 @@ validate_model <- function(ml_model,
             cluster = cluster,
             return_raster = TRUE,
             band_names = band_names,
+            bandwidth = bandwidth,
             outlier_processing = outlier_processing,
             transform_type = transform_type,
             save_path = "./validation_saved_output.grd",
