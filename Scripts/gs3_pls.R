@@ -6,11 +6,12 @@ source("Functions/lecospectR.R")
 
 # model-independent search parameters
 max_per_pft <- c(75, 150, 300, 600)
-bandwidths <- c(5, 10, 25, 50)
-correlation_thresholds <- c(0.97, 0.98, 0.99, 1.00)
+bandwidths <- c(5, 10, 25)
+# correlation_thresholds <- c(0.97, 0.98, 0.99, 1.00)
 # TODO: add aggregation_level <- c(0, 1)
-filter_features <- c(TRUE, FALSE)
-transform_names <- c("Nothing")
+weight <- c(TRUE, FALSE)
+# filter_features <- c(TRUE, FALSE)
+# transform_names <- c("Nothing")
 
 get_filename <- function(bandwidth, count, is_train = TRUE, base_path = "Data/v2/") {
     if (is_train) {
@@ -27,7 +28,7 @@ get_filename <- function(bandwidth, count, is_train = TRUE, base_path = "Data/v2
             bandwidth,
             "nm_",
             count,
-            ".csv"
+            "_bands.csv"
         )
     )
 }
@@ -37,26 +38,15 @@ get_filename <- function(bandwidth, count, is_train = TRUE, base_path = "Data/v2
 
 
 # model hyperparameters
-num_components <- 2^seq(1, 9) # 1-1024, doubling each time
+num_components <- seq(6, 32, 2) # 2-32
 # alpha <- seq(0.25, 1, 0.25)
 
-# number of states:
-num_states <- length(num_components) *
-    length(alpha) *
-    length(filter_features) *
-    length(max_per_pft) *
-    length(bandwidths) *
-    length(correlation_thresholds) *
-    length(transform_names)
-
-print(paste0("Grid search states: ", num_states))
-print(paste0("Grid search estimated time: ", 7 / 60 * num_states, " hours"))
 
 
 ########################################
 ##  Define Assets
 ########################################
-manifest_path <- "./gs3_ranger_2.csv"
+manifest_path <- "./gs3_pls.csv"
 
 transforms <- list()
 transforms[["Nothing"]] <- function(dx) {
@@ -68,26 +58,6 @@ transforms[["Nothing"]] <- function(dx) {
 ########################################
 training_path <- "Data/v2/train.csv"
 test_path <- "Data/v2/test.csv"
-
-
-#rm(train_data_full)
-gc()
-
-selected_cols <- c(
-    "PRInorm",
-    "SRPI",
-    "PSND",
-    "Carter3",
-    "Datt4",
-    "SR8",
-    "Carter5",
-    "X442.593_5nm",
-    "X662.593_5nm",
-    "Datt3",
-    "EVI"
-)
-variable_importance <- read.csv("./assets/variable_importance.csv")
-
 # raster::beginCluster()
 
 ########################################
@@ -136,37 +106,19 @@ for (bandwidth_index in seq_along(bandwidths)) {
         )
         labels <- train_data_full$FncGrp1 %>% as.factor()
 
-        variable_importance_model <- ranger::ranger(
-            num.trees = 1000,
-            importance = "impurity_corrected",
-            replace = TRUE,
-            classification = TRUE,
-            x = train_data,
-            y = labels
-        )
 
-        #print(names(sort(variable_importance_model$variable.importance, decreasing = TRUE)))
 
-        variable_importance_list <- names(
-            sort(
-                variable_importance_model$variable.importance, 
-                decreasing = TRUE)
-                )
 
         # for(use_filter in filter_features){
-        for (transform_name in transform_names) {
-            for (max_correlation in correlation_thresholds) {
+        #for (transform_name in transform_names) {
+            #for (max_correlation in correlation_thresholds) {
                 # iterate over model hyperparameters
 
-                data <- remove_intercorrelated_variables(
-                        train_data,
-                        col_order = variable_importance_list,
-                        threshold = max_correlation
-                    )
-
-                for (n in num_components) {
+                for (nc in num_components) {
                     # for(a in alpha){
-
+                    n_comp <- min(
+                        ncol(train_data),
+                        nc)
                     model_id <- uuid::UUIDgenerate()
                     model_dir <- paste0("mle/experiments/manual/", model_id, "/")
                     set.seed(61718)
@@ -174,32 +126,28 @@ for (bandwidth_index in seq_along(bandwidths)) {
                     print(model_dir)
 
 
-                    model <- ranger::ranger(
-                        num.trees = n,
-                        replace = TRUE,
-                        classification = TRUE,
-                        # alpha = a,
-                        case.weights = targets_to_weights(labels),
-                        x = transforms[[transform_name]](data),
-                        y = labels
+                    pls_model_results <- train_pls_lda(
+                        train_data,
+                        labels,
+                        test_data,
+                        test_labels,
+                        n = n_comp,
+                        model_id = model_id,
+                        seed = 61718L,
+                        log_string = "PLS"
                     )
+                    print(pls_model_results)
+
+                    model <- pls_model_results$model
+                    acc <- as.list(pls_model_results$confusion$overall)$Accuracy
+                    print(acc)
                     if (("Forb" %in% levels(labels)) && !("Forb" %in% levels(test_labels))) {
                         levels(test_labels) <- c(levels(test_labels), "Forb")
                     }
 
                     # create predictions (ranger)
-                    model_predictions <- predict(
-                        model,
-                        test_data
-                    )$prediction %>% as.factor()
 
-                    confusion_matrix <- caret::confusionMatrix(
-                        model_predictions %>% to_fg0(),
-                        test_labels %>% as.factor() %>% to_fg0() %>% add_forb(),
-                        mode = "everything"
-                    )
 
-                    acc <- as.list(confusion_matrix$overall)$Accuracy
                     print(paste0("Model Accuracy: ", acc))
 
                     validate_model(
@@ -223,16 +171,14 @@ for (bandwidth_index in seq_along(bandwidths)) {
                         image_path = NULL,
                         aggregation = 0
                     )
-                    
+
                     add_model_to_manifest(
                         model_id = model_id,
-                        outlier = "Random Forest",
-                        preprocessing = paste0(
-                            transform_name
-                        ),
-                        source = max_correlation,
+                        outlier = "PLS",
+                        preprocessing = "center + scale",
+                        source = count,
                         weight = "balanced",
-                        n = n,
+                        n = n_comp,
                         # oob_error = model$prediction.error,
                         accuracy = acc,
                         r2 = r2,
@@ -240,8 +186,6 @@ for (bandwidth_index in seq_along(bandwidths)) {
                         seed = 61718L,
                         logpath = manifest_path
                     )
-                }
-            }
         }
     }
 }

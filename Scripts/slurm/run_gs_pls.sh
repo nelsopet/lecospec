@@ -14,7 +14,7 @@ echo "Setting up"
 date
 
 module load apptainer
-apptainer exec --writable ~/ls/ RScript Scripts/gs3_pls.R
+apptainer exec --writable ~/ls/ Rscript Scripts/gs3_pls.R
 
 echo "Grid Search Complete"
 date
