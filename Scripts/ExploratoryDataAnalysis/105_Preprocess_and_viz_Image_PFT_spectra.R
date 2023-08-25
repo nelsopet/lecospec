@@ -1,10 +1,13 @@
 require(Polychrome)
 require(glue)
 require(vegan)
+require(glue)
 source("Functions/lecospectR.R")
 #Image spectra
 PFT_IMG_SPEC_clean <- read.csv("./Data/Ground_Validation/PFT_Image_spectra/PFT_Image_SpectralLib_Clean.csv")
 head(PFT_IMG_SPEC_clean)
+
+PFT_IMG_SPEC_clean %>% group_by(Site,FncGrp1) %>% tally() %>% pivot_wider(names_from = FncGrp1, values_from = n) %>% print(n=100)
 names_drop<-c("PFT.1",
               "PFT.2",
               "PFT.3", 
@@ -56,7 +59,8 @@ PFT_IMG_SPEC_clean %>%
   dplyr::select(UID, 
                 sample_name, 
                 ScanNum, 
-                FncGrp1, 
+                FncGrp1,
+                Site, 
                 everything()
   ) %>% 
   dplyr::rename (Functional_group1 = FncGrp1) %>% #colnames()
@@ -97,7 +101,7 @@ inner_join(PFT_IMG_SPEC_clean, by=c("Functional_group1"="FncGrp1")) %>%
 
 write.csv(PFT_IMG_SPEC_clean_tall, "./Data/Ground_Validation/PFT_Image_spectra/PFT_Image_SpectralLib_Clean_tall.csv")
 
-jpeg("Output/Fnc_grp1_spectral_profiles_ImageSpectra.jpg", height = 10000, width = 9000, res = 350)
+jpeg("Output/Fnc_grp1_spectral_profiles_ImageSpectraUpdated.jpg", height = 10000, width = 9000, res = 350)
 ggplot(PFT_IMG_SPEC_clean_tall, aes(Wavelength, Median_Reflectance, group = Functional_group1), scales = "fixed")+
   labs(title = c("Reflectance by plant functional group and sample size with median (red), 75% (dark) and 90% (grey) quantiles based on 2561 scans"), y="Reflectance")+
   theme(panel.background = element_rect(fill = "white", colour = "grey50"), 
@@ -108,7 +112,7 @@ ggplot(PFT_IMG_SPEC_clean_tall, aes(Wavelength, Median_Reflectance, group = Func
         axis.text = element_text(size = 20),
         axis.text.x = element_text(angle = 90)) +
   #geom_line(aes(Wavelength, Median_Reflectance,color = "red"),size = 2)+  
-    geom_line(aes(Wavelength, Median_Reflectance,color = Site),size = 2)+  
+    geom_line(aes(Wavelength, Median_Reflectance),size = 2)+  #,color = Site
 
   geom_ribbon(aes(Wavelength, ymin = Pct_12_5_Reflectance, ymax = Pct_87_5_Reflectance), alpha = 0.3) +
   geom_ribbon(aes(Wavelength, ymin = Lower_Reflectance, ymax = Upper_Reflectance), alpha = 0.2) +
@@ -150,7 +154,7 @@ image_PFT_adonis<-adonis2(image_PFT_spectra_mat~as.factor(PFT_IMG_SPEC_clean_mer
 image_PFT_adonis
 
 #Build PCA with and without sqrt transform
-#image_pca<-princomp(sqrt(image_PFT_spectra_mat)) #, center=FALSE, scale=FALSE)
+image_pca<-princomp(image_PFT_spectra_mat)) #, center=FALSE, scale=FALSE)
 image_pca_pr<-prcomp(image_PFT_spectra_mat) #, center=FALSE, scale=FALSE)
 plot(scores(image_pca_pr)[,1:2], col=unique(fnc_grp1_color_list$Color))#, pch=c(1:2))
 plot(scores(image_pca_pr)[,1:2], col=site_color_list$Color, pch = PFT_IMG_SPEC_clean_merge$Functional_group1)#, pch=c(1:2))

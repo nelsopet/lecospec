@@ -1,29 +1,29 @@
 source("./Functions/lecospectR.R")
 
-#Cleaned_Speclib_tall_Fnc_grp1<-read.csv("./Data/C_001_SC3_Cleaned_SpectralLib_tall_Fnc_grp1.csv")
-Cleaned_Speclib_tall_Fnc_grp1<-read.csv("./Data/C_001_SC3_Cleaned_SpectralLib_CenAkCommonSp_tall_Fnc_grp1.csv")
+Cleaned_Speclib_tall_Fnc_grp1<-read.csv("./Data/C_001_SC3_Cleaned_SpectralLib_tall_Fnc_grp1.csv")
+#Cleaned_Speclib_tall_Fnc_grp1<-read.csv("./Data/C_001_SC3_Cleaned_SpectralLib_CenAkCommonSp_tall_Fnc_grp1.csv")
 Cleaned_Speclib_tall_Fnc_grp1<-Cleaned_Speclib_tall_Fnc_grp1 %>% dplyr::mutate(Source = "Ground")
 PFT_IMG_SPEC_clean_tall<-read.csv("./Data/Ground_Validation/PFT_Image_spectra/PFT_Image_SpectralLib_Clean_tall.csv")
-head(Cleaned_Speclib_merge)
-Speclib_merged<- bind_rows(Cleaned_Speclib_merge, PFT_IMG_SPEC_clean_merge)
-Speclib_merged %>% 
-  dplyr::mutate(Area= case_when(Area == "EightMile" ~ "Eight Mile",
-                                Area == "Murphy"  ~ "Murphy Dome",
-                                Area == "Big Trail" ~ "Fairbanks Area Big Trail Lake",
-                                Area == "12mile" ~ "Twelve Mile",
-                                Area == "Chatanika" ~ "Caribou Poker", 
-                                TRUE ~ Area)) %>%
-  group_by(Area,Functional_group1, Source) %>% 
-  tally() %>% 
-  pivot_wider(names_from = Functional_group1, values_from = n) %>% 
-  arrange(Area, Source) %>%
-  write.csv("./Output/TableScansPFTSiteAllSpectra.csv")
 
-img_mat<-PFT_IMG_SPEC_clean_merge %>% 
-  dplyr::select(-UID,-Source, -Functional_group1, -Area) %>% 
-  as.matrix() #%>% hist()
-img_mat<-img_mat*100
-img_mat_indices<-get_vegetation_indices(img_mat, ml_model = "mle/gs/models/b105c68f-c0df-45e6-97b5-f9e8c299752b")
+#Speclib_merged<- bind_rows(Cleaned_Speclib_merge, PFT_IMG_SPEC_clean_merge)
+#Speclib_merged %>% 
+#  dplyr::mutate(Area= case_when(Area == "EightMile" ~ "Eight Mile",
+#                                Area == "Murphy"  ~ "Murphy Dome",
+#                                Area == "Big Trail" ~ "Fairbanks Area Big Trail Lake",
+#                                Area == "12mile" ~ "Twelve Mile",
+#                                Area == "Chatanika" ~ "Caribou Poker", 
+#                                TRUE ~ Area)) %>%
+#  group_by(Area,Functional_group1, Source) %>% 
+#  tally() %>% 
+#  pivot_wider(names_from = Functional_group1, values_from = n) %>% 
+#  arrange(Area, Source) %>%
+#  write.csv("./Output/TableScansPFTSiteAllSpectra.csv")
+
+#img_mat<-PFT_IMG_SPEC_clean_merge %>% 
+#  dplyr::select(-UID,-Source, -Functional_group1, -Area) %>% 
+#  as.matrix() #%>% hist()
+#img_mat<-img_mat*100
+#img_mat_indices<-get_vegetation_indices(img_mat, ml_model = "mle/gs/models/b105c68f-c0df-45e6-97b5-f9e8c299752b")
 
 #windows()
 #Replace any NAs or Zeros with very small value

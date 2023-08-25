@@ -19,7 +19,8 @@ PFT_IMG_SPEC$PFT <- gsub("Picea bark", "spruce bark", PFT_IMG_SPEC$PFT)
 list2 <- names(PFT_ADJ)
 list1 <- unique(PFT_IMG_SPEC$PFT)
 
-setdiff(list1, list2)
+list_remove<-setdiff(list1, list2)
+PFT_IMG_SPEC<-PFT_IMG_SPEC %>% subset(!(PFT %in% list_remove))# %>% dim
 
 # Change aggregation level to Functional Group 1 and add to metadata
 PFT_IMG_SPEC$FncGrp1 <- change_aggregation(as.vector(PFT_IMG_SPEC$PFT), 1, PFT_ADJ)
@@ -54,7 +55,7 @@ PFT_IMG_SPEC <-
 
 str(PFT_IMG_SPEC)
 PFT_IMG_SPEC$Site<-PFT_IMG_SPEC$Site$Site
-str(PFT_IMG_SPEC)
+dim(PFT_IMG_SPEC)
 
 
 write.csv(PFT_IMG_SPEC, "./Data/Ground_Validation/PFT_image_spectra/PFT_Image_SpectralLib_Clean.csv")

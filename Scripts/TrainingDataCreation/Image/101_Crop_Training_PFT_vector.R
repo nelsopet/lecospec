@@ -3,10 +3,10 @@ require(terra)
 require(raster)
 require(rgdal)
 
-#Bison_path = "F:/ORNL_DAAC_DATA_ARCHIVE/BisonGulch/BisonGulch_2019_08_12_01_07_28_1511_rd_rf_or"
+#Bison Gulch validation data cube raw_1511_rd_rf_or.hdr
 Bison_path ="M:/Alaska_DATA/Alaska_Summer2019/Data_by_site/Bison_Gulch/Imagery_60m/100251_Bison_Gulch_line2_2019_08_12_01_07_28/raw_1511_rd_rf_55pctWhiteRef_or"
 Bison_img = brick(Bison_path)
-Bison_pft_path = "./Data/Vectors/PFTs/BisonGulchPFT_ROIs.shp"
+Bison_pft_path = "./Data/Vectors/PFTs/BisonGulchPFT_ROIs_1511_hdr.shp"
 Bison_pft_vec<-readOGR(dsn=Bison_pft_path)
 
 #Bison_pft_out<-ImgChopper(Bison_path, Bison_pft_path)
@@ -23,6 +23,25 @@ lapply(1:length(Bison_pft_vec),
          #return(tst_mask)
        })
 
+#Bison Gulch validation data cube raw_3949_rd_rf_or.hdr
+Bison_path_3949 ="M:/Alaska_DATA/Alaska_Summer2019/Data_by_site/Bison_Gulch/Imagery_60m/100251_Bison_Gulch_line2_2019_08_12_01_07_28/raw_3949_rd_rf_or"
+Bison_img_3939 = brick(Bison_path_3949)
+Bison_pft_path_3949 = "./Data/Vectors/PFTs/BisonGulchPFT_ROIs_3949_hdr.shp"
+Bison_pft_vec_3949<-readOGR(dsn=Bison_pft_path_3949)
+
+#Bison_pft_out<-ImgChopper(Bison_path, Bison_pft_path)
+
+lapply(1:length(Bison_pft_vec_3949),  
+       function(x) {
+         tst_img <- brick(Bison_path_3949)
+         tst_quads<-Bison_pft_vec_3949[x,]
+         tst_crop <- raster::crop(tst_img, tst_quads)
+         tst_mask <- raster::mask(tst_crop, tst_quads)
+         metadata(tst_mask)<-as.list(Bison_pft_vec_3949[x,]$CLASS_NAME)
+         # tst_out<-c(tst_crop,tst_mask)
+         writeRaster(tst_mask, paste("./Data/Ground_Validation/Imagery/BisonPFT/BisonGulchPFTs", Bison_pft_vec_3949[x,]$CLASS_NAME, sep=""), format = "ENVI", overwrite = TRUE)
+         #return(tst_mask)
+       })
 
 #EightMile_path ="F:/ORNL_DAAC_DATA_ARCHIVE/EightMile/EightMile_2018_07_28_22_56_17_5968_rd_rf_or"
 EightMile_path = "M:/Alaska_DATA/Alaska_Summer2018/Workspaces/Alaska/DatabyDate/72818/ImagingSpectrometer/DataFolders/100124_BlacktandardFlight2_2018_07_28_22_56_17/raw_5968_rd_rf_55pctWhiteRef_or"
