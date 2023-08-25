@@ -1,16 +1,16 @@
 ENVI
 description = {
-M:\lecospec\lecospec\Data\Ground_Validation\Imagery\ChatanikaPFT\ChatanikaPFTsBetula_nana1_1.envi}
+M:/lecospec/lecospec/Data/Ground_Validation/Imagery/ChatanikaPFT/ChatanikaPFTsBetula_nana1_1.envi}
 samples = 3
-lines   = 6
+lines   = 5
 bands   = 326
 header offset = 0
 file type = ENVI Standard
 data type = 4
 interleave = bsq
 byte order = 0
-map info = {Geographic Lat/Lon, 1, 1, -147.480810271149, 65.1528141143282, 1.10860570619783e-06, 4.66389569927135e-07,WGS-84}
-coordinate system string = {GEOGCS["GCS_WGS_84_with_axis_order_normalized_for_visualization",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137.0,298.257223563]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]]}
+map info = {Geographic Lat/Lon, 1, 1, -147.480810414955, 65.1528136705372, 1.10860575356734e-06, 4.66389235498355e-07,WGS-84}
+coordinate system string = {GEOGCS["GCS_unknown",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137.0,298.257223563]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]]}
 band names = {
 Band 1,
 Band 2,

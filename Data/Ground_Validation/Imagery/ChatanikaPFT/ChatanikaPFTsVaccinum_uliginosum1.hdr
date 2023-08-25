@@ -1,16 +1,16 @@
 ENVI
 description = {
-M:\lecospec\lecospec\Data\Ground_Validation\Imagery\ChatanikaPFT\ChatanikaPFTsVaccinum_uliginosum1.envi}
-samples = 5
-lines   = 5
+M:/lecospec/lecospec/Data/Ground_Validation/Imagery/ChatanikaPFT/ChatanikaPFTsVaccinum_uliginosum1.envi}
+samples = 4
+lines   = 4
 bands   = 326
 header offset = 0
 file type = ENVI Standard
 data type = 4
 interleave = bsq
 byte order = 0
-map info = {Geographic Lat/Lon, 1, 1, -147.480587441403, 65.1528150471074, 1.10860570430305e-06, 4.66389570874526e-07,WGS-84}
-coordinate system string = {GEOGCS["GCS_WGS_84_with_axis_order_normalized_for_visualization",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137.0,298.257223563]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]]}
+map info = {Geographic Lat/Lon, 1, 1, -147.480586476593, 65.1528146033157, 1.10860575119887e-06, 4.66389234787812e-07,WGS-84}
+coordinate system string = {GEOGCS["GCS_unknown",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137.0,298.257223563]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]]}
 band names = {
 Band 1,
 Band 2,
