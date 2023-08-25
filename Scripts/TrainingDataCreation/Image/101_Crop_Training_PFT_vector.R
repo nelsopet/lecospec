@@ -3,10 +3,10 @@ require(terra)
 require(raster)
 require(rgdal)
 
-#Bison_path = "F:/ORNL_DAAC_DATA_ARCHIVE/BisonGulch/BisonGulch_2019_08_12_01_07_28_1511_rd_rf_or"
+#Bison Gulch validation data cube raw_1511_rd_rf_or.hdr
 Bison_path ="M:/Alaska_DATA/Alaska_Summer2019/Data_by_site/Bison_Gulch/Imagery_60m/100251_Bison_Gulch_line2_2019_08_12_01_07_28/raw_1511_rd_rf_55pctWhiteRef_or"
 Bison_img = brick(Bison_path)
-Bison_pft_path = "./Data/Vectors/PFTs/BisonGulchPFT_ROIs.shp"
+Bison_pft_path = "./Data/Vectors/PFTs/BisonGulchPFT_ROIs_1511_hdr.shp"
 Bison_pft_vec<-readOGR(dsn=Bison_pft_path)
 
 #Bison_pft_out<-ImgChopper(Bison_path, Bison_pft_path)
@@ -23,6 +23,25 @@ lapply(1:length(Bison_pft_vec),
          #return(tst_mask)
        })
 
+#Bison Gulch validation data cube raw_3949_rd_rf_or.hdr
+Bison_path_3949 ="M:/Alaska_DATA/Alaska_Summer2019/Data_by_site/Bison_Gulch/Imagery_60m/100251_Bison_Gulch_line2_2019_08_12_01_07_28/raw_3949_rd_rf_or"
+Bison_img_3939 = brick(Bison_path_3949)
+Bison_pft_path_3949 = "./Data/Vectors/PFTs/BisonGulchPFT_ROIs_3949_hdr.shp"
+Bison_pft_vec_3949<-readOGR(dsn=Bison_pft_path_3949)
+
+#Bison_pft_out<-ImgChopper(Bison_path, Bison_pft_path)
+
+lapply(1:length(Bison_pft_vec_3949),  
+       function(x) {
+         tst_img <- brick(Bison_path_3949)
+         tst_quads<-Bison_pft_vec_3949[x,]
+         tst_crop <- raster::crop(tst_img, tst_quads)
+         tst_mask <- raster::mask(tst_crop, tst_quads)
+         metadata(tst_mask)<-as.list(Bison_pft_vec_3949[x,]$CLASS_NAME)
+         # tst_out<-c(tst_crop,tst_mask)
+         writeRaster(tst_mask, paste("./Data/Ground_Validation/Imagery/BisonPFT/BisonGulchPFTs", Bison_pft_vec_3949[x,]$CLASS_NAME, sep=""), format = "ENVI", overwrite = TRUE)
+         #return(tst_mask)
+       })
 
 #EightMile_path ="F:/ORNL_DAAC_DATA_ARCHIVE/EightMile/EightMile_2018_07_28_22_56_17_5968_rd_rf_or"
 EightMile_path = "M:/Alaska_DATA/Alaska_Summer2018/Workspaces/Alaska/DatabyDate/72818/ImagingSpectrometer/DataFolders/100124_BlacktandardFlight2_2018_07_28_22_56_17/raw_5968_rd_rf_55pctWhiteRef_or"
@@ -97,9 +116,9 @@ lapply(1:length(TwelveMile_pft_path2_vec),
 
 #TwelveMile_pft_out<-do.call(merge, TwelveMile_list)
 
-#Chatanika_path = "F:/ORNL_DAAC_DATA_ARCHIVE/Chatnika/Chatnika_2018_07_29_20_32_59_0_rd_rf_or"
+#Chatanika validation data cube raw_0_rd_rf_or.hdr
 Chatanika_path = "M:/Alaska_DATA/Alaska_Summer2018/Workspaces/Alaska/DatabyDate/72918/ImagingSpectrometer/DataFolders/100130_ChatanikaFlight3_attempt2_2018_07_29_20_32_59/raw_0_rd_rf_56pctWhiteRef_or"
-Chatanika_pft_path = "./Data/Vectors/ChatanikaPFT_ROIs.shp"
+Chatanika_pft_path = "./Data/Vectors/PFTs/ChatanikaPFT_ROIs_0_hdr.shp"
 Chatanika_pft_vec=readOGR(dsn=Chatanika_pft_path)
 #Chatanika_pft_out<-ImgChopper(Chatanika_path,Chatanika_pft_path)
 
@@ -114,7 +133,39 @@ lapply(1:length(Chatanika_pft_vec),
          #return(tst_mask)
        })
 
+#Chatanika validation data cube raw_2000_rd_rf_or.hdr
+Chatanika_path_2000 = "M:/Alaska_DATA/Alaska_Summer2018/Workspaces/Alaska/DatabyDate/72918/ImagingSpectrometer/DataFolders/100130_ChatanikaFlight3_attempt2_2018_07_29_20_32_59/raw_2000_rd_rf_or"
+Chatanika_pft_path_2000 = "./Data/Vectors/PFTs/ChatanikaPFT_ROIs_2000hdr.shp"
+Chatanika_pft_vec_2000=readOGR(dsn=Chatanika_pft_path_2000)
+#Chatanika_pft_out<-ImgChopper(Chatanika_path,Chatanika_pft_path)
 
+lapply(1:length(Chatanika_pft_vec_2000),  
+       function(x) {
+         tst_img <- brick(Chatanika_path_2000)
+         tst_quads<-Chatanika_pft_vec_2000[x,]
+         tst_crop <- raster::crop(tst_img, tst_quads)
+         tst_mask <- raster::mask(tst_crop, tst_quads)
+         # tst_out<-c(tst_crop,tst_mask)
+         writeRaster(tst_mask, paste("./Data/Ground_Validation/Imagery/ChatanikaPFT/ChatanikaPFTs", Chatanika_pft_vec_2000[x,]$CLASS_NAME, sep=""), format = "ENVI", overwrite = TRUE)
+         #return(tst_mask)
+       })
+
+#Chatanika validation data cube raw_14080_rd_rf_or.hdr
+Chatanika_path_14080 = "M:/Alaska_DATA/Alaska_Summer2018/Workspaces/Alaska/DatabyDate/72918/ImagingSpectrometer/DataFolders/100130_ChatanikaFlight3_attempt2_2018_07_29_20_32_59/raw_14080_rd_rf_or"
+Chatanika_pft_path_14080 = "./Data/Vectors/PFTs/ChatanikaPFT_ROIs_14080hdr.shp"
+Chatanika_pft_vec_14080=readOGR(dsn=Chatanika_pft_path_14080)
+#Chatanika_pft_out<-ImgChopper(Chatanika_path,Chatanika_pft_path)
+
+lapply(1:length(Chatanika_pft_vec_14080),  
+       function(x) {
+         tst_img <- brick(Chatanika_path_14080)
+         tst_quads<-Chatanika_pft_vec_14080[x,]
+         tst_crop <- raster::crop(tst_img, tst_quads)
+         tst_mask <- raster::mask(tst_crop, tst_quads)
+         # tst_out<-c(tst_crop,tst_mask)
+         writeRaster(tst_mask, paste("./Data/Ground_Validation/Imagery/ChatanikaPFT/ChatanikaPFTs", Chatanika_pft_vec_14080[x,]$CLASS_NAME, sep=""), format = "ENVI", overwrite = TRUE)
+         #return(tst_mask)
+       })
 #Bonanza_path = "F:/ORNL_DAAC_DATA_ARCHIVE/Bonanza/raw_6425_rd_rf_or"
 Bonanza_path ="M:/Alaska_DATA/Alaska_Summer2018/Workspaces/Alaska/DatabyDate/72518/ImagingSpectrometer/DataFiles/100066_2018_07_25_21_18_45/raw_6425_rd_rf_55pctWhiteRef_or"
 Bonanza_pft_path = "./Data/Vectors/PFTs/BonanzaPFT_ROIs.shp"
@@ -138,3 +189,29 @@ lapply(1:length(Bonanza_pft_vec),
          writeRaster(tst_mask, paste("./Data/Ground_Validation/Imagery/BonanzaPFT/BonanzaPFTs", Bonanza_pft_vec[x,]$CLASS_NAME, sep=""), format = "ENVI", overwrite = TRUE)
          #return(tst_mask)
        })
+
+#Bonanza SOUTH image
+Bonanza_SOUTH_path ="M:/Alaska_DATA/Alaska_Summer2018/Workspaces/Alaska/DatabyDate/72518/ImagingSpectrometer/DataFiles/100068_2018_07_25_22_58_40/raw_0_rd_rf_or"
+Bonanza_SOUTH_pft_path = "./Data/Vectors/PFTs/BonanzaPFT_ROIs_SOUTH.shp"
+Bonanza_SOUTH_pft_vec=readOGR(dsn=Bonanza_SOUTH_pft_path)
+
+lapply(1:length(Bonanza_SOUTH_pft_vec),  
+       function(x) {
+         tst_img <- brick(Bonanza_SOUTH_path)
+                  #tst_img <- terra::rast(Bonanza_SOUTH_path)
+
+         tst_quads<-Bonanza_SOUTH_pft_vec[x,]
+                  #tst_quads<-Bonanza_SOUTH_pft_vec[1,]
+
+         tst_quads<-sf::st_transform(sf::st_as_sf(tst_quads), crs(tst_img))
+                  #tst_img<-terra::project(tst_img, crs(tst_quads))
+
+        tst_crop <- raster::crop(tst_img, tst_quads)
+        tst_mask <- raster::mask(tst_crop, tst_quads)
+       # tst_out<-c(tst_crop,tst_mask)
+         writeRaster(tst_mask, paste("./Data/Ground_Validation/Imagery/BonanzaPFT/BonanzaPFTs", Bonanza_SOUTH_pft_vec[x,]$CLASS_NAME, sep=""), format = "ENVI", overwrite = TRUE)
+         #return(tst_mask)
+       })
+
+
+

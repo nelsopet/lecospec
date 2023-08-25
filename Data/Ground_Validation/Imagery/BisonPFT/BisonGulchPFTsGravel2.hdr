@@ -1,16 +1,16 @@
 ENVI
 description = {
-M:\lecospec\lecospec\Data\Ground_Validation\Imagery\BisonPFT\BisonGulchPFTsGravel2.envi}
-samples = 5
-lines   = 5
+M:/lecospec/lecospec/Data/Ground_Validation/Imagery/BisonPFT/BisonGulchPFTsGravel2.envi}
+samples = 10
+lines   = 19
 bands   = 326
 header offset = 0
 file type = ENVI Standard
 data type = 4
 interleave = bsq
 byte order = 0
-map info = {Geographic Lat/Lon, 1, 1, -148.951778277472, 63.8069956894342, 7.91575877201467e-07, 3.4985623784678e-07,WGS-84}
-coordinate system string = {GEOGCS["GCS_WGS_84_with_axis_order_normalized_for_visualization",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137.0,298.257223563]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]]}
+map info = {Geographic Lat/Lon, 1, 1, -148.951469930857, 63.8068897084958, 9.53950612370136e-07, 4.21621846675479e-07,WGS-84}
+coordinate system string = {GEOGCS["GCS_unknown",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137.0,298.257223563]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]]}
 band names = {
 Band 1,
 Band 2,

@@ -1,6 +1,6 @@
 ENVI
 description = {
-M:\lecospec\lecospec\Data\Ground_Validation\Imagery\ChatanikaPFT\ChatanikaPFTsPicea1.envi}
+M:/lecospec/lecospec/Data/Ground_Validation/Imagery/ChatanikaPFT/ChatanikaPFTsPicea1.envi}
 samples = 7
 lines   = 5
 bands   = 326
@@ -9,8 +9,8 @@ file type = ENVI Standard
 data type = 4
 interleave = bsq
 byte order = 0
-map info = {Geographic Lat/Lon, 1, 1, -147.480591875825, 65.1525785875951, 1.108605703491e-06, 4.66389570874526e-07,WGS-84}
-coordinate system string = {GEOGCS["GCS_WGS_84_with_axis_order_normalized_for_visualization",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137.0,298.257223563]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]]}
+map info = {Geographic Lat/Lon, 1, 1, -147.480592019622, 65.1525786103629, 1.10860574815368e-06, 4.66389235498355e-07,WGS-84}
+coordinate system string = {GEOGCS["GCS_unknown",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137.0,298.257223563]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]]}
 band names = {
 Band 1,
 Band 2,
