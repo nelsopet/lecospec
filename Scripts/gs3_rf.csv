@@ -1,0 +1,16 @@
+source,outliers,preprocessing,weight,n,oob,accuracy,r2,rpd,seed,model_id
+v2,no_treatment,centerscaleNothing,balanced,1,,0.591666666666667,0.13032966499845,1.39992636179237,Forward Feature Selection,50792574-5679-46a4-90ce-309a82767c50
+v2,no_treatment,centerscaleNothing,balanced,1,,0.591666666666667,0.13032966499845,1.39992636179237,Forward Feature Selection,22eb2672-1020-499f-9ce2-9dfbb94268a5
+v2,no_treatment,centerscaleNothing,balanced,1,,0.591666666666667,0.13032966499845,1.39992636179237,Forward Feature Selection,73c6dc99-e290-4dfb-92da-f1841ba6b66f
+v2,no_treatment,centerscaleNothing,balanced,1,,0.591666666666667,0.13032966499845,1.39992636179237,Forward Feature Selection,570ac0df-0c78-4bb9-8d94-fdca8e2aa7dd
+v2,no_treatment,Nothing,0,1,0.185185185185185,0.666666666666667,0.13042619296542,1.5533896097479,61718,a7544ff1-fdba-4196-84e4-5f46ecf3413f
+v2,no_treatment,center & scale & Nothing,balanced,1,,0.6,0.178863893441865,1.48408705654301,61718,d48f6441-035f-4b64-9634-e743cc4d9a0a
+v2,no_treatment,center & scale & Nothing,balanced,1,,0.6,0.178863893441865,1.48408705654301,61718,349f92ad-fb27-41f0-8a78-de101fbf2eee
+v2,no_treatment,center & scale & Nothing,balanced,1,,0.6,0.178863893441865,1.48408705654301,61718,2a80b1f4-6348-4706-937d-b2b292782741
+v2,no_treatment,center & scale & Nothing,balanced,1,,0.6,0.178863893441865,1.48408705654301,61718,b39b0214-75f3-437a-8136-09591e28a705
+v2,no_treatment,center & scale & Nothing,balanced,1,,0.6,0.178863893441865,1.48408705654301,61718,c2ad0b7f-4a50-453c-96cc-5dfe6f2deed2
+v2,no_treatment,center & scale & Nothing,balanced,1,,0.6,0.178863893441865,1.48408705654301,61718,5d8b3087-d7d2-4325-9f23-47d62ee2c098
+v2,no_treatment,center & scale & Nothing,balanced,1,,0.6,0.178863893441865,1.48408705654301,61718,cb0069a0-5a3d-4e91-ac8e-8912cb2ba143
+v2,no_treatment,center & scale & Nothing,balanced,1,,0.6,0.178863893441865,1.48408705654301,61718,30b7d0ad-ef8d-489f-8122-b8420e5f3aec
+v2,no_treatment,center & scale & Nothing,balanced,1,,0.6,0.178863893441865,1.48408705654301,61718,96178093-dc34-4b46-91de-7f8d76d67ba9
+v2,no_treatment,center & scale & Nothing,balanced,1,,0.6,0.178863893441865,1.48408705654301,61718,7a67e29f-28c7-4bf7-988b-a72993907a8c

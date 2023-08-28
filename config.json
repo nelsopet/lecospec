@@ -14,5 +14,6 @@
     "install_path": "./",
     "external_bands": "./assets/bands.csv",
     "output_format": "grd",
-    "aggregation": 1
+    "aggregation": 1,
+    "bandwidth": 5
 }
