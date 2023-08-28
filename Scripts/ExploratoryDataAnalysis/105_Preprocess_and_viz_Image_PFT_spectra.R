@@ -53,6 +53,15 @@ names_ignore<-c("X"
 ,"species_count", 
 "PFT")# this is so SQL lol 
 
+fncgrp1_colors = createPalette(length(unique(PFT_IMG_SPEC_clean$FncGrp1)),  c("#ff0000", "#00ff00", "#0000ff")) %>%
+  as.data.frame() %>%
+  dplyr::rename(Color = ".") %>%
+  mutate(FNC_grp1 = unique(PFT_IMG_SPEC_clean$FncGrp1)) %>%
+  mutate(ColorNum = seq(1:length(unique(PFT_IMG_SPEC_clean$FncGrp1))));
+
+#fnc_grp1_color_list<-Veg_env %>% select(Functional_group2) %>% inner_join(fnc_grp1_colors, by=c("Functional_group2"="FNC_grp1"), keep=FALSE)
+fncgrp1_color_list<-PFT_IMG_SPEC_clean %>% dplyr::select(FncGrp1) %>% inner_join(fncgrp1_colors, by=c("FncGrp1"="FNC_grp1"), keep=FALSE)
+
 PFT_IMG_SPEC_clean_tall<-
 PFT_IMG_SPEC_clean %>% 
   dplyr::select(cols_to_keep) %>%
@@ -150,19 +159,21 @@ image_PFT_spectra_mat[image_PFT_spectra_mat==0]<-0.00000001
 image_PFT_spectra_mat[is.na(image_PFT_spectra_mat)]<-0.00000001
 
 #Multivariate analysis of PFT groups 
-image_PFT_adonis<-adonis2(image_PFT_spectra_mat~as.factor(PFT_IMG_SPEC_clean_merge$Functional_group1), method="euclidean", permutations=500)
-image_PFT_adonis
+#image_PFT_adonis<-adonis2(image_PFT_spectra_mat~as.factor(PFT_IMG_SPEC_clean_merge$Functional_group1), method="euclidean", permutations=500)
+#image_PFT_adonis
 
 #Build PCA with and without sqrt transform
-image_pca<-princomp(image_PFT_spectra_mat)) #, center=FALSE, scale=FALSE)
+image_pca<-princomp(image_PFT_spectra_mat) #, center=FALSE, scale=FALSE)
 image_pca_pr<-prcomp(image_PFT_spectra_mat) #, center=FALSE, scale=FALSE)
-plot(scores(image_pca_pr)[,1:2], col=unique(fnc_grp1_color_list$Color))#, pch=c(1:2))
-plot(scores(image_pca_pr)[,1:2], col=site_color_list$Color, pch = PFT_IMG_SPEC_clean_merge$Functional_group1)#, pch=c(1:2))
-legend('bottomright', legend=unique(site_color_list$Site), lty=1, col=unique(site_color_list$Color), cex=0.5)
-legend('bottomleft', legend=unique(PFT_IMG_SPEC_clean_merge$Functional_group1), lty=1, col=unique(PFT_IMG_SPEC_clean_merge$Functional_group1), cex=0.5)
-
+windows()
+plot(scores(image_pca_pr)[,2:3], col=fncgrp1_color_list$Color)#, pch=c(1:2))
+plot(scores(image_pca_pr)[,1:2], col=fncgrp1_color_list$Color)#, pch = (PFT_IMG_SPEC_clean$FncGrp1))#, pch=c(1:2))
+#legend('bottomright', legend=unique(site_color_list$Site), lty=1, col=unique(site_color_list$Color), cex=0.5)
+legend('bottomleft', legend=unique(PFT_IMG_SPEC_clean$FncGrp1), lty=1, col=unique(fncgrp1_color_list$Color, cex=0.5)
+)
+windows()
 jpeg("./Output/PCA_Image_boxplot_PC1.jpeg", width = 1200, height =400)
-boxplot((scores(image_pca_pr)[,1])*-1~PFT_IMG_SPEC_clean_merge$Functional_group1)
+boxplot((scores(image_pca_pr)[,1])*-1~PFT_IMG_SPEC_clean$FncGrp1)
 #legend('bottomright', legend=unique(PFT_IMG_SPEC_clean_merge$Functional_group1), lty=1, col=fnc_grp1_color_list$Color, cex=0.5)
 dev.off()
 cols<-palette.colors(n=8)
