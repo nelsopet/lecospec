@@ -28,7 +28,6 @@ PFT_IMG_SPEC$FncGrp1 <- change_aggregation(as.vector(PFT_IMG_SPEC$PFT), 1, PFT_A
 RawUID <- PFT_IMG_SPEC %>%
   dplyr::select(UID) %>%
   as.data.frame() # %>%
-# imgs_names<-
 
 
 parse_site_names <- function(names){
@@ -53,14 +52,5 @@ PFT_IMG_SPEC <-
   dplyr::select(UID, ScanNum, sample_name, PFT, FncGrp1, Site, everything()) %>%
   dplyr::select(-X)
 
-str(PFT_IMG_SPEC)
-PFT_IMG_SPEC$Site<-PFT_IMG_SPEC$Site$Site
-dim(PFT_IMG_SPEC)
-
-
 write.csv(PFT_IMG_SPEC, "./Data/Ground_Validation/PFT_image_spectra/PFT_Image_SpectralLib_Clean.csv")
 save(PFT_IMG_SPEC, file = "./Data/Ground_Validation/PFT_image_spectra/PFT_Image_SpectralLib_Clean.rda")
-
-
-print(head(PFT_IMG_SPEC))
-# Make_Speclib_Derivs("./Data/Ground_Validation/PFT_Image_spectra/PFT_Image_SpectralLib_Clean.csv", out_file)
