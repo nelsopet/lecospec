@@ -1,34 +1,55 @@
 require(tidyverse)
 require(factoextra)
+require(Polychrome)
+require(vegan)
+require(pca3D)
 #Define groups based on spectra
 #Need to read in Cleaned_SpecLib ....
+#Read in balanced image based spectra training sample
+Cleaned_Speclib<-read.csv("Data/v2/train.csv")
 tst<-Cleaned_Speclib %>% 
 #  dplyr::select(Species_name, everything()) %>% #colnames()
-dplyr::select(-ScanID:-Functional_group2_Freq)
+#dplyr::select(-ScanID:-Functional_group2_Freq)
+dplyr::select(-X,-site,-Site, -UID)
+
+tst %>% group_by(FncGrp1) %>% tally()
 
 ##Plot data cubes predicted at the genera level.
-unique(Cleaned_Speclib$Functional_group1)
-genera_colors = createPalette(length(unique(Cleaned_Speclib$Functional_group1)),  c("#ff0000", "#00ff00", "#0000ff")) %>%
+#unique(Cleaned_Speclib$Functional_group1)
+unique(tst$FncGrp1)
+
+genera_colors = createPalette(length(unique(tst$FncGrp1)),  c("#ff0000", "#00ff00", "#0000ff")) %>%
   as.data.frame() %>%
   dplyr::rename(Color = ".") %>%
-  mutate(FNC_grp1 = unique(Cleaned_Speclib$Functional_group1)) %>%
-  mutate(ColorNum = seq(1:length(unique(Cleaned_Speclib$Functional_group1))));
+  mutate(FNC_grp1 = unique(tst$FncGrp1)) %>%
+  mutate(ColorNum = seq(1:length(unique(tst$FncGrp1))));
 
 #fnc_grp1_color_list<-Veg_env %>% select(Functional_group2) %>% inner_join(fnc_grp1_colors, by=c("Functional_group2"="FNC_grp1"), keep=FALSE)
-genera_color_list<-Cleaned_Speclib %>% dplyr::select(Functional_group1) %>% inner_join(genera_colors, by=c("Functional_group1"="FNC_grp1"), keep=FALSE)
+#genera_color_list<-Cleaned_Speclib %>% dplyr::select(Functional_group1) %>% inner_join(genera_colors, by=c("Functional_group1"="FNC_grp1"), keep=FALSE)
+genera_color_list<-tst %>% dplyr::select(FncGrp1) %>% inner_join(genera_colors, by=c("FncGrp1"="FNC_grp1"), keep=FALSE)
 
   
-#PCA
-spectra.pca = prcomp(tst, scale =TRUE, center=TRUE)
+#PCAf
+spectra.pca = prcomp(tst[,-1], scale =TRUE, center=TRUE)
+plot(scores(spectra.pca)[,2:4], col=genera_color_list$Color, pch=c(1:2))
 #tst_plots<-ordiplot(spectra.pca, display = "sites")
 #points(tst_plots, "sites")
 #text(tst_plots, "species", col="blue", cex=0.9)
-pca3d(spectra.pca,col=genera_color_list$Color,biplot=TRUE)
+#pca3d(spectra.pca,col=genera_color_list$Color,biplot=TRUE)
 
-biplot(spectra.pca, choices = c(2,3))
-jpeg("Output/PCA_species.jpg", height = 500, width = 1000)
-#ordiplot(spectra.pca, label = 'Functional_group2')
 
+jpeg("Output/PCA_balanced_FncGrp1.jpg", height = 500, width = 1000)
+plot(scores(spectra.pca)[,1:2], col=genera_color_list$Color)
+#jpeg("Output/PCA_vectorbiplot_balanced_FncGrp1.jpg", height = 500, width = 1000)
+#biplot(spectra.pca)
+title(main="PCA of reflectance by Functional Group 1 balanced by site and patch")
+#legend(x = -6, y =10, legend=unique(PFT_SPEC$Functional_group1), lty=1, col=c(1:9), cex=0.5)
+#legend(x = -6, y =3, legend=unique(PFT_SPEC$Source), pch=c(1:2), cex=0.5)
+legend(x = -40, y =0, legend=unique(tst$FncGrp1), lty=1, col = unique(genera_color_list$Color), cex=1.2, pch = 1)
+dev.off()
+
+
+ordiplot(spectra.pca, label = tst$FncGrp1)
 autoplot(spectra.pca, data = Cleaned_Speclib, colour = 'Functional_group1', shape = 'Functional_group2') +
 scale_shape_manual(values = 1:8) +
   scale_color_manual(values=genera_colors$Color)
