@@ -6,7 +6,7 @@ library(spectrolab)
 library(tidyverse)
 
 #Species groupings
-Species_groups <- read.csv("./Data/SpeciesTable_20220125.csv", encoding = "UTF-8")
+Species_groups <- read.csv("./Data/SpeciesTable_20230417.csv", encoding = "UTF-8")
 
 ##Custom spectra reading
 #Make a list directories
@@ -95,11 +95,6 @@ spec_missing_all_metadata <- as.data.frame(names(spec_missing_all))
 names(spec_missing_all_metadata)[1] <- "ScanID"
 
 ### Create column Code_name and column Area
-#TwelveMile_metadata <- 
-#  TwelveMile_metadata %>% 
-#  mutate(Code_name = substr(TwelveMile_metadata$ScanID, start = 1, stop = 6))
-#TwelveMile_metadata$Area <- "12mile"
-
 # Grab metadata from instrument
 spec_missing_all_metadata_instrument <- lapply(1:length(dir_spec_rds), function(x) meta(dir_spec_rds[[x]])) 
 spec_missing_all_metadata_instrument<-Reduce(rbind,spec_missing_all_metadata_instrument) %>% as.data.frame()
@@ -110,9 +105,6 @@ spec_missing_all_metadata<-cbind(spec_missing_all_metadata,meta(spec_missing_all
 ## Set metadata
 meta(spec_missing_all) <- spec_missing_all_metadata #data.frame(spec_missing_all_metadata, stringsAsFactors = FALSE)
 dim(meta(spec_missing_all))
-
-## save spectra (Raw)
-range(spec_missing_all)
 
 #Change scan names that have more that one delimter
 meta_raw<-meta(spec_missing_all)
@@ -245,12 +237,7 @@ spec_missing_all %>%
   speclib_to_df() %>% #colnames()
   inner_join((meta_clean %>% dplyr::select(ScanID, Area, Code_name, ScanNum)), by=c("ScanID", "Area"), keep=FALSE) %>% #colnames()
   inner_join((meta_clean_filt %>% dplyr::select(Code_name, ScanNum, Area)), by=c("Code_name", "ScanNum","Area"), keep=FALSE) #%>% colnames()
-  #dplyr::select(Code_name, Area) %>%
-  #unique() %>% dim
-  #tst_meta %>% 
-  #mutate(Code_name = substr(tst_meta$ScanID, start = 1, stop = 10)) %>%
-  #dplyr::select(Code_name) %>% unique()
-
+  
 meta_colnames<-c(colnames(spec_missing_out[,1:26]), "Code_name", "ScanNum")
 
 spec_missing_out<-spec_missing_out %>% dplyr::select(all_of(meta_colnames), everything())  
@@ -393,35 +380,13 @@ MissingSpecLib <- missing_cleaned_speclib %>%
     Genus,
     Functionalgroup2,
     Functional_group1,
+    Functional_Group0,
     Area,
     everything()
   ) %>%
   mutate(ScanID = as.character(ScanID)) %>%
   dplyr::rename(Functional_group2= Functionalgroup2) #%>% colnames() # Reorders columns
 table(MissingSpecLib$Area) %>% as.data.frame()
-#
-#tst3<-MissingSpecLib %>%   
-#  pivot_longer(cols = `350`:`2500`,  names_to  = "Wavelength", values_to = "Reflectance") %>%    
-#  mutate(Wavelength = gsub("X","",Wavelength)) %>%
-#  group_by(Functional_group1, Wavelength) %>%  
-#  dplyr::summarise(Median_Reflectance = median(Reflectance)) %>%
-#  mutate(Wavelength = as.numeric(Wavelength))
-#
-#jpeg("Output/test.jpg", height = 10000, width = 9000, res = 350)
-#
-#ggplot(tst3, aes(Wavelength, Median_Reflectance, group = Functional_group1), scales = "fixed")+
-#  labs(title = c("Reflectance by plant functional group and sample size with median (red), 75% (dark) and 90% (grey) quantiles based on 1242 scans"), y="Reflectance")+
-#  theme(panel.background = element_rect(fill = "white", colour = "grey50"), 
-#        #legend.key.size = unit(0.5, "cm"),legend.text = element_text(size=25),
-#        legend.position = "none",
-#        title = element_text(size=25),
-#        strip.text = element_text(size = 25),
-#        axis.text = element_text(size = 20),
-#        axis.text.x = element_text(angle = 90)) +
-#  geom_point(aes(Wavelength, Median_Reflectance,color = "red"),size = 2)+
-#  facet_wrap(vars(Functional_group1), scales = "fixed", ncol = 3) 
-#
-#dev.off()
 
 write.csv(MissingSpecLib, "./Output/C_001_SC3_Missing_Cleaned_SpectralLib.csv")
 
