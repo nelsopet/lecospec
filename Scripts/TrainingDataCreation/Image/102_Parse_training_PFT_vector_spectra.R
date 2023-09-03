@@ -51,9 +51,9 @@ path <- ("Data/Ground_Validation/Imagery/BisonPFT/")
 allfiles <- list.files(path)
 imgs <- grep(".envi$", allfiles, value = TRUE)
 #band_path <- brick(paste(path, imgs[1], sep = ""))
-band_count <- names(band_path) %>% length()
-band_names <- read.csv("./assets/bands.csv")$x[1:band_count] %>% as.vector()
+#band_count <- names(band_path) %>% length()ban
 band_count <- names(path) %>% length()
+band_names <- read.csv("./assets/bands.csv")$x[1:band_count] %>% as.vector()
 
 BisonPFT_labeled <- lapply(1:length(imgs), function(x) {
   imgs_names <- str_match(imgs[x], "PFTs\\s*(.*?)\\s*.envi") %>%

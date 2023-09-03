@@ -5,11 +5,11 @@ source("Functions/lecospectR.R")
 ########################################
 
 # model-independent search parameters
-max_per_pft <- c(75, 150, 300, 600)
+max_per_pft <- c(125, 300, 500, 750, 1000, 2000)
 bandwidths <- c(5, 10, 25, 50)
-correlation_thresholds <- c(0.97, 0.98, 0.99, 1.00)
+correlation_thresholds <- c(0.99, 1.00)
 # TODO: add aggregation_level <- c(0, 1)
-filter_features <- c(TRUE, FALSE)
+#filter_features <- c(TRUE, FALSE)
 transform_names <- c("Nothing")
 
 get_filename <- function(bandwidth, count, is_train = TRUE, base_path = "Data/v2/") {
@@ -37,26 +37,26 @@ get_filename <- function(bandwidth, count, is_train = TRUE, base_path = "Data/v2
 
 
 # model hyperparameters
-num_components <- 2^seq(1, 9) # 1-1024, doubling each time
+num_components <- 2^seq(2, 9) # 4-1024, doubling each time
 # alpha <- seq(0.25, 1, 0.25)
 
 # number of states:
-num_states <- length(num_components) *
-    length(alpha) *
-    length(filter_features) *
-    length(max_per_pft) *
-    length(bandwidths) *
-    length(correlation_thresholds) *
-    length(transform_names)
+#num_states <- length(num_components) *
+#    length(alpha) *
+#    length(filter_features) *
+#    length(max_per_pft) *
+#    length(bandwidths) *
+#    length(correlation_thresholds) *
+#    length(transform_names)
 
-print(paste0("Grid search states: ", num_states))
-print(paste0("Grid search estimated time: ", 7 / 60 * num_states, " hours"))
+#print(paste0("Grid search states: ", num_states))
+#print(paste0("Grid search estimated time: ", 7 / 60 * num_states, " hours"))
 
 
 ########################################
 ##  Define Assets
 ########################################
-manifest_path <- "./gs3_ranger_2.csv"
+manifest_path <- "./gs3_ranger_3.csv"
 
 transforms <- list()
 transforms[["Nothing"]] <- function(dx) {
@@ -115,8 +115,7 @@ for (bandwidth_index in seq_along(bandwidths)) {
                 X,
                 UID,
                 FncGrp1,
-                Site,
-                site
+                Site
             )
         )
 
@@ -130,8 +129,7 @@ for (bandwidth_index in seq_along(bandwidths)) {
                 X,
                 UID,
                 FncGrp1,
-                Site,
-                site
+                Site
             )
         )
         labels <- train_data_full$FncGrp1 %>% as.factor()
