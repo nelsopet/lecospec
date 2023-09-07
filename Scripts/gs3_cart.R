@@ -5,9 +5,9 @@ source("Functions/lecospectR.R")
 ########################################
 
 # model-independent search parameters
-max_per_pft <- c(75, 150)
-bandwidths <- c(5, 25, 50)
-correlation_thresholds <- c(0.95)
+max_per_pft <- c(125, 300, 500, 750, 1000, 2000)
+bandwidths <- c(5, 10, 25, 50)
+correlation_thresholds <- c(0.99, 1.00)
 #TODO: add aggregation_level <- c(0, 1)
 filter_features <- c(TRUE, FALSE)
 transform_names <- c("Nothing")
@@ -63,8 +63,7 @@ test_data <- subset(
         X,
         UID,
     	FncGrp1,
-        Site,
-        site
+        Site
         ))
 
 
@@ -77,8 +76,7 @@ train_data <- subset(
         X,
         UID,
     	FncGrp1,
-        Site,
-        site
+        Site
         ))
 labels <- train_data_full$FncGrp1 %>% as.factor()
 
@@ -100,7 +98,7 @@ selected_cols <- c(
 
 variable_importance <- read.csv("./assets/variable_importance.csv")
 
-caret::getModelInfo("rpart2")
+#caret::getModelInfo("rpart2")
 
 ########################################
 ##  Run Grid Search
@@ -128,8 +126,7 @@ for(count in max_per_pft){
             X,
             UID,
             FncGrp1,
-            Site,
-            site
+            Site
             ))
 
     rm(test_data_full)
@@ -142,8 +139,7 @@ for(count in max_per_pft){
             X,
             UID,
             FncGrp1,
-            Site,
-            site
+            Site
             ))
     labels <- train_data_full$FncGrp1 %>% as.factor()
 
@@ -249,7 +245,6 @@ for(count in max_per_pft){
                         preprocessing = as.character(transform_name),
                         source = "v2",
                         weight = "balanced",
-                        n = n,
                         oob_error = "na", #model$prediction.error,
                         accuracy = acc,
                         r2 = r2,
