@@ -479,6 +479,9 @@ SpecLib_new_tall<-SpecLib_new %>%
   as.data.frame() 
 
 AllSpecRaw_tall<-AllSpecRaw %>%
+  group_by(Functional_group1) %>%
+  dplyr::mutate(sample_size = n()) %>% 
+  dplyr::mutate(Functional_group1_wN = glue('{Functional_group1} {"(n="} {sample_size} {"pixels,"} {species_count} {"PFTs"})')) %>%
 pivot_longer(cols = `350`:`2500`,  names_to  = "Wavelength", values_to = "Reflectance") %>%    
   mutate(Wavelength = gsub("X","",Wavelength)) %>%
   group_by(Functional_group1, Wavelength) %>%  
@@ -491,6 +494,7 @@ pivot_longer(cols = `350`:`2500`,  names_to  = "Wavelength", values_to = "Reflec
                    Lower_Reflectance = quantile(Reflectance, probs = 0.05))%>%
   mutate(Wavelength = as.numeric(Wavelength))  %>%
   as.data.frame() #%>%
- 
+
+write.csv(AllSpecRaw_tall, "./Output/C_001_SC3_Cleaned_SpectralLib_tall_FncGrp1.csv")
 write.csv(AllSpecRaw, "./Output/C_001_SC3_Cleaned_SpectralLib.csv")
 

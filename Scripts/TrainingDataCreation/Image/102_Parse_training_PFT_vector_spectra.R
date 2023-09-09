@@ -123,6 +123,8 @@ EightMilePFT_labeled <- lapply(1:length(imgs), function(x) {
   meta(df) <- rep(PFT, length(df))
   return(df)
 })
+#EightMilePFT_solo<-Reduce(spectrolab::combine,EightMilePFT_labeled)
+#speclib_to_df(EightMilePFT_solo) %>% group_by(PFT) %>% tally() #%>% pivot_wider(names_from = FncGrp1, values_from = n) %>% print(n=100)
 
 #Twelve Mile
 #path <- ("Data/Ground_Validation/Imagery/TwelveMilePFT/")
