@@ -1,16 +1,16 @@
 ENVI
 description = {
-M:\lecospec\lecospec\Data\Ground_Validation\Imagery\EightMilePFT\EightMilePFTsFlavocetraria_cucculata5.envi}
-samples = 3
-lines   = 1
+M:/lecospec/lecospec/Data/Ground_Validation/Imagery/EightMilePFT/EightMilePFTsFlavocetraria_cucculata5.envi}
+samples = 4
+lines   = 2
 bands   = 326
 header offset = 0
 file type = ENVI Standard
 data type = 4
 interleave = bsq
 byte order = 0
-map info = {Geographic Lat/Lon, 1, 1, -149.25367203527, 63.8767571354877, 9.35967572483302e-07, 4.12647317205028e-07,WGS-84}
-coordinate system string = {GEOGCS["GCS_WGS_84_with_axis_order_normalized_for_visualization",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137.0,298.257223563]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]]}
+map info = {Geographic Lat/Lon, 1, 1, -149.253672398705, 63.8767574845548, 9.15620347541335e-07, 4.03676565952082e-07,WGS-84}
+coordinate system string = {GEOGCS["GCS_unknown",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137.0,298.257223563]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]]}
 band names = {
 Band 1,
 Band 2,

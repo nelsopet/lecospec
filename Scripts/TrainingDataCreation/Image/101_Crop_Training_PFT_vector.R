@@ -47,6 +47,7 @@ lapply(1:length(Bison_pft_vec_3949),
 EightMile_path = "M:/Alaska_DATA/Alaska_Summer2018/Workspaces/Alaska/DatabyDate/72818/ImagingSpectrometer/DataFolders/100124_BlacktandardFlight2_2018_07_28_22_56_17/raw_5968_rd_rf_55pctWhiteRef_or"
 EighMile_pft_path = "./Data/Vectors/PFTs/EightmilePFT_ROIs.shp"
 EighMile_pft_vec<-readOGR(dsn=EighMile_pft_path)
+unique(EighMile_pft_vec$CLASS_NAME)
 #EightMile_pft_out<-ImgChopper(EightMile_path, EighMile_pft_path)
 
 lapply(1:length(EighMile_pft_vec),  
