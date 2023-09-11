@@ -446,8 +446,8 @@ print(paste0(
 
 AllSpecRaw<-bind_rows(SpecLib_new, MissingSpecLib_new)
 
-meta_names<-colnames(AllSpecRaw[,1:11])
-
+AllSpecRaw_meta_names<-c(colnames(AllSpecRaw[,1:11]),colnames(AllSpecRaw[,2163:2187]))
+ 
 MissingSpecLib_new_tall<-MissingSpecLib_new %>%
   dplyr::select(Functional_group1,`425`:`999`) %>%
   pivot_longer(cols = `425`:`999`,  names_to  = "Wavelength", values_to = "Reflectance") %>%    
@@ -478,23 +478,5 @@ SpecLib_new_tall<-SpecLib_new %>%
   mutate(Wavelength = as.numeric(Wavelength))  %>%
   as.data.frame() 
 
-AllSpecRaw_tall<-AllSpecRaw %>%
-  group_by(Functional_group1) %>%
-  dplyr::mutate(sample_size = n()) %>% 
-  dplyr::mutate(Functional_group1_wN = glue('{Functional_group1} {"(n="} {sample_size} {"pixels,"} {species_count} {"PFTs"})')) %>%
-pivot_longer(cols = `350`:`2500`,  names_to  = "Wavelength", values_to = "Reflectance") %>%    
-  mutate(Wavelength = gsub("X","",Wavelength)) %>%
-  group_by(Functional_group1, Wavelength) %>%  
-  dplyr::summarise(Median_Reflectance = median(Reflectance),
-                   Max_Reflectance = max(Reflectance),
-                   Min_Reflectance = min(Reflectance),
-                   Pct_87_5_Reflectance = quantile(Reflectance, probs = 0.875),
-                   Pct_12_5_Reflectance = quantile(Reflectance, probs = 0.125),
-                   Upper_Reflectance = quantile(Reflectance, probs = 0.95),
-                   Lower_Reflectance = quantile(Reflectance, probs = 0.05))%>%
-  mutate(Wavelength = as.numeric(Wavelength))  %>%
-  as.data.frame() #%>%
-
-write.csv(AllSpecRaw_tall, "./Output/C_001_SC3_Cleaned_SpectralLib_tall_FncGrp1.csv")
 write.csv(AllSpecRaw, "./Output/C_001_SC3_Cleaned_SpectralLib.csv")
 
