@@ -5,14 +5,55 @@ require(vegan)
 
 #Read in Ground spectra 
 Cleaned_Speclib<-read.csv("./Output/C_001_SC3_Cleaned_SpectralLib.csv")
-#Also read in tall, summarized version of ground spectra and add Source
-#Cleaned_Speclib_tall_Fnc_grp1<-read.csv("./Output/C_001_SC3_Cleaned_SpectralLib_tall_FncGrp1.csv")
-#Cleaned_Speclib_tall_Fnc_grp1<-Cleaned_Speclib_tall_Fnc_grp1 %>% dplyr::mutate(Source = "Ground")
 
+#Prepare ground spectral library for merging with image library
+Cleaned_Speclib<- Cleaned_Speclib %>% dplyr::rename(Site = Area, UID = ScanID,)
+Cleaned_Speclib_meta_names<-c(colnames(Cleaned_Speclib[,1:12]),colnames(Cleaned_Speclib[,2164:2187]))
+unique(Cleaned_Speclib)
+#Summarize ground spectra by PFT and band to make interquartile range columns for each band
+Cleaned_Speclib_tall_Fnc_grp1<- 
+Cleaned_Speclib %>% 
+    #dplyr::select(cols_to_keep) %>%
+    #dplyr::select(UID, 
+    #              #sample_name, 
+    #              #ScanNum, 
+    #              Functional_group1,
+    #              Site
+    #) %>% 
+    #dplyr::rename (Functional_group1 = FncGrp1) %>% #colnames()
+    #group_by(Functional_group1) %>% 
+    dplyr::select(Functional_group1, Species_name) %>% 
+    unique() %>% 
+    ungroup() %>% 
+    group_by(Functional_group1) %>%
+    tally() %>% 
+    dplyr::rename(species_count = n) %>%
+  inner_join(Cleaned_Speclib, by=c("Functional_group1")) %>% #colnames()
+    group_by(Functional_group1) %>% 
+    dplyr::mutate(sample_size = n()) %>% 
+    dplyr::mutate(Functional_group1_wN = glue('{Functional_group1} {"(n="} {sample_size} {"scans,"} {species_count} {"species"})')) %>%
+pivot_longer(cols = `X350`:`X2500`,  names_to  = "Wavelength", values_to = "Reflectance") %>%    
+  mutate(Wavelength = gsub("X","",Wavelength)) %>%
+  group_by(Functional_group1, Functional_group1_wN, Wavelength) %>%  
+  dplyr::summarise(Median_Reflectance = median(Reflectance),
+                   Max_Reflectance = max(Reflectance),
+                   Min_Reflectance = min(Reflectance),
+                   Pct_87_5_Reflectance = quantile(Reflectance, probs = 0.875),
+                   Pct_12_5_Reflectance = quantile(Reflectance, probs = 0.125),
+                   Upper_Reflectance = quantile(Reflectance, probs = 0.95),
+                   Lower_Reflectance = quantile(Reflectance, probs = 0.05))%>%
+  mutate(Wavelength = as.numeric(Wavelength),
+         Source = "Ground")  %>%
+  as.data.frame() #%>%
+
+
+write.csv(Cleaned_Speclib_tall_Fnc_grp1, "./Data/C_001_SC3_Cleaned_SpectralLib_tall_Fnc_grp1.csv")
+
+#####
 #Read in Image spectra
 PFT_IMG_SPEC_clean <- read.csv("./Data/Ground_Validation/PFT_Image_spectra/PFT_Image_SpectralLib_Clean.csv")
 
-#Make a table of 
+#Make a table of pixels by PFT by site 
 PFT_IMG_SPEC_clean %>% group_by(Site,FncGrp1) %>% tally() %>% pivot_wider(names_from = FncGrp1, values_from = n) %>% print(n=100)
 #Make a list of variables to drop
 names_drop<-c("PFT.1",
@@ -33,14 +74,17 @@ cols_to_keep <- setdiff(colnames(PFT_IMG_SPEC_clean), names_drop)
 #Summarize image spectra by PFT and band to make interquartile range columns for each band
 PFT_IMG_SPEC_clean_tall<-
 PFT_IMG_SPEC_clean %>% 
+  #Filter out unneeded columns
   dplyr::select(cols_to_keep) %>%
+  #Rearrange columns
   dplyr::select(UID, 
-                sample_name, 
-                ScanNum, 
+                #sample_name, 
+                #ScanNum, 
                 FncGrp1,
                 Site, 
                 everything()
   ) %>% 
+  #Rename columns and coun the number of unique species/functional group 1 names
   dplyr::rename (Functional_group1 = FncGrp1) %>% #colnames()
   #group_by(Functional_group1) %>% 
   dplyr::select(Functional_group1, PFT) %>% 
@@ -64,7 +108,7 @@ inner_join(PFT_IMG_SPEC_clean, by=c("Functional_group1"="FncGrp1")) %>%
   Wavelength = as.numeric(Wavelength)) %>% #colnames()
   mutate(Reflectance = round(Reflectance*100,2)) %>%
   #group_by(Functional_group1,Wavelength) %>% 
-  group_by(Functional_group1_wN, Functional_group1,Wavelength) %>%  
+  group_by(Functional_group1, Functional_group1_wN, Wavelength) %>%  
   
   dplyr::summarise(Median_Reflectance = median(Reflectance),
                    Max_Reflectance = max(Reflectance),
@@ -73,12 +117,73 @@ inner_join(PFT_IMG_SPEC_clean, by=c("Functional_group1"="FncGrp1")) %>%
                    Pct_12_5_Reflectance = quantile(Reflectance, probs = 0.125),
                    Upper_Reflectance = quantile(Reflectance, probs = 0.95),
                    Lower_Reflectance = quantile(Reflectance, probs = 0.05))%>%
-  mutate(#Wavelength = as.numeric(Wavelength),
+  mutate(Wavelength = as.numeric(Wavelength),
          Source = "Image") %>%
   as.data.frame() 
 
+write.csv(PFT_IMG_SPEC_clean_tall, "./Data/Ground_Validation/PFT_Image_spectra/PFT_Image_SpectralLib_Clean_tall.csv")
 
-##Summarize 
+## Bind both ground and image spectra summaries (quantiles) together
+PFT_SPEC_GROUND_IMAGE <- bind_rows(Cleaned_Speclib_tall_Fnc_grp1, PFT_IMG_SPEC_clean_tall)
+PFT_SPEC_GROUND_IMAGE$Source_Color<-ifelse(PFT_SPEC_GROUND_IMAGE$Source == "Ground", "green", "blue")
+dim(Cleaned_Speclib_tall_Fnc_grp1)
+head(PFT_SPEC_GROUND_IMAGE)
+colnames(PFT_SPEC_GROUND_IMAGE)
+######## Functional group 1 spectral profiles
+# Sentinel-2 colors
+color <- grDevices::hcl.colors(6, palette = "Spectral", rev = TRUE)
+color[1]<-"e4f6f8"
+jpeg("Output/Fnc_grp1_spectral_profiles_PFT_GRD_IMG_SPECTRA_ALL.jpg", height = 10000, width = 10000, res = 350)
+ggplot((PFT_SPEC_GROUND_IMAGE %>%
+  dplyr::filter(Functional_group1 != "Forb") %>%
+  dplyr::filter(Wavelength<1000) %>%
+  dplyr::filter(Wavelength>399)) 
+  ,
+aes(Wavelength, Median_Reflectance, group = Functional_group1),
+scales = "fixed"
+) +
+  # geom_line(aes(Wavelength, Median_Reflectance,color = "red"),size = 2)+
+      
+
+  annotate("rect", xmin = 492.4 - (66 / 2), xmax = 492.4 + (66 / 2), ymin = 0, ymax = 100, alpha = .7, color = color[2], fill = color[2]) +
+  # Band3 559.8 36, fill =
+  annotate("rect", xmin = 559.8 - (36 / 2), xmax = 559.8 + (36 / 2), ymin = 0, ymax = 100, alpha = .7, color = color[3], fill = color[3]) +
+  # Band4 664.6 31, fill =
+  annotate("rect", xmin = 664.6 - (31 / 2), xmax = 664.6 + (31 / 2), ymin = 0, ymax = 100, alpha = .7, color = color[4], fill = color[4]) +
+  # Band5 704.1 15, fill =
+  annotate("rect", xmin = 704.1 - (15 / 2), xmax = 704.1 + (15 / 2), ymin = 0, ymax = 100, alpha = .7, color = color[5], fill = color[5]) +
+  # Band6<-740.5 15, fill =
+  annotate("rect", xmin = 740.5 - (15 / 2), xmax = 740.5 + (15 / 2), ymin = 0, ymax = 100, alpha = .7, color = color[6], fill = color[6]) +
+  # Band7<-782.8 20
+  annotate("rect", xmin = 782.8 - (20 / 2), xmax = 782.8 + (20 / 2), ymin = 0, ymax = 100, alpha = .2) +
+  # Band8<- 864 21
+  annotate("rect", xmin = 864 - (21 / 2), xmax = 864 + (21 / 2), ymin = 0, ymax = 100, alpha = .2) +
+  # Band9<-945.1 20
+  annotate("rect", xmin = 945.1 - (20 / 2), xmax = 945.1 + (20 / 2), ymin = 0, ymax = 100, alpha = .2) +
+  # Band10<-1373.5 31
+  #annotate("rect", xmin = 1373.5 - (31 / 2), xmax = 1373.5 + (31 / 2), ymin = 0, ymax = 100, alpha = .2) +
+  ## Band11<-1613.7 91
+  #annotate("rect", xmin = 1613.7 - (91 / 2), xmax = 1613.7 + (91 / 2), ymin = 0, ymax = 100, alpha = .2) +
+  ## Band12<-2202.4 175
+  #annotate("rect", xmin = 2202.4 - (175 / 2), xmax = 2202.4 + (175), ymin = 0, ymax = 100, alpha = .2) +
+  #scale_color_grey() +
+  geom_ribbon(aes(Wavelength, ymin = Pct_12_5_Reflectance, ymax = Pct_87_5_Reflectance, alpha = 0.3)) +
+  geom_ribbon(aes(Wavelength, ymin = Lower_Reflectance, ymax = Upper_Reflectance, alpha = 0.2))+
+  labs(title = c("Reflectance by plant functional group and sample size with median (red), 75% (dark) and 90% (grey) quantiles based on 1242 scans"), y = "Reflectance") +
+  theme(
+    panel.background = element_rect(fill = "white", colour = "grey50"),
+    # legend.key.size = unit(0.5, "cm"),legend.text = element_text(size=25),
+    legend.position = "none",
+    title = element_text(size = 25),
+    strip.text = element_text(size = 25),
+    axis.text = element_text(size = 20),
+    axis.text.x = element_text(angle = 90)
+  ) + geom_line(aes(Wavelength, Median_Reflectance, colour = Source), size = 2) + 
+  facet_wrap(vars(Functional_group1_wN), scales = "fixed", ncol = 4) + 
+  facet_wrap(~reorder(Functional_group1_wN, Source))
+
+dev.off()
+
 ###Clean up image based PFT spectra to merge with ground based spectra
 merge_ignore2 = c("UID","FncGrp1")#, "PFT")
 #Further reduce image spectra columns to only have those necessary for PCA and merging with ground based spectra with the same columns
@@ -109,15 +214,16 @@ PFT_IMG_SPEC_clean_merge_100nm<-resample_df(PFT_IMG_SPEC_clean_merge, min_wavele
 #Further reduce ground spectra columns to only have those necessary for PCA and merging with image based spectra with the same columns
  Cleaned_Speclib_merge <-
   Cleaned_Speclib %>%
-  dplyr::select(ScanID, Functional_group1, Area, X398:X998) %>% #colnames()
+  #dplyr::select(UID, Functional_group1, A, X398:X998) %>% #colnames()
   #columnwise_min_max_scale(ignore_cols = merge_ignore1) %>% #colnames() #dplyr::select(X398:X998) %>% as.matrix() %>% hist()
-  dplyr::rename(UID=ScanID) %>%
+  #dplyr::rename(UID=ScanID) %>%
   mutate(Source = "Ground") %>%
   #mutate(UID=c(Source, ScanID,Functional_group1))
-  dplyr::select(UID,Area, Source, Functional_group1, X398:X998) %>%
+  dplyr::select(UID,Site, Source, Functional_group1, X398:X998) %>%
   as.data.frame()
 
 Cleaned_Speclib_merge_meta<-Cleaned_Speclib_merge %>% dplyr::select(UID,Area, Source, Functional_group1)
+
 #Resample ground spectra at coarser bandpass
 Cleaned_Speclib_merge_5nm<-resample_df(Cleaned_Speclib_merge, min_wavelength = 398, max_wavelength = 998, delta = 5, drop_existing = TRUE)
   Cleaned_Speclib_merge_5nm<-cbind(Cleaned_Speclib_merge_meta,Cleaned_Speclib_merge_5nm)
@@ -252,27 +358,6 @@ legend(x = -600, y =800, legend=unique(Cleaned_Speclib_merge$Functional_group1),
 #legend(x = -600, y =800, legend=unique(Cleaned_Speclib_merge$Area), pch=c(1:length(unique(Cleaned_Speclib_merge$Area))), cex=0.8)
 dev.off()
 
-#windows()
-#boxplot(scores(grd_pca_pr)[,2]~Cleaned_Speclib_merge$Functional_group1)
-#title(main="PCA axis 2 of reflectance of PFT ground spectra only (no veg indices)")
-#
-#grd_pca_pr<-princomp(grd_mat_indices)#, center=FALSE, scale=FALSE)
-#hist(grd_mat)
-#
-#
-#predction_img_to_grd<-predict(img_pca, grd_mat)
-#predction_grd_to_img<-predict(grd_pca, img_mat)
-#
-#
-#tst<-c(predction_img_to_grd,scores(img_pca)[,1:2])
-#str(predction_img_to_grd)
-#windows()
-#plot(predction_img_to_grd)
-#str(predction_grd_to_img)
-#str(predction_img_to_grd)
-#biplot(img_pca)
-
-
 ###########Merged ground and image
 
 spectra_mat_1nm<-rbind(img_mat*100, grd_mat_1nm)
@@ -294,8 +379,6 @@ spectra_mat_50nm[is.na(spectra_mat_50nm)] <- 0.00000001
 #Remove columns not usable in PCA
 tst_mat<-spectra_mat_20nm
 
-windows()
-hist(tst_mat)
 #Replace any NAs or Zeros with very small value
 #tst_mat<-tst_mat+0.00000001
 #tst_mat[is.na(tst_mat)]<-0.00000001
@@ -351,79 +434,7 @@ spectra_PFT_adonis<-adonis2(spectra_mat~as.factor(Speclib_merged$Source)*as.fact
 spectra_PFT_adonis
 
 
-## Bind both ground and image spectra summaries (quantiles) together
-PFT_IMG_SPEC_clean_tall$Wavelength<-as.numeric(PFT_IMG_SPEC_clean_tall$Wavelength)
-PFT_SPEC_GROUND_IMAGE <- bind_rows(Cleaned_Speclib_tall_Fnc_grp1, PFT_IMG_SPEC_clean_tall)
-PFT_SPEC_GROUND_IMAGE$Source_Color<-ifelse(PFT_SPEC_GROUND_IMAGE$Source == "Ground", "green", "blue")
-str(Cleaned_Speclib_tall_Fnc_grp1)
-head(PFT_SPEC_GROUND_IMAGE)
-######## Functional group 1 spectral profiles
-# Sentinel-2 colors
-color <- grDevices::hcl.colors(6, palette = "Spectral", rev = TRUE)
 
-jpeg("Output/Fnc_grp1_spectral_profiles_PFT_IMG_SPECTRA_ALL.jpg", height = 10000, width = 10000, res = 350)
-ggplot((PFT_SPEC_GROUND_IMAGE %>%
-  dplyr::filter(Functional_group1 != "Forb")),
-aes(Wavelength, Median_Reflectance, group = Functional_group1),
-scales = "fixed"
-) +
-  geom_ribbon(aes(Wavelength, ymin = Pct_12_5_Reflectance, ymax = Pct_87_5_Reflectance, alpha = 0.3)) +
-  geom_ribbon(aes(Wavelength, ymin = Lower_Reflectance, ymax = Upper_Reflectance, alpha = 0.2))+
-  labs(title = c("Reflectance by plant functional group and sample size with median (red), 75% (dark) and 90% (grey) quantiles based on 1242 scans"), y = "Reflectance") +
-  theme(
-    panel.background = element_rect(fill = "white", colour = "grey50"),
-    # legend.key.size = unit(0.5, "cm"),legend.text = element_text(size=25),
-    legend.position = "none",
-    title = element_text(size = 25),
-    strip.text = element_text(size = 25),
-    axis.text = element_text(size = 20),
-    axis.text.x = element_text(angle = 90)
-  ) +
-  # geom_line(aes(Wavelength, Median_Reflectance,color = "red"),size = 2)+
-      geom_line(aes(Wavelength, Median_Reflectance, colour = Source_Color), size = 2) +
-
-  annotate("rect", xmin = 492.4 - (66 / 2), xmax = 492.4 + (66 / 2), ymin = 0, ymax = 100, alpha = .7, color = color[2], fill = color[2]) +
-  # Band3 559.8 36, fill =
-  annotate("rect", xmin = 559.8 - (36 / 2), xmax = 559.8 + (36 / 2), ymin = 0, ymax = 100, alpha = .7, color = color[3], fill = color[3]) +
-  # Band4 664.6 31, fill =
-  annotate("rect", xmin = 664.6 - (31 / 2), xmax = 664.6 + (31 / 2), ymin = 0, ymax = 100, alpha = .7, color = color[4], fill = color[4]) +
-  # Band5 704.1 15, fill =
-  annotate("rect", xmin = 704.1 - (15 / 2), xmax = 704.1 + (15 / 2), ymin = 0, ymax = 100, alpha = .7, color = color[5], fill = color[5]) +
-  # Band6<-740.5 15, fill =
-  annotate("rect", xmin = 740.5 - (15 / 2), xmax = 740.5 + (15 / 2), ymin = 0, ymax = 100, alpha = .7, color = color[6], fill = color[6]) +
-  # Band7<-782.8 20
-  annotate("rect", xmin = 782.8 - (20 / 2), xmax = 782.8 + (20 / 2), ymin = 0, ymax = 100, alpha = .2) +
-  # Band8<- 864 21
-  annotate("rect", xmin = 864 - (21 / 2), xmax = 864 + (21 / 2), ymin = 0, ymax = 100, alpha = .2) +
-  # Band9<-945.1 20
-  annotate("rect", xmin = 945.1 - (20 / 2), xmax = 945.1 + (20 / 2), ymin = 0, ymax = 100, alpha = .2) +
-  # Band10<-1373.5 31
-  #annotate("rect", xmin = 1373.5 - (31 / 2), xmax = 1373.5 + (31 / 2), ymin = 0, ymax = 100, alpha = .2) +
-  ## Band11<-1613.7 91
-  #annotate("rect", xmin = 1613.7 - (91 / 2), xmax = 1613.7 + (91 / 2), ymin = 0, ymax = 100, alpha = .2) +
-  ## Band12<-2202.4 175
-  #annotate("rect", xmin = 2202.4 - (175 / 2), xmax = 2202.4 + (175), ymin = 0, ymax = 100, alpha = .2) +
-  #scale_color_grey() +
-
-  facet_wrap(vars(Functional_group1_wN), scales = "fixed", ncol = 4)
-# facet_wrap(reorder(~Functional_group1_wN, Source_Color), scales = "fixed", ncol = 4)
-
-dev.off()
-
-# PFT_IMG_SPEC_clean_merge$UID<-c(PFT_IMG_SPEC_clean_merge$UID)
-
-Cleaned_Speclib_merge %>%
-  dplyr::select(-UID, -Source, -Functional_group1, `X425`:`X998`) %>%
-  as.matrix() %>%
-  hist()
-
-
-PFT_IMG_SPEC_clean_merge %>%
-  dplyr::select(-UID, -Source, -Functional_group1, `X425`:`X998`) %>%
-  as.matrix() %>%
-  hist()
-
-PFT_SPEC <- bind_rows(Cleaned_Speclib_merge, PFT_IMG_SPEC_clean_merge)
 
 PFT_SPEC %>%
   dplyr::mutate(Area = case_when(
@@ -440,210 +451,6 @@ PFT_SPEC %>%
   arrange(Area, Source) %>%
   write.csv("./Output/TableScansPFTSiteAllSpectra.csv")
 
-
-PFT_SPEC_global_rescale <- PFT_SPEC %>%
-  global_min_max_scale(ignore_cols = c("UID", "Source", "Functional_group1", "Area"))
-
-
-
-PFT_SPEC_TALL <- PFT_SPEC_global_rescale %>%
-  dplyr::select(UID, Source, Functional_group1, everything()) %>%
-  pivot_longer(cols = `X420`:`X998`, names_to = "Wavelength", values_to = "Reflectance") # %>%
-# dplyr::filter(is.na(Reflectance))
-# dplyr::filter(Reflectance==0)
-
-
-
-# Remove columns not usable in PCA
-tst_mat <- PFT_SPEC_global_rescale %>%
-  dplyr::select(-UID, -Source, -Functional_group1, `X425`:`X998`) %>%
-  as.matrix()
-
-hist(tst_mat)
-# Replace any NAs or Zeros with very small value
-tst_mat[tst_mat == 0] <- 0.00000001
-tst_mat[is.na(tst_mat)] <- 0.00000001
-tst_na <- tst_mat[is.nan(tst_mat) == TRUE]
-
-# Build PCA with and without sqrt transform
-# tst_pca<-princomp(tst_mat) #, center=FALSE, scale=FALSE)
-tst_pca_pr <- prcomp(log10(tst_mat)) # , center=FALSE, scale=FALSE)
-
-summary(tst_pca)
-
-# How many values in
-seq(1:length(unique(PFT_SPEC$Functional_group1)))
-cols <- palette.colors(n = 9)
-screeplot(tst_pca_pr)
-plot(scores(tst_pca_pr)[, 1:2], col = cols, pch = c(1:2))
-title(main = "PCA reflectance global minmax rescale \n after merging image and ground spectra libraries")
-
-# legend(x = -6, y =10, legend=unique(PFT_SPEC$Functional_group1), lty=1, col=c(1:9), cex=0.5)
-# legend(x = -6, y =3, legend=unique(PFT_SPEC$Source), pch=c(1:2), cex=0.5)
-legend(x = 4, y = 0, legend = unique(PFT_SPEC$Functional_group1), lty = 1, col = c(1:9), cex = 0.5)
-legend(x = 2, y = -5, legend = unique(PFT_SPEC$Source), pch = c(1:2), cex = 0.5)
-
-
-# Cluster plots based on their woody veg
-# QUESTION: Should we use scale() to center the data
-tst_mat_clust <- hclust(dist(tst_mat))
-tst_mat_clust_dend <- as.dendrogram(tst_mat_clust)
-plot(tst_mat_clust, group = as.factor(PFT_SPEC$Source))
-
-jpeg("./Output/PCA_ALL_SPECTRA_boxplot_PC2.jpeg", width = 1200, height = 400)
-boxplot(scores(tst_pca_pr)[, 2] ~ PFT_SPEC_global_rescale$Functional_group1)
-title(main = "PCA axis 2 of reflectance global minmax rescale after \n merging image and ground spectra libraries")
-dev.off()
-
-fnc_grp1_colors <- createPalette(length(unique(PFT_SPEC$Functional_group1)), c("#ff0000", "#00ff00", "#0000ff")) %>%
-  as.data.frame() %>%
-  dplyr::rename(Color = ".") %>%
-  mutate(Functional_group1 = unique(PFT_SPEC$Functional_group1)) %>%
-  mutate(ColorNum = seq(1:length(unique(PFT_SPEC$Functional_group1))))
-fnc_grp1_color_list <- PFT_SPEC %>%
-  dplyr::select(Functional_group1) %>%
-  inner_join(fnc_grp1_colors, by = "Functional_group1", keep = FALSE)
-
-jpeg("./Output/HEATMAP_ALL_SPECTRA_boxplot.jpeg", width = 6000, height = 4000)
-
-heatmap(log10(tst_mat),
-  dendrogram = "row",
-  trace = "none",
-  Colv = FALSE,
-  RowSideColors = fnc_grp1_color_list$Color
-)
-
-legend(x = "bottomright", legend = unique(fnc_grp1_color_list$Functional_group1), fill = unique(fnc_grp1_color_list$Color), cex = 2)
-dev.off()
-
-
-
-############## Vegetation Indices
-
-## Read in vegetation indices of image spectra
-Cleaned_Speclib_derivs <- read.csv("./Data/D_002_SpecLib_Derivs.csv")
-
-Cleaned_Speclib_Derivs_merge <-
-  Cleaned_Speclib_derivs %>%
-  dplyr::select(ScanID, Functional_group1, Boochs:Vogelmann4) %>% # colnames()
-  # global_min_max_scale(ignore_cols = merge_ignore1) %>% #colnames() #dplyr::select(X398:X998) %>% as.matrix() %>% hist()
-  dplyr::rename(UID = ScanID) %>%
-  mutate(Source = "Ground") %>%
-  # mutate(UID=c(Source, ScanID,Functional_group1))
-  # dplyr::select(UID,Source, Functional_group1, X398:X998) %>%
-  as.data.frame()
-
-VI_DF < read.csv("./Data/D_002_Image_SpecLib_Derivs.csv")
-
-hist(Cleaned_Speclib_Derivs_merge %>%
-  dplyr::select(-UID, -Source, -Functional_group1) %>%
-  columnwise_min_max_scale() %>% # str()
-  as.matrix())
-
-ground_PFT_derivs_mat <- Cleaned_Speclib_Derivs_merge %>%
-  dplyr::select(-UID, -Source, -Functional_group1) %>%
-  columnwise_min_max_scale() %>% # #str()
-  as.matrix()
-
-hist(ground_PFT_derivs_mat)
-
-rownames(ground_PFT_derivs_mat) <- Cleaned_Speclib_Derivs_merge$UID
-
-heatmap.2(columnwise_min_max_scale(ground_PFT_derivs_mat) %>% as.matrix(),
-  dendrogram = "row",
-  trace = "none",
-  Colv = FALSE,
-  RowSideColors = fnc_grp1_color_list$Color
-)
-legend(x = "topright", legend = unique(fnc_grp1_color_list$Functional_group1), fill = unique(fnc_grp1_color_list$Color), cex = 0.7)
-
-hist(as.matrix(VI_DF %>%
-  dplyr::select(-1:-5)) %>% columnwise_min_max_scale() %>% as.matrix())
-
-
-
-
-## Cast vegetation index VI to matrix and plot using heatmap and PCA
-image_PFT_derivs_mat <- as.matrix(VI_DF %>%
-  dplyr::select(-1:-5) %>%
-  columnwise_min_max_scale())
-
-hist(image_PFT_derivs_mat)
-
-rownames(image_PFT_derivs_mat) <- VI_DF_rescale$UID
-
-heatmap.2(columnwise_min_max_scale(image_PFT_derivs_mat) %>% as.matrix(),
-  dendrogram = "row",
-  trace = "none",
-  Colv = FALSE,
-  RowSideColors = fnc_grp1_color_list$Color
-)
-legend(x = "topright", legend = unique(fnc_grp1_color_list$Functional_group1), fill = unique(fnc_grp1_color_list$Color), cex = 0.7)
-
-dim(ground_PFT_derivs_mat)
-dim(image_PFT_derivs_mat)
-
-range(ground_PFT_derivs_mat, na.rm = TRUE)
-range(image_PFT_derivs_mat, na.rm = TRUE)
-
-hist(dist(ground_PFT_derivs_mat))
-hist(dist(image_PFT_derivs_mat))
-
-PFT_derivs_mat <- rbind(ground_PFT_derivs_mat, image_PFT_derivs_mat)
-
-hist(dist(PFT_derivs_mat))
-dim(PFT_derivs_mat)
-
-all_deriv_grp <- c(VI_DF_rescale$Functional_group1, Cleaned_Speclib_Derivs_merge$Functional_group1) %>% as.data.frame()
-colnames(all_deriv_grp) <- "Functional_group1"
-
-all_derivs_grp1_colors <- createPalette(length(unique(all_deriv_grp$Functional_group1)), c("#ff0000", "#00ff00", "#0000ff")) %>%
-  as.data.frame() %>%
-  dplyr::rename(Color = ".") %>%
-  mutate(Functional_group1 = unique(all_deriv_grp$Functional_group1)) %>%
-  mutate(ColorNum = seq(1:length(unique(all_deriv_grp$Functional_group1))))
-all_derivs_grp1_color_list <- all_deriv_grp %>%
-  dplyr::select(Functional_group1) %>%
-  inner_join(all_derivs_grp1_colors, by = "Functional_group1", keep = FALSE)
-
-
-# PFT_derivs_mat_rescale<-PFT_derivs_mat %>%
-#  columnwise_min_max_scale() %>%
-#  as.matrix()
-
-PFT_derivs_mat[PFT_derivs_mat <= 0.000001] <- 0.00000001
-PFT_derivs_mat[is.nan(PFT_derivs_mat)] <- 0.00000001
-PFT_derivs_mat[is.na(PFT_derivs_mat)] <- 0.00000001
-
-PFT_derivs_mat_rescale <- PFT_derivs_mat
-
-hist(dist(PFT_derivs_mat_rescale))
-
-
-dim(PFT_derivs_mat)
-heatmap.2(PFT_derivs_mat_rescale,
-  dendrogram = "row",
-  trace = "none",
-  Colv = FALSE,
-  RowSideColors = all_fnc_grp1_color_list$Color
-)
-legend(x = "topright", legend = unique(all_fnc_grp1_color_list$Functional_group1), fill = unique(all_fnc_grp1_color_list$Color), cex = 0.7)
-
-dev.off()
-
-derivs_pca_pr <- prcomp(PFT_derivs_mat_rescale) # , center=FALSE, scale=FALSE)
-
-cols <- palette.colors(n = 8)
-screeplot(derivs_pca_pr)
-plot(scores(derivs_pca_pr)[, 2:3], col = all_derivs_grp1_color_list$Color) # , pch=c(1:2))
-title(main = "PCA of min max rescaled vegetations indices from ground and image")
-
-
-jpeg("./Output/PCA_Veg_Indices_boxplot_PC`.jpeg", width = 1200, height = 400)
-boxplot(scores(derivs_pca_pr)[, ] ~ c(VI_DF_rescale$Functional_group1, Cleaned_Speclib_Derivs_merge$Functional_group1))
-dev.off()
-
-
 PFT_df <- bind_rows(Cleaned_Speclib_merge, PFT_IMG_SPEC_clean_merge)
 
 all_fnc_grp1_colors <- createPalette(length(unique(PFT_df$Functional_group1)), c("#ff0000", "#00ff00", "#0000ff")) %>%
@@ -654,7 +461,6 @@ all_fnc_grp1_colors <- createPalette(length(unique(PFT_df$Functional_group1)), c
 all_fnc_grp1_color_list <- PFT_df %>%
   dplyr::select(Functional_group1) %>%
   inner_join(all_fnc_grp1_colors, by = "Functional_group1", keep = FALSE)
-
 
 area_colors <- createPalette(length(unique(PFT_df$Area)), "#ff0000") %>%
   as.data.frame() %>%
@@ -674,33 +480,3 @@ source_color_list <- PFT_df %>%
   dplyr::select(Source) %>%
   inner_join(source_colors, by = "Source", keep = FALSE)
 
-ground_mat <- Cleaned_Speclib_merge %>%
-  dplyr::select(-UID, -Source, -Functional_group1, -Area) %>%
-  # columnwise_min_max_scale() %>% #str()
-  as.matrix()
-rownames(ground_mat) <- Cleaned_Speclib_merge$UID
-
-image_mat <- as.matrix(PFT_IMG_SPEC_clean_merge %>%
-  dplyr::select(-1:-4))
-
-rownames(image_mat) <- PFT_IMG_SPEC_clean_merge$UID
-
-PFT_mat <- rbind(ground_mat, image_mat)
-
-PFT_mat[PFT_mat <= 0.000001] <- 0.00000001
-
-heatmap.2(PFT_mat,
-  dendrogram = "row",
-  trace = "none",
-  Colv = FALSE,
-  RowSideColors = all_fnc_grp1_color_list$Color
-)
-
-dev.off()
-
-spectra_pca_pr <- prcomp(PFT_mat) # , center=FALSE, scale=FALSE)
-
-cols <- palette.colors(n = 8)
-screeplot(spectra_pca_pr)
-plot(scores(spectra_pca_pr)[, 1:2], col = source_color_list$Color) # , pch=c(1:2))
-title(main = "PCA of spectra from images")
