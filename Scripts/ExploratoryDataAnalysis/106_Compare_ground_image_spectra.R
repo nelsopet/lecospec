@@ -2,14 +2,14 @@
 source("./Functions/lecospectR.R")
 require(Polychrome)
 require(vegan)
-
+require(glue)
 #Read in Ground spectra 
 Cleaned_Speclib<-read.csv("./Output/C_001_SC3_Cleaned_SpectralLib.csv")
 
 #Prepare ground spectral library for merging with image library
 Cleaned_Speclib<- Cleaned_Speclib %>% dplyr::rename(Site = Area, UID = ScanID,)
 Cleaned_Speclib_meta_names<-c(colnames(Cleaned_Speclib[,1:12]),colnames(Cleaned_Speclib[,2164:2187]))
-unique(Cleaned_Speclib)
+dim(Cleaned_Speclib)
 #Summarize ground spectra by PFT and band to make interquartile range columns for each band
 Cleaned_Speclib_tall_Fnc_grp1<- 
 Cleaned_Speclib %>% 
@@ -52,9 +52,9 @@ write.csv(Cleaned_Speclib_tall_Fnc_grp1, "./Data/C_001_SC3_Cleaned_SpectralLib_t
 #####
 #Read in Image spectra
 PFT_IMG_SPEC_clean <- read.csv("./Data/Ground_Validation/PFT_Image_spectra/PFT_Image_SpectralLib_Clean.csv")
-
+dim(PFT_IMG_SPEC_clean)
 #Make a table of pixels by PFT by site 
-PFT_IMG_SPEC_clean %>% group_by(Site,FncGrp1) %>% tally() %>% pivot_wider(names_from = FncGrp1, values_from = n) %>% print(n=100)
+#PFT_IMG_SPEC_clean %>% group_by(Site,FncGrp1) %>% tally() %>% pivot_wider(names_from = FncGrp1, values_from = n) %>% print(n=100)
 #Make a list of variables to drop
 names_drop<-c("PFT.1",
               "PFT.2",
@@ -124,11 +124,20 @@ inner_join(PFT_IMG_SPEC_clean, by=c("Functional_group1"="FncGrp1")) %>%
 write.csv(PFT_IMG_SPEC_clean_tall, "./Data/Ground_Validation/PFT_Image_spectra/PFT_Image_SpectralLib_Clean_tall.csv")
 
 ## Bind both ground and image spectra summaries (quantiles) together
-PFT_SPEC_GROUND_IMAGE <- bind_rows(Cleaned_Speclib_tall_Fnc_grp1, PFT_IMG_SPEC_clean_tall)
-PFT_SPEC_GROUND_IMAGE$Source_Color<-ifelse(PFT_SPEC_GROUND_IMAGE$Source == "Ground", "green", "blue")
+PFT_SPEC_GROUND_IMAGE <- bind_rows(Cleaned_Speclib_tall_Fnc_grp1 %>% 
+                                  dplyr::filter(Wavelength<1000) %>%
+                                  dplyr::filter(Wavelength>399), 
+                                  PFT_IMG_SPEC_clean_tall)
 dim(Cleaned_Speclib_tall_Fnc_grp1)
-head(PFT_SPEC_GROUND_IMAGE)
-colnames(PFT_SPEC_GROUND_IMAGE)
+#[1] 19359    11
+dim(PFT_IMG_SPEC_clean_tall)
+#[1] 4808   11
+
+PFT_SPEC_GROUND_IMAGE$Source_Color<-ifelse(PFT_SPEC_GROUND_IMAGE$Source == "Ground", "green", "blue")
+
+dim(PFT_SPEC_GROUND_IMAGE)
+#[1] 24167    12
+
 ######## Functional group 1 spectral profiles
 # Sentinel-2 colors
 color <- grDevices::hcl.colors(6, palette = "Spectral", rev = TRUE)
@@ -198,6 +207,7 @@ PFT_IMG_SPEC_clean_merge<-
          Area = (str_split(UID, "PFT") %>% as.data.frame() %>% t %>% as.data.frame() %>% dplyr::rename(Site = V1) %>% dplyr::select(Site))) %>%
   dplyr::select(UID,Source, Functional_group1, Area, everything())  %>%
   as.data.frame()
+PFT_IMG_SPEC_clean_merge$Area<-PFT_IMG_SPEC_clean_merge$Area$Site
 PFT_IMG_SPEC_clean_merge_meta<- PFT_IMG_SPEC_clean_merge %>% dplyr::select(UID,Source, Functional_group1, Area)
 #Resample image spectra at coarser bandpass
 PFT_IMG_SPEC_clean_merge_5nm<-resample_df(PFT_IMG_SPEC_clean_merge, min_wavelength = 398, max_wavelength = 998, delta = 5, drop_existing = TRUE)
@@ -220,6 +230,15 @@ PFT_IMG_SPEC_clean_merge_100nm<-resample_df(PFT_IMG_SPEC_clean_merge, min_wavele
   mutate(Source = "Ground") %>%
   #mutate(UID=c(Source, ScanID,Functional_group1))
   dplyr::select(UID,Site, Source, Functional_group1, X398:X998) %>%
+  dplyr::rename(Area = Site) %>%
+  dplyr::mutate(Area = case_when(
+    Area == "EightMile" ~ "Eight Mile",
+    Area == "Murphy" ~ "Murphy Dome",
+    Area == "Big Trail" ~ "Fairbanks Area Big Trail Lake",
+    Area == "12mile" ~ "Twelve Mile",
+    Area == "Chatanika" ~ "Caribou Poker",
+    TRUE ~ Area
+  )) %>%
   as.data.frame()
 
 Cleaned_Speclib_merge_meta<-Cleaned_Speclib_merge %>% dplyr::select(UID,Area, Source, Functional_group1)
@@ -236,9 +255,33 @@ Cleaned_Speclib_merge_50nm<-resample_df(Cleaned_Speclib_merge, min_wavelength = 
 Cleaned_Speclib_merge_100nm<-resample_df(Cleaned_Speclib_merge, min_wavelength = 398, max_wavelength = 998, delta = 100, drop_existing = TRUE)
   Cleaned_Speclib_merge_100nm<-cbind(Cleaned_Speclib_merge_meta,Cleaned_Speclib_merge_100nm)
 
-#Merge ground and image pft spectra
-Speclib_merged<-rbind(PFT_IMG_SPEC_clean_merge,Cleaned_Speclib_merge)
-Speclib_merged_meta<-Speclib_merged %>% dplyr::select(UID, Source, Functional_group1)
+#Merge the ground and image spectra
+dim(PFT_IMG_SPEC_clean_merge)
+dim(Cleaned_Speclib_merge)
+PFT_SPEC<-rbind(PFT_IMG_SPEC_clean_merge,Cleaned_Speclib_merge) 
+
+dim(PFT_SPEC)
+
+PFT_SPEC %>% group_by(Source, Area, Functional_group1) %>% tally() %>% ungroup() %>%
+  pivot_wider(names_from = Functional_group1, values_from = n) %>% print(n=100)
+PFT_SPEC %>% dplyr::filter(is.na(Source)==TRUE) %>% head
+
+#Resample PFT_SPEC to have 125 samples per PFT, balanced by site, source and PFT for PCA
+PFT_SPEC_bal<-PFT_SPEC %>% group_by(Area, Source, Functional_group1)  %>% slice_sample(n=125)
+PFT_SPEC_bal_mat_img<-PFT_SPEC_bal %>% ungroup() %>% dplyr::filter(Source == "Image") %>% dplyr::select(X400:X998) %>% as.matrix() 
+PFT_SPEC_bal_mat_img<-PFT_SPEC_bal_mat_img*100
+PFT_SPEC_bal_mat_grd<-PFT_SPEC_bal %>% ungroup() %>% dplyr::filter(Source == "Ground") %>% dplyr::select(X400:X998) %>% as.matrix() 
+PFT_SPEC_bal_mat<-rbind(PFT_SPEC_bal_mat_img,PFT_SPEC_bal_mat_grd)
+PFT_SPEC_bal<-PFT_SPEC_bal %>% dplyr::select(Source, Area, Functional_group1) %>% cbind(as.data.frame(PFT_SPEC_bal_mat))
+
+#Why are there 3922 row with NA metadata after slicing?
+
+PFT_SPEC_bal %>% head#dplyr::filter(is.na(Source)==TRUE) %>% head
+
+PFT_SPEC_bal %>%
+  group_by(Source,Functional_group1) %>% tally() %>% ungroup() %>%
+  pivot_wider(names_from = Functional_group1, values_from = n) %>% print(n=100)
+
 #Create a list of colors for plotting fnc grp 1 with the image data
 fncgrp1_colors = createPalette(length(unique(PFT_IMG_SPEC_clean$FncGrp1)),  c("#ff0000", "#00ff00", "#0000ff")) %>%
   as.data.frame() %>%
@@ -252,19 +295,33 @@ fncgrp1_colors_grd = createPalette(length(unique(Cleaned_Speclib_merge$Functiona
   mutate(FNC_grp1 = unique(Cleaned_Speclib_merge$Functional_group1)) %>%
   mutate(ColorNum = seq(1:length(unique(Cleaned_Speclib_merge$Functional_group1))));
 
-fncgrp1_colors_all = createPalette(length(unique(Speclib_merged$Functional_group1)),  c("#ff0000", "#00ff00", "#0000ff")) %>%
+fncgrp1_colors_all = createPalette(length(unique(PFT_SPEC$Functional_group1)),  c("#ff0000", "#00ff00", "#0000ff")) %>%
   as.data.frame() %>%
   dplyr::rename(Color = ".") %>%
-  mutate(FNC_grp1 = unique(Speclib_merged$Functional_group1)) %>%
-  mutate(ColorNum = seq(1:length(unique(Speclib_merged$Functional_group1))));
+  mutate(FNC_grp1 = unique(PFT_SPEC$Functional_group1)) %>%
+  mutate(ColorNum = seq(1:length(unique(PFT_SPEC$Functional_group1))));
 
 #fnc_grp1_color_list<-Veg_env %>% select(Functional_group2) %>% inner_join(fnc_grp1_colors, by=c("Functional_group2"="FNC_grp1"), keep=FALSE)
 fncgrp1_color_list<-PFT_IMG_SPEC_clean %>% dplyr::select(FncGrp1) %>% inner_join(fncgrp1_colors, by=c("FncGrp1"="FNC_grp1"), keep=FALSE)
 fncgrp1_color_list_grd<-Cleaned_Speclib_merge %>% dplyr::select(Functional_group1) %>% inner_join(fncgrp1_colors, by=c("Functional_group1"="FNC_grp1"), keep=FALSE)
-fncgrp1_color_list_all<-Speclib_merged %>% dplyr::select(Functional_group1) %>% inner_join(fncgrp1_colors_all, by=c("Functional_group1"="FNC_grp1"), keep=FALSE)
+fncgrp1_color_list_all<-PFT_SPEC %>% dplyr::select(Functional_group1) %>% inner_join(fncgrp1_colors_all, by=c("Functional_group1"="FNC_grp1"), keep=FALSE)
+
+##Make colors for balanced dataset
+fncgrp1_bal_colors = createPalette(length(unique(PFT_SPEC_bal$Functional_group1)),  c("#ff0000", "#00ff00", "#0000ff")) %>%
+  as.data.frame() %>%
+  dplyr::rename(Color = ".") %>%
+  mutate(FNC_grp1 = unique(PFT_SPEC_bal$Functional_group1)) %>%
+  mutate(ColorNum = seq(1:length(unique(PFT_SPEC_bal$Functional_group1))))
+
+#fnc_grp1_color_list<-Veg_env %>% select(Functional_group2) %>% inner_join(fnc_grp1_colors, by=c("Functional_group2"="FNC_grp1"), keep=FALSE)
+fncgrp1_bal_color_list<-PFT_SPEC_bal %>% ungroup() %>% dplyr::select(Functional_group1) %>% inner_join(fncgrp1_bal_colors, by=c("Functional_group1"="FNC_grp1"), keep=FALSE)
 
 
 #Make a matrix of only image reflectance values for PCA
+img_mat<-(PFT_SPEC_bal %>% dplyr::filter(Source == "Image")) %>%
+ungroup() %>%
+dplyr::select(-Source, -Functional_group1, -Area) %>% as.matrix() 
+
 img_mat<-PFT_IMG_SPEC_clean_merge %>% 
   dplyr::select(-UID,-Source, -Functional_group1, -Area) %>% 
   as.matrix() 
@@ -290,16 +347,17 @@ img_mat_100nm<-PFT_IMG_SPEC_clean_merge_100nm %>%
   as.matrix()
 
 #Build PCA with and without sqrt transform
-img_pca<-princomp(img_mat_50nm) #, center=FALSE, scale=FALSE)
+img_pca<-princomp(img_mat) #, center=FALSE, scale=FALSE)
 #img_pca_pr<-prcomp(img_mat[,25:500])#, center=FALSE, scale=FALSE)
 
-#How many values in 
+#PCA figures with image spectra
 seq(1:length(unique(PFT_IMG_SPEC_clean_merge$Functional_group1))) %>% max()
 cols<-palette.colors(n=8)
 windows()
-jpeg("Output/PCA_AllImageSpectra_50nm.jpg")
+jpeg("Output/PCA_AllImageSpectra_1nm_balanced.jpg")
+plot(scores(img_pca)[,1:2], col=fncgrp1_bal_color_list$Color)#, pch=c(1:length(unique(PFT_IMG_SPEC_clean_merge$Area))))
+#plot(scores(img_pca)[,1:2], col=fncgrp1_color_list$Color)#, pch=c(1:length(unique(PFT_IMG_SPEC_clean_merge$Area))))
 
-plot(scores(img_pca)[,1:2], col=fncgrp1_color_list$ColorNum)#, pch=c(1:length(unique(PFT_IMG_SPEC_clean_merge$Area))))
 #biplot(tst_pca)
 title(main="PCA reflectance of PFT image spectra only (no veg indices)")
 legend(x = -7, y =5, legend=unique(PFT_IMG_SPEC_clean_merge$Functional_group1), lty=1, col=unique(fncgrp1_color_list$ColorNum), cex=1)
@@ -341,7 +399,7 @@ grd_mat_100nm<-Cleaned_Speclib_merge_100nm %>%
 grd_pca<-princomp(grd_mat_1nm) #, center=FALSE, scale=FALSE)
 #grd_pca_pr<-prcomp(grd_mat[,25:500])#, center=FALSE, scale=FALSE)
 
-#How many values in 
+#PCA figure for ground spectra
 seq(1:length(unique(Cleaned_Speclib_merge$Functional_group1)))
 cols<-palette.colors(n=9)
 windows()
@@ -377,32 +435,48 @@ spectra_mat_50nm[spectra_mat_50nm == 0] <- 0.00000001
 spectra_mat_50nm[is.na(spectra_mat_50nm)] <- 0.00000001
 
 #Remove columns not usable in PCA
-tst_mat<-spectra_mat_20nm
+#tst_mat<-spectra_mat_50nm
+tst_mat<-PFT_SPEC_bal_mat
 
 #Replace any NAs or Zeros with very small value
 #tst_mat<-tst_mat+0.00000001
+tst_mat[tst_mat<0]<-0.00000001
 #tst_mat[is.na(tst_mat)]<-0.00000001
 #tst_na<-tst_mat[is.nan(tst_mat)==TRUE]
+#windows()
+dim(tst_mat)
 
 #Build PCA with and without sqrt transform
-tst_pca<-princomp(tst_mat) #, center=FALSE, scale=FALSE)
+tst_pca<-princomp(sqrt(tst_mat)) #, center=FALSE, scale=FALSE)
+tst_pca_df<-scores(tst_pca)[,1:6]
+summary(tst_pca)
+head(tst_pca_df)
 #tst_pca_pr<-prcomp(tst_mat[,40:450])#, center=FALSE, scale=FALSE)
+windows()
+length(scores(tst_pca)[,1])
+unique(PFT_SPEC_bal$Functional_group1)
+boxplot(scores(tst_pca)[,1] ~ PFT_SPEC_bal$Functional_group1+PFT_SPEC_bal$Source)# col=fncgrp1_color_list_all$Color, pch=spectra_mat_source_shape)
+anova(aov(scores(tst_pca)[,1] ~ PFT_SPEC_bal$Functional_group1+PFT_SPEC_bal$Source))# col=fncgrp1_color_list_all$Color, pch=spectra_mat_source_shape)
+
 
 #How many values in 
-seq(1:length(unique(Speclib_merged$Functional_group1)))
 cols<-palette.colors(n=9)
-windows()
+#windows()
 screeplot(tst_pca)
+#Factor to plot PFT by source
+PFT_by_Source<-PFT_SPEC_bal %>% ungroup() %>% mutate(PFT_by_Source = paste(Source,Functional_group1)) %>% dplyr::select(PFT_by_Source) #%>% unique()
+PFT_by_Source[1]
 windows()
-jpeg("Output/PCA_AllSpectra_5nm.jpg")
-plot(scores(tst_pca)[,1:2], col=fncgrp1_color_list_all$Color, pch=spectra_mat_source_shape)
+jpeg("Output/PCA_AllSpectra_1nm_balanced_axis12_sqrt.jpg")
+plot(scores(tst_pca)[,c(1,2)], col=fncgrp1_bal_color_list$Color, pch=c(1,2))
+#ordihull(scores(tst_pca)[,c(1,2)], groups = as.factor(PFT_by_Source$PFT_by_Source))
 #biplot(tst_pca)
 title(main="PCA reflectance merging image and ground spectra libraries (no veg indices)")
 #legend(x = -6, y =10, legend=unique(PFT_SPEC$Functional_group1), lty=1, col=c(1:9), cex=0.5)
 #legend(x = -6, y =3, legend=unique(PFT_SPEC$Source), pch=c(1:2), cex=0.5)
 #1nm wide
-legend(x = 100, y = 400, legend=unique(Speclib_merged$Functional_group1), pch = 1, lty=1, col=unique(fncgrp1_color_list_all$Color), cex=0.8)
-legend(x = 150, y =200, legend=unique(Speclib_merged$Source), pch=c(1:2), cex=0.8)
+legend(x = -500, y = 1000, legend=unique(PFT_SPEC_bal$Functional_group1), pch = 1, lty=1, col=unique(fncgrp1_bal_color_list$Color), cex=0.8)
+legend(x = -500, y = 600, legend=unique(PFT_SPEC_bal$Source), pch=c(1:2), cex=0.8)
 
 ##50nm wide
 #legend(x = 45, y = 150, legend=unique(Speclib_merged$Functional_group1), pch = 1, lty=1, col=unique(fncgrp1_color_list_all$Color), cex=0.8)
@@ -410,73 +484,42 @@ legend(x = 150, y =200, legend=unique(Speclib_merged$Source), pch=c(1:2), cex=0.
 #legend(x = 200, y =-100, legend=unique(Speclib_merged$Area), pch=c(1:length(unique(Speclib_merged$Area))), cex=0.8)
 dev.off()
 
-#Make clusters with the spectra
-#tst_mat_clust<-hclust(dist(tst_mat))
-#tst_mat_clust_dend<-as.dendrogram(tst_mat_clust)
-#windows()
-#plot(tst_mat_clust, col = spectra_mat_source_shape)
+#Make clusters with the spectra or PCA axes
+tst_mat_clust<-hclust(dist(tst_pca_df))
+tst_mat_clust_dend<-as.dendrogram(tst_mat_clust)
+windows()
+plot(tst_mat_clust, col = unique(fncgrp1_bal_color_list$Color))
 
 #Boxplot of PCA axis scores
-jpeg("./Output/PCA_ALL_SPECTRA_boxplot_PC1.jpeg", width = 1200, height =400)
+jpeg("./Output/PCA_ALL_SPECTRA_boxplot_PC2.jpeg", width = 1200, height =400)
 windows()
-boxplot(scores(tst_pca)[,1]~Speclib_merged$Functional_group1+Speclib_merged$Source, col = c("red","blue"), cex.axis = 0.75,las =2) # nolint
-title(main="PCA axis 2 of reflectance merging image and ground spectra libraries (no veg indices)")
-dev.off()
+#Base R boxplot
+#boxplot(scores(tst_pca)[,2]~PFT_SPEC_bal$Functional_group1+PFT_SPEC_bal$Source, col = c("red","blue"), cex.axis = 0.75,las =2) # nolint
+#title(main="PCA axis 2 of reflectance merging image and ground spectra libraries (no veg indices)")
 
-##GGPlot version of PCA boxplot
-PCA_df<-cbind(scores(tst_pca), Speclib_merged_meta)
-PCA_box<-ggplot(PCA_df %>% group_by(Functional_group1, Source))
-windows()
-PCA_box+geom_boxplot(aes(Comp.1,Functional_group1, color = Source))
+dev.off()
+  ##GGPlot version of PCA boxplot
+  PCA_df<-cbind(scores(tst_pca), PFT_SPEC_bal)
+  PCA_box<-ggplot(PCA_df %>% group_by(Functional_group1, Source))
+  windows()
+  PCA_box+geom_boxplot(aes(Comp.1,Functional_group1, color = Source))
 
 #Multivariate analysis of PFT groups 
-spectra_PFT_adonis<-adonis2(spectra_mat~as.factor(Speclib_merged$Source)*as.factor(Speclib_merged$Functional_group1), method="euclidean", permutations=100)
-spectra_PFT_adonis
+#spectra_PFT_adonis<-adonis2(spectra_mat~as.factor(Speclib_merged$Source)*as.factor(Speclib_merged$Functional_group1), method="euclidean", permutations=100)
+#spectra_PFT_adonis
 
-
-
-
-PFT_SPEC %>%
-  dplyr::mutate(Area = case_when(
-    Area == "EightMile" ~ "Eight Mile",
-    Area == "Murphy" ~ "Murphy Dome",
-    Area == "Big Trail" ~ "Fairbanks Area Big Trail Lake",
-    Area == "12mile" ~ "Twelve Mile",
-    Area == "Chatanika" ~ "Caribou Poker",
-    TRUE ~ Area
-  )) %>%
-  group_by(Area, Functional_group1, Source) %>%
-  tally() %>%
-  pivot_wider(names_from = Functional_group1, values_from = n) %>%
-  arrange(Area, Source) %>%
-  write.csv("./Output/TableScansPFTSiteAllSpectra.csv")
-
-PFT_df <- bind_rows(Cleaned_Speclib_merge, PFT_IMG_SPEC_clean_merge)
-
-all_fnc_grp1_colors <- createPalette(length(unique(PFT_df$Functional_group1)), c("#ff0000", "#00ff00", "#0000ff")) %>%
-  as.data.frame() %>%
-  dplyr::rename(Color = ".") %>%
-  mutate(Functional_group1 = unique(PFT_df$Functional_group1)) %>%
-  mutate(ColorNum = seq(1:length(unique(PFT_df$Functional_group1))))
-all_fnc_grp1_color_list <- PFT_df %>%
-  dplyr::select(Functional_group1) %>%
-  inner_join(all_fnc_grp1_colors, by = "Functional_group1", keep = FALSE)
-
-area_colors <- createPalette(length(unique(PFT_df$Area)), "#ff0000") %>%
-  as.data.frame() %>%
-  dplyr::rename(Color = ".") %>%
-  mutate(Area = unique(PFT_df$Area)) %>%
-  mutate(ColorNum = seq(1:length(unique(PFT_df$Area))))
-area_color_list <- PFT_df %>%
-  dplyr::select(Area) %>%
-  inner_join(area_colors, by = "Area", keep = FALSE)
-
-source_colors <- createPalette(length(unique(PFT_df$Source)), "#ff0000") %>%
-  as.data.frame() %>%
-  dplyr::rename(Color = ".") %>%
-  mutate(Source = unique(PFT_df$Source)) %>%
-  mutate(ColorNum = seq(1:length(unique(PFT_df$Source))))
-source_color_list <- PFT_df %>%
-  dplyr::select(Source) %>%
-  inner_join(source_colors, by = "Source", keep = FALSE)
+#PFT_SPEC %>%
+#  dplyr::mutate(Area = case_when(
+#    Area == "EightMile" ~ "Eight Mile",
+#    Area == "Murphy" ~ "Murphy Dome",
+#    Area == "Big Trail" ~ "Fairbanks Area Big Trail Lake",
+#    Area == "12mile" ~ "Twelve Mile",
+#    Area == "Chatanika" ~ "Caribou Poker",
+#    TRUE ~ Area
+#  )) %>%
+#  group_by(Area, Functional_group1, Source) %>%
+#  tally() %>%
+#  pivot_wider(names_from = Functional_group1, values_from = n) %>%
+#  arrange(Area, Source) %>%
+#  write.csv("./Output/TableScansPFTSiteAllSpectra.csv")
 
