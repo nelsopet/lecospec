@@ -216,4 +216,5 @@ estimate_landcover.
 
 Example predicted plant functional type map from one site (Bison Gulch
 near Denali National Park)
-<img src="Output/dev_FullCube/bg_28_1511_fncgrp1_PREDICTIONS_grd_corrected_balanced_10tree_FIGURE.jpeg" width="645" />
+
+<img src="./Output/dev_FullCube/bg_28_1511_fncgrp1_PREDICTIONS_grd_corrected_balanced_10tree_FIGURE.jpeg" width="2000" height="1000">
