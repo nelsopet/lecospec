@@ -208,10 +208,10 @@ Once the /config.json is set to match what is needed, the following script shows
     /Scripts/visualizeRasters.R 
 
 Example predicted plant functional type map from one site (Bison Gulch near Denali National Park)
-```{r, echo=FALSE, include=TRUE}
-#<img src="./Output/dev_FullCube/bg_28_1511_fncgrp1_PREDICTIONS_grd_corrected_balanced_10tree_FIGURE.jpeg" width="2000" height="2000">
+```{r, echo=FALSE, include=FALSE}
 
-knitr::include_graphics(path="Output/dev_FullCube/bg_28_1511_fncgrp1_PREDICTIONS_grd_corrected_balanced_10tree_FIGURE.jpeg", dpi = 100)
+#knitr::include_graphics(path="Output/dev_FullCube/bg_28_1511_fncgrp1_PREDICTIONS_grd_corrected_balanced_10tree_FIGURE.jpeg")
 #[Prediction]("Output/dev_FullCube/bg_28_1511_fncgrp1_PREDICTIONS_grd_corrected_balanced_10tree_FIGURE.jpeg"){width=250px}
 
 ```
+<img src="./Output/dev_FullCube/bg_28_1511_fncgrp1_PREDICTIONS_grd_corrected_balanced_10tree_FIGURE.jpeg" width="2000" height="1000">
