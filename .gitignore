@@ -6,8 +6,10 @@
 Data/
 Output/
 Output/*
+Output/Fnc_grp1_spectral_profiles_PFT_IMG_SPECTRA_ALL.jpg
 Data/leaf_spectra_barrow_2013_20180824_ecosis.csv
 Data/Ground_Validation/PFT_image_spectra/PFT_Image_SpectralLib_Clean.csv
+Data/Ground_Validation/PFT_image_spectra/
 *.rds
 *.jpg
 *.pdf
@@ -44,4 +46,4 @@ mle/models/gs/*
 mle/models/**/*
 gs*.log
 validation_test.csv
-**/*.zip
+training-archive.zip

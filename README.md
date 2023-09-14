@@ -24,8 +24,8 @@ are found in lecospectR.R but all of which are loaded by sourcing
     /Functions/pfts.R  
     /Functions/pipeline.R  
     /Functions/raster_operations.R 
-    /Functions/spectral_operations.R
     /Functions/site_specific_processing.R   
+    /Functions/spectral_operations.R
     /Functions/training_utilities.R    
     /Functions/type_conversion.R   
     /Functions/utilities.R 
@@ -33,6 +33,8 @@ are found in lecospectR.R but all of which are loaded by sourcing
     /Functions/visualization.R    
 
 ## How to run lecospec
+
+## Build a spectral library from ground data
 
 1)  Our workflow assumes a list of species with associated levels of
     taxonomic information (eg. functional group membership)
@@ -56,22 +58,23 @@ the metadata.
 
     /Output/C_001_SC3_Cleaned_SpectralLib.csv   
 
-3)  Collect spectra from pixels in images from UAV in quadrats and
-    patches of plant functional types visible in ground reference or
-    higher resolution RGB imagery. Calculate vegetation indices, smooth
-    and resample spectra to 5 nm wide bands. Reflectance spectra are
-    extracted from hand digitized patches of plant functional types
-    provided as a shapefile to the first script
-    (101_Crop_Training_PFT_vector). The same operation is performed in
-    the second script (101_Crop_Training_Quads) for hand digitzed
-    quadrats of validation ground cover data. Script
-    102_Parse_training_PFT_vector_spectra adds metadata to each pixel by
-    plant patch.
+## Build a spectral library from images
 
-    “/Scripts/TrainingDataCreation/Image/101_Crop_Training_PFT_vector.R”
-    “/Scripts/TrainingDataCreation/Image/101_Crop_Training_Quads.R”
-    “/Scripts/TrainingDataCreation/Image/102_Parse_training_PFT_vector_spectra.R”  
-    “/Scripts/TrainingDataCreation/Image/103_Clean_training_PFT_vector_spectra.R”
+Collect spectra from pixels in images from UAV in quadrats and patches
+of plant functional types visible in ground reference or higher
+resolution RGB imagery. Calculate vegetation indices, smooth and
+resample spectra to 5 nm wide bands. Reflectance spectra are extracted
+from hand digitized patches of plant functional types provided as a
+shapefile to the first script (101_Crop_Training_PFT_vector). The same
+operation is performed in the second script (101_Crop_Training_Quads)
+for hand digitzed quadrats of validation ground cover data. Script
+102_Parse_training_PFT_vector_spectra adds metadata to each pixel by
+plant patch.
+
+    /Scripts/TrainingDataCreation/Image/101_Crop_Training_PFT_vector.R
+    /Scripts/TrainingDataCreation/Image/101_Crop_Training_Quads.R
+    /Scripts/TrainingDataCreation/Image/102_Parse_training_PFT_vector_spectra.R
+    /Scripts/TrainingDataCreation/Image/103_Clean_training_PFT_vector_spectra.R
 
 After running these scripts, the output is relectance for each pixel
 from the patches of plants digitized from images.
@@ -86,7 +89,7 @@ ranges of reflectance (75% black & 95% grey) with the sample size in
 number of scans distributed across a number of scans (ground measured)
 or pixels (airborne).
 
-<img src="./Output/Fnc_grp1_spectral_profiles_PFT_IMG_SPECTRA_ALL_corrected.jpg" width="1000" height="1000">
+<img src="./Output/Fnc_grp1_spectral_profiles_PFT_GRD_IMG_SPECTRA_ALL.jpg" width="1000" height="1000">
 
 ## Study Area and Data locations
 
@@ -107,7 +110,7 @@ with a white calibration tarp on one end.
 1)  Set all the input, output and needed associated files for building
     models and predicting images
 
-    /Scripts/validation_def.R
+    /Scripts/validation_defs.R
 
 Variable set in this script include: test_paths, which are rasters only
 with the pixels by quadrat by site shape_paths, which are the vectors of
@@ -129,28 +132,45 @@ slightly different names. The validation_path are the ground cover
 estimates by quadrat derived from ground photos by a single expert
 observer.
 
-2)  Proprocessing spectral libraries Using the notebook below, a variety
-    of proprocessing is applied to the ground and image based spectral
-    libraries created in earlier steps. Preprocessing options/steps
-    include, resampling and smoothing spectra to 5nm wide bands,
-    filtering out sites (which would have to then be excluded from
-    Scripts/validation_defs.R), clipping outliers, building a sensor
-    correction model between ground and image spectra libraries, a few
-    different types of rescaling (after smoothing) and finally creating
-    a training and test split for each dataset. These train and test
-    splits are written to disk in /Data/gs in x_train or x_test
-    (independent variables) and y_train and y_test (dependent variables)
+2)  Proprocessing spectral libraries Ground and image based spectral
+    libraries created in earlier steps are resampled at different
+    bandpasses and balanced samples are created based on target classes
+    (eg. PFTs) and sample units (eg. patches for image spectra or sites
+    for ground spectra). It creates a training and test split for each
+    dataset by randomly selecting pixels up to a specified number per
+    class and sample unit. These train and test splits are written to
+    disk in /Data/gs in x_train or x_test (independent variables) and
+    y_train and y_test (dependent variables).
 
-/Scripts/TrainingDataCreation/speclib_processing.ipynb
+/Scripts/build_balanced_ground_data.R
+/Scripts/build_balanced_training_data.R
 
 3)  Builds and visualizes model accuracy
 
-Two scripts build, validate and visualize accuracy of two different
-kinds of models; random forests implemented in the ranger package and
-partial least squares regression linear discriminant analysis (PLS-LDA).
+Several scripts build, validate and visualize accuracy of different
+kinds of models; adaboost, CART, partial least squares regression linear
+discriminant analysis (PLS-LDA), random forests implemented in the
+ranger package and support vector machines.
 
-    /Scripts/grid_search_rf.R   
-    /Scripts/grid_search_PLS.R
+    /Scripts/gs3_adaboost.R   
+    /Scripts/gs3_cart.R   
+    /Scripts/gs3_pls.R
+    /Scripts/gs3_rf.R   
+    /Scripts/gs3_svm.R
+
+Each model script has similar settings but some are model
+site_specific_processing# model-independent search parameters. \#Max
+number of samples per class, in this case PFT max_per_pft \<- c(75, 150)
+\#Bandwidths in increments of 5nm bandwidths \<- c(5, 25, 50) \#Cutoff
+for variable intercorrelation based on a variable importance run of
+randome forest, which identifiied the most important variables
+correlation_thresholds \<- c(0.96, 0.97,0.98,0.99) \#Apply filter to
+reatures filter_features \<- c(TRUE, FALSE) \#Types of transformations
+to apply transform_names \<- c(“Nothing”)
+
+# model hyperparameters
+
+num_components \<- 2^seq(0, 10) alpha \<- seq(0, 1, 0.1)
 
 Here is an example confusion matrix from a model showing
 misclassification between plant funcational types.
@@ -196,4 +216,5 @@ estimate_landcover.
 
 Example predicted plant functional type map from one site (Bison Gulch
 near Denali National Park)
-<img src="bg_map_ranger_img_raw_balanced_2tree_NoDataFix.png" width="4200" />
+
+<img src="./Output/dev_FullCube/bg_28_1511_fncgrp1_PREDICTIONS_grd_corrected_balanced_10tree_FIGURE.jpeg" width="2000" height="1000">
