@@ -10,9 +10,16 @@ bandwidths <- c(5, 10, 25, 50)
 correlation_thresholds <- c(0.99, 1.00)
 # TODO: add aggregation_level <- c(0, 1)
 #filter_features <- c(TRUE, FALSE)
-transform_names <- c("Nothing")
+transform_names <- c(
+    "Nothing",
+    "bin10",
+    "bin20")
 
-get_filename <- function(bandwidth, count, is_train = TRUE, base_path = "Data/v2/") {
+get_filename <- function(
+    bandwidth, 
+    count, 
+    is_train = TRUE, 
+    base_path = "Data/v2/") {
     if (is_train) {
         train_test_string <- "train"
     } else {
@@ -37,8 +44,7 @@ get_filename <- function(bandwidth, count, is_train = TRUE, base_path = "Data/v2
 
 
 # model hyperparameters
-num_components <- 2^seq(2, 9) # 4-1024, doubling each time
-# alpha <- seq(0.25, 1, 0.25)
+num_components <- c(5,6,7,8,9,10,11,12,13,14,15)# fine tuning
 
 # number of states:
 #num_states <- length(num_components) *
@@ -56,12 +62,19 @@ num_components <- 2^seq(2, 9) # 4-1024, doubling each time
 ########################################
 ##  Define Assets
 ########################################
-manifest_path <- "./gs3_ranger_3.csv"
+manifest_path <- "./gs3_ranger_5.csv"
 
 transforms <- list()
 transforms[["Nothing"]] <- function(dx) {
     return(dx)
 }
+transforms[["bin10"]] <- function(df) {
+    return(bin_df(df, num_bins = 10))
+}
+transforms[["bin20"]] <- function(df) {
+    return(bin_df(df, num_bins = 20))
+}
+
 
 ########################################
 ##  Load Data
@@ -93,6 +106,8 @@ variable_importance <- read.csv("./assets/variable_importance.csv")
 ########################################
 ##  Run Grid Search
 ########################################
+
+
 
 for (bandwidth_index in seq_along(bandwidths)) {
     bandwidth <- bandwidths[[bandwidth_index]]
@@ -171,14 +186,14 @@ for (bandwidth_index in seq_along(bandwidths)) {
                     dir.create(model_dir)
                     print(model_dir)
 
-
+                    print(head(transforms[[transform_name]](data)))
                     model <- ranger::ranger(
                         num.trees = n,
                         replace = TRUE,
                         classification = TRUE,
                         # alpha = a,
                         case.weights = targets_to_weights(labels),
-                        x = transforms[[transform_name]](data),
+                        x = impute_spectra(transforms[[transform_name]](data)),
                         y = labels
                     )
                     if (("Forb" %in% levels(labels)) && !("Forb" %in% levels(test_labels))) {
@@ -224,17 +239,19 @@ for (bandwidth_index in seq_along(bandwidths)) {
                     
                     add_model_to_manifest(
                         model_id = model_id,
-                        outlier = "Random Forest",
+                        model_type = "Random Forest",
+                        bandwidth = bandwidth,
+                        max_count = count,
                         preprocessing = paste0(
                             transform_name
                         ),
-                        source = max_correlation,
+                        max_correlation = max_correlation,
                         weight = "balanced",
-                        n = n,
+                        hyperparam1 = n,
                         # oob_error = model$prediction.error,
                         accuracy = acc,
                         r2 = r2,
-                        chi2prob = rpd,
+                        rpd = rpd,
                         seed = 61718L,
                         logpath = manifest_path
                     )
@@ -243,3 +260,7 @@ for (bandwidth_index in seq_along(bandwidths)) {
         }
     }
 }
+
+
+sapply(transforms[[transform_name]](data), function(x) sum(is.nan(x)))
+sapply(transforms[[transform_name]](data), function(x) sum(is.na(x)))

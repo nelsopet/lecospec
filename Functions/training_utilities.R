@@ -209,32 +209,35 @@ log_model_results <- function(model_id, confusion_matrix, distribition, custom =
 
 add_model_to_manifest <- function(
     model_id,
-    outlier = "",
+    model_type = "",
+    max_count = "",
+    bandwidth = "",
+    max_correlation = "",
     preprocessing = "",
-    source = "",
     weight = "",
-    n = "",
-    oob_error = "",
+    hyperparam1 = "",
+    hyperparam2 = "",
     accuracy = "",
     r2 = "",
-    chi2prob = "",
+    rpd = "",
     seed = "",
     logpath = "./gs_manifest.csv") {
     if (!file.exists(logpath)) {
-        header <- "source,outliers,preprocessing,weight,n,oob,accuracy,r2,rpd,seed,model_id"
+        header <- "maxCount,bandwidth,maxCorrelation,preprocessing,weight,hyperparam1,hyperparam2,accuracy,r2,rpd,seed,model_id"
         write(header, file = logpath)
     }
 
     line <- paste(
-        source,
-        outlier,
+        max_count,
+        bandwidth,
+        max_correlation,
         preprocessing,
         weight,
-        n,
-        oob_error,
+        hyperparam1,
+        hyperparam2,
         accuracy,
         r2,
-        chi2prob,
+        rpd,
         seed,
         sep = ","
     )

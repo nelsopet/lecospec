@@ -22,7 +22,7 @@ metadata <- subset(
     select = c(FncGrp1, Site, UID)
 )
 
-img_indices <- impute_spectra(get_vegetation_indices(img_bands, NULL))
+img_indices <- impute_spectra(get_vegetation_indices(img_bands, NULL), method="median")
 #img_resampled_bands_5nm <- resample_df(img_bands, delta = 5, drop_existing=TRUE)
 #img_resampled_bands_10nm <- resample_df(img_bands, delta = 10, drop_existing=TRUE)
 #img_resampled_bands_25nm <- resample_df(img_bands, delta = 25, drop_existing=TRUE)

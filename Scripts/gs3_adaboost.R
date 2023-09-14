@@ -10,17 +10,17 @@ bandwidths <- c(5, 10, 25, 50)
 correlation_thresholds <- c(0.99, 1.00)
 #TODO: add aggregation_level <- c(0, 1)
 filter_features <- c(TRUE, FALSE)
-transform_names <- c("Nothing")
+transform_names <- c("Nothing", "bin10", "bin20")
 
 # model hyperparameters
-num_components <- 2^seq(2, 10)
-max_depths <- c(5, 10, 15, 20, 25, 30)
+num_components <- c(5,6,7,8,9,10,11,12,13,14,15)
+max_depths <- c(11,12,13,14,15,16,17,18,19)
 alpha <- seq(0, 1, 0.1)
 
 ########################################
 ##  Define Assets
 ########################################
-manifest_path <- "./gs3_adaboost_2.csv"
+manifest_path <- "./gs3_adaboost_3.csv"
 identity_fn <- function(dx){
     return(dx)
 }
@@ -52,6 +52,12 @@ get_filename <- function(
 
 transforms <- list()
 transforms[["Nothing"]] <- identity_fn
+transforms[["bin10"]] <- function(df) {
+    return(bin_df(df, num_bins = 10))
+}
+transforms[["bin20"]] <- function(df) {
+    return(bin_df(df, num_bins = 20))
+}
 print(transforms[["Nothing"]]("test"))
 
 ########################################
@@ -259,18 +265,20 @@ for(count in max_per_pft){
 
                     add_model_to_manifest(
                         model_id = model_id,
-                        outlier = "no_treatment",
+                        model_type = "AdaBoost",
+                        bandwidth = bandwidth,
+                        max_count = count,
                         preprocessing = paste0(
                             "center & ",
                             "scale & ",
                             transform_name),
-                        source = max_correlation,
+                        max_correlation = max_correlation,
                         weight = "balanced",
-                        n = n_comp,
-                        oob_error = max_depth,
+                        hyperparam1 = n_comp,
+                        hyperparam2 = max_depth,
                         accuracy = acc,
                         r2 = r2,
-                        chi2prob = rpd,
+                        rpd = rpd,
                         seed = 61718L,
                         logpath = manifest_path
                     )
@@ -281,4 +289,3 @@ for(count in max_per_pft){
 }
 }}
 
-caret::getModelInfo("AdaBoost.M1")

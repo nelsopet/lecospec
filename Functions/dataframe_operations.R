@@ -1175,3 +1175,17 @@ filter_df_indices <- function(df){
     #target_cols <- setdiff(df_cols, index_col_names)
     return(df[,target_cols])
 }
+
+
+bin_df <- function(df, num_bins = 10){
+    binned_df <- impute_spectra(as.data.frame(df))
+
+    for(col in colnames(df)){
+        binned_df[,col] <- as.numeric(ntile(df[,col], n = num_bins))
+    }
+
+    print(summary(binned_df))
+
+    return(binned_df)
+
+}

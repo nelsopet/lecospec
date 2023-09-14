@@ -46,7 +46,7 @@ num_components <- seq(6, 32, 2) # 2-32
 ########################################
 ##  Define Assets
 ########################################
-manifest_path <- "./gs3_pls.csv"
+manifest_path <- "./gs3_pls_2.csv"
 
 transforms <- list()
 transforms[["Nothing"]] <- function(dx) {
@@ -172,15 +172,17 @@ for (bandwidth_index in seq_along(bandwidths)) {
 
                     add_model_to_manifest(
                         model_id = model_id,
-                        outlier = "PLS",
+                        model_type = "PLS",
+                        bandwidth = bandwidth,
+                        max_count = count,
                         preprocessing = "center + scale",
-                        source = count,
+                        max_correlation = max_correlation,
                         weight = "balanced",
-                        n = n_comp,
+                        hyperparam1 = n_comp,
                         # oob_error = model$prediction.error,
                         accuracy = acc,
                         r2 = r2,
-                        chi2prob = rpd,
+                        rpd = rpd,
                         seed = 61718L,
                         logpath = manifest_path
                     )
