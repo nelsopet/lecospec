@@ -22,11 +22,11 @@ metadata <- subset(
     select = c(FncGrp1, Site, UID)
 )
 
-img_indices <- impute_spectra(get_vegetation_indices(img_bands, NULL))
-img_resampled_bands_5nm <- resample_df(img_bands, delta = 5, drop_existing=TRUE)
-img_resampled_bands_10nm <- resample_df(img_bands, delta = 10, drop_existing=TRUE)
-img_resampled_bands_25nm <- resample_df(img_bands, delta = 25, drop_existing=TRUE)
-img_resampled_bands_50nm <- resample_df(img_bands, delta = 50, drop_existing=TRUE)
+img_indices <- impute_spectra(get_vegetation_indices(img_bands, NULL), method="median")
+#img_resampled_bands_5nm <- resample_df(img_bands, delta = 5, drop_existing=TRUE)
+#img_resampled_bands_10nm <- resample_df(img_bands, delta = 10, drop_existing=TRUE)
+#img_resampled_bands_25nm <- resample_df(img_bands, delta = 25, drop_existing=TRUE)
+#img_resampled_bands_50nm <- resample_df(img_bands, delta = 50, drop_existing=TRUE)
 
 data <- cbind(metadata, img_resampled_bands_25nm)
 data$FncGrp1 <- as.factor(data$FncGrp1)
@@ -173,19 +173,68 @@ create_patch_balanced_sample <- function(
     )
 }
 
-train_test_data <- create_patch_balanced_sample(
-    data,
-    test_count = 15,
-    train_count = NULL,
-    verbose = TRUE)
-
-split_2_train <- create_patch_balanced_sample(
-    train_test_data$remainder,
-    test_count = 600,
-    train_count = 1000,
-    verbose = TRUE
-)
 
 
-write.csv(train_test_data$selection, "Data/v2/test_25nm_600_bands.csv")
-write.csv(split_2_train$selection, "Data/v2/train_25nm_600_bands.csv")
+bandwidths <- c(5,10,25,50)
+counts  <- c(125, 300, 500, 750, 1000, 2000)
+
+include_indices <- c(TRUE, FALSE)
+
+for(bandwidth in bandwidths){
+    img_resampled_bands <- resample_df(
+        img_bands,
+        delta = bandwidth,
+        drop_existing = TRUE
+        )
+    for(index_toggle in include_indices){
+        band_str <- ifelse(index_toggle, "", "_bands_only")
+
+        data <- cbind(metadata, img_resampled_bands)
+        if(index_toggle){
+            data <- cbind(data, img_indices)
+        }
+
+        for(num_per_pft in counts){
+            train_test_data <- create_patch_balanced_sample(
+                data,
+                test_count = 20,
+                train_count = NULL,
+                verbose = FALSE)
+
+            split_2_train <- create_patch_balanced_sample(
+                train_test_data$remainder,
+                test_count = num_per_pft,
+                train_count = 1000,
+                verbose = FALSE
+                )
+
+            test_filepath <- paste0(
+                "Data/v2/test_",
+                bandwidth,
+                "nm_",
+                num_per_pft,
+                band_str,
+                ".csv"
+            )
+            train_filepath <- paste0(
+                "Data/v2/train_",
+                bandwidth,
+                "nm_",
+                num_per_pft,
+                band_str,
+                ".csv"
+            )
+
+            write.csv(train_test_data$selection, test_filepath)
+            write.csv(split_2_train$selection, train_filepath)
+
+        }
+
+    }
+}
+
+
+#write.csv(train_test_data$selection, "Data/v2/test_25nm_600_bands.csv")
+#write.csv(split_2_train$selection, "Data/v2/train_25nm_600_bands.csv")
+full_data %>% group_by(Site,FncGrp1) %>% tally() %>% pivot_wider(values_from = n, names_from = Site) %>% print(.,n=200)
+full_data %>% group_by(FncGrp1) %>% tally()# %>% pivot_wider(values_from = n, names_from = Site) %>% print(.,n=200)

@@ -5,21 +5,22 @@ source("Functions/lecospectR.R")
 ########################################
 
 # model-independent search parameters
-max_per_pft <- c(75, 150)
-bandwidths <- c(5, 25, 50)
-correlation_thresholds <- c(0.96, 0.97,0.98,0.99)
+max_per_pft <- c(125, 300, 500, 750, 1000, 2000)
+bandwidths <- c(5, 10, 25, 50)
+correlation_thresholds <- c(0.99, 1.00)
 #TODO: add aggregation_level <- c(0, 1)
 filter_features <- c(TRUE, FALSE)
-transform_names <- c("Nothing")
+transform_names <- c("Nothing", "bin10", "bin20")
 
 # model hyperparameters
-num_components <- 2^seq(0, 10)
+num_components <- c(5,6,7,8,9,10,11,12,13,14,15)
+max_depths <- c(11,12,13,14,15,16,17,18,19)
 alpha <- seq(0, 1, 0.1)
 
 ########################################
 ##  Define Assets
 ########################################
-manifest_path <- "./gs3_gbm.csv"
+manifest_path <- "./gs3_adaboost_3.csv"
 identity_fn <- function(dx){
     return(dx)
 }
@@ -51,6 +52,12 @@ get_filename <- function(
 
 transforms <- list()
 transforms[["Nothing"]] <- identity_fn
+transforms[["bin10"]] <- function(df) {
+    return(bin_df(df, num_bins = 10))
+}
+transforms[["bin20"]] <- function(df) {
+    return(bin_df(df, num_bins = 20))
+}
 print(transforms[["Nothing"]]("test"))
 
 ########################################
@@ -67,8 +74,7 @@ test_data <- subset(
         X,
         UID,
     	FncGrp1,
-        Site,
-        site
+        Site
         ))
 
 
@@ -79,8 +85,7 @@ train_data <- subset(
         X,
         UID,
     	FncGrp1,
-        Site,
-        site
+        Site
         ))
 labels <- train_data_full$FncGrp1 %>% as.factor()
 
@@ -132,8 +137,7 @@ for(count in max_per_pft){
             X,
             UID,
             FncGrp1,
-            Site,
-            site
+            Site
             ))
 
     rm(test_data_full)
@@ -146,8 +150,7 @@ for(count in max_per_pft){
             X,
             UID,
             FncGrp1,
-            Site,
-            site
+            Site
             ))
     labels <- train_data_full$FncGrp1 %>% as.factor()
 
@@ -156,7 +159,8 @@ for(count in max_per_pft){
 
     for(use_filter in filter_features){
         for(transform_name in transform_names){
-            for(n in num_components){
+            for(n_comp in num_components){
+                for(max_depth in max_depths){
                 for(max_correlation in correlation_thresholds){
 
 
@@ -181,14 +185,16 @@ for(count in max_per_pft){
                     }
 
                     training_options <- caret::trainControl(
-                        method = "cv",
-                        repeats = 3,
-                        number = 3,
+                        method = "boot",
+                        #repeats = 3,
+                        #number = 3,
                         search = "grid"
                     )
                     
                     grid <- expand.grid(
-                        mfinal = n
+                        mfinal = n_comp,
+                        maxdepth = max_depth,
+                        coeflearn = c("Breiman", "Freund", "Zhu")
                     )
 
                     #n_comp <- #min(length(used_cols), 32)
@@ -197,7 +203,8 @@ for(count in max_per_pft){
                         y = labels,
                         method = "AdaBoost.M1",
                         preProcess = c("center", "scale"),
-                        trControl = training_options#,
+                        trControl = training_options,
+                        tuneGrid = grid
                     )
 
                 #ranger::ranger(
@@ -258,18 +265,20 @@ for(count in max_per_pft){
 
                     add_model_to_manifest(
                         model_id = model_id,
-                        outlier = "no_treatment",
+                        model_type = "AdaBoost",
+                        bandwidth = bandwidth,
+                        max_count = count,
                         preprocessing = paste0(
                             "center & ",
                             "scale & ",
                             transform_name),
-                        source = max_correlation,
+                        max_correlation = max_correlation,
                         weight = "balanced",
-                        n = n,
-                        oob_error = model$prediction.error,
+                        hyperparam1 = n_comp,
+                        hyperparam2 = max_depth,
                         accuracy = acc,
                         r2 = r2,
-                        chi2prob = rpd,
+                        rpd = rpd,
                         seed = 61718L,
                         logpath = manifest_path
                     )
@@ -278,4 +287,5 @@ for(count in max_per_pft){
         }
     }
 }
-}
+}}
+

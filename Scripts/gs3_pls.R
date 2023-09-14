@@ -5,7 +5,7 @@ source("Functions/lecospectR.R")
 ########################################
 
 # model-independent search parameters
-max_per_pft <- c(75, 150, 300, 600)
+max_per_pft <- c(125, 300, 500, 750, 1000, 2000)
 bandwidths <- c(5, 10, 25)
 # correlation_thresholds <- c(0.97, 0.98, 0.99, 1.00)
 # TODO: add aggregation_level <- c(0, 1)
@@ -28,7 +28,7 @@ get_filename <- function(bandwidth, count, is_train = TRUE, base_path = "Data/v2
             bandwidth,
             "nm_",
             count,
-            "_bands.csv"
+            "_bands_only.csv"
         )
     )
 }
@@ -46,7 +46,7 @@ num_components <- seq(6, 32, 2) # 2-32
 ########################################
 ##  Define Assets
 ########################################
-manifest_path <- "./gs3_pls.csv"
+manifest_path <- "./gs3_pls_2.csv"
 
 transforms <- list()
 transforms[["Nothing"]] <- function(dx) {
@@ -85,8 +85,7 @@ for (bandwidth_index in seq_along(bandwidths)) {
                 X,
                 UID,
                 FncGrp1,
-                Site,
-                site
+                Site
             )
         )
 
@@ -100,8 +99,7 @@ for (bandwidth_index in seq_along(bandwidths)) {
                 X,
                 UID,
                 FncGrp1,
-                Site,
-                site
+                Site
             )
         )
         labels <- train_data_full$FncGrp1 %>% as.factor()
@@ -174,15 +172,17 @@ for (bandwidth_index in seq_along(bandwidths)) {
 
                     add_model_to_manifest(
                         model_id = model_id,
-                        outlier = "PLS",
+                        model_type = "PLS",
+                        bandwidth = bandwidth,
+                        max_count = count,
                         preprocessing = "center + scale",
-                        source = count,
+                        max_correlation = max_correlation,
                         weight = "balanced",
-                        n = n_comp,
+                        hyperparam1 = n_comp,
                         # oob_error = model$prediction.error,
                         accuracy = acc,
                         r2 = r2,
-                        chi2prob = rpd,
+                        rpd = rpd,
                         seed = 61718L,
                         logpath = manifest_path
                     )
