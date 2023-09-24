@@ -5,15 +5,21 @@ source("Functions/lecospectR.R")
 ########################################
 
 # model-independent search parameters
-max_per_pft <- c(125, 300, 500, 750, 1000, 2000)
+max_per_pft <- c(
+    1000,
+    125,
+    300,
+    500,
+    750,
+    2000)
 bandwidths <- c(5, 10, 25, 50)
-correlation_thresholds <- c(0.99, 1.00)
+correlation_thresholds <- c(0.98, 0.99, 1.00)
 # TODO: add aggregation_level <- c(0, 1)
 #filter_features <- c(TRUE, FALSE)
 transform_names <- c(
-    "Nothing",
-    "bin10",
-    "bin20")
+    "Nothing")
+
+weighted <- c(TRUE, FALSE)
 
 get_filename <- function(
     bandwidth, 
@@ -169,6 +175,8 @@ for (bandwidth_index in seq_along(bandwidths)) {
         # for(use_filter in filter_features){
         for (transform_name in transform_names) {
             for (max_correlation in correlation_thresholds) {
+                for(weight_toggle in weighted){
+
                 # iterate over model hyperparameters
 
                 data <- remove_intercorrelated_variables(
@@ -187,6 +195,7 @@ for (bandwidth_index in seq_along(bandwidths)) {
                     print(model_dir)
 
                     print(head(transforms[[transform_name]](data)))
+                    if(weight_toggle){
                     model <- ranger::ranger(
                         num.trees = n,
                         replace = TRUE,
@@ -196,6 +205,10 @@ for (bandwidth_index in seq_along(bandwidths)) {
                         x = impute_spectra(transforms[[transform_name]](data)),
                         y = labels
                     )
+
+                    } else {
+
+                    }
                     if (("Forb" %in% levels(labels)) && !("Forb" %in% levels(test_labels))) {
                         levels(test_labels) <- c(levels(test_labels), "Forb")
                     }
@@ -255,6 +268,7 @@ for (bandwidth_index in seq_along(bandwidths)) {
                         seed = 61718L,
                         logpath = manifest_path
                     )
+                }
                 }
             }
         }

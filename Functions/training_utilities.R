@@ -720,7 +720,10 @@ remove_intercorrelated_variables <- function(
     col_order,
     threshold = 0.95,
     method = "pearson") {
-    correlation_matrix <- cor(data[, col_order], method = method)
+    correlation_matrix <- cor(
+        data[, col_order],
+        use="pairwise.complete.obs",
+        method = method)
 
     is_included <- rep_len(TRUE, length(col_order))
 
@@ -728,8 +731,13 @@ remove_intercorrelated_variables <- function(
         if (is_included[[i]]) {
             if (i < length(col_order) - 1) {
                 for (j in (i + 1):length(col_order)) {
+                    if(!is.nan(correlation_matrix[i, j]) &&
+                        !is.na(correlation_matrix[i, j]) &&
+                        !is.null(correlation_matrix[i, j])) {
+
                     if (abs(correlation_matrix[i, j]) > threshold) {
                         is_included[[j]] <- FALSE
+                    }
                     }
                 }
             }
