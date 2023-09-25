@@ -216,7 +216,7 @@ model script (eg. ./gs3_adaboost.R makes a log file at
 accuracy (percent pixels correctly identified) and fit (sum of squared
 residuals of observed vs predicted values)
 
-<img src="figures/Adaboost_obs_vs_pred.png" width="594" />
+\<img src=“.figures/Adaboost_obs_vs_pred.png”
 
 5)  After exploring model outputs based on different input data, Pick
     and model and explore results with lecospectR::validate_model.R ,
