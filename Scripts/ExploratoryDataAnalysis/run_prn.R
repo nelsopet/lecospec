@@ -5,9 +5,9 @@ test_path <- "./Data/Ground_Validation/Imagery/BisonGulchQuads.envi"
 raster::raster(test_path) %>% plot()
 
 #Model path but only useful for looking at model. Specify model in config.json
-model_path <- "./mle/models/gs/3012f5ed-7d17-4e94-a454-24d8a65f5b4f.rda"
+model_path <- "./test/f02a4a5d-beff-418b-8c13-20df941457c7/model.rda"
 load_model(model_path) %>% str
-load_model(model_path)$forest %>% str
+#load_model(model_path)$forest %>% str
 load_model(model_path)$forest$independent.variable.names
 tree1Info<-treeInfo(load_model(model_path), tree=1)
 tree1Info$tree<-"tree1"
@@ -71,8 +71,8 @@ load_model("mle/models/gs/3012f5ed-7d17-4e94-a454-24d8a65f5b4f.rda")$forest$leve
 #set.seed(1234)
 print(date())
 quad_results <- estimate_land_cover(
-  test_path_3, 
-  output_filepath = "./test_pred_2tree_tile_34M0bC2ZrwSZkgXo_patch_seed1234.grd",
+  test_path, 
+  output_filepath = "./test/test_pred_adaboost.grd",
   use_external_bands = TRUE)
 closeAllConnections()
 print(date())
@@ -81,27 +81,80 @@ as_tiff<-function(path) {raster::raster(paste0("./",path,".grd")) %>% raster::wr
 
 test_tif<-as_tiff("test_pred_2tree_tile_34M0bC2ZrwSZkgXo_patch_seed1234")
 
-print(date())
-closeAllConnections()
-big_results <- estimate_land_cover(
-  Bonanza_path,
-  output_filepath = "./Output/dev_FullCube/bz_6425_fncgrp1_PREDICTIONS_img_balanced_2tree_ranger_NoDataFix.grd")
-print(date())
+#print(date())
+#closeAllConnections()
+#big_results <- estimate_land_cover(
+#  Bonanza_path,
+#  output_filepath = "./Output/dev_FullCube/bz_6425_adaboost.grd")
+#print(date())
+ bc_pred6<-raster("./Output/dev_FullCube/bz_6425_adaboost.grd")
+ writeRaster(bc_pred6,"./Output/dev_FullCube/bz_6425_adaboost.tif", overwrite=TRUE)
 
-closeAllConnections()
-big_results <- estimate_land_cover(
-  EightMile_path,
-  output_filepath = "./Output/dev_FullCube/em_5968_fncgrp1_PREDICTIONS_img_balanced_2tree_ranger_NoDataFix.grd")
-print(date())
+  plot_options <- define_plot_options(
+      title = "Bonanza Predictions",
+      xLabel = "Longitude",
+      yLabel = "Latitude"
+)
+  bz_map_1 <- plot_categorical_raster(bc_pred6, plot_options)
 
-closeAllConnections()
-big_results <- estimate_land_cover(
-  Chatanika_path,
-  output_filepath = "./Output/dev_FullCube/ch_0_fncgrp1_PREDICTIONS_img_balanced_2tree_ranger_NoDataFix.grd")
-print(date())
+  windows();bz_map_1
 
-closeAllConnections()
-big_results <- estimate_land_cover(
-  Bison_path,
-  output_filepath = "./Output/dev_FullCube/bg_1511_fncgrp1_PREDICTIONS_img_balanced_2tree_ranger_NoDataFix.grd")
-print(date())
+  ggsave("./figures/bz_6425_adaboost.png", dpi = 350, width = 12, height = 8, units = "in")
+
+#closeAllConnections()
+#big_results <- estimate_land_cover(
+#  EightMile_path,
+#  output_filepath = "./Output/dev_FullCube/em_5968_adaboost.grd")
+#print(date())
+ em_pred8<-raster("./Output/dev_FullCube/em_5968_adaboost.grd")
+  writeRaster(em_pred8,"./Output/dev_FullCube/em_5968_adaboost.tif", overwrite=TRUE)
+    plot_options <- define_plot_options(
+        title = "Eight Mile Predictions",
+        xLabel = "Longitude",
+        yLabel = "Latitude"
+    )
+    em_map <- plot_categorical_raster(em_pred8, plot_options)
+
+    windows();em_map
+
+    ggsave("./figures/em_5968_adaboost.png", dpi = 350, width = 12, height = 8, units = "in")
+
+#closeAllConnections()
+#big_results <- estimate_land_cover(
+#  Chatanika_path,
+#  output_filepath = "./Output/dev_FullCube/ch_0_adaboost.grd")
+#print(date())
+ ch_pred8<-raster("./Output/dev_FullCube/ch_0_adaboost.grd")
+ writeRaster(ch_pred8,"./Output/dev_FullCube/ch_0_adaboost.tif", overwrite=TRUE)
+
+    plot_options <- define_plot_options(
+        title = "Chatanika Predictions",
+        xLabel = "Longitude",
+        yLabel = "Latitude"
+    )
+
+    ca_map <- plot_categorical_raster(ch_pred8, plot_options)
+
+    windows();ca_map
+
+    ggsave("./figures/ch_0_adaboost.png", dpi = 350, width = 12, height = 8, units = "in")
+
+
+##Bison Gulch validation data cube prediction, conversion to tif, plotting as a png for ms
+#closeAllConnections()
+#big_results <- estimate_land_cover(
+#  Bison_path,
+#  output_filepath = "./Output/dev_FullCube/bg_1511_fncgrp1_PREDICTIONS_adaboost.grd")
+#print(date())
+ bg_pred10<-raster("./Output/dev_FullCube/bg_1511_fncgrp1_PREDICTIONS_adaboost.grd")
+  writeRaster(bg_pred10,"./Output/dev_FullCube/bg_1511_fncgrp1_PREDICTIONS_adaboost.tif", overwrite=TRUE)
+    plot_options <- define_plot_options(
+        title = "Bison Gulch Predictions",
+        xLabel = "Longitude",
+        yLabel = "Latitude"
+    )
+    bg_map <- plot_categorical_raster(bg_pred9, plot_options)
+
+    windows();bg_map
+
+    ggsave("./figures/bg_1511_fncgrp1_PREDICTIONS_adaboost.png", dpi = 350, width = 12, height = 8, units = "in")
