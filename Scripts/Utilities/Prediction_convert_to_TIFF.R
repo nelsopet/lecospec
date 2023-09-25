@@ -6,6 +6,9 @@ bc_pred<-raster("./Output/dev_FullCube/bc_north_6425_fncgrp1_PREDICTIONS_grd_cor
                     writeRaster(bc_pred3,"./Output/dev_FullCube/bz_6425_fncgrp1_PREDICTIONS_img_balanced_2tree_ranger.tif", overwrite=TRUE)
                         bc_pred4<-raster("./Output/dev_FullCube/bz_6425_fncgrp1_PREDICTIONS_img_balanced_2tree_ranger_NoDataFix.grd")
                             writeRaster(bc_pred4,"./Output/dev_FullCube/bz_6425_fncgrp1_PREDICTIONS_img_balanced_2tree_ranger_NoDataFix.tif", overwrite=TRUE)
+                                bc_pred6<-raster("./Output/dev_FullCube/bz_6425_adaboost.grd")
+                                    writeRaster(bc_pred6,"./Output/dev_FullCube/bz_6425_adaboost.tif", overwrite=TRUE)
+
 #Check values before writing                                        
 #values(bc_pred5) %>% as.data.frame() %>% mutate(values = as.factor(.)) %>% group_by(values) %>% tally
 bc_pred5_1<-bc_pred5[values=1]
@@ -35,7 +38,9 @@ bg_pred3<-raster("./Output/dev_FullCube/bg_28_1511_fncgrp1_PREDICTIONS_grd_raw_c
                                     writeRaster(bg_pred7,"./Output/dev_FullCube/bg_1511_fncgrp1_PREDICTIONS_img_balanced_2tree_ranger.tif", overwrite=TRUE)
                                       bg_pred8<-raster("./Output/dev_FullCube/bg_1511_fncgrp1_PREDICTIONS_img_balanced_2tree_ranger_patch.grd")
                                         writeRaster(bg_pred8,"./Output/dev_FullCube/bg_1511_fncgrp1_PREDICTIONS_img_balanced_2tree_ranger_patch.tif", overwrite=TRUE)
-                                            
+                                             bg_pred9<-raster("./Output/dev_FullCube/bg_1511_fncgrp1_PREDICTIONS_adaboost.grd")
+                                                writeRaster(bg_pred9,"./Output/dev_FullCube/bg_1511_fncgrp1_PREDICTIONS_adaboost.tif", overwrite=TRUE)
+                                    
                                             bg_pred8_terra<-terra::rast(bg_pred8)
                                             bg_pred8_terra1<- bg_pred8_terra == 1
                                             bg_pred8_terra0<- bg_pred8_terra == 0
@@ -47,6 +52,8 @@ bg_pred3<-raster("./Output/dev_FullCube/bg_28_1511_fncgrp1_PREDICTIONS_grd_raw_c
                                                     writeRaster(bg_pred9, "./Output/dev_FullCube/bg_1511_fncgrp1_PREDICTIONS_img_balanced_2tree_ranger_patch_2.tif")
                                                         bg_pred9<-raster("./Output/dev_FullCube/bg_1511_fncgrp1_PREDICTIONS_img_balanced_2tree_ranger_NoDataFix.grd")
                                                                 writeRaster(bg_pred9, "./Output/dev_FullCube/bg_1511_fncgrp1_PREDICTIONS_img_balanced_2tree_ranger_NoDataFix.tif", overwrite = TRUE)
+                                                                    bg_pred10<-raster("./Output/dev_FullCube/bg_1511_fncgrp1_PREDICTIONS_adaboost.grd")
+                                                                        writeRaster(bg_pred10,"./Output/dev_FullCube/bg_1511_fncgrp1_PREDICTIONS_adaboost.tif", overwrite=TRUE)
 
 em_pred<-raster("./Output/em_5968_fngrp1_PREDICTIONS_FINAL.grd")# %>% writeRaster("./Output/bg_1511_fngrp1_PREDICTIONS_FINAL.tif")
     em_pred2<-raster("./Output/dev_FullCube/em_17_5968_fncgrp1_PREDICTIONS_grd_corrected_balanced.grd")
@@ -61,6 +68,8 @@ em_pred<-raster("./Output/em_5968_fngrp1_PREDICTIONS_FINAL.grd")# %>% writeRaste
                             writeRaster(em_pred6,"./Output/dev_FullCube/em_5968_fncgrp1_PREDICTIONS_img_balanced_2tree_ranger.tif", overwrite=TRUE)
                                 em_pred7<-raster("./Output/dev_FullCube/em_5968_fncgrp1_PREDICTIONS_img_balanced_2tree_ranger_NoDataFix.grd")
                                      writeRaster(em_pred7,"./Output/dev_FullCube/em_5968_fncgrp1_PREDICTIONS_img_balanced_2tree_ranger_NoDataFix.tif", overwrite=TRUE)
+                                        em_pred8<-raster("./Output/dev_FullCube/em_5968_adaboost.grd")
+                                            writeRaster(em_pred8,"./Output/dev_FullCube/em_5968_adaboost.tif", overwrite=TRUE)
 
 
 ch_pred<-raster("./Output/ch_0_fncgrp1_PREDICTIONS.grd") %>% writeRaster("./Output/ch_0_fncgrp1_PREDICTIONS.tif")
@@ -78,6 +87,8 @@ ch_pred<-raster("./Output/ch_0_fncgrp1_PREDICTIONS.grd") %>% writeRaster("./Outp
                                     writeRaster(ch_pred7,"./Output/dev_FullCube/ch_0_fncgrp1_PREDICTIONS_img_balanced_2tree_ranger_2.tif", overwrite=TRUE)
                                         ch_pred8<-raster("./Output/dev_FullCube/ch_0_fncgrp1_PREDICTIONS_img_balanced_2tree_ranger_NoDataFix.grd")
                                             writeRaster(ch_pred8,"./Output/dev_FullCube/ch_0_fncgrp1_PREDICTIONS_img_balanced_2tree_ranger_NoDataFix.tif", overwrite=TRUE)
+                                                ch_pred8<-raster("./Output/dev_FullCube/ch_0_adaboost.grd")
+                                                writeRaster(ch_pred8,"./Output/dev_FullCube/ch_0_adaboost.tif", overwrite=TRUE)
 
 md_pred<-raster("./Output/md_10350_fncgrp1_PREDICTIONS.grd")# %>% writeRaster("./Output/md_10350_fncgrp1_PREDICTIONS_FINAL.tif")
 wd_pred<-raster("./Output/wd_0_fncgrp1_PREDICTIONS.grd") #%>% writeRaster("./Output/wd_0_fncgrp1_PREDICTIONS.tif")
