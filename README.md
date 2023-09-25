@@ -40,14 +40,19 @@ are found in lecospectR.R but all of which are loaded by sourcing
     taxonomic information (eg. functional group membership)
     /Data/SpeciesTable_202230417.csv. This table is used for several
     steps, including aggregating validation to the same taxonomic level
-    as training data.
+    as training data. This table will be specific to whatever
+    classification targets one is working with. To use lecospec,
+    associated files are needed that are generated based on this species
+    table are created by running the following script:
+
+    /Scripts/utilities/install_dependencies.R
+
+The outputs of this script are written to assets/.
 
 2)  Build a spectral library from a range of field scans collected with
     Tungsten halogen illumination using a leaf clip or contact probe.
     These scripts delete bad scans and standardize the associated
-    information into a single metadata format. Around 90 vegetation
-    indices are also calculated and the narrow band reflectance is
-    resampled and smoothed to 5 nm bands.
+    information into a single metadata format.
 
     /Scripts/TrainingDataCreation/Ground/2_DataMunging.R  
     /Scripts/TrainingDataCreation/Ground/2B_DataMunging_missing_spectra.R  
@@ -60,34 +65,43 @@ the metadata.
 
 ## Build a spectral library from images
 
-Collect spectra from pixels in images from UAV in quadrats and patches
-of plant functional types visible in ground reference or higher
-resolution RGB imagery. Calculate vegetation indices, smooth and
-resample spectra to 5 nm wide bands. Reflectance spectra are extracted
-from hand digitized patches of plant functional types provided as a
-shapefile to the first script (101_Crop_Training_PFT_vector). The same
-operation is performed in the second script (101_Crop_Training_Quads)
-for hand digitzed quadrats of validation ground cover data. Script
-102_Parse_training_PFT_vector_spectra adds metadata to each pixel by
-plant patch.
+1)  Collect spectra from pixels in images from UAV in quadrats and
+    patches of plant functional types visible in ground reference or
+    higher resolution RGB imagery. Reflectance spectra are extracted
+    from hand digitized patches of plant functional types provided as a
+    shapefile to the first script (101_Crop_Training_PFT_vector). The
+    same operation is performed in the second script
+    (101_Crop_Training_Quads) for hand digitzed quadrats of validation
+    ground cover data. Script 102_Parse_training_PFT_vector_spectra adds
+    metadata to each pixel by plant patch.
 
     /Scripts/TrainingDataCreation/Image/101_Crop_Training_PFT_vector.R
     /Scripts/TrainingDataCreation/Image/101_Crop_Training_Quads.R
     /Scripts/TrainingDataCreation/Image/102_Parse_training_PFT_vector_spectra.R
     /Scripts/TrainingDataCreation/Image/103_Clean_training_PFT_vector_spectra.R
 
-After running these scripts, the output is relectance for each pixel
-from the patches of plants digitized from images.
+2)  After running these scripts, the output is relectance for each pixel
+    from the patches of plants digitized from images.
 
-    /Data/Ground_Validation/PFT_Image_spectra/PFT_Image_SpectralLib_Clean.csv   
+    /Data/Ground_Validation/PFT_Image_spectra/PFT_Image_SpectralLib_Clean.csv
 
-After cleaning scans, the reflectance data can be summarized and
-visualized in various ways. For example, running elements of the
-/Scripts/ExploratoryDataAnalysis/7_Visualizations_JGR_Bio_Tundra_Refl.R
-produce the the figure below, which shows the median and interquartile
-ranges of reflectance (75% black & 95% grey) with the sample size in
-number of scans distributed across a number of scans (ground measured)
-or pixels (airborne).
+## Compare ground and image spectra
+
+1)  Visually compare the reflectance profiles of plant functional types
+    between ground spectra and image spectra. We generated the figure
+    below by calculating median reflectance and other quantiles by band,
+    source and plant functional type. We then plotted the quantiles (red
+    or blue = median, 75% black & 95% grey). Sample sizes (pixels for
+    image data, scans for ground data), number of unique taxa and number
+    of patches (for image data only) are also calculated and written to
+    the header of each panel. These steps are done in the following
+    script.
+
+    /Scripts/ExploratoryDataAnalysis/106_Compare_ground_image_spectra.R
+
+Other routines are also in this script, including principle components
+analysis and associated visualizations, which would need to be modified
+for a new application.
 
 <img src="./Output/Fnc_grp1_spectral_profiles_PFT_GRD_IMG_SPECTRA_ALL.jpg" width="1000" height="1000">
 
@@ -105,10 +119,32 @@ with a white calibration tarp on one end.
 
 <img src="Output/StudyAreaGround_Airborne_Spectra_Locs.jpg" width="480" /><img src="Data/Ground_Validation/Imagery/snaphsots/BisonGulch.jpg" width="1222" />
 
+## Building patch or site balanced test/train splits for the data across different bandpasses and sample sizes
+
+Since each plant functional type has different numbers of species, scans
+and sites/patches, balancing the data used in building classification
+models requires selecting a train and testing split that accounts for
+the differences. Also, the width of each band may change the ability to
+separate the different plant functional types. The script below builds
+training and testing partitions with different maximum samples sizes
+(125, 300, 500, 750, 1000 and 2000 pixels) per plant functional type and
+across different bandpasses (5,10,25 and 50nm). Some plant functional
+types have fewere than 300 pixels so as the max sample size increases,
+so does the bias towards plant functional types with more pixels. The
+maximum sample size only applies to the training dataset. The testing
+dataset is set at 20 pixels per plant functional type.
+
+    ./build_balanced_ground_data 
+    ./build_balanced_training_data
+
+The outputs of these scripts are written to ./Data/v2/ as .csv files,
+once for each combination of test/train, wavelength and max sample size
+per plant functional type.
+
 ## Model training and validation
 
 1)  Set all the input, output and needed associated files for building
-    models and predicting images
+    models and predicting images in the following file.
 
     /Scripts/validation_defs.R
 
@@ -132,31 +168,21 @@ slightly different names. The validation_path are the ground cover
 estimates by quadrat derived from ground photos by a single expert
 observer.
 
-2)  Proprocessing spectral libraries Ground and image based spectral
-    libraries created in earlier steps are resampled at different
-    bandpasses and balanced samples are created based on target classes
-    (eg. PFTs) and sample units (eg. patches for image spectra or sites
-    for ground spectra). It creates a training and test split for each
-    dataset by randomly selecting pixels up to a specified number per
-    class and sample unit. These train and test splits are written to
-    disk in /Data/gs in x_train or x_test (independent variables) and
-    y_train and y_test (dependent variables).
+2)  Several types of models are built in lecospec, including two bagged
+    regression trees (ranger and adaboost) and partial least squares
+    regression (PLS). To build these models, use the following scripts
+    at the root of the directory.
 
-/Scripts/build_balanced_ground_data.R
-/Scripts/build_balanced_training_data.R
+    ./gs3_adaboost.R ./gs3_rf.R ./gs3_pls.R
 
-3)  Builds and visualizes model accuracy
+Other models have been tested but not fully explored include support
+vector machines (SVM), CART, boosted regression trees (Xgboost).
 
-Several scripts build, validate and visualize accuracy of different
-kinds of models; adaboost, CART, partial least squares regression linear
-discriminant analysis (PLS-LDA), random forests implemented in the
-ranger package and support vector machines.
+    ./gs3_svm.R 
+    ./gs3_cart.R
 
-    /Scripts/gs3_adaboost.R   
-    /Scripts/gs3_cart.R   
-    /Scripts/gs3_pls.R
-    /Scripts/gs3_rf.R   
-    /Scripts/gs3_svm.R
+Each model script has a similar set up, with the parameters for the
+model to be searched described at the beginning of the script.
 
 Each model script has similar settings but some are model
 site_specific_processing# model-independent search parameters. \#Max
@@ -168,53 +194,68 @@ correlation_thresholds \<- c(0.96, 0.97,0.98,0.99) \#Apply filter to
 reatures filter_features \<- c(TRUE, FALSE) \#Types of transformations
 to apply transform_names \<- c(“Nothing”)
 
-# model hyperparameters
+model hyperparameters num_components \<- 2^seq(0, 10) alpha \<- seq(0,
+1, 0.1)
 
-num_components \<- 2^seq(0, 10) alpha \<- seq(0, 1, 0.1)
+4)  Each model output is written to a folder with the same name as the
+    model, such as the example below. Each model is given a unique
+    identifier when it is built.
 
-Here is an example confusion matrix from a model showing
-misclassification between plant funcational types.
+    ./mle/experiments/gs/“MODEL UUID HERE”
 
-4)  After exploring models based on different input data, Pick and model
-    and explore results with lecospectR::validate_model.R , whicih calls
-    the input data, models and settings from validate_def.R
+Model outputs include predictions for each ground validation sample
+(quadrat) as a raster as well as histogram comparing the observed
+proportion of pixels in each quadrat per plant functional type against
+the predicted proportion from lecospec. These are all aggregated into a
+single figure called aggergate.html, which shows the observes vs
+predicted cover proportion by quadrat, plant funnctional type and site.
+All models for a particular algorithm type (eg. pls) have summary
+statistics written to a log file at the root with the same name as the
+model script (eg. ./gs3_adaboost.R makes a log file at
+./gs3_adaboost.csv). The log file makes it easy to sort models by
+accuracy (percent pixels correctly identified) and fit (sum of squared
+residuals of observed vs predicted values)
 
-    /mle/“MODEL UUID HERE”
+<img src="figures/Adaboost_obs_vs_pred.png" width="594" />
 
-5)  Generate predidctions for plant functional type occurence for whole
+5)  After exploring model outputs based on different input data, Pick
+    and model and explore results with lecospectR::validate_model.R ,
+    whicih calls the input data, models and settings from validate_def.R
+
+    ./gs/models/gs/“MODEL UUID HERE”
+
+6)  Generate predidctions for plant functional type occurence for whole
     datacubes by running the parallelized estimate_landcover function
     from lecospectR. Set the number of tiles carefully based on RAM and
     image size. To run the function lecospectR::estimate_landcover,
-    check the settings in the /config.json. The settings include
+    change the settings at the following file.
 
-    automatic_tiling: false  
-    max_size: 200  
-    x_tiles: 2 \# Set to make about 10% of RAM size on machine  
-    y_tiles: 2  
-    tile_path: “./tiles/” \#Intermediate products go here, like /temp.
-    Will need to be cleaned out every so often  
-    model_path: “./mle/”INSERT MOD NAME”.rda” \#Models built in
-    /modelbuilding.ipynb can be pasted here  
-    clusterCores: (NUM CORES ON MACHINE - 1) \#Speeds up the processing
-    on larger images to have more cores but tradeoff between handling
-    tiles and creating tiles exists  
-    parallelize_by_tiles: false key_path: “./fg2key.json”  
-    external_bands: “./bands.csv” \#Bands used to rename spectral
-    objects consistently along the way output_format: “grd”  
-    aggregation: 1 \#Depends on levels within data and only relevant for
-    taxonomic-like structured response categories
+    ./config.json
 
-Once the /config.json is set to match what is needed, the following
-script shows specifying a single large image and smaller images used in
-estimate_landcover.
+The setting included in this config control which model is used, tiling
+settings, parallelization, etc..
 
-    /Scripts/run.R   
+    automatic_tiling: false   
+    max_size: 200    
+    x_tiles: 2 # Set to make about 10% of RAM size on machine     
+    y_tiles: 2    
+    tile_path: "./tiles/" #Intermediate products go here, like /temp. Will need to be cleaned out every so often    
+    model_path: "./mle/"INSERT MOD NAME".rda" #Models built in /modelbuilding.ipynb can be pasted here  
+    clusterCores: (NUM CORES ON MACHINE - 1) #Speeds up the processing on larger images to have more cores but tradeoff between handling tiles and creating tiles exists    
+    parallelize_by_tiles: false 
+    key_path: "./fg2key.json"   
+    external_bands: "./bands.csv" #Bands used to rename spectral objects consistently along the way 
+    output_format: "grd"    
+    aggregation: 1 #Depends on levels within data and only relevant for taxonomic-like structured response categories   
 
-6)  Visualize maps of full image output showing plant functional types
+7)  Once the settings match what is needed, the following script tests
+    the model smaller on a small image. If that succeeds, the script
+    shows using the model on large images, converting them to different
+    image formats for plotting and then saving a low resolution image of
+    the output map of plant functional types (with a legend)
 
-    /Scripts/visualizeRasters.R
+    ./Scripts/ExploratoryDataAnalysis/run_prn.R
 
 Example predicted plant functional type map from one site (Bison Gulch
 near Denali National Park)
-
-<img src="./Output/dev_FullCube/bg_28_1511_fncgrp1_PREDICTIONS_grd_corrected_balanced_10tree_FIGURE.jpeg" width="2000" height="1000">
+<img src="./figures/bg_1511_fncgrp1_PREDICTIONS_adaboost.png" width="4200" />
