@@ -213,7 +213,7 @@ file makes it easy to sort models by accuracy (percent pixels correctly identifi
 #knitr::include_graphics(path="figures/Adaboost_obs_vs_pred.png")
 
 ```
-<img src=".figures/Adaboost_obs_vs_pred.png"
+<img src="figures/Adaboost_obs_vs_pred.png">
 
 
 5) After exploring model outputs based on different input data, Pick and model and explore results with lecospectR::validate_model.R , whicih calls the input data, models and settings from validate_def.R
