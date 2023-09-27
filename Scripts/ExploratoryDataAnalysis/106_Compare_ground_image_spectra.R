@@ -262,9 +262,17 @@ PFT_SPEC<-rbind(PFT_IMG_SPEC_clean_merge,Cleaned_Speclib_merge)
 
 dim(PFT_SPEC)
 
-PFT_SPEC %>% group_by(Source, Area, Functional_group1) %>% tally() %>% ungroup() %>%
+PFT_SPEC %>% group_by(Area, Source, Functional_group1) %>% tally() %>% ungroup() %>%
   pivot_wider(names_from = Functional_group1, values_from = n) %>% print(n=100)
 PFT_SPEC %>% dplyr::filter(is.na(Source)==TRUE) %>% head
+
+#Make a table of image spectra by site
+PFT_IMG_by_site<-
+PFT_SPEC %>% 
+  dplyr::filter(Source =="Image") %>% 
+  group_by(Area, Functional_group1) %>% tally() %>% ungroup() %>%
+  pivot_wider(names_from = Area, values_from = n) %>% print(n=100)
+write.csv(PFT_IMG_by_site, "./figures/PFT_IMG_by_site.csv")
 
 #Resample PFT_SPEC to have 125 samples per PFT, balanced by site, source and PFT for PCA
 PFT_SPEC_bal<-PFT_SPEC %>% group_by(Area, Source, Functional_group1)  %>% slice_sample(n=125)
