@@ -161,9 +161,9 @@ scales = "fixed"
   ## Band12<-2202.4 175
   #annotate("rect", xmin = 2202.4 - (175 / 2), xmax = 2202.4 + (175), ymin = 0, ymax = 100, alpha = .2) +
   #scale_color_grey() +
-  geom_ribbon(aes(Wavelength, ymin = Lower_Reflectance, ymax = Upper_Reflectance, alpha = 0.3))+
+  geom_ribbon(aes(Wavelength, ymin = Lower_Reflectance, ymax = Upper_Reflectance, alpha = 0.25))+
   geom_ribbon(aes(Wavelength, ymin = Pct_12_5_Reflectance, ymax = Pct_87_5_Reflectance, alpha = 0.3)) +
-  geom_line(aes(Wavelength, Median_Reflectance,color = "red"),size = 2)+
+      geom_line(aes(Wavelength, Median_Reflectance,color = "red"),size = 2)+
 
   labs(title = c("Reflectance by plant functional group and sample size with median (red), 75% (dark) and 90% (grey) quantiles based on 17201 pixels in 193 patches"), y = "Reflectance") +
   theme(
@@ -175,6 +175,7 @@ scales = "fixed"
     axis.text = element_text(size = 20),
     axis.text.x = element_text(angle = 90)
   ) + #geom_line(aes(Wavelength, Median_Reflectance), size = 2) + 
+
   facet_wrap(vars(Functional_group1_wN), scales = "fixed", ncol = 2) #+ 
  # facet_wrap(~reorder(Functional_group1_wN, Source))
 
