@@ -99,7 +99,7 @@ inner_join(PFT_IMG_SPEC_clean, by=c("Functional_group1"="FncGrp1")) %>%
 
   group_by(Functional_group1) %>% 
   dplyr::mutate(sample_size = n()) %>% 
-  dplyr::mutate(Functional_group1_wN = glue('{Functional_group1} {"(n="} {sample_size} {"pixels,"} {species_count} {"PFTs"})')) %>%
+  dplyr::mutate(Functional_group1_wN = glue('{Functional_group1} {"(n="} {sample_size} {"pixels,"} {species_count} {"taxa"})')) %>%
   #Use line below for unsmoothed spectra
   #pivot_longer(cols = `X397.593`:`X999.42`,  names_to  = "Wavelength", values_to = "Reflectance") %>%
   #Uncomment line below for smoothed spectra
