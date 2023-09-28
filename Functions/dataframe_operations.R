@@ -135,15 +135,40 @@ load_csv <- function(filepath, output_type = "df") {
 #' @export 
 #' @examples Not Yet Implmented
 #'
-impute_spectra <- function(x, cluster = NULL, method = "missForest", transpose=FALSE) {
-    df <- x 
+impute_spectra <- function(
+    x, 
+    cluster = NULL, 
+    method = "missForest", 
+    ignore_cols = NULL,
+    transpose=FALSE) {
     
+
+
+    zero_variance_cols <- c()
+
+    for(col in colnames(x)) {
+        x_var <- var(x[, col])
+        if((x_var == 0) || is.na(x_var) || is.nan(x_var) || is.null(x_var)) {
+            append(zero_variance_cols, col)
+        }
+    }
+
+    if(!is.null(ignore_cols)) {
+        
+        ignored_cols <- unique(c(ignore_cols, zero_variance_cols))
+    } else {
+        ignored_cols <- zero_variance_cols
+    }
+
+    used_cols <- setdiff(colnames(x), ignored_cols)
+
+    df <- x[, used_cols] %>% as.data.frame()
 
     # convert to a data.frame if x is a raster
     if (!is.data.frame(x)) {
         df <- x %>%
-        rasterToPoints() %>%
-        as.data.frame() 
+        raster::rasterToPoints() %>%
+        as.data.frame()
     }
     # save band names in case we need to transpose and restore column names later
     bands <- colnames(df)
@@ -152,8 +177,8 @@ impute_spectra <- function(x, cluster = NULL, method = "missForest", transpose=F
     # transpose if needed
     if(transpose){
         df <- df %>%
-        as.matrix() %>% 
-        t() %>% 
+        as.matrix() %>%
+        t() %>%
         as.data.frame()
     }
 
@@ -161,7 +186,7 @@ impute_spectra <- function(x, cluster = NULL, method = "missForest", transpose=F
     if (method == "missForest") {
         output_data <- missForest::missForest(df, maxiter = 1,)$ximp
     } else if(method == "median"){
-        output_data <- useful::simple.impute(df)     
+        output_data <- useful::simple.impute(df)
     } else if( method == "mean"){
         output_data <- useful::simple.impute(df, fun = mean)
     }
@@ -184,7 +209,12 @@ impute_spectra <- function(x, cluster = NULL, method = "missForest", transpose=F
     }
     gc()
 
-    return(output_data)
+    return(
+        cbind(
+            output_data,
+            x[, ignored_cols]
+        )
+    )
 }#end impute_spectra
 
 

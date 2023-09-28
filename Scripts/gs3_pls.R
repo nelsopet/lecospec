@@ -38,7 +38,7 @@ get_filename <- function(bandwidth, count, is_train = TRUE, base_path = "Data/v2
 
 
 # model hyperparameters
-num_components <- seq(10, 40, 2) # 2-32
+num_components <- seq(4, 40, 2) # 2-32
 # alpha <- seq(0.25, 1, 0.25)
 
 
@@ -46,7 +46,7 @@ num_components <- seq(10, 40, 2) # 2-32
 ########################################
 ##  Define Assets
 ########################################
-manifest_path <- "./gs3_pls_3.csv"
+manifest_path <- "./gs3_pls_4.csv"
 
 transforms <- list()
 transforms[["Nothing"]] <- function(dx) {

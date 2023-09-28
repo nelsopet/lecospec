@@ -722,8 +722,10 @@ remove_intercorrelated_variables <- function(
     method = "pearson") {
     correlation_matrix <- cor(
         data[, col_order],
-        use="pairwise.complete.obs",
+        use = "pairwise.complete.obs",
         method = method)
+
+    print(setdiff(col_order, colnames(data)))
 
     is_included <- rep_len(TRUE, length(col_order))
 

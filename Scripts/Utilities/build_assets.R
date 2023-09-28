@@ -7,7 +7,7 @@ pft_table <- read.csv(pft_path)
 # build validation templates
 print(pft1_template)
 pft0_template <- build_validation_template(pft_table, col = 6)
-pft1_template <- build_validation_template(pft_table, col = 5) 
+pft1_template <- build_validation_template(pft_table, col = 5)
 pft2_template <- build_validation_template(pft_table, col = 4)
 genus_template <- build_validation_template(pft_table, col = 3)
 species_template <- build_validation_template(pft_table, col = 2)

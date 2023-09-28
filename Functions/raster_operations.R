@@ -137,9 +137,11 @@ preprocess_raster_to_df <- function(raster_obj, model, band_names=NULL) {
     #unique_levels <- unique(raster::values(raster_obj))
     #mean_of_levels <- mean(unique_levels, na.rm = TRUE)
 
-    filter_value <- mean(raster::values(raster_obj), na.rm = TRUE)# NA or 0 is bad
+    filter_value <- mean(
+        raster::values(raster_obj),
+        na.rm = TRUE)# NA or 0 is bad
 
-    if( filter_value == 0 || is.na(filter_value)){
+    if(filter_value == 0 || is.na(filter_value)) {
         return(data.frame())
     }
 
@@ -160,9 +162,6 @@ preprocess_raster_to_df <- function(raster_obj, model, band_names=NULL) {
         names(raster_obj) <- saved_names
     }
 
-    #print(names(imputed_raster))
-
-    #rm(raster_obj)
 
     df <- raster::rasterToPoints(raster_obj) %>% as.data.frame()
     if(nrow(df) < 1){
