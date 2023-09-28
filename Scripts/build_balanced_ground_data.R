@@ -52,13 +52,18 @@ labels <- full_data$Functional_group1
 
 split_data <- create_patch_balanced_sample(
     full_data,
+    test_count = 125,
     patch_col = "Species_name",
     class_col = "Functional_group1"
 )
 
+print(names(split_data))
+
+
 write.csv(
-    subset(split_data$train,
-    select=-c(
+    subset(
+        split_data$selection,
+    select = -c(
         ScanID,
         Area,
         Code_name,
@@ -93,7 +98,7 @@ write.csv(
         Calibrated.Reference.Correction.File,
         Channels,
         ScanNum
-    )), 
+    )),
     file = "Data/v2/grd_train.csv"
     )
 

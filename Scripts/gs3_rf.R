@@ -5,15 +5,20 @@ source("Functions/lecospectR.R")
 ########################################
 
 # model-independent search parameters
-max_per_pft <- c(125, 300, 500, 750, 1000, 2000)
+max_per_pft <- c(
+    1000,
+    125,
+    300,
+    500,
+    750,
+    2000)
 bandwidths <- c(5, 10, 25, 50)
-correlation_thresholds <- c(0.99, 1.00)
+correlation_thresholds <- c(0.98, 0.99, 1.00)
 # TODO: add aggregation_level <- c(0, 1)
-#filter_features <- c(TRUE, FALSE)
 transform_names <- c(
-    "Nothing",
-    "bin10",
-    "bin20")
+    "Nothing")
+
+weighted <- c(TRUE, FALSE)
 
 get_filename <- function(
     bandwidth, 
@@ -44,25 +49,14 @@ get_filename <- function(
 
 
 # model hyperparameters
-num_components <- c(5,6,7,8,9,10,11,12,13,14,15)# fine tuning
-
-# number of states:
-#num_states <- length(num_components) *
-#    length(alpha) *
-#    length(filter_features) *
-#    length(max_per_pft) *
-#    length(bandwidths) *
-#    length(correlation_thresholds) *
-#    length(transform_names)
-
-#print(paste0("Grid search states: ", num_states))
-#print(paste0("Grid search estimated time: ", 7 / 60 * num_states, " hours"))
+num_components <- c(2, 4, 8, 16, 32, 64, 128, 256, 512)
+#for fine tuning, use something like c(5,6,7,8,9,10,11,12,13,14,15)# fine tuning
 
 
 ########################################
 ##  Define Assets
 ########################################
-manifest_path <- "./gs3_ranger_5.csv"
+manifest_path <- "./gs3_ranger_6.csv"
 
 transforms <- list()
 transforms[["Nothing"]] <- function(dx) {
@@ -169,6 +163,8 @@ for (bandwidth_index in seq_along(bandwidths)) {
         # for(use_filter in filter_features){
         for (transform_name in transform_names) {
             for (max_correlation in correlation_thresholds) {
+                for(weight_toggle in weighted){
+
                 # iterate over model hyperparameters
 
                 data <- remove_intercorrelated_variables(
@@ -187,6 +183,7 @@ for (bandwidth_index in seq_along(bandwidths)) {
                     print(model_dir)
 
                     print(head(transforms[[transform_name]](data)))
+                    if(weight_toggle){
                     model <- ranger::ranger(
                         num.trees = n,
                         replace = TRUE,
@@ -196,6 +193,18 @@ for (bandwidth_index in seq_along(bandwidths)) {
                         x = impute_spectra(transforms[[transform_name]](data)),
                         y = labels
                     )
+
+                    } else {
+                        model <- ranger::ranger(
+                            num.trees = n,
+                            replace = TRUE,
+                            classification = TRUE,
+                            x = impute_spectra(
+                                transforms[[transform_name]](data)
+                                ),
+                            y = labels
+                        )
+                    }
                     if (("Forb" %in% levels(labels)) && !("Forb" %in% levels(test_labels))) {
                         levels(test_labels) <- c(levels(test_labels), "Forb")
                     }
@@ -246,7 +255,10 @@ for (bandwidth_index in seq_along(bandwidths)) {
                             transform_name
                         ),
                         max_correlation = max_correlation,
-                        weight = "balanced",
+                        weight = ifelse(
+                            weight_toggle,
+                            "balanced",
+                            "unbalanced"),
                         hyperparam1 = n,
                         # oob_error = model$prediction.error,
                         accuracy = acc,
@@ -255,6 +267,7 @@ for (bandwidth_index in seq_along(bandwidths)) {
                         seed = 61718L,
                         logpath = manifest_path
                     )
+                }
                 }
             }
         }

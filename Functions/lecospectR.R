@@ -268,12 +268,12 @@ process_tile <- function(
     raster_obj <- raster::brick(tile_filename)
     input_crs <- raster::crs(raster_obj)
     print(paste0("preprocessing raster at ", tile_filename))
-    base_df <- preprocess_raster_to_df(raster_obj, ml_model, band_names=band_names)
-    
-    
-    if(nrow(base_df) < 2){
-        #print("The tile has no rows!")
-        #print(dim(base_df))
+    base_df <- preprocess_raster_to_df(
+        raster_obj,
+        ml_model,
+        band_names = band_names)
+
+    if(nrow(base_df) < 2) {
         handle_empty_tile(
             raster_obj,
             save_path = save_path,
@@ -287,7 +287,6 @@ process_tile <- function(
             } 
 
         } 
-        #print(save_path)
         return(unlist(save_path))
         # add return value if output is suppressed
     } else {
@@ -304,8 +303,11 @@ process_tile <- function(
         gc()
 
         cleaned_df_no_empty_cols <- drop_empty_columns(cleaned_df) 
-        
-        veg_indices <- get_vegetation_indices(cleaned_df_no_empty_cols, NULL, cluster = cluster)
+        print(summary(cleaned_df_no_empty_cols))
+        veg_indices <- get_vegetation_indices(
+            cleaned_df_no_empty_cols,
+            NULL,
+            cluster = cluster)
 
         try(
             rm(cleaned_df)
@@ -323,20 +325,19 @@ process_tile <- function(
         gc()
 
         
-        #print("Resampled Dataframe Dimensions:")
-        #print(dim(resampled_df))
-        #print("Index Dataframe Dimensions:")
-        #print(dim(veg_indices))
+
 
         df_full <- cbind(
-            subset(cleaned_df_no_empty_cols, select=c("x","y")),
+            subset(cleaned_df_no_empty_cols, select = c("x", "y")),
             resampled_df,
             veg_indices)
-        #print("Input Data Columns")
-        #print(summary(df_full))
-        imputed_df <- impute_spectra(df_full, method="median", cluster = cluster) %>% as.data.frame()
-        #print(colnames(df))
-        #df <- df %>% dplyr::select(x, y, dplyr::all_of(target_model_cols)) 
+
+        imputed_df <- impute_spectra(
+            df_full,
+            method = "median",
+            cluster = cluster) %>%
+            as.data.frame()
+ 
         # above line should not be needed, testing then deleting
         rm(veg_indices)
         rm(resampled_df)
@@ -359,8 +360,13 @@ process_tile <- function(
         df_no_outliers <- inf_to_na(df_no_outliers)
         df_no_outliers[is.nan(df_no_outliers)] <- NA
 
-        if(!is.function(outlier_processing)){
-            print(paste0("Transforming the data with transform: ", transform_type))
+        if(!is.function(outlier_processing)) {
+            print(
+                paste0(
+                    "Transforming the data with transform: ",
+                    transform_type
+                )
+            )
         } else {
             print("Transforming Data with user supplied functions")
         }

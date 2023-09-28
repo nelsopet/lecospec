@@ -38,7 +38,7 @@ get_filename <- function(bandwidth, count, is_train = TRUE, base_path = "Data/v2
 
 
 # model hyperparameters
-num_components <- seq(6, 32, 2) # 2-32
+num_components <- seq(4, 40, 2) # 2-32
 # alpha <- seq(0.25, 1, 0.25)
 
 
@@ -46,7 +46,7 @@ num_components <- seq(6, 32, 2) # 2-32
 ########################################
 ##  Define Assets
 ########################################
-manifest_path <- "./gs3_pls_2.csv"
+manifest_path <- "./gs3_pls_4.csv"
 
 transforms <- list()
 transforms[["Nothing"]] <- function(dx) {
@@ -176,7 +176,7 @@ for (bandwidth_index in seq_along(bandwidths)) {
                         bandwidth = bandwidth,
                         max_count = count,
                         preprocessing = "center + scale",
-                        max_correlation = max_correlation,
+                        max_correlation = 1,
                         weight = "balanced",
                         hyperparam1 = n_comp,
                         # oob_error = model$prediction.error,

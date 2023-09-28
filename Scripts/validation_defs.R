@@ -7,15 +7,6 @@ test_path_5 <- "Data/Ground_Validation/Imagery/EightMileQuads.envi"
 test_path_6 <- "Data/Ground_Validation/Imagery/MurphDomeQuads0_10.envi"
 test_path_7 <- "Data/Ground_Validation/Imagery/MurphDomeQuads20_50.envi"
 test_path_8 <- "Data/Ground_Validation/Imagery/MurphDomeQuads60_100.envi"
-test_path_9 <- "Data/Ground_Validation/Imagery/BonanzaQuads.envi"# Rasters
-test_path_1 <- "Data/Ground_Validation/Imagery/BisonGulchQuads.envi"
-test_path_2 <- "Data/Ground_Validation/Imagery/ChatanikaQuads.envi"
-test_path_3 <- "Data/Ground_Validation/Imagery/TwelveMileGulchQuads1.envi"
-test_path_4 <- "Data/Ground_Validation/Imagery/TwelveMileGulchQuads2.envi"
-test_path_5 <- "Data/Ground_Validation/Imagery/EightMileQuads.envi"
-test_path_6 <- "Data/Ground_Validation/Imagery/MurphDomeQuads0_10.envi"
-test_path_7 <- "Data/Ground_Validation/Imagery/MurphDomeQuads20_50.envi"
-test_path_8 <- "Data/Ground_Validation/Imagery/MurphDomeQuads60_100.envi"
 test_path_9 <- "Data/Ground_Validation/Imagery/BonanzaQuads.envi"
 
 # ML models

@@ -10,11 +10,14 @@ bandwidths <- c(5, 10, 25, 50)
 correlation_thresholds <- c(0.99, 1.00)
 #TODO: add aggregation_level <- c(0, 1)
 filter_features <- c(TRUE, FALSE)
-transform_names <- c("Nothing", "bin10", "bin20")
+transform_names <- c("Nothing")
+weighted <- c(TRUE, FALSE)
+
 
 # model hyperparameters
-num_components <- c(5,6,7,8,9,10,11,12,13,14,15)
-max_depths <- c(11,12,13,14,15,16,17,18,19)
+num_components <- c(2, 4, 8, 16, 32, 64, 128, 256, 512) # for finetuning use: c(5,6,7,8,9,10,11,12,13,14,15)
+max_depths <- c(5, 10, 15, 20, 25, 30)
+# for finetuning use c(11,12,13,14,15,16,17,18,19)
 alpha <- seq(0, 1, 0.1)
 
 ########################################
@@ -108,7 +111,7 @@ selected_cols <- c(
 
 variable_importance <- read.csv("./assets/variable_importance.csv")
 
-
+caret::getModelInfo("AdaBoost.M1")
 
 ########################################
 ##  Run Grid Search
@@ -162,6 +165,8 @@ for(count in max_per_pft){
             for(n_comp in num_components){
                 for(max_depth in max_depths){
                 for(max_correlation in correlation_thresholds){
+                for(weight_toggle in weighted){
+
 
 
 
@@ -196,8 +201,18 @@ for(count in max_per_pft){
                         maxdepth = max_depth,
                         coeflearn = c("Breiman", "Freund", "Zhu")
                     )
+                    if(weight_toggle) {
+                        model <- caret::train(
+                            x = transforms[[transform_name]](data),
+                            y = labels,
+                            method = "AdaBoost.M1",
+                            preProcess = c("center", "scale"),
+                            weights = targets_to_weights(labels),
+                            trControl = training_options,
+                            tuneGrid = grid
+                        )
+                    } else {
 
-                    #n_comp <- #min(length(used_cols), 32)
                     model <- caret::train(
                         x = transforms[[transform_name]](data),
                         y = labels,
@@ -206,6 +221,8 @@ for(count in max_per_pft){
                         trControl = training_options,
                         tuneGrid = grid
                     )
+                    }
+                    #n_comp <- #min(length(used_cols), 32)
 
                 #ranger::ranger(
                 #            num.trees = n_comp,
@@ -287,5 +304,5 @@ for(count in max_per_pft){
         }
     }
 }
-}}
+}}}
 
