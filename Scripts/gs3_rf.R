@@ -12,7 +12,7 @@ max_per_pft <- c(
     500,
     750,
     2000)
-bandwidths <- c(5, 10, 25, 50)
+bandwidths <- c(50, 25, 10, 5)
 correlation_thresholds <- c(0.98, 0.99, 1.00)
 # TODO: add aggregation_level <- c(0, 1)
 transform_names <- c(
