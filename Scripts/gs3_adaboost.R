@@ -290,7 +290,7 @@ for(count in max_per_pft){
                             "scale & ",
                             transform_name),
                         max_correlation = max_correlation,
-                        weight = "balanced",
+                        weight = weight_toggle,
                         hyperparam1 = n_comp,
                         hyperparam2 = max_depth,
                         accuracy = acc,
