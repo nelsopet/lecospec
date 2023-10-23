@@ -1,8 +1,22 @@
 source("./Functions/lecospectR.R")
 
+#Test estimate land cover on a single quadrat image
+#set.seed(1234)
 test_path <- "./Data/Ground_Validation/Imagery/BisonGulchQuads.envi"
 
 raster::raster(test_path) %>% plot()
+
+print(date())
+quad_results <- estimate_land_cover(
+  test_path, 
+  output_filepath = "./test/test_pred_adaboost.grd",
+  use_external_bands = TRUE)
+closeAllConnections()
+print(date())
+
+as_tiff<-function(path) {raster::raster(paste0("./",path,".grd")) %>% raster::writeRaster(paste0("./test/",path,".tif"), overwrite=TRUE)}
+
+test_tif<-as_tiff("test_pred_2tree_tile_34M0bC2ZrwSZkgXo_patch_seed1234")
 
 #Flight lines for use in manuscript
 Bison_dir="M:/Alaska_DATA/Alaska_Summer2019/Data_by_site/Bison_Gulch/Imagery_60m/100251_Bison_Gulch_line2_2019_08_12_01_07_28/"
@@ -43,24 +57,12 @@ TwelveMile_path2 ="M:/Alaska_DATA/Alaska_Summer2019/Data_by_site/12mile/Imagery/
 #big_test<-"F:/ORNL_DAAC_DATA_ARCHIVE/TwelveMile/TwelveMile_2019_08_09_21_10_22_2000_rd_rf_or"
 
 
-#Test estimate land cover on a single quadrat image
-#set.seed(1234)
-print(date())
-quad_results <- estimate_land_cover(
-  test_path, 
-  output_filepath = "./test/test_pred_adaboost.grd",
-  use_external_bands = TRUE)
-closeAllConnections()
-print(date())
 
-as_tiff<-function(path) {raster::raster(paste0("./",path,".grd")) %>% raster::writeRaster(paste0("./test/",path,".tif"), overwrite=TRUE)}
-
-test_tif<-as_tiff("test_pred_2tree_tile_34M0bC2ZrwSZkgXo_patch_seed1234")
 
 #Make a list of model IDs to use and change
 RF_best_mods<-list.dirs("./test/GridSearchResults/Ranger/", recursive = FALSE)
   #RF_best_mods
-  RF_best_model_path<-"./test/GridSearchResults/Ranger/4a929f4b-73af-4bfc-8df3-a73b2af1bd4f/4a929f4b-73af-4bfc-8df3-a73b2af1bd4f/model.rda"
+  RF_best_model_path<-"./test/GridSearchResults/AdaBoost/a4c3b459-d921-49b0-b02e-f9cac88de013/a4c3b459-d921-49b0-b02e-f9cac88de013/model.rda"
   load_model(RF_best_model_path)
   #[1] "./test/GridSearchResults/Ranger/3d36ae2c-9737-4601-b2d5-f5edb1a9ba00"
   #[2] "./test/GridSearchResults/Ranger/4a929f4b-73af-4bfc-8df3-a73b2af1bd4f"
@@ -78,10 +80,10 @@ print(date())
 closeAllConnections()
 big_results <- estimate_land_cover(
   Bonanza_path,
-  output_filepath = "./Output/dev_FullCube/bz_6425_RF_a73b2af1bd4f.grd")
+  output_filepath = "./Output/dev_FullCube/bz_6425_PLS_5445ecbc241d.grd")
 print(date())
- bc_pred6<-raster("./Output/dev_FullCube/bz_6425_RF_a73b2af1bd4f.grd")
- writeRaster(bc_pred6,"./Output/dev_FullCube/bz_6425_RF_a73b2af1bd4f.tif", overwrite=TRUE)
+ bc_pred6<-raster("./Output/dev_FullCube/bz_6425_PLS_5445ecbc241d.grd")
+ writeRaster(bc_pred6,"./Output/dev_FullCube/bz_6425_PLS_5445ecbc241d.tif", overwrite=TRUE)
 
   plot_options <- define_plot_options(
       title = "Bonanza Predictions",
@@ -92,7 +94,7 @@ print(date())
 
   windows();bz_map_1
 
-  ggsave("./figures/bz_6425_RF_a73b2af1bd4f.png", dpi = 350, width = 12, height = 8, units = "in")
+  ggsave("./figures/bz_6425_PLS_5445ecbc241d.png", dpi = 350, width = 12, height = 8, units = "in")
 
   dev.off()
 
@@ -100,10 +102,10 @@ print(date())
 closeAllConnections()
 big_results <- estimate_land_cover(
   EightMile_path,
-  output_filepath = "./Output/dev_FullCube/em_5968_RF_a73b2af1bd4f.grd")
+  output_filepath = "./Output/dev_FullCube/em_5968_PLS_5445ecbc241d.grd")
 print(date())
- em_pred8<-raster("./Output/dev_FullCube/em_5968_RF_a73b2af1bd4f.grd")
-  writeRaster(em_pred8,"./Output/dev_FullCube/em_5968_RF_a73b2af1bd4f.tif", overwrite=TRUE)
+ em_pred8<-raster("./Output/dev_FullCube/em_5968_PLS_5445ecbc241d.grd")
+  writeRaster(em_pred8,"./Output/dev_FullCube/em_5968_PLS_5445ecbc241d.tif", overwrite=TRUE)
     plot_options <- define_plot_options(
         title = "Eight Mile Predictions",
         xLabel = "Longitude",
@@ -113,7 +115,7 @@ print(date())
 
     windows();em_map
 
-    ggsave("./figures/em_5968_RF_a73b2af1bd4f.png", dpi = 350, width = 12, height = 8, units = "in")
+    ggsave("./figures/em_5968_PLS_5445ecbc241d.png", dpi = 350, width = 12, height = 8, units = "in")
 
     dev.off()
 
@@ -122,10 +124,10 @@ print(date())
 closeAllConnections()
 big_results <- estimate_land_cover(
   Chatanika_path,
-  output_filepath = "./Output/dev_FullCube/ch_0_RF_a73b2af1bd4f.grd")
+  output_filepath = "./Output/dev_FullCube/ch_0_PLS_5445ecbc241d.grd")
 print(date())
- ch_pred8<-raster("./Output/dev_FullCube/ch_0_RF_a73b2af1bd4f.grd")
- writeRaster(ch_pred8,"./Output/dev_FullCube/ch_0_RF_a73b2af1bd4f.tif", overwrite=TRUE)
+ ch_pred8<-raster("./Output/dev_FullCube/ch_0_PLS_5445ecbc241d.grd")
+ writeRaster(ch_pred8,"./Output/dev_FullCube/ch_0_PLS_5445ecbc241d.tif", overwrite=TRUE)
 
     plot_options <- define_plot_options(
         title = "Chatanika Predictions",
@@ -137,7 +139,7 @@ print(date())
 
     windows();ca_map
 
-    ggsave("./figures/ch_0_RF_a73b2af1bd4f.png", dpi = 350, width = 12, height = 8, units = "in")
+    ggsave("./figures/ch_0_PLS_5445ecbc241d.png", dpi = 350, width = 12, height = 8, units = "in")
 
   dev.off()
 
@@ -146,16 +148,16 @@ print(date())
 closeAllConnections()
 big_results <- estimate_land_cover(
   Bison_path,
-  output_filepath = "./Output/dev_FullCube/bg_1511_RF_a73b2af1bd4f.grd")
+  output_filepath = "./Output/dev_FullCube/bg_1511_PLS_5445ecbc241d.grd")
 print(date())
-bg_pred10<-raster("./Output/dev_FullCube/bg_1511_RF_a73b2af1bd4f.grd")
- writeRaster(bg_pred10,"./Output/dev_FullCube/bg_1511_RF_a73b2af1bd4f.tif", overwrite=TRUE)
+bg_pred10<-raster("./Output/dev_FullCube/bg_1511_PLS_5445ecbc241d.grd")
+ writeRaster(bg_pred10,"./Output/dev_FullCube/bg_1511_PLS_5445ecbc241d.tif", overwrite=TRUE)
    plot_options <- define_plot_options(
        title = "Bison Gulch Predictions",
        xLabel = "Longitude",
        yLabel = "Latitude"
    )
-   bg_map <- plot_categorical_raster(bg_pred9, plot_options)
+   bg_map <- plot_categorical_raster(bg_pred10, plot_options)
    windows();bg_map
-   ggsave("./figures/bg_1511_RF_a73b2af1bd4f.png", dpi = 350, width = 12, height = 8, units = "in")
+   ggsave("./figures/bg_1511_PLS_5445ecbc241d.png", dpi = 350, width = 12, height = 8, units = "in")
    dev.off()
