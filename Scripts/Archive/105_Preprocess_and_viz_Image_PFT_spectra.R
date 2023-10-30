@@ -7,7 +7,10 @@ source("Functions/lecospectR.R")
 PFT_IMG_SPEC_clean <- read.csv("./Data/Ground_Validation/PFT_Image_spectra/PFT_Image_SpectralLib_Clean.csv")
 head(PFT_IMG_SPEC_clean)
 
-PFT_IMG_SPEC_clean %>% group_by(Site,FncGrp1) %>% tally() %>% pivot_wider(names_from = FncGrp1, values_from = n) %>% print(n=100)
+key<-rjson::fromJSON(file = "./assets/pft_adj_list.json")
+PFT_IMG_SPEC_clean$FncGrp0<-change_aggregation(PFT_IMG_SPEC_clean$FncGrp1, 0, key)
+PFT_IMG_SPEC_clean %>% group_by(Site,FncGrp0) %>% tally() %>% pivot_wider(names_from = FncGrp0, values_from = n) %>% print(n=100)
+
 names_drop<-c("PFT.1",
               "PFT.2",
               "PFT.3", 
