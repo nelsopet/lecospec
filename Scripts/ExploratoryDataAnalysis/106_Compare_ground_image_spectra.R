@@ -53,6 +53,12 @@ write.csv(Cleaned_Speclib_tall_Fnc_grp1, "./Data/C_001_SC3_Cleaned_SpectralLib_t
 #Read in Image spectra
 PFT_IMG_SPEC_clean <- read.csv("./Data/Ground_Validation/PFT_Image_spectra/PFT_Image_SpectralLib_Clean.csv")
 dim(PFT_IMG_SPEC_clean)
+key<-rjson::fromJSON(file = "./assets/pft_adj_list.json")
+PFT_IMG_SPEC_clean$FncGrp0<-change_aggregation(PFT_IMG_SPEC_clean$FncGrp1, 0, key)
+
+#Make a table of PFT pixels by site
+PFT_IMG_SPEC_clean %>% group_by(Site,FncGrp0) %>% tally() %>% pivot_wider(names_from = FncGrp0, values_from = n) %>% print(n=100)
+
 #Make a table of pixels by PFT by site 
 #PFT_IMG_SPEC_clean %>% group_by(Site,FncGrp1) %>% tally() %>% pivot_wider(names_from = FncGrp1, values_from = n) %>% print(n=100)
 #Make a list of variables to drop
@@ -85,21 +91,21 @@ PFT_IMG_SPEC_clean %>% #dplyr::select(UID) %>% unique() %>% dim
                 everything()
   ) %>% 
   #Rename columns and coun the number of unique species/functional group 1 names
-  dplyr::rename (Functional_group1 = FncGrp1) %>% #colnames()
+  dplyr::rename (Functional_group0 = FncGrp0) %>% #colnames()
   #group_by(Functional_group1) %>% 
-  dplyr::select(Functional_group1, PFT) %>% 
+  dplyr::select(Functional_group0, PFT) %>% 
   unique() %>% 
   ungroup() %>% 
-  group_by(Functional_group1) %>%
+  group_by(Functional_group0) %>%
   tally() %>% 
   dplyr::rename(species_count = n) %>%
-inner_join(PFT_IMG_SPEC_clean, by=c("Functional_group1"="FncGrp1")) %>% 
+inner_join(PFT_IMG_SPEC_clean, by=c("Functional_group0"="FncGrp0")) %>% 
   #columnwise_robust_scale(ignore_cols = names_ignore) %>%
   #standardize_df(ignore_cols = names_ignore) %>%
 
-  group_by(Functional_group1) %>% 
+  group_by(Functional_group0) %>% 
   dplyr::mutate(sample_size = n()) %>% 
-  dplyr::mutate(Functional_group1_wN = glue('{Functional_group1} {"(n="} {sample_size} {"pixels,"} {species_count} {"taxa"})')) %>%
+  dplyr::mutate(Functional_group0_wN = glue('{Functional_group0} {"(n="} {sample_size} {"pixels,"} {species_count} {"taxa"})')) %>%
   #Use line below for unsmoothed spectra
   #pivot_longer(cols = `X397.593`:`X999.42`,  names_to  = "Wavelength", values_to = "Reflectance") %>%
   #Uncomment line below for smoothed spectra
@@ -108,7 +114,7 @@ inner_join(PFT_IMG_SPEC_clean, by=c("Functional_group1"="FncGrp1")) %>%
   Wavelength = as.numeric(Wavelength)) %>% #colnames()
   mutate(Reflectance = round(Reflectance*100,2)) %>%
   #group_by(Functional_group1,Wavelength) %>% 
-  group_by(Functional_group1, Functional_group1_wN, Wavelength) %>%  
+  group_by(Functional_group0, Functional_group0_wN, Wavelength) %>%  
   
   dplyr::summarise(Median_Reflectance = median(Reflectance),
                    Max_Reflectance = max(Reflectance),
@@ -128,13 +134,13 @@ write.csv(PFT_IMG_SPEC_clean_tall, "./Data/Ground_Validation/PFT_Image_spectra/P
 color <- grDevices::hcl.colors(6, palette = "Spectral", rev = TRUE)
 color[1]<-"e4f6f8"
 
-jpeg("figures/Fnc_grp1_spectral_profiles_PFT_IMG_SPECTRA_ALL.jpg", height = 10000, width = 10000, res = 350)
+jpeg("figures/Fnc_grp0_spectral_profiles_PFT_IMG_SPECTRA_ALL.jpg", height = 10000, width = 10000, res = 350)
 ggplot((PFT_IMG_SPEC_clean_tall %>%
-  dplyr::filter(Functional_group1 != "Forb") %>%
+  dplyr::filter(Functional_group0 != "Forb") %>%
   dplyr::filter(Wavelength<1000) %>%
   dplyr::filter(Wavelength>399)) 
   ,
-aes(Wavelength, Median_Reflectance, group = Functional_group1),
+aes(Wavelength, Median_Reflectance, group = Functional_group0),
 scales = "fixed"
 ) +
       
@@ -176,7 +182,7 @@ scales = "fixed"
     axis.text.x = element_text(angle = 90)
   ) + #geom_line(aes(Wavelength, Median_Reflectance), size = 2) + 
 
-  facet_wrap(vars(Functional_group1_wN), scales = "fixed", ncol = 2) #+ 
+  facet_wrap(vars(Functional_group0_wN), scales = "fixed", ncol = 2) #+ 
  # facet_wrap(~reorder(Functional_group1_wN, Source))
 
 dev.off()
