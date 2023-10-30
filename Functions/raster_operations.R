@@ -395,3 +395,29 @@ merge_tiles <- function(input_files, output_path = NULL, target_layer = 1) {
     return(master_raster)
 }
 
+
+FG1_TO_FGO_MAP <- matrix(
+    c(# this makes one long vector, but it's a convenient way of slicing it
+        # functional group 1 classes
+        c(
+            0,1,2,3,4,5,6,7,8,9
+        ),
+        # functional group 0 classes
+        c(
+            0,1,2,3,4,5,6,5,6,7
+        )
+    ),
+    nrow = 10,
+    ncol = 2
+)
+
+
+
+change_prediction_aggregation <- function(ras, target_aggregation, source_aggregation) {
+
+    if(target_aggregation == 0){
+        if(source_aggregation == 1){
+            return(raster::reclassify(ras, FG1_TO_FGO_MAP))
+        }
+    }
+}

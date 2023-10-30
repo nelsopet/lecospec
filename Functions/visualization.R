@@ -147,14 +147,25 @@ fg1_palette <- c(
         "#ffffff"
 )
 
+fg0_palette <- c(
+     "#000000",
+        "#db2a53",
+        "#03fc2c",
+        "#faf87d",
+        "#7dfaf8",
+        "#69876b",
+        "#db2ad2",
+        "#ffffff"
+)
+
 fg0_names <- c(
     "Abiotic",
-    "BroadleafDecid",
-    "ConiferEvergreen",
     "Forb",
     "Graminoid",
     "Lichen",
     "Moss",
+    "BroadleafDecid",
+    "ConiferEvergreen",
     "Unknown"
 )
 
@@ -175,13 +186,23 @@ fg1_breaks <- c(
     '0','1','2','3','4','5','6','7','8','9'
 )
 
+fg0_breaks <- c(
+    '0','1','2','3','4','5','6','7'
+)
+
 fg1_palette_map <- function(value) {
     # note: value is 0-indexed and R is 1-indexed
     return (fg1_palette[[value]])
 }
 
+fg0_palette_map <- function(value) {
+    return(fg0_palette[[value]])
+}
 
-plot_categorical_raster <- function(ras,  plot_options, colors = fg1_palette) {
+# the arguements for this function are all screwed up.
+plot_categorical_raster <- function(ras,  plot_options, use_fg0 = FALSE, colors = fg1_palette) {
+    
+    
     ras_plot <- rasterVis::gplot(ras, 100000000) + 
         theme_classic() +
         labs(
@@ -189,14 +210,29 @@ plot_categorical_raster <- function(ras,  plot_options, colors = fg1_palette) {
             x = plot_options$xLabel,
             y = plot_options$yLabel,
             color = "Plant Type"
-            ) + 
-        scale_fill_manual(
-            breaks = fg1_breaks,
-            labels = fg1_names,
-            values = fg1_palette, 
-            name = "Functional Type",
-            na.value = "white"
-            ) + 
+            )
+
+        if(!use_fg0) {
+            ras_plot <- ras_plot +
+            scale_fill_manual(
+                breaks = fg1_breaks,
+                labels = fg1_names,
+                values = fg1_palette, 
+                name = "Functional Type",
+                na.value = "white"
+                ) 
+
+        } else {
+            ras_plot <- ras_plot +
+            scale_fill_manual(
+                breaks = fg0_breaks,
+                labels = fg0_names,
+                values = fg0_palette, 
+                name = "Functional Type",
+                na.value = "white"
+                ) 
+        }
+        ras_plot <- ras_plot +
         geom_tile(aes(
             fill = factor(
                 value,
@@ -268,7 +304,7 @@ plot_by_pft <- function(df, save_path = NULL, open = TRUE, image_path = NULL, ag
     if(aggregation == 1){
         plots <- list(
             create_plot(df, "Abiotic", legend = TRUE),
-            create_plot(df, "Forb"),
+            #create_plot(df, "Forb"),
             create_plot(df, "Graminoid"),
             create_plot(df, "Lichen"),
             create_plot(df, "Moss"),
@@ -280,7 +316,7 @@ plot_by_pft <- function(df, save_path = NULL, open = TRUE, image_path = NULL, ag
     } else if( aggregation == 0){
         plots <- list(
             create_plot(df, "Abiotic", legend = TRUE),
-            create_plot(df, "Forb"),
+            #create_plot(df, "Forb"),
             create_plot(df, "Graminoid"),
             create_plot(df, "Lichen"),
             create_plot(df, "Moss"),
