@@ -413,7 +413,7 @@ FG1_TO_FGO_MAP <- matrix(
 
 
 
-change_prediction_aggregation <- function(ras, target_aggregation, source_aggregation) {
+change_prediction_aggregation <- function(ras, target_aggregation = 0, source_aggregation = 1) {
 
     if(target_aggregation == 0){
         if(source_aggregation == 1){
