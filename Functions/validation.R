@@ -66,22 +66,23 @@ validate_results <- function(prediction_ras,
         # png(paste0("./test_hist_", i, ".png"))
         # hist(quadrat_ras)
         # dev.off()
-        plot_categorical_raster(quadrat_ras, plot_options = plot_options)
+        #plot_categorical_raster(quadrat_ras, plot_options = plot_options)
 
         # windows();
 
         ggsave(
             paste0(save_path, i, "_plot.png"),
             plot = plot_categorical_raster(
-                quadrat_ras,
-                colors = fg1_palette,
+                change_prediction_aggregation(quadrat_ras),
+                use_fg0 = TRUE,
+                colors = fg0_palette,
                 plot_options = plot_options
             )
         )
 
         quadrat_df <- raster::rasterToPoints(quadrat_ras) %>% as.data.frame()
 
-        write.csv(paste0("Data/"))
+        #write.csv(paste0("Data/"))
 
         # print(quadrat_df %>% group_by(z) %>% tally())
         # print("Quadrat data loaded from file")
@@ -474,28 +475,26 @@ aggregate_results <- function(directory,
 
 parse_path <- function(path) {
     split_path <- strsplit(path, split = "/", fixed = TRUE)
-    if (stringr::str_detect(path, "experiments")[1]) {
-        if (stringr::str_detect(path, "site_1")[1]) {
-            return(site_indices[[1]])
-        } else if (stringr::str_detect(path, "site_2")[1]) {
-            return(site_indices[[2]])
-        } else if (stringr::str_detect(path, "site_3")[1]) {
-            return(site_indices[[3]])
-        } else if (stringr::str_detect(path, "site_4")[1]) {
-            return(site_indices[[4]])
-        } else if (stringr::str_detect(path, "site_5")[1]) {
-            return(site_indices[[5]])
-        } else if (stringr::str_detect(path, "site_6")[1]) {
-            return(site_indices[[6]])
-        } else if (stringr::str_detect(path, "site_7")[1]) {
-            return(site_indices[[7]])
-        } else if (stringr::str_detect(path, "site_8")[1]) {
-            return(site_indices[[8]])
-        } else if (stringr::str_detect(path, "site_9")[1]) {
-            return(site_indices[[9]])
-        } else {
-            return(split_path[[1]][[2]]) # default option
-        }
+    if (stringr::str_detect(path, "site_1")[1]) {
+        return(site_indices[[1]])
+    } else if (stringr::str_detect(path, "site_2")[1]) {
+        return(site_indices[[2]])
+    } else if (stringr::str_detect(path, "site_3")[1]) {
+        return(site_indices[[3]])
+    } else if (stringr::str_detect(path, "site_4")[1]) {
+        return(site_indices[[4]])
+    } else if (stringr::str_detect(path, "site_5")[1]) {
+        return(site_indices[[5]])
+    } else if (stringr::str_detect(path, "site_6")[1]) {
+        return(site_indices[[6]])
+    } else if (stringr::str_detect(path, "site_7")[1]) {
+        return(site_indices[[7]])
+    } else if (stringr::str_detect(path, "site_8")[1]) {
+        return(site_indices[[8]])
+    } else if (stringr::str_detect(path, "site_9")[1]) {
+        return(site_indices[[9]])
+    } else {
+        return(split_path[[1]][[2]]) # default option
     }
 }
 
