@@ -69,7 +69,7 @@ RF_best_mods<-list.dirs("./test/GridSearchResults/Ranger/", recursive = FALSE)
   #[3] "./test/GridSearchResults/Ranger/ab38f80f-dc94-4002-a404-e18256dbc2a1"
   #[4] "./test/GridSearchResults/Ranger/f39c1f0d-041d-4651-ad62-52c1763bfaaa"
 Adaboost_best_mods<-list.dirs("./test/GridSearchResults/Ranger/", recursive = FALSE)
-PLS_best_mods<-list.dirs("./test/GridSearchResults/PLS/", recursive = FALSE)
+Adaboost_best_mods<-list.dirs("./test/GridSearchResults/Adaboost/", recursive = FALSE)
 
 #Predict full data cubes for each site in the study area and visualize it in a map
 #Uncomment out a section below for each site to run a prediction on a full data cube
@@ -80,10 +80,10 @@ print(date())
 closeAllConnections()
 big_results <- estimate_land_cover(
   Bonanza_path,
-  output_filepath = "./Output/dev_FullCube/bz_6425_PLS_5445ecbc241d.grd")
+  output_filepath = "./Output/dev_FullCube/bz_6425_Adaboost_e5f4742be5ce.grd")
 print(date())
- bc_pred6<-raster("./Output/dev_FullCube/bz_6425_PLS_5445ecbc241d.grd")
- writeRaster(bc_pred6,"./Output/dev_FullCube/bz_6425_PLS_5445ecbc241d.tif", overwrite=TRUE)
+ bc_pred6<-raster("./Output/dev_FullCube/bz_6425_Adaboost_e5f4742be5ce.grd")
+ writeRaster(bc_pred6,"./Output/dev_FullCube/bz_6425_Adaboost_e5f4742be5ce.tif", overwrite=TRUE)
 
   plot_options <- define_plot_options(
       title = "Bonanza Predictions",
@@ -94,7 +94,7 @@ print(date())
 
   windows();bz_map_1
 
-  ggsave("./figures/bz_6425_PLS_5445ecbc241d.png", dpi = 350, width = 12, height = 8, units = "in")
+  ggsave("./figures/bz_6425_Adaboost_e5f4742be5ce.png", dpi = 350, width = 12, height = 8, units = "in")
 
   dev.off()
 
@@ -102,10 +102,10 @@ print(date())
 closeAllConnections()
 big_results <- estimate_land_cover(
   EightMile_path,
-  output_filepath = "./Output/dev_FullCube/em_5968_PLS_5445ecbc241d.grd")
+  output_filepath = "./Output/dev_FullCube/em_5968_Adaboost_e5f4742be5ce.grd")
 print(date())
- em_pred8<-raster("./Output/dev_FullCube/em_5968_PLS_5445ecbc241d.grd")
-  writeRaster(em_pred8,"./Output/dev_FullCube/em_5968_PLS_5445ecbc241d.tif", overwrite=TRUE)
+ em_pred8<-raster("./Output/dev_FullCube/em_5968_Adaboost_e5f4742be5ce.grd")
+  writeRaster(em_pred8,"./Output/dev_FullCube/em_5968_Adaboost_e5f4742be5ce.tif", overwrite=TRUE)
     plot_options <- define_plot_options(
         title = "Eight Mile Predictions",
         xLabel = "Longitude",
@@ -115,7 +115,7 @@ print(date())
 
     windows();em_map
 
-    ggsave("./figures/em_5968_PLS_5445ecbc241d.png", dpi = 350, width = 12, height = 8, units = "in")
+    ggsave("./figures/em_5968_Adaboost_e5f4742be5ce.png", dpi = 350, width = 12, height = 8, units = "in")
 
     dev.off()
 
@@ -124,10 +124,10 @@ print(date())
 closeAllConnections()
 big_results <- estimate_land_cover(
   Chatanika_path,
-  output_filepath = "./Output/dev_FullCube/ch_0_PLS_5445ecbc241d.grd")
+  output_filepath = "./Output/dev_FullCube/ch_0_Adaboost_e5f4742be5ce.grd")
 print(date())
- ch_pred8<-raster("./Output/dev_FullCube/ch_0_PLS_5445ecbc241d.grd")
- writeRaster(ch_pred8,"./Output/dev_FullCube/ch_0_PLS_5445ecbc241d.tif", overwrite=TRUE)
+ ch_pred8<-raster("./Output/dev_FullCube/ch_0_Adaboost_e5f4742be5ce.grd")
+ writeRaster(ch_pred8,"./Output/dev_FullCube/ch_0_Adaboost_e5f4742be5ce.tif", overwrite=TRUE)
 
     plot_options <- define_plot_options(
         title = "Chatanika Predictions",
@@ -139,7 +139,7 @@ print(date())
 
     windows();ca_map
 
-    ggsave("./figures/ch_0_PLS_5445ecbc241d.png", dpi = 350, width = 12, height = 8, units = "in")
+    ggsave("./figures/ch_0_Adaboost_e5f4742be5ce.png", dpi = 350, width = 12, height = 8, units = "in")
 
   dev.off()
 
@@ -148,16 +148,18 @@ print(date())
 closeAllConnections()
 big_results <- estimate_land_cover(
   Bison_path,
-  output_filepath = "./Output/dev_FullCube/bg_1511_PLS_5445ecbc241d.grd")
+  output_filepath = "./Output/dev_FullCube/bg_1511_Adaboost_e5f4742be5ce.grd")
 print(date())
-bg_pred10<-raster("./Output/dev_FullCube/bg_1511_PLS_5445ecbc241d.grd")
- writeRaster(bg_pred10,"./Output/dev_FullCube/bg_1511_PLS_5445ecbc241d.tif", overwrite=TRUE)
+bg_pred10<-raster("./Output/dev_FullCube/bg_1511_Adaboost_e5f4742be5ce.grd")
+ writeRaster(bg_pred10,"./Output/dev_FullCube/bg_1511_Adaboost_e5f4742be5ce.tif", overwrite=TRUE)
    plot_options <- define_plot_options(
        title = "Bison Gulch Predictions",
        xLabel = "Longitude",
        yLabel = "Latitude"
    )
-   bg_map <- plot_categorical_raster(bg_pred10, plot_options)
+   bg_map <- plot_categorical_raster(bg_pred10, plot_options, use_fg0 = TRUE)
    windows();bg_map
-   ggsave("./figures/bg_1511_PLS_5445ecbc241d.png", dpi = 350, width = 12, height = 8, units = "in")
+   ggsave("./figures/bg_1511_Adaboost_e5f4742be5ce.png", dpi = 350, width = 12, height = 8, units = "in")
    dev.off()
+
+
