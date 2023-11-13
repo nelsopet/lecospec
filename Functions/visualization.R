@@ -150,10 +150,10 @@ fg1_palette <- c(
 fg0_palette <- c(
      "#000000",
         "#db2a53",
-        "#03fc2c",
+        "#5e4d35",
         "#faf87d",
-        "#7dfaf8",
-        "#69876b",
+        "#2c1dfa",
+        "#11ea0e",
         "#db2ad2",
         "#ffffff"
 )
