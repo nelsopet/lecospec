@@ -23,22 +23,22 @@ theme(panel.background = element_rect(fill = "white", colour = "grey50"),
         legend.key.size = unit(2, "cm"),
         legend.text =element_text(size=10)) +
         ggtitle("Adaboost r2 vs number of components")+
-        guides(shape = guide_legend(override.aes = list(size = 10)))
+        guides(shape = guide_legend(override.aes = list(size = 10)))#+
 #geom_point(aes(lwd=1.2, color=Bandwith_nm, size = Max_Pixels_per_PFT)) + 
 
         #scale_size_manual(values=c(sort(unique(adb_mod_stats$maxCount))), labels = c("125","300","500","750","1000","2000"))
-#scale_color_manual(values = bandwidth, name = "bandwidth") +
+#scale_color_manual(values = log10(hyperparam1), name = "Tree Count") #+
 
 windows();
 adb_mod_plot#+geom_smooth()
 
 #Adaboost mod accuracy vs r2
-adb_mod_plot<-ggplot(adb_mod_stats, aes(accuracy,r2))+
+adb_mod_plot<-ggplot(adb_mod_stats, aes(accuracy, r2))+
 #geom_point(aes(lwd=1.2, color=as.factor(bandwidth), size = as.factor(maxCount))) + 
 geom_jitter(aes(lwd=1.2, color=as.factor(bandwidth), size = as.factor(maxCount))) + 
 
 #geom_line(aes(linetype=as.factor(bandwidth), lwd=1.2)) + 
-labs(x = "accuracy", x = "r2") +
+labs(y = "rpd", x = "accuracy") +
 theme(panel.background = element_rect(fill = "white", colour = "grey50"), 
         #legend.key.size = unit(0.5, "cm"),legend.text = element_text(size=25),
         #legend.position = "none",
@@ -48,6 +48,29 @@ theme(panel.background = element_rect(fill = "white", colour = "grey50"),
         legend.key.size = unit(1, "cm"),
         legend.text =element_text(size=10)) +
         ggtitle("Adaboost r2 vs accuracy")
+
+#scale_color_manual(values = bandwidth, name = "bandwidth") +
+
+windows();
+adb_mod_plot
+
+
+#Adaboost mod accuracy vs rpd
+adb_mod_plot<-ggplot(adb_mod_stats, aes(accuracy, rpd))+
+#geom_point(aes(lwd=1.2, color=as.factor(bandwidth), size = as.factor(maxCount))) + 
+geom_jitter(aes(lwd=1.2, color=as.factor(bandwidth), size = as.factor(maxCount))) + 
+
+#geom_line(aes(linetype=as.factor(bandwidth), lwd=1.2)) + 
+labs(y = "rpd", x = "accuracy") +
+theme(panel.background = element_rect(fill = "white", colour = "grey50"), 
+        #legend.key.size = unit(0.5, "cm"),legend.text = element_text(size=25),
+        #legend.position = "none",
+        title = element_text(size=25),
+        strip.text = element_text(size = 25),
+        axis.text = element_text(size = 20),
+        legend.key.size = unit(1, "cm"),
+        legend.text =element_text(size=10)) +
+        ggtitle("Adaboost rpd vs accuracy")
 
 #scale_color_manual(values = bandwidth, name = "bandwidth") +
 
