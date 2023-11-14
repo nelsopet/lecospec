@@ -12,7 +12,7 @@ train_dir<-dir[grepl("^train", dir)]
 test_dir<-dir[grepl("^test", dir)]
 
 train_file<-train_dir[53] #%>% gsub(".csv","")
-train<-read.csv(paste("./Data/data_v2/", train_fille, sep=""))
+train<-read.csv(paste("./Data/data_v2/", train_file, sep=""))
 
 #Create a list of colors for plotting fnc grp 1 with the image data
 train_fncgrp1_colors = createPalette(length(unique(train$FncGrp1)),  c("#ff0000", "#00ff00", "#0000ff")) %>%
@@ -47,3 +47,14 @@ dev.off()
 jpeg(paste("./figures/PCA_ImageSpectra", gsub(".csv","",train_file), "_AXIS2_3.jpg", sep=""))
 plot(scores(train_pca)[,3:2], col=train_fncgrp1_colors$Color)
 dev.off()
+
+#Test for differences between PFTs in balanced dataset
+
+#Multivariate analysis of PFT groups 
+key<-rjson::fromJSON(file = "./assets/pft_adj_list.json")
+train$FncGrp0<-change_aggregation(train$FncGrp1, 0, key) 
+train<- train$ %>% dplyr::select(X, UID, Site, FncGrp1, FncGrp0, everything())
+#spectra_PFT_adonis<-adonis2(as.matrix(train[,6:ncol(train)])~as.factor(train$FncGrp0)*as.factor(train$Site), method="euclidean", permutations=500)
+spectra_PFT_adonis<-adonis2(train[,6:ncol(train)]~as.factor(train$FncGrp0)*as.factor(train$Site), permutations = 1000, method = 'euclidean')
+
+spectra_PFT_adonis
