@@ -46,7 +46,9 @@ lecospec_depenencies <- c(
     "pls",
     "landscapemetrics",
     "landscapetools",
-    "pls" # added this one, will need to add PLS packages as well
+    "pls", # added this one, will need to add PLS packages as well
+    "stars", #Plotting maps with layers from the web
+    "maptiles"  #Plotting maps with layers from the web
 )
 
 install.packages(lecospec_depenencies, repos = "http://cran.rstudio.com/")
