@@ -7,26 +7,38 @@ require(terra)
 require(maptiles)
 require(stars)
 
-#Custom function to get each KML
-allKmlLayers <- function(kmlfile){
-  lyr <- ogrListLayers(kmlfile)
-  mykml <- list()
-  for (i in 1:length(lyr)) {
-    mykml[i] <- readOGR(kmlfile,lyr[i])
-  }
-  names(mykml) <- lyr
-  return(mykml)
-}
 
+#Custom function to get each KML
+#allKmlLayers <- function(kmlfile){
+#  lyr <- ogrListLayers(kmlfile)
+#  mykml <- list()
+#  for (i in 1:length(lyr)) {
+#    mykml[i] <- readOGR(kmlfile,lyr[i])
+#  }
+#  names(mykml) <- lyr
+#  return(mykml)
+#}
+allVectLayers <- function(vectr){
+  lyr <- ogrListLayers(vectr)
+  myvectr <- list()
+  for (i in 1:length(lyr)) {
+    myvectr[i] <- vect(vectr,lyr[i])
+  }
+  names(myvectr) <- lyr
+  return(myvectr)
+}
 
 #Read in metadata of reflectanc spectra taken as a part of NASA ABoVE activities
 Speclib_metadata<-read_csv("./Output/C_000_Speclib_raw_metadata.csv")
 UAS_path<-"./assets/UAV_VNIR_AK_2018_2019.kml"
-UAS_extents<-allKmlLayers(UAS_path)
-UAS_all<-Reduce(raster::union, UAS_extents)
+UAS_extents<-allVectLayers(UAS_path)
+UAS_extents
+#This kills R on VScode
+UAS_all<-Reduce(terra::union, UAS_extents[1:2])
+plot(UAS_all)
 UAS_all_centroids<-centroids(vect(UAS_all)) 
 writeVector(UAS_all_centroids, "./Output/UAV_VNIR_AK_centroids.kml") #", filetype = "ESRI Shapefile", overwrite= TRUE)
-UAS_all_centroids<-readOGR("./Output/UAV_VNIR_AK_centroids.kml") 
+UAS_all_centroids<-readOGR("./assets/UAV_VNIR_AK_centroids.kml") 
 
 #Create a spatial object to plot locations where ground spectral measurements were made
 SpecLib_LatLong<-Speclib_metadata %>% 
