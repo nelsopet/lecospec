@@ -21,12 +21,7 @@ Img_df_names<-c("Site","Year","Month","Day", "ID1","ID2","ID3", "DatacubeID","Ra
 colnames(Imgs_df)<-Img_df_names
 
 
-
-
-
-
-
-#> unique(Imgs_df$Site) %>% as.matrix()
+DAAC_sites<-unique(Imgs_df$Site) #%>% as.matrix()
 #      [,1]
 # [1,] "BigTrailLake"
 # [2,] "BirchLake"
@@ -66,7 +61,7 @@ AK2018_dir_dates<-list.dirs(AK2018_dir, recursive = F)
 #[15] "M:/Alaska_DATA/Alaska_Summer2018/Workspaces/Alaska/DatabyDate/8718"
 #[16] "M:/Alaska_DATA/Alaska_Summer2018/Workspaces/Alaska/DatabyDate/8818"
 #[17] "M:/Alaska_DATA/Alaska_Summer2018/Workspaces/Alaska/DatabyDate/8918"
-
+/
     #Select usable dates from 2018
 
 
