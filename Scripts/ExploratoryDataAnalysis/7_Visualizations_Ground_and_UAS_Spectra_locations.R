@@ -51,14 +51,14 @@ SpecLib_LatLong_point <- st_as_sf(x = SpecLib_LatLong,
                         coords = c("Longitude", "Latitude"),
                         crs = "+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0")
 
-st_write(SpecLib_LatLong_point, driver = "KML", "./Output/Ground_Spetra_AK_points.kml")
-SpecLib_LatLong_point<-readOGR("./Output/Ground_Spetra_AK_points.kml") 
+st_write(SpecLib_LatLong_point, driver = "KML", "./assets/Ground_Spetra_AK_points.kml")
+SpecLib_LatLong_point<-readOGR("./assets/Ground_Spetra_AK_points.kml") 
 
 
 # Plot both UAV missions and SpecLib locations
 jpeg("./Output/StudyAreaGround_Airborne_Spectra_Locs.jpg")
-#bg <- get_tiles(ext(SpecLib_LatLong_point))
-bg <- get_tiles(ext(UAS_all_centroids))
+bg <- get_tiles(ext(SpecLib_LatLong_point))
+#bg <- get_tiles(ext(UAS_all_centroids))
 #windows()
 plotRGB(bg)
 points(UAS_all_centroids, col="blue", cex=1.5, lwd=30)
