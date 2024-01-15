@@ -55,6 +55,6 @@ key<-rjson::fromJSON(file = "./assets/pft_adj_list.json")
 train$FncGrp0<-change_aggregation(train$FncGrp1, 0, key) 
 train<- train$ %>% dplyr::select(X, UID, Site, FncGrp1, FncGrp0, everything())
 #spectra_PFT_adonis<-adonis2(as.matrix(train[,6:ncol(train)])~as.factor(train$FncGrp0)*as.factor(train$Site), method="euclidean", permutations=500)
-spectra_PFT_adonis<-adonis2(train[,6:ncol(train)]~as.factor(train$FncGrp0)*as.factor(train$Site), permutations = 1000, method = 'euclidean')
+spectra_PFT_adonis<-adonis2(train[,6:ncol(train)]~as.factor(train$FncGrp0)*as.factor(train$Site), permutations = 100, method = 'euclidean')
 
 spectra_PFT_adonis
