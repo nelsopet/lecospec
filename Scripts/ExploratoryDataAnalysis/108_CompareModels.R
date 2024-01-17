@@ -8,9 +8,11 @@ colnames(pls_mod_stats)
 colnames(adb_mod_stats)
 
 #Adaboost mod number of trees vs r2
-adb_mod_plot<-ggplot(adb_mod_stats %>% mutate(Bandwith_nm = as.factor(bandwidth), Max_Pixels_per_PFT = as.factor(maxCount)), aes(log10(hyperparam1),r2))+
+ada_df<-adb_mod_stats %>% 
+        mutate(Bandwith_nm = as.factor(bandwidth), Max_Pixels_per_PFT = as.factor(maxCount))
+adb_mod_plot<-ggplot(ada_df, aes(log10(hyperparam1),r2))+
 #geom_point(aes(lwd=1.2, color=Bandwith_nm, size = Max_Pixels_per_PFT)) + 
-geom_jitter(aes(lwd=1.2, color=Bandwith_nm, size = Max_Pixels_per_PFT)) + 
+geom_jitter(aes(color=Bandwith_nm, size = Max_Pixels_per_PFT)) + 
 #size = as.factor(maxCount, ordered=TRUE, levels=c(sort(unique(adb_mod_stats$maxCount))))
 #geom_line(aes(linetype=as.factor(bandwidth), lwd=1.2)) + 
 labs(x = "Number of trees", x = "r2") +
@@ -22,14 +24,15 @@ theme(panel.background = element_rect(fill = "white", colour = "grey50"),
         axis.text = element_text(size = 20),
         legend.key.size = unit(2, "cm"),
         legend.text =element_text(size=10)) +
-        ggtitle("Adaboost r2 vs number of components")+
-        guides(shape = guide_legend(override.aes = list(size = 10)))#+
+        ggtitle("Adaboost r2 vs log10 number of components")+
+        guides(shape = guide_legend(override.aes = list(size = 10)))+
+        scale_size()
 #geom_point(aes(lwd=1.2, color=Bandwith_nm, size = Max_Pixels_per_PFT)) + 
 
-        #scale_size_manual(values=c(sort(unique(adb_mod_stats$maxCount))), labels = c("125","300","500","750","1000","2000"))
+        #scale_size_manual(values=c(sort(unique(ada_df$Max_Pixels_per_PFT))), labels = c("125","300","500","750","1000","2000"))
 #scale_color_manual(values = log10(hyperparam1), name = "Tree Count") #+
-
-windows();
+X11()
+#windows();
 adb_mod_plot#+geom_smooth()
 
 #Adaboost mod accuracy vs r2
@@ -73,7 +76,7 @@ theme(panel.background = element_rect(fill = "white", colour = "grey50"),
         ggtitle("Adaboost rpd vs accuracy")
 
 #scale_color_manual(values = bandwidth, name = "bandwidth") +
-
+X11()
 windows();
 adb_mod_plot
 
@@ -94,7 +97,7 @@ theme(panel.background = element_rect(fill = "white", colour = "grey50"),
         axis.text = element_text(size = 20),
         legend.key.size = unit(2, "cm"),
         legend.text =element_text(size=10)) +
-        ggtitle("Ranger r2 vs number of components")+
+        ggtitle("Ranger r2 vs log10 number of components")+
         guides(shape = guide_legend(override.aes = list(size = 10)))
 #geom_point(aes(lwd=1.2, color=Bandwith_nm, size = Max_Pixels_per_PFT)) + 
 
@@ -145,7 +148,7 @@ theme(panel.background = element_rect(fill = "white", colour = "grey50"),
         axis.text = element_text(size = 20),
         legend.key.size = unit(1, "cm"),
         legend.text =element_text(size=10)) +
-        ggtitle("PLS r2 vs number of components")
+        ggtitle("PLS r2 vs log10 number of components")
 #scale_color_manual(values = source, name = "Data Source", labels = c("ground corrected and image", "ground corrected", "image raw")) #+
 
 windows();pls_mod_plot
