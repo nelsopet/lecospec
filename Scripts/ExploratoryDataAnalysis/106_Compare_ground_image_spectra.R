@@ -187,6 +187,80 @@ scales = "fixed"
 
 dev.off()
 
+##Single panel of median reflectance of all PFTs 
+##Create a palette for fncgrp0
+
+#Create a list of colors for plotting fnc grp 1 with the image data
+fncgrp0_colors = createPalette(length(unique(PFT_IMG_SPEC_clean_tall$Functional_group0)),  c("#ff0000", "#00ff00", "#0000ff")) %>%
+  as.data.frame() %>%
+  dplyr::rename(Color = ".") %>%
+  mutate(FNC_grp0 = unique(PFT_IMG_SPEC_clean_tall$Functional_group0)) %>%
+  mutate(ColorNum = seq(1:length(unique(PFT_IMG_SPEC_clean_tall$Functional_group0))))
+
+fncgrp0_color_list<-PFT_IMG_SPEC_clean_tall %>% 
+  dplyr::filter(Functional_group0 != "Forb") %>%
+  dplyr::filter(Wavelength<1000) %>%
+  dplyr::filter(Wavelength>399) %>%
+  dplyr::select(Functional_group0) %>% 
+  inner_join(fncgrp0_colors, by=c("Functional_group0"="FNC_grp0"), keep=FALSE) 
+
+dim(fncgrp0_color_list)
+dim(PFT_IMG_SPEC_clean_tall)
+
+jpeg("figures/Fnc_grp0_spectral_profiles_Median_PFT_IMG_SPECTRA_ALL.jpg", height = 10000, width = 10000, res = 350)
+ggplot((PFT_IMG_SPEC_clean_tall %>%
+  dplyr::filter(Functional_group0 != "Forb") %>%
+  dplyr::filter(Wavelength<1000) %>%
+  dplyr::filter(Wavelength>399)) 
+  ,
+aes(Wavelength, Median_Reflectance, group = Functional_group0),
+scales = "fixed"
+) +
+      
+
+  annotate("rect", xmin = 492.4 - (66 / 2), xmax = 492.4 + (66 / 2), ymin = 0, ymax = 100, alpha = .7, color = color[2], fill = color[2]) +
+  # Band3 559.8 36, fill =
+  annotate("rect", xmin = 559.8 - (36 / 2), xmax = 559.8 + (36 / 2), ymin = 0, ymax = 100, alpha = .7, color = color[3], fill = color[3]) +
+  # Band4 664.6 31, fill =
+  annotate("rect", xmin = 664.6 - (31 / 2), xmax = 664.6 + (31 / 2), ymin = 0, ymax = 100, alpha = .7, color = color[4], fill = color[4]) +
+  # Band5 704.1 15, fill =
+  annotate("rect", xmin = 704.1 - (15 / 2), xmax = 704.1 + (15 / 2), ymin = 0, ymax = 100, alpha = .7, color = color[5], fill = color[5]) +
+  # Band6<-740.5 15, fill =
+  annotate("rect", xmin = 740.5 - (15 / 2), xmax = 740.5 + (15 / 2), ymin = 0, ymax = 100, alpha = .7, color = color[6], fill = color[6]) +
+  # Band7<-782.8 20
+  annotate("rect", xmin = 782.8 - (20 / 2), xmax = 782.8 + (20 / 2), ymin = 0, ymax = 100, alpha = .2) +
+  # Band8<- 864 21
+  annotate("rect", xmin = 864 - (21 / 2), xmax = 864 + (21 / 2), ymin = 0, ymax = 100, alpha = .2) +
+  # Band9<-945.1 20
+  annotate("rect", xmin = 945.1 - (20 / 2), xmax = 945.1 + (20 / 2), ymin = 0, ymax = 100, alpha = .2) +
+  # Band10<-1373.5 31
+  #annotate("rect", xmin = 1373.5 - (31 / 2), xmax = 1373.5 + (31 / 2), ymin = 0, ymax = 100, alpha = .2) +
+  ## Band11<-1613.7 91
+  #annotate("rect", xmin = 1613.7 - (91 / 2), xmax = 1613.7 + (91 / 2), ymin = 0, ymax = 100, alpha = .2) +
+  ## Band12<-2202.4 175
+  #annotate("rect", xmin = 2202.4 - (175 / 2), xmax = 2202.4 + (175), ymin = 0, ymax = 100, alpha = .2) +
+  #scale_color_grey() +
+  #geom_ribbon(aes(Wavelength, ymin = Lower_Reflectance, ymax = Upper_Reflectance, alpha = 0.25))+
+  #geom_ribbon(aes(Wavelength, ymin = Pct_12_5_Reflectance, ymax = Pct_87_5_Reflectance, alpha = 0.3)) +
+      geom_line(aes(Wavelength, Median_Reflectance,color = fncgrp0_color_list$Color),size = 2)+
+
+  labs(title = c("Median reflectance by plant functional group"), y = "Reflectance") +
+  theme(
+    panel.background = element_rect(fill = "white", colour = "grey50"),
+    # legend.key.size = unit(0.5, "cm"),legend.text = element_text(size=25),
+    legend.position = "none",
+    title = element_text(size = 25),
+    strip.text = element_text(size = 25),
+    axis.text = element_text(size = 20),
+    axis.text.x = element_text(angle = 90)
+  ) #+ #geom_line(aes(Wavelength, Median_Reflectance), size = 2) + 
+
+ # facet_wrap(vars(Functional_group0_wN), scales = "fixed", ncol = 2) #+ 
+ # facet_wrap(~reorder(Functional_group1_wN, Source))
+
+dev.off()
+
+
 
 ## Bind both ground and image spectra summaries (quantiles) together
 PFT_SPEC_GROUND_IMAGE <- bind_rows(Cleaned_Speclib_tall_Fnc_grp1 %>% 
