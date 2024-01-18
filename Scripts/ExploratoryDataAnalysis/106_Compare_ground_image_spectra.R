@@ -204,8 +204,26 @@ fncgrp0_color_list<-PFT_IMG_SPEC_clean_tall %>%
   dplyr::select(Functional_group0) %>% 
   inner_join(fncgrp0_colors, by=c("Functional_group0"="FNC_grp0"), keep=FALSE) 
 
-dim(fncgrp0_color_list)
-dim(PFT_IMG_SPEC_clean_tall)
+
+unique(PFT_IMG_SPEC_clean_tall$Functional_group0)
+          ref_pft <- tribble(
+          ~Functional_group0, 
+          ~pftOrder,
+          "Abiotic", 0,
+          "BroadleafDecid", 1,
+          "ConiferEvergreen", 2,
+          "Graminoid", 3,
+          "Lichen", 4,
+          "Moss", 5)
+
+
+          PFT_IMG_SPEC_clean_tall <- PFT_IMG_SPEC_clean_tall %>% left_join(ref_pft) %>% mutate(Functional_group0 = fct_reorder(Functional_group0, pftOrder))
+
+          ggplot()....
+          + scale_color_manual(values=c("darkgreen","green","red","purple","brown","pink","darkgoldenrod"), name="Plant Functional\nType")
+          
+          head(fncgrp0_color_list)
+          str(PFT_IMG_SPEC_clean_tall)
 
 jpeg("figures/Fnc_grp0_spectral_profiles_Median_PFT_IMG_SPECTRA_ALL.jpg", height = 1000, width = 1000)
 ggplot((PFT_IMG_SPEC_clean_tall %>%
@@ -213,7 +231,7 @@ ggplot((PFT_IMG_SPEC_clean_tall %>%
   dplyr::filter(Wavelength<1000) %>%
   dplyr::filter(Wavelength>399)) 
   ,
-aes(Wavelength, Median_Reflectance, group = factor(Functional_group0)),
+aes(Wavelength, Median_Reflectance, group = Functional_group0),
 scales = "fixed"
 ) +
       
@@ -254,9 +272,9 @@ scales = "fixed"
     #axis.text = element_text(size = 10),
     #axis.text.x = element_text(angle = 90)
   ) +#+ #geom_line(aes(Wavelength, Median_Reflectance), size = 2) + 
-  scale_color_manual(name="Plant functional type",
-                       labels=unique(fncgrp0_color_list$Functional_group0),
-                       values=unique(fncgrp0_color_list$Color))
+ scale_color_manual(values=c("darkgreen","green","red","purple","brown","pink","darkgoldenrod"), 
+ labels = levels(PFT_IMG_SPEC_clean_tall$Functional_group0),
+ name="Plant Functional\nType")
  # facet_wrap(vars(Functional_group0_wN), scales = "fixed", ncol = 2) #+ 
  # facet_wrap(~reorder(Functional_group1_wN, Source))
 
