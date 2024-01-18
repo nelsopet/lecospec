@@ -207,13 +207,13 @@ fncgrp0_color_list<-PFT_IMG_SPEC_clean_tall %>%
 dim(fncgrp0_color_list)
 dim(PFT_IMG_SPEC_clean_tall)
 
-jpeg("figures/Fnc_grp0_spectral_profiles_Median_PFT_IMG_SPECTRA_ALL.jpg", height = 10000, width = 10000, res = 350)
+jpeg("figures/Fnc_grp0_spectral_profiles_Median_PFT_IMG_SPECTRA_ALL.jpg", height = 1000, width = 1000)
 ggplot((PFT_IMG_SPEC_clean_tall %>%
   dplyr::filter(Functional_group0 != "Forb") %>%
   dplyr::filter(Wavelength<1000) %>%
   dplyr::filter(Wavelength>399)) 
   ,
-aes(Wavelength, Median_Reflectance, group = Functional_group0),
+aes(Wavelength, Median_Reflectance, group = factor(Functional_group0)),
 scales = "fixed"
 ) +
       
@@ -242,19 +242,21 @@ scales = "fixed"
   #scale_color_grey() +
   #geom_ribbon(aes(Wavelength, ymin = Lower_Reflectance, ymax = Upper_Reflectance, alpha = 0.25))+
   #geom_ribbon(aes(Wavelength, ymin = Pct_12_5_Reflectance, ymax = Pct_87_5_Reflectance, alpha = 0.3)) +
-      geom_line(aes(Wavelength, Median_Reflectance,color = fncgrp0_color_list$Color),size = 2)+
+      geom_line(aes(Wavelength, Median_Reflectance,  color = fncgrp0_color_list$Color))+
 
   labs(title = c("Median reflectance by plant functional group"), y = "Reflectance") +
   theme(
     panel.background = element_rect(fill = "white", colour = "grey50"),
     # legend.key.size = unit(0.5, "cm"),legend.text = element_text(size=25),
-    legend.position = "none",
-    title = element_text(size = 25),
-    strip.text = element_text(size = 25),
-    axis.text = element_text(size = 20),
-    axis.text.x = element_text(angle = 90)
-  ) #+ #geom_line(aes(Wavelength, Median_Reflectance), size = 2) + 
-
+    legend.position = "top"#,
+    #title = element_text(size = 12),
+    #strip.text = element_text(size = 12),
+    #axis.text = element_text(size = 10),
+    #axis.text.x = element_text(angle = 90)
+  ) +#+ #geom_line(aes(Wavelength, Median_Reflectance), size = 2) + 
+  scale_color_manual(name="Plant functional type",
+                       labels=unique(fncgrp0_color_list$Functional_group0),
+                       values=unique(fncgrp0_color_list$Color))
  # facet_wrap(vars(Functional_group0_wN), scales = "fixed", ncol = 2) #+ 
  # facet_wrap(~reorder(Functional_group1_wN, Source))
 
