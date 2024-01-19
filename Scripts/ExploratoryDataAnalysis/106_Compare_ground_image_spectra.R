@@ -225,7 +225,7 @@ unique(PFT_IMG_SPEC_clean_tall$Functional_group0)
           head(fncgrp0_color_list)
           str(PFT_IMG_SPEC_clean_tall)
 
-jpeg("figures/Fnc_grp0_spectral_profiles_Median_PFT_IMG_SPECTRA_ALL.jpg", height = 1000, width = 1000)
+jpeg("figures/Fnc_grp0_spectral_profiles_Median_PFT_IMG_SPECTRA_ALL.jpg", height = 400, width = 400)
 ggplot((PFT_IMG_SPEC_clean_tall %>%
   dplyr::filter(Functional_group0 != "Forb") %>%
   dplyr::filter(Wavelength<1000) %>%
@@ -260,7 +260,7 @@ scales = "fixed"
   #scale_color_grey() +
   #geom_ribbon(aes(Wavelength, ymin = Lower_Reflectance, ymax = Upper_Reflectance, alpha = 0.25))+
   #geom_ribbon(aes(Wavelength, ymin = Pct_12_5_Reflectance, ymax = Pct_87_5_Reflectance, alpha = 0.3)) +
-      geom_line(aes(Wavelength, Median_Reflectance,  color = fncgrp0_color_list$Color))+
+      geom_line(aes(Wavelength, Median_Reflectance,color = Functional_group0))+
 
   labs(title = c("Median reflectance by plant functional group"), y = "Reflectance") +
   theme(
@@ -272,7 +272,7 @@ scales = "fixed"
     #axis.text = element_text(size = 10),
     #axis.text.x = element_text(angle = 90)
   ) +#+ #geom_line(aes(Wavelength, Median_Reflectance), size = 2) + 
- scale_color_manual(values=c("darkgreen","green","red","purple","brown","pink","darkgoldenrod"), 
+ scale_color_manual(values=unique(fncgrp0_color_list$Color), 
  labels = levels(PFT_IMG_SPEC_clean_tall$Functional_group0),
  name="Plant Functional\nType")
  # facet_wrap(vars(Functional_group0_wN), scales = "fixed", ncol = 2) #+ 
