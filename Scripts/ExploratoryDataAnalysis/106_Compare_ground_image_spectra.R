@@ -204,10 +204,28 @@ fncgrp0_color_list<-PFT_IMG_SPEC_clean_tall %>%
   dplyr::select(Functional_group0) %>% 
   inner_join(fncgrp0_colors, by=c("Functional_group0"="FNC_grp0"), keep=FALSE) 
 
-dim(fncgrp0_color_list)
-dim(PFT_IMG_SPEC_clean_tall)
 
-jpeg("figures/Fnc_grp0_spectral_profiles_Median_PFT_IMG_SPECTRA_ALL.jpg", height = 10000, width = 10000, res = 350)
+unique(PFT_IMG_SPEC_clean_tall$Functional_group0)
+          ref_pft <- tribble(
+          ~Functional_group0, 
+          ~pftOrder,
+          "Abiotic", 0,
+          "BroadleafDecid", 1,
+          "ConiferEvergreen", 2,
+          "Graminoid", 3,
+          "Lichen", 4,
+          "Moss", 5)
+
+
+          PFT_IMG_SPEC_clean_tall <- PFT_IMG_SPEC_clean_tall %>% left_join(ref_pft) %>% mutate(Functional_group0 = fct_reorder(Functional_group0, pftOrder))
+
+          ggplot()....
+          + scale_color_manual(values=c("darkgreen","green","red","purple","brown","pink","darkgoldenrod"), name="Plant Functional\nType")
+          
+          head(fncgrp0_color_list)
+          str(PFT_IMG_SPEC_clean_tall)
+
+jpeg("figures/Fnc_grp0_spectral_profiles_Median_PFT_IMG_SPECTRA_ALL.jpg", height = 400, width = 400)
 ggplot((PFT_IMG_SPEC_clean_tall %>%
   dplyr::filter(Functional_group0 != "Forb") %>%
   dplyr::filter(Wavelength<1000) %>%
@@ -242,19 +260,21 @@ scales = "fixed"
   #scale_color_grey() +
   #geom_ribbon(aes(Wavelength, ymin = Lower_Reflectance, ymax = Upper_Reflectance, alpha = 0.25))+
   #geom_ribbon(aes(Wavelength, ymin = Pct_12_5_Reflectance, ymax = Pct_87_5_Reflectance, alpha = 0.3)) +
-      geom_line(aes(Wavelength, Median_Reflectance,color = fncgrp0_color_list$Color),size = 2)+
+      geom_line(aes(Wavelength, Median_Reflectance,color = Functional_group0))+
 
   labs(title = c("Median reflectance by plant functional group"), y = "Reflectance") +
   theme(
     panel.background = element_rect(fill = "white", colour = "grey50"),
     # legend.key.size = unit(0.5, "cm"),legend.text = element_text(size=25),
-    legend.position = "none",
-    title = element_text(size = 25),
-    strip.text = element_text(size = 25),
-    axis.text = element_text(size = 20),
-    axis.text.x = element_text(angle = 90)
-  ) #+ #geom_line(aes(Wavelength, Median_Reflectance), size = 2) + 
-
+    legend.position = "top"#,
+    #title = element_text(size = 12),
+    #strip.text = element_text(size = 12),
+    #axis.text = element_text(size = 10),
+    #axis.text.x = element_text(angle = 90)
+  ) +#+ #geom_line(aes(Wavelength, Median_Reflectance), size = 2) + 
+ scale_color_manual(values=unique(fncgrp0_color_list$Color), 
+ labels = levels(PFT_IMG_SPEC_clean_tall$Functional_group0),
+ name="Plant Functional\nType")
  # facet_wrap(vars(Functional_group0_wN), scales = "fixed", ncol = 2) #+ 
  # facet_wrap(~reorder(Functional_group1_wN, Source))
 
