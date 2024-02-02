@@ -31,22 +31,37 @@ source("Functions/training_utilities.R")
 
 
 
-#' equivalent to the old LandCoverEstimator()
+#' Applies the 
 #'
 #' Long Description here
 #'
-#' @return 
-#' @param x
+#' @param input_filepath
+#' @param model (optional, see model_support.R for supported types): 
+#' the model to apply to the data cube.  If none is supplied, it will 
+#' attempt to load it from the config file
+#' @param config_path (character) a path to the config file for the run. 
+#' Allows for the configuration of the backend processes as well
+#' Defaults to ./config.json
+#' @param outlier_processing one of "", "", "", "", NULL, or a function
+#' @param transform_type one of "", "", "", "", NULL, or a function
+#' @param cache_filepath a folder the system can use as a cache 
+#' (defaults to the current working directory.  In a future version
+#' it will default to system temporary files)
+#' @param output_filepath the file where the results should be saved
+#' @param use_external_bands (boolean):  determine wether to use a file of 
+#' external band names.  This si primarily used for file that don't include 
+#' band names (.e.g. tif).  Since band information is required for the system, 
+#' it must be provided externally for the files that cannot include it.
 #' @seealso None
+#' @return a filepath or the raster of predictions
 #' @export 
 #' @examples Not Yet Implmented
-#'
 estimate_land_cover <- function(
     input_filepath,
     model = NULL, 
+    config_path = "./config.json",
     outlier_processing = NULL,
     transform_type = NULL,
-    config_path = "./config.json",
     cache_filepath = "./",
     output_filepath =  paste(
         "output-",
@@ -77,11 +92,12 @@ estimate_land_cover <- function(
         warning("The input raster does not have a CRS specified.")
     }
 
-    # save the band names since they will be lost now that we are using .envi tiles 
+    # save the band names since they will be lost using .envi tiles
     bandnames <- names(input_raster)
     if(use_external_bands){
         band_count <- raster::nlayers(input_raster)
-        bandnames <- read.csv(config$external_bands)$x[1:band_count] %>% as.vector()
+        bandnames <- read.csv(config$external_bands)$x[1:band_count]
+            %>% as.vector()
         names(input_raster) <- bandnames
     }
 
@@ -233,19 +249,25 @@ estimate_land_cover <- function(
 
 #' processes a small raster imarge
 #'
-#' processes the given image in-memory.  This assumes that the image is small enough that tiling is not required.  
-#' Functions include data munging, imputation, automated vegetation index calculation, model inference, and data type conversion. 
+#' processes the given image in-memory.  This assumes that the image is 
+#' small enough that tiling is not required.  
+#' 
+#' Functions include data munging, imputation, automated vegetation index calculation, 
+#' model inference, and data type conversion. 
 #' The outputs are optionally saved to disk as well.  
 #' Parallization is used if a connection to a parallel (or raster) package cluster is provided
 #'
 #' @return 
 #' @param tile_filename: A string specifying the location of the target raster on the disk
 #' @param ml_model: the machine learning model for prediction.  
-#' @param cluster: a cluster, from the raster::beginCluster(); raster::getCluster() or parallel::makeCluster().  Default is NULL (no parallelism).
+#' @param cluster: a cluster, from the raster::beginCluster(); raster::getCluster() or parallel::makeCluster().  
+#' Default is NULL (no parallelism).
 #' @param return_raster: (default: TRUE) returns a rasterLayer object if true, or a data.frame if FALSE.
-#' @param save_path: the path to save the output.  If NULL (default) no file is saved.  Otherwise it attempts to save the file to the location specified.
+#' @param save_path: the path to save the output.  If NULL (default) no file is saved.  
+#' Otherwise it attempts to save the file to the location specified.
 #' @param suppress_output: if TRUE, returns the save location of the output, rather than the output itself.  
-#' If FALSE (default), the function returns a raster::rasterLayer or base::data.frame as determined by return_raster parameter.
+#' If FALSE (default), the function returns a raster::rasterLayer or base::data.frame 
+#' as determined by return_raster parameter.
 #' @seealso None
 #' @export 
 #' @examples Not Yet Implmented

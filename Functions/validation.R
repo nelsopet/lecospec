@@ -66,7 +66,7 @@ validate_results <- function(prediction_ras,
         # png(paste0("./test_hist_", i, ".png"))
         # hist(quadrat_ras)
         # dev.off()
-        #plot_categorical_raster(quadrat_ras, plot_options = plot_options)
+        # plot_categorical_raster(quadrat_ras, plot_options = plot_options)
 
         # windows();
 
@@ -82,7 +82,7 @@ validate_results <- function(prediction_ras,
 
         quadrat_df <- raster::rasterToPoints(quadrat_ras) %>% as.data.frame()
 
-        #write.csv(paste0("Data/"))
+        # write.csv(paste0("Data/"))
 
         # print(quadrat_df %>% group_by(z) %>% tally())
         # print("Quadrat data loaded from file")
@@ -364,12 +364,12 @@ save_validation <- function(template_dfs, base_filename = "validation") {
 #' @export
 #'
 validate_model <- function(ml_model,
-                        save_directory,
-                        outlier_processing = "none",
-                        transform_type = "none",
-                        bandwidth = 5,
-                        pft_aggregation = 0,
-                        cluster = NULL) {
+                           save_directory,
+                           outlier_processing = "none",
+                           transform_type = "none",
+                           bandwidth = 5,
+                           pft_aggregation = 0,
+                           cluster = NULL) {
     # defines validation_df, etc.
     source("Scripts/validation_defs.R")
 

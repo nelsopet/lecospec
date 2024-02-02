@@ -1,21 +1,19 @@
-create_robust_transform <- function(raster){
-
+create_robust_transform <- function(raster) {
     df <- raster::rasterToPoints(raster)
 
     centers <- list()
     scales <- list()
-    for(i in seq.int(ncol(df))){
-        if(is.numeric(df[,i])){
+    for (i in seq.int(ncol(df))) {
+        if (is.numeric(df[, i])) {
             append(
                 centers,
-                median(df[,i], na.rm = TRUE)
+                median(df[, i], na.rm = TRUE)
             )
 
             append(
                 scales,
-                IQR(df[,i], na.rm = TRUE)
+                IQR(df[, i], na.rm = TRUE)
             )
-
         } else {
             centers[i] <- NULL
             append(
@@ -24,7 +22,7 @@ create_robust_transform <- function(raster){
             )
 
             append(
-                scales, 
+                scales,
                 NULL
             )
         }
@@ -37,23 +35,22 @@ create_robust_transform <- function(raster){
 }
 
 
-create_standard_transform <- function(raster){
+create_standard_transform <- function(raster) {
     df <- raster::rasterToPoints(raster)
 
     centers <- list()
     scales <- list()
-    for(i in seq.int(ncol(df))){
-        if(is.numeric(df[,i])){
+    for (i in seq.int(ncol(df))) {
+        if (is.numeric(df[, i])) {
             append(
                 centers,
-                mean(df[,i], na.rm = TRUE)
+                mean(df[, i], na.rm = TRUE)
             )
 
             append(
                 scales,
-                sd(df[,i], na.rm = TRUE)
+                sd(df[, i], na.rm = TRUE)
             )
-
         } else {
             centers[i] <- NULL
             append(
@@ -62,7 +59,7 @@ create_standard_transform <- function(raster){
             )
 
             append(
-                scales, 
+                scales,
                 NULL
             )
         }
@@ -72,27 +69,24 @@ create_standard_transform <- function(raster){
         center = centers,
         scale = scales
     ))
-
 }
 
-create_minmax_transform <- function(raster){
-    
+create_minmax_transform <- function(raster) {
     df <- raster::rasterToPoints(raster)
 
     centers <- list()
     scales <- list()
-    for(i in seq.int(ncol(df))){
-        if(is.numeric(df[,i])){
+    for (i in seq.int(ncol(df))) {
+        if (is.numeric(df[, i])) {
             append(
                 centers,
-                min(df[,i], na.rm = TRUE)
+                min(df[, i], na.rm = TRUE)
             )
 
             append(
                 scales,
-                (max(df[,i], na.rm = TRUE) - min(df[,i], na.rm = TRUE))
+                (max(df[, i], na.rm = TRUE) - min(df[, i], na.rm = TRUE))
             )
-
         } else {
             centers[i] <- NULL
             append(
@@ -101,7 +95,7 @@ create_minmax_transform <- function(raster){
             )
 
             append(
-                scales, 
+                scales,
                 NULL
             )
         }
@@ -111,13 +105,12 @@ create_minmax_transform <- function(raster){
         center = centers,
         scale = scales
     ))
+}
+
+apply_transform <- function(df) {
 
 }
 
-apply_transform <- function(df, ){
+create_site_transform <- function(raster_path) {
 
-}
-
-create_site_transform <- function(raster_path){
-    
 }

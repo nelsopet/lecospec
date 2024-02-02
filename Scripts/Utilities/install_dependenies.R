@@ -5,7 +5,7 @@ lecospec_depenencies <- c(
     "sf",
     "sp",
     "hsdar",
-    "mapview", 
+    "mapview",
     "maptools",
     "doParallel",
     "randomForest",
@@ -23,10 +23,6 @@ lecospec_depenencies <- c(
     "gplots",
     "rasterVis",
     "RColorBrewer",
-    # should remove the below dependencies:
-    #"leaflet",
-    #"leaflet.opacity",
-    #"leaflegend",
     "naniar",
     "rasterVis",
     "doSNOW",
@@ -50,10 +46,12 @@ lecospec_depenencies <- c(
 )
 
 install.packages(lecospec_depenencies, repos = "http://cran.rstudio.com/")
-update.packages(ask=FALSE)
+
+devtools::install_github("nelsopet/hsdar")
+
+update.packages(ask = FALSE)
 
 #webshot::install_phantomjs()
-
 # NOTE: on debian linux, it is recommended to use
 # r2u to aid in the installation of the above packages.
 #

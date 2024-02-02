@@ -1,8 +1,6 @@
 library(plotly)
 # talk to NASA spectral imaging working group r/e gaps
 
-
-
 visualize_prediction <- function(filepath, key_file, column){
     require(leaflet)
     color_map <- create_color_map(key_file, column)
@@ -100,7 +98,26 @@ plot_quadrat_proportions <- function(quadrat_aggregate, filter_missing = TRUE, p
     return( plot )
 }
 
-
+#' Creates plot options object
+#' 
+#' Creates a list of options for plotting across methods, with sensible defaults
+#' 
+#' This method creates a list of options can be passed to 
+#' plot_categorical_raster, plot_quadrat_proportions.  
+#' This method allows for creating the options with sensible defaults.
+#' 
+#' @param title (character): the plot title.  Defaults to none ("")
+#' @param xLabel (character): the label for the horizontal axis of the plot. 
+#' @param yLabel (character): the label for the vertical axis of the plot
+#' @param legend (charactet vector): vector of legend labels for the plot
+#' @param legendTitle (character): title for the legend (default is "Legend")
+#' @param save_location (Character/path or NULL): location to save the plot, 
+#' if any.  If NULL, the plot will not be written to disk.  
+#' defaults to NULL (don't save)
+#' @return a list of options that can be passed directly to a plotting function
+#' @export
+#' @seealso plot_categorical_raster, plot_quadrat_proportions
+#'  
 define_plot_options <- function(
     title = "",
     xLabel = "Plant Functional Type",
@@ -190,16 +207,32 @@ fg0_breaks <- c(
     '0','1','2','3','4','5','6','7'
 )
 
+
+#' A function that returns the color for the given value
+#' 
+#' @param value: the value to assign a color to
+#' @return A hex string for the color
 fg1_palette_map <- function(value) {
     # note: value is 0-indexed and R is 1-indexed
     return (fg1_palette[[value]])
 }
 
+#' A function that returns the color for the given value
+#' 
+#' @param value: the value to assign a color to
+#' @return A hex string for the color
 fg0_palette_map <- function(value) {
     return(fg0_palette[[value]])
 }
 
-# the arguements for this function are all screwed up.
+#' Creates a plot of a raster of categorical variables
+#' 
+#' @param ras: a rasterLayer object.  See rasterVis::gplot
+#' @param plot_options (list): list of plot options, from create_plot_options
+#' @param use_fg0 (boolean): Determines the aggregation level
+#' @param colors (list) a color pallette for the plot
+#' @seealso rasterVis::gplot
+#' @return A hex string for the color
 plot_categorical_raster <- function(ras,  plot_options, use_fg0 = FALSE, colors = fg1_palette) {
     
     
@@ -251,7 +284,8 @@ plot_categorical_raster <- function(ras,  plot_options, use_fg0 = FALSE, colors 
 #' Long Description here
 #'
 #' @return 
-#' @param x
+#' @param df: a dataframe of aggregated data
+#' @param save_file: location to save the output
 #' @seealso None
 #' @export 
 #' @examples Not Yet Implmented
@@ -264,7 +298,21 @@ plot_agg_results <- function(df, save_file = "Output/results.jpeg") {
 }
 
 
-
+#' Lone line explanation
+#'
+#' Long Description here
+#'
+#' @param df: a dataframe of aggregated data.  
+#' Should follow the template structure from the lecospec validation.
+#' @param pft (integer): The Plant Functional Type to use for the system 
+#' Should be one of 0,1,2,3,4.
+#' @param legend (boolean): Determines whether to show a legend for the plot
+#' If true, a legend will be shown.  If FALSE, it will not be displayed.
+#' Defaults to False.
+#' @return a plot_ly plot object
+#' @export 
+#' @examples Not Yet Implmented
+#'
 create_plot <- function(df, pft, legend = FALSE){
     filtered_df <- df[df$key == pft,]
     return(
@@ -286,8 +334,13 @@ create_plot <- function(df, pft, legend = FALSE){
                     range = c(0,1)
 
                 ),
-                annotations = list(x = 0.0 , y = 1.1, text = pft, showarrow = FALSE, 
-                    xref='paper', yref='paper')
+                annotations = list(
+                    x = 0.0 , 
+                    y = 1.1, 
+                    text = pft, 
+                    showarrow = FALSE, 
+                    xref='paper', 
+                    yref='paper')
 
             ) %>% plotly::add_lines(
                 x = c(0,1),
@@ -298,7 +351,12 @@ create_plot <- function(df, pft, legend = FALSE){
     )
 }
 
-plot_by_pft <- function(df, save_path = NULL, open = TRUE, image_path = NULL, aggregation=1){
+plot_by_pft <- function(
+    df, 
+    save_path = NULL, 
+    open = TRUE, 
+    image_path = NULL, 
+    aggregation=1 ){
     df <- df %>% group_by(site)
     plots <- list()
     if(aggregation == 1){
@@ -375,10 +433,10 @@ calculate_r_squared <- function(
 
 write_validation_table <- function(
     df, 
-    save_path=NULL, 
+    save_path = NULL, 
     target_variable = "site",
     grouping_variable = "key",
-    open=FALSE
+    open = FALSE
     ){
     
     base_html <- readr::read_file("assets/table_template.html")

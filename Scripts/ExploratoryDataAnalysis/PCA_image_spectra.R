@@ -48,7 +48,7 @@ plot(scores(img_pca)[,1:2], col=train_5nm$fg0_palette)#, pch=c(1:length(unique(P
 #plot(scores(img_pca)[,1:2], col=fncgrp1_color_list$Color)#, pch=c(1:length(unique(PFT_IMG_SPEC_clean_merge$Area))))
 
 #biplot(tst_pca)
-title(main="PCA reflectance of PFT image spectra only (no veg indices)")
+title(main="PCA Reflectance of PFT Image Spectra only (no veg indices)")
 legend(x = -3, y =1.5, legend=unique(train_5nm$FncGrp0), lty=1, col=unique(train_5nm$fg0_palette), cex=1)
 #legend(x = -200, y =-700, legend=unique(Speclib_merged$Source), pch=c(1:2), cex=0.5)
 #legend(x = 300, y =100, legend=unique(PFT_IMG_SPEC_clean_merge$Area), pch=c(1:length(unique(PFT_IMG_SPEC_clean_merge$Area))), cex=0.8)
