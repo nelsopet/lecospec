@@ -336,20 +336,46 @@ apply_model.knn3 <- function(df, model, ...){
 
 #' The apply_model implementation for LightGBM models
 #' 
-#' Long
+#' Unfortunately, the LightGBM model metadata is not carried with
+#' the model the way it is for R models.  This is due to the 
+#' fact that the model is trained external to R in a separate 
+#' process (Clang) and trained on a separate Dataset object from
+#' lightGBM itself rather than a dataframe.  This necessitates the 
+#' requirement that the model metadata is loaded externally.  
+#' 
+#' The default location for the metadata is assets/lightbgm_metadata.json.
+#' It is possible to provide an additional argument specifying the location 
+#' where the metadata JSON file is located.  The file must, however, be
+#' a valid JSON text file, containing the following keys: 
+#' - columns: an array of column names from the original training data
+#' Since LightGBM does not track column names, this is used to ensure that
+#' the column order of the input data is matched to the data provided here. 
+#' In addition, it filters the data to the list of provided column names.
+#' - level: an array of factor level names for the model output.  Since
+#' lightgbm only tracks outputs as integers (starting at 0), the function
+#' automatically returns the output to an R factor using the names provided 
+#' in this key of the JSON file.
+#' 
+#' Overall, this is intended to make the LightGBM model behave the same way
+#' as other R-native models.  It also outputs a single factor as a response
+#' as other apply_model implementations do.  
 #' 
 #' @param df
 #' @param model 
 #' @return a data.frame of predictions
 #' @export
 #' @seealso apply_model
-apply_model.lgb.Booster <- function(df, model, ...){
+apply_model.lgb.Booster <- function(
+    df, 
+    model, 
+    metadata = "assets/lightgbm_metadata.json",
+    ...){
     # should load factor levels, column names from assets?
     require(lightgbm)
     print("Applying LightGBM Model")
 
     # get the class probabilities
-    lgm_metadata <- rjson::fromJSON(file = "assets/lightgbm_metadata.json")
+    lgm_metadata <- rjson::fromJSON(file = metadata)
     prediction_matrix <- predict(
         model,
         as.matrix(df[,lgm_metadata$columns]),
@@ -357,7 +383,9 @@ apply_model.lgb.Booster <- function(df, model, ...){
     )
 
     # convert to factor and reset class names
-    prediction_factor <- as.factor(ramify::argmax(prediction_matrix, rows = TRUE) - 1)
+    prediction_factor <- as.factor(
+        ramify::argmax(prediction_matrix, rows = TRUE) - 1
+        )
     levels(predictions) <- lgm_metadata$levels
     
     # convert to data.frame for downstream processing
