@@ -1,20 +1,22 @@
-#' 
+#' Gets the variable names required for the given model (via UseMethod hook)
 #' 
 #' Long
 #' 
-#' @param
-#' @return
+#' @param ml_model the model whos input paramaters are required
+#' @param ... additional parameters passed to composite function (via UseMethod hook)
+#' @return a character vector of variable names for the model
 #' @export
 #' 
 get_var_names <- function(ml_model, ...) {
     return(UseMethod("get_var_names", ml_model))
 }
 
-#' 
+#' default method for the usemethod hook
 #' 
 #' Long
 #' 
-#' @param
+#' @param ml_model the model
+#' @param ... additional arguments passed to get_var_names
 #' @return
 #' @export
 #' 
@@ -76,14 +78,15 @@ get_required_veg_indices.LSModel <- function(ml_model, ...){
     return(ml_model$indices)
 }
 
-#' 
+#' Gets the required vegetation indices for a ranger model
 #' 
 #' Long
 #' 
-#' @param
+#' @param ml_model
+#' @param ... other arguments passed from
+#' get_required_veg_indices
 #' @return
 #' @export
-#' 
 get_required_veg_indices.ranger <- function(ml_model, ...) {
     var_names <- get_var_names(ml_model)
 
@@ -166,6 +169,7 @@ get_required_veg_indices.default <- function(ml_model, ...) {
 #'
 #' @return 
 #' @param df: A data.frame
+#' @param model the machine learning model for the 
 #' @seealso None
 #' @export 
 #' @examples Not Yet Implmented
@@ -178,10 +182,36 @@ apply_model <- function(df, model, threads = 1, clean_names = TRUE){
 
 # bind together a model and the function to complete inference
 # into a single S3 Object
+#' An S3 object "class" for generalizing support for complex model types
+#' 
+#' This wrapper class contains the model itself, the method reqiured to
+#' apply it, and the list of features required for its use.
+#' It enables users to quickly enable the pipeline to run on composite
+#' models and model types not supplorted by apply_model(...).
+#' 
+#' @param model The model to do the predictions.  This can be any R object
+#' which will be passed to the 'apply_function' (below) for
+#' inference.  For example, this can be a list of models to create
+#' a ensemble model, a model that is not supported by the pipeline directly,
+#' or any other data you wish.
+#' @param apply_function the function that will be called by apply_model when
+#' the pipeline runs.  The call signature of the  function should be as follows:
+#' application function([this object]$model, df).  The first arguement is the
+#' model slot of this object, and the second is the data to make predictions
+#' as a data frame.
+#' @param indices The vegetation indices used in by the model;
+#' this defaults to loading it from the assets folder,
+#' assets/vegindicesUsed.csv.
+#' Users should plan to provide a character vector here, unless that list
+#' of all vegetation indices at that location will work
+#' @return the S3 object combining the above inputs
+#' @export
+#' @seealso apply_model.LSModel
 LSModel <- function(
     model, 
     apply_function, 
-    indices = read.csv("assets/vegIndicesUsed.csv", header = TRUE)$x){
+    indices = read.csv("assets/vegIndicesUsed.csv", header = TRUE)$x
+    ){
     output <- list(
         model = model,
         application = apply_function,
@@ -191,21 +221,23 @@ LSModel <- function(
     return(output)
 }
 
+#' The apply_model implementation for the LSModel S3 object
 #' 
 #' 
-#' Long
 #' 
-#' @param
-#' @return
+#' @param df a data.frame of input data
+#' @param model an LSModel instance
+#' @return The output of the model$apple_function(model$model, data.frame) 
+#' as a data.frame
 #' @export
-#' 
+#' @seealso LSModel, apply_model
 apply_model.LSModel <- function(df, model){
     return(
         as.data.frame(model$application(model$model, df))
     )
 }
 
-#' 
+#' The apply_model implementation for ranger models
 #' 
 #' Long
 #' 
@@ -238,7 +270,7 @@ apply_model.ranger <- function(df, model){
 }
 
 
-#' 
+#' NOT YET IMPLEMENTED
 #' 
 #' Long
 #' 
@@ -250,14 +282,16 @@ apply_model.xgboost <- function(){
 
 }
 
+#' The apply_model implementation for caret models
 #' 
+#' This function implements the apply_model internals for 
+#' the output of caret::train()
 #' 
-#' Long
-#' 
-#' @param
-#' @return
+#' @param df a data.frame of input data
+#' @param model the caret model
+#' @return the data.frame of predictions.
 #' @export
-#' 
+#' @seealso apply_model
 apply_model.train <- function(df, model, ...) {
     predictions <- predict(
         model, 
@@ -267,14 +301,15 @@ apply_model.train <- function(df, model, ...) {
     return(predictions)
 }
 
-#' 
+#' The implementation of apply_model for SVMs
 #' 
 #' Long
 #' 
-#' @param
+#' @param df
+#' @param model
 #' @return
 #' @export
-#' 
+#' @seealso apply_model
 apply_model.ksvm <- function(df, model, ...){
     require(kernlab, quietly = TRUE)
     predictions <- predict(model, as.data.frame(df))$response %>% as.data.frame()
@@ -283,14 +318,15 @@ apply_model.ksvm <- function(df, model, ...){
 
 }
 
-#' 
+#' The apply_model implementation for knn models
 #' 
 #' Long
 #' 
-#' @param
-#' @return
+#' @param df
+#' @param model
+#' @return a data.frame of predictions
 #' @export
-#' 
+#' @seealso apply_model
 apply_model.knn3 <- function(df, model, ...){
     require(caret, quietly = TRUE)
     predictions <- predict(model, df, type = "class") %>% as.data.frame()
@@ -298,6 +334,15 @@ apply_model.knn3 <- function(df, model, ...){
     return(predictions)
 }
 
+#' The apply_model implementation for LightGBM models
+#' 
+#' Long
+#' 
+#' @param df
+#' @param model 
+#' @return a data.frame of predictions
+#' @export
+#' @seealso apply_model
 apply_model.lgb.Booster <- function(df, model, ...){
     # should load factor levels, column names from assets?
     require(lightgbm)

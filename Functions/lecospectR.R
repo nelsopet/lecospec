@@ -31,7 +31,7 @@ source("Functions/training_utilities.R")
 
 
 
-#' Applies the 
+#' Applies the provided model to the data based on the given configuration
 #'
 #' Long Description here
 #'
