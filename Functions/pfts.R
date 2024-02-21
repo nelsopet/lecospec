@@ -1,6 +1,9 @@
-#' a quick function based on the original code
+#' Converts Functional Group 2 names to integer codes
 #'
-#' Long Description here
+#' This function assumes that the data is stored in a column
+#' named 'z'.  This is to seamlessly match the output of apply_model
+#' and rasterToXYZ. 
+#' 
 #'
 #' @return 
 #' @param df: A data.frame
@@ -42,9 +45,11 @@ return(df_convert_results)
 
 
 
-#' aconverts functional group 2 codes from integers to Strings
+#' Converts functional group 2 codes from integers to Strings
 #'
-#' Long Description here
+#' This function assumes that the data is stored in a column
+#' named 'z'.  This is to seamlessly match the output of apply_model
+#' and rasterToXYZ. 
 #'
 #' @return 
 #' @param df: A data.frame.  Assumes that the target data is in column 'z'
@@ -90,12 +95,15 @@ convert_fg2_int <- function(df) {
 
 
 
-#' a quick function based on the original code
+#' Converts Functional Group 1 names to integer codes
 #'
-#' Long Description here
+#' This function assumes that the data is stored in a column
+#' named 'z'.  This is to seamlessly match the output of apply_model
+#' and rasterToXYZ. 
 #'
-#' @return 
-#' @param df: A data.frame
+#' @return a dataframe identitical to df except with the column 
+#' `z` mutated to the alternative representation of the functional group
+#' @param df: A data.frame with a colum named `z`
 #' @seealso None
 #' @export 
 #' @examples Not Yet Implmented
@@ -118,9 +126,11 @@ convert_fg1_string <- function(df) {
     return(converted_df)
 }
 
-#' a quick function based on the original code
+#' Converts Functional Group 1 integer codes to names (characers/strings)
 #'
-#' Long Description here
+#' This function assumes that the data is stored in a column
+#' named 'z'.  This is to seamlessly match the output of apply_model
+#' and rasterToXYZ. 
 #'
 #' @return 
 #' @param df: A data.frame
@@ -146,6 +156,12 @@ convert_fg1_int <- function(df) {
     return(converted_df)
 }
 
+
+#' Converts Functional Group 0 integer codes to string names
+#'
+#' This function assumes that the data is stored in a column
+#' named 'z'.  This is to seamlessly match the output of apply_model
+#' and rasterToXYZ. 
 convert_fg0_int <- function(df){
     converted_df <- df %>% dplyr::mutate(
         z = case_when(
@@ -163,6 +179,12 @@ convert_fg0_int <- function(df){
     return(converted_df)
 }
 
+
+#' Converts Functional Group 1 names to integer codes
+#'
+#' This function assumes that the data is stored in a column
+#' named 'z'.  This is to seamlessly match the output of apply_model
+#' and rasterToXYZ. 
 convert_fg0_string <- function(df){
     converted_df <- df %>% dplyr::mutate(
         z = case_when(
@@ -180,12 +202,15 @@ convert_fg0_string <- function(df){
     return(converted_df)
 }
 
-#' converts the species names on the 
+#' Converts species names to integer codes
 #'
-#' Long Description here
+#' This function assumes that the data is stored in a column
+#' named 'z'.  This is to seamlessly match the output of apply_model
+#' and rasterToXYZ. 
 #'
-#' @return 
-#' @param df: A data.frame
+#' @return a dataframe identitical to df except with the column 
+#' `z` mutated to the alternative representation of the functional group
+#' @param df: A data.frame with a colum named `z`
 #' @seealso None
 #' @export 
 #' @examples Not Yet Implmented
@@ -324,12 +349,15 @@ convert_species_string <- function(df){
     return(converted_df)
 }
 
-#' converts the species integer codes to the species name (strings)
+#' Converts species from integer codes to names
 #'
-#' Long Description here
+#' This function assumes that the data is stored in a column
+#' named 'z'.  This is to seamlessly match the output of apply_model
+#' and rasterToXYZ. 
 #'
-#' @return 
-#' @param df: A data.frame
+#' @return a dataframe identitical to df except with the column 
+#' `z` mutated to the alternative representation of the functional group
+#' @param df: A data.frame with a colum named `z`
 #' @seealso None
 #' @export 
 #' @examples Not Yet Implmented
@@ -469,6 +497,19 @@ convert_species_int <- function(df){
 
 }
 
+
+#' Converts genuc integer codes to names
+#'
+#' This function assumes that the data is stored in a column
+#' named 'z'.  This is to seamlessly match the output of apply_model
+#' and rasterToXYZ. 
+#'
+#' @return a dataframe identitical to df except with the column 
+#' `z` mutated to the alternative representation of the functional group
+#' @param df: A data.frame with a colum named `z`
+#' @seealso None
+#' @export 
+#' @examples Not Yet Implmented
 convert_genus_int <- function(df) {
         converted_df <- df %>% dplyr::mutate(
         z = case_when(
@@ -559,6 +600,19 @@ convert_genus_int <- function(df) {
     return(converted_df)
 }
 
+
+#' Converts genus names to integer codes
+#'
+#' This function assumes that the data is stored in a column
+#' named 'z'.  This is to seamlessly match the output of apply_model
+#' and rasterToXYZ. 
+#'
+#' @return a dataframe identitical to df except with the column 
+#' `z` mutated to the alternative representation of the functional group
+#' @param df: A data.frame with a colum named `z`
+#' @seealso None
+#' @export 
+#' @examples Not Yet Implmented
 convert_genus_string <- function(df) {
         converted_df <- df %>% dplyr::mutate(
         z = case_when(
@@ -650,7 +704,20 @@ convert_genus_string <- function(df) {
     return(converted_df)
 }
 
-
+#' Converts Functional Group 1 names to integer codes
+#'
+#' This function assumes that the data is stored in a column
+#' named 'z'.  This is to seamlessly match the output of apply_model
+#' and rasterToXYZ. 
+#'
+#' @return a dataframe identitical to df except with the column 
+#' `z` mutated to the alternative representation of the functional group
+#' @param df: A data.frame with a colum named `z`
+#' @param aggregation_level (int/numeric, 0, 1, 2, 3, or 4)
+#' @param to (default is "int") a character vector.  One of: "int" 
+#' (aliases "Int" and "integer") or "string" (alias "String")
+#' @export 
+#' @examples Not Yet Implmented
 convert_pft_codes <- function(df, aggregation_level, to = "int"){
 
     # list of functions for converting the data from strings to integers
@@ -685,7 +752,15 @@ convert_pft_codes <- function(df, aggregation_level, to = "int"){
 }
 
 
-
+#' Builds a list for quickly converting between taxonomic groups
+#' 
+#' @param filepath The filepath of the CSV file of taxonomic levels
+#' This file should have columns for each aggregation level, starting
+#' with the coarsest classification (functional group 0, leftmost) to
+#'  species (rightmost). 
+#' 
+#' @returns a list (tree-like) setup for fast indexing and
+#' PFT conversion.  Can be readily read/written to JSON.
 build_adjacency_list <- function(filepath) {
     df <- read.csv(filepath, header = TRUE)
     num_rows <- nrow(df)
@@ -714,6 +789,16 @@ build_adjacency_list <- function(filepath) {
     return(adjacency_list)
 }
 
+#' Converts functional group names to integer codes, and back
+#' 
+#' If provided a number (0, 1, 2, 3, or 4) it will return the
+#' corresponding taxonomic level as a string
+#' 
+#' If provided a string, it will attempt to return the 
+#' corresponding integer code (if the string is recognized)
+#' 
+#' @param pft The string or number to convert
+#' @returns the Corresponding int or string
 enum_pfts <- function(pft){
     if(pft == 0){
         return("Functional_Group0")
@@ -749,14 +834,27 @@ enum_pfts <- function(pft){
     }
 }
 
-# changes aggregation level
+# 
 
-#' visualizes the output of the pipeline based on a specified colormap.
+#' changes the taxonomic aggregation level
 #'
-#' Long Description here
+#' Allows for the fast conversion to coarser taxonomic levels.  Note that 
+#' there is no way for the function to get finer taxonomic levels. This
+#' means that it is impossible to convert, for example, from functional group 0 
+#' (the broadest categoties) to species (the finest category) but the reverse is
+#' possible.  It also supports mixed levels (the input need not be of the same 
+#' level).  
+#' 
+#' Data that cannot be converted due to insufficient taxonomic information
+#' is given an NA value.  If the data in the prediction_vec is not recognized, 
+#' the function will throw an error.  Note that the keys are case sensitive.
+#' 
 #'
 #' @return 
-#' @param df: A data.frame
+#' @param prediction_vec a vector of classes
+#' @param aggregation_level The desired aggregation level (0-4).  
+#' @param aggregation_key the output of `build_adjacency_list`, or another 
+#' list-based conversion key of a similar structure
 #' @seealso None
 #' @export 
 #' @examples Not Yet Implmented

@@ -1,15 +1,24 @@
 
 #' creates tiles from raster brick and returns the locations on disk
 #'
-#' Long Description here
+#' This function is intended to create tiles from large raster files
+#' in the estimate_land_cover, but can be used outside it as well.  
+#' The default location for this function to save the tiles is the 
+#' current working directory.  This is likely to be altered in a 
+#' future release for compliance with CRAN guidelines, either requiring
+#' the location argument or using a temporary directory
 #'
-#' @return 
-#' @param raster_obj: a rasterBrick object (RasterLayer and RasterStack should also work but are not tested) 
+#' @param raster_obj: a rasterBrick object (RasterLayer and RasterStack should
+#' also work but are not tested)
 #' @param num_x: number of tiles in x direction
 #' @param num_y: number of tiles in y direction
 #' @param save_path: folder to save the tiles
-#' @param cluster: parallel compute cluster (e.g. from parallel::beginCluster()), or NULL
-#' @param verbose: (boolean, default: false) determines whether details are printed during evaluation 
+#' @param cluster: parallel compute cluster (e.g. parallel::beginCluster()),
+#' or NULL
+#' @param verbose: (boolean, default: false) determines whether details are
+#' printed during evaluation 
+#' @return a character vector of filenames for the tiles. 
+#' Note that these filenames do not include the base path
 #' @seealso None
 #' @export 
 #' @examples Not Yet Implmented
@@ -79,11 +88,25 @@ make_tiles <- function(
 }
 
 
+#' An empty tile handler for estimate_land_cover
+#' 
+#' This function handles empty tiles by creating a raster
+#' that can be seamlessly mosaiced with the model predictions
+#' but contains all NAs
+#' 
+#' This ensures that the spatial extent of the output matches
+#' the spatial extent of the input, and that raster::mosaic 
+#' works correctly
 #' 
 #' 
-#' Long
-#' 
-#' @param
+#' @param tile_raster a RasterBrick object
+#' @param save_path (default NULL).  If provided, the output
+#' raster will be saved to this location.  If no path is provided,
+#' the file will not be saved.
+#' @param target_crs (default NULL) If a CRS is provided, the output 
+#' will have that CRS.  This is used primarily for handling the case
+#' where the tile_raster CRS is missing or incomplete
+#' @param no_data (default -Inf) The No Data value to be used.  
 #' @return
 #' @export
 #' 
@@ -96,7 +119,7 @@ handle_empty_tile <- function(
     print("Processing empty tile")
     output_raster <- tile_raster[[1]]# %>% raster::as.raster()
 
-    
+
     if(!is.null(target_crs)){
         raster::crs(output_raster) <- target_crs
     }
@@ -105,14 +128,12 @@ handle_empty_tile <- function(
     raster::dataType(output_raster) <- "INT2U"
     raster::NAvalue(output_raster) <- no_data
     raster::values(output_raster) <- NA
-    
+
     print(raster::NAvalue(output_raster))
     if(!is.null(save_path)){
         raster::writeRaster(output_raster, save_path, datatype = "INT2U")
     }
 
-    
-      
     print("Empty Input Raster")
     print(tile_raster)
     print("Output Raster")
@@ -123,12 +144,19 @@ handle_empty_tile <- function(
 
 
 
-#' a quick function based on the original code
+#' Performs preprocessing for `estimate_land_cover`
 #'
-#' Long Description here
+#' Perfroms preprocessing to a raster object (RasterLayer, RasterBrick,
+#'  or RasterStack).  This includes checking for empty tiles, adjusting 
+#' band names, converting to a data.frame, filtering the columns, and
+#' filtering the bands.  
 #'
-#' @return 
-#' @param df: A data.frame
+#' @param raster_obj: A raster::RasterLayer, raster::RasterBrick, or 
+#' raster::RasterStack
+#' @param model the model that will be used for inference (to extract metadata)
+#' @param band_names (default NULL, optional) the list of band names for the 
+#' raster
+#' @return a dataframe of the pre-processed raster.
 #' @seealso None
 #' @export 
 #' @examples Not Yet Implmented
@@ -185,12 +213,16 @@ preprocess_raster_to_df <- function(raster_obj, model, band_names=NULL) {
 }
 
 
-#' a quick function based on the original code
+#' Converts a multi-band raster to a CSV file
 #'
-#' Long Description here
+#' A file conversion function that changes the format from 
+#' a raster image (any format supported by the raster package)
+#' to a csv file.
 #'
 #' @return 
-#' @param df: A data.frame
+#' @param raster_path: The file path to the raster file to be
+#' converted
+#' @param save_path the filepath where the CSV file should be saved
 #' @seealso None
 #' @export 
 #' @examples Not Yet Implmented
@@ -201,7 +233,20 @@ datacube_to_csv <- function(raster_path, save_path) {
 }
 
 
-# converts raster to CSV file on disk
+#' Pre-processes and converts a multi-band raster to a CSV file 
+#'
+#' The same as datacube_to_csv, but performs the same preprocessing used
+#' in estimate_land_cover and preprocess_raster_to_df before writing it to 
+#' disk.  
+#' 
+#' @return 
+#' @param raster_path: The file path to the raster file to be converted
+#' converted
+#' @param model the model the data should be pre-processed to fit
+#' @param save_path the filepath where the CSV file should be saved
+#' @seealso None
+#' @export 
+#' @examples Not Yet Implmented
 preprocess_raster_to_csv <- function(
     raster_filepath,
     model,
@@ -217,6 +262,21 @@ preprocess_raster_to_csv <- function(
     )
 }
 
+
+#' Pre-processes and converts a multi-band raster to a parquet file 
+#'
+#' The same as datacube_to_csv, but performs the same preprocessing used
+#' in estimate_land_cover and preprocess_raster_to_df before writing it to 
+#' disk.  
+#' 
+#' @return 
+#' @param raster_path: The file path to the raster file to be converted
+#' converted
+#' @param model_obj the model the data should be pre-processed to fit
+#' @param save_path the filepath where the parquet file should be saved
+#' @seealso None
+#' @export 
+#' @examples Not Yet Implmented
 preprocess_raster_to_parquet <- function(
     raster_filepath,
     model_obj,
@@ -232,10 +292,12 @@ preprocess_raster_to_parquet <- function(
 
 #' loads the attribute table for the output (categorical) raster.  
 #'
-#' Gets the raster attribute table from the 
+#' Gets the raster attribute table from the raster fromn disk
 #'
 #' @return 
-#' @param aggregation: an integer that specifies the aggregation level for the output raster.  Should be 1 (functional group 1), 2 (functional group 2), 3 (genus), or 4 (species).
+#' @param aggregation: an integer that specifies the aggregation level for the output 
+#' raster.  Should be 1 (functional group 1), 2 (functional group 2), 
+#' 3 (genus), or 4 (species).
 #' @seealso None
 #' @export 
 #' @examples Not Yet Implmented
@@ -259,12 +321,22 @@ get_attribute_table <- function(aggregation) {
 
 
 
-#' removes empty rows from the data.frame
+#' Merges rasters into a single raster using GDAL
 #'
-#' Long Description here
+#' The function combines multiple raster images into a 
+#' single file using the Geospatial Data Analytics Library (GDAL).  
+#' It uses the typical GDAL rasters to Virtual Raster Tiling (VRT)
+#' to a user-provided format.
 #'
 #' @return 
-#' @param df: A data.frame
+#' @param target_files: vector of file names that should be combined
+#' @param output_filename The filename for the merged image
+#' @param cache_vrt the location to save the intermediate representation 
+#' Defaults to a file named temp_cache.vrt in the local directory.  NOTE
+#' this default is likely to change in a future release to meet CRAN
+#' guidelines
+#' @param return_raster A boolean value.  To get the result of the data
+#' merge as a GDAL dataset (FALSE?) or raster::RasterBrick (TRUE?)
 #' @seealso None
 #' @export 
 #' @examples Not Yet Implmented
@@ -284,12 +356,18 @@ merge_tiles_gdal <- function(
 }
 
 
-#' removes empty rows from the data.frame
+#' How many tiles are needed to meet a target size?
 #'
-#' Long Description here
+#' This function determines the number of tiles the file should be 
+#' divided into to have each tile be at most `max_size` megabytes.
+#' It assumes equal number of divisions on X and Y
+#' axes.
 #'
-#' @return 
-#' @param file_path: a string
+#' @return a numnber (integer) representing the ideal number of 
+#' x- and y- axis splits 
+#' @param file_path: the file that should be divided
+#' @param max_size (default 1024 MB = 1GB).  The maximum size of a 
+#' tile.  
 #' @seealso None
 #' @export 
 #' @examples Not Yet Implmented
@@ -300,11 +378,19 @@ calc_num_tiles <- function(file_path, max_size = 1024){
     return(num_xy)
 }
 
+#' Safely merges two rasters of different CRS 
 #' 
+#' Merges two rasters into a single file.  It does not require them to be 
+#' of the same CRS or touching.  The rasters will be merged regardless.  
 #' 
-#' Long
+#' The output raster will be in the CRS of the first argument.  
+#' This function allows a tolerance of 1 unit on the grid alignment
+#' to allow for arifacts from projection.
 #' 
-#' @param
+#' @param raster_one The first raster to be merged.  
+#' The CRS of this raster will be used for the output image
+#' @param raster_two Will be merged with raster_one
+#' @param target_crs depricated.  No longer used
 #' @return
 #' @export
 #' 
@@ -322,12 +408,18 @@ safe_merge <- function(raster_one, raster_two, target_crs = NULL){
 }
 
 
+#' Projects a raster object based on a given EPSG code
 #' 
+#' Reprojects a Raster object to a CRS based on the EPSG code
+#' of that projection.  Currently uses only nearest-neighbor projection,
+#' but in a future release may support linear interpolation.
 #' 
-#' Long
-#' 
-#' @param
-#' @return
+#' @param raster_obj the RasterLayer, RasterBrick, or RasterStack to be
+#' reprojected
+#' @param epsg_code the EPSG code for the desired CRS
+#' @param categorical_raster (default FALSE) a flag controlling whether 
+#' the output is categorical or continuous.
+#' @return the projected raster
 #' @export
 #' 
 project_to_epsg <- function(raster_obj, epsg_code, categorical_raster = FALSE){
@@ -366,11 +458,17 @@ assemble_tiles_from_disk <- function(tiles, output_path){
     return(pred_merged)
 }
 
+#' merges multiple rasters into a single image safely
+#' 
+#' Uses sage_merge to merge multiple rasters (with potentially
+#' different CRS and no shared boundary) into a single image.
 #' 
 #' 
-#' Long
 #' 
-#' @param
+#' @param input_files A list of input files to be merged
+#' @param output_path the location where the output should be saved, or NULL
+#' Default is NULL
+#' @param target_layer Depricated (no longer used) (default 1)
 #' @return
 #' @export
 #' 
@@ -396,6 +494,7 @@ merge_tiles <- function(input_files, output_path = NULL, target_layer = 1) {
 }
 
 
+
 FG1_TO_FGO_MAP <- matrix(
     c(# this makes one long vector, but it's a convenient way of slicing it
         # functional group 1 classes
@@ -412,7 +511,15 @@ FG1_TO_FGO_MAP <- matrix(
 )
 
 
-
+#' A fuction to change the taxonomic level of a output raster
+#' 
+#' Changes the predictions to a coarser taxonomic level
+#' Currently only supports changing functional group 1 to 
+#' functional group 0
+#' 
+#' @param ras the raster to reclassify
+#' @param target_aggregation = 0 (should not be changed)
+#' @param source_aggregation = 1 (should not be changed)
 change_prediction_aggregation <- function(ras, target_aggregation = 0, source_aggregation = 1) {
 
     if(target_aggregation == 0){

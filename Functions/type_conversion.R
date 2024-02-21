@@ -1,6 +1,5 @@
 #' Converts Data Frame to a spaectral library
 #'
-#' @inheritDotParams
 #' @return A spectral library
 #' @param df: A dataframe to convert
 #' @export
@@ -25,9 +24,8 @@ df_to_speclib <- function(df, type = "hsdar", use_external_bands = FALSE) {
     return(spectral_lib)
 }
 
-#' Converts a spaectral library to a dataframe.  This function is not yet implemented
+#' Converts a spaectral library to a dataframe.  
 #'
-#' @inheritDotParams
 #' @return A dataframe
 #' @param speclib: A spectral library to convert
 #' @export

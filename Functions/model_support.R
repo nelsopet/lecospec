@@ -29,9 +29,10 @@ get_var_names.default <- function(ml_model, ...){
             as.character())
 }
 
+#' Gets the required variables for a ranger model
 #' 
-#' 
-#' Long
+#' Gets the required packages from the ranger model.
+#' It is calledd automatically from get_var_names
 #' 
 #' @param
 #' @return
@@ -42,21 +43,24 @@ get_var_names.ranger <- function(ml_model, ...){
     return( gsub("^X", "", Vars_names))
 }
 
-#' 
-#' 
-#' Long
-#' 
-#' @param
-#' @return
+#' Gets the required variable names from a LSModel instance
+#'
+#' called automatically from the get_var_names functon.  
+#' Gets the character vector of variable names needed for the 
+#' model to run.
+#'
+#' @param ml_model The LSModel instance
+#' @return a character vector of variable names
 #' @export
 #' 
 get_var_names.LSModel <- function(ml_model, ...){
     return(ml_model$indices)
 }
 
+#' get the required vegetation indices from a machine learning model
 #' 
-#' 
-#' Long
+#' A Prototype (S4) method for getting the names of the vegetation indices
+#' required to run a model.
 #' 
 #' @param
 #' @return
@@ -66,12 +70,12 @@ get_required_veg_indices <- function(ml_model){
     return(UseMethod("get_required_veg_indices", ml_model))
 }
 
+#' gets the vegetation indices required for a LSModel instance
 #' 
 #' 
-#' Long
 #' 
-#' @param
-#' @return
+#' @param ml_model a LSModel instance
+#' @return a character vector of vegetation index names
 #' @export
 #' 
 get_required_veg_indices.LSModel <- function(ml_model, ...){
@@ -149,12 +153,15 @@ get_required_veg_indices.ranger <- function(ml_model, ...) {
     return(veg_indices)
 }
 
+#' default list of vegetation indices if model type is not supported
 #' 
+#' This loads the default list of vegetation indices from disk
+#' The default list can be modified in the lecospec assets folder, 
+#' see assets/vegIndicesUsed.csv. This file, by default, contains all 
+#' vegetation indices supported by the package `hsdar`.
 #' 
-#' Long
-#' 
-#' @param
-#' @return
+#' @param ml_model  The machine learning mode (can be any object, actually)
+#' @return a character vector of vegetation indices
 #' @export
 #' 
 get_required_veg_indices.default <- function(ml_model, ...) {
@@ -163,9 +170,20 @@ get_required_veg_indices.default <- function(ml_model, ...) {
 
 
 
-#' a quick function based on the original code
+#' Applies a model to the provided data
 #'
-#' Long Description here
+#' The apply model function is an S4 prototype for applying a model
+#' to a dataframe of observations.  This method, unlike `predict`, 
+#' always returns a data frame with a predicatable schema.  
+#' 
+#' The returned dataframe always has three columns (x,y,z):
+#' x: contains spatial information (easting/longitude)
+#' y: contains spatial information (northing/latitude)
+#' z: contains predictions, either as a factor or numeric variable
+#' 
+#' Since the output of the function maintains a consistent data type
+#' and schema, it's much easier to use in pipelines.  It also allows
+#' for consistent raterization via `raster::rasterFromXYZ()`.
 #'
 #' @return 
 #' @param df: A data.frame
@@ -239,10 +257,11 @@ apply_model.LSModel <- function(df, model){
 
 #' The apply_model implementation for ranger models
 #' 
-#' Long
+#' Implements apply_model for Ranger S4 objects
 #' 
-#' @param
-#' @return
+#' @param df The input data for the model
+#' @param model the ranger model
+#' @return a dataframe of predictions
 #' @export
 #' 
 apply_model.ranger <- function(df, model){
@@ -303,11 +322,11 @@ apply_model.train <- function(df, model, ...) {
 
 #' The implementation of apply_model for SVMs
 #' 
-#' Long
 #' 
-#' @param df
-#' @param model
-#' @return
+#' 
+#' @param df input data for creating predictions
+#' @param model  the SVM model
+#' @return a dataframe of predictions
 #' @export
 #' @seealso apply_model
 apply_model.ksvm <- function(df, model, ...){
