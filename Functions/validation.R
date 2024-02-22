@@ -147,14 +147,18 @@ validate_results <- function(prediction_ras,
 
 
 
+#' Applies a chi-squared test to the validation results
 #'
+#' Compares the counts from the model prediction to the 
+#' expected counts from the validation data using a chi-squared test
+#' 
+#' Statistically significant results here mean that there is a 
+#' stasistically significant difference in the distributions of
+#' the expected and predicted distributions.
 #'
-#' Long
-#'
-#' @param
-#' @return
+#' @param validation_aggregates the aggregated validation data
+#' @return results of the chi-squared test
 #' @export
-#'
 apply_chi_squared_test <- function(validation_aggregates) {
     results <- lapply(
         validation_aggregates,
@@ -167,15 +171,26 @@ apply_chi_squared_test <- function(validation_aggregates) {
     )
 }
 
+#' Applies the Kolmogorov–Smirnov (KS) test to the validation data
 #'
-#'
-#' Applies the KS test to each
-#'
-#' @param
-#' @return
+#' Calculates the estimated data cumulative density function (CDF)
+#' from the validation data and uses that to perform a KS test
+#' from the input data.
+#' 
+#' @param validation_aggregates the validation data
+#' @param type (default "two.sided") Determines the type of test to use.
+#' @param use_monte_carlo (default FALSE) determines whether to use
+#' monte-carlo methods for the test
+#' @param exact_p (default NULL)
+#' @return the test output
 #' @export
 #'
-apply_KS_test <- function(validation_aggregates, type = "two.sided", use_monte_carlo = FALSE, exact_p = NULL) {
+apply_KS_test <- function(
+    validation_aggregates, 
+    type = "two.sided", 
+    use_monte_carlo = FALSE, 
+    exact_p = NULL
+    ) {
     return(
         lapply(
             validation_aggregates,
@@ -194,14 +209,17 @@ apply_KS_test <- function(validation_aggregates, type = "two.sided", use_monte_c
     )
 }
 
+#' aggregates the validation results using a template
 #'
+#' Loads the data into the given template.  This provides a 
+#' consistent schema to the validation data for use across
+#' methods.
 #'
-#' Long
-#'
-#' @param
-#' @return
+#' @param df the model output data
+#' @param validation_df the loaded validation data, as a data.frame
+#' @param input_template the (data.frame) template for aggregating the data
+#' @return a data.frame matching the input_template with the data added
 #' @export
-#'
 aggregate_result_template <- function(df, validation_df, input_template) {
     num_rows_df <- nrow(df)
     num_rows_template <- nrow(input_template)
@@ -258,14 +276,20 @@ aggregate_result_template <- function(df, validation_df, input_template) {
     return(template)
 }
 
+#' Creates a validation template from the input data
 #'
+#' Creates a data.frame template.  It creates a grouping
+#' key from the unique levels of "col" in the provided 
+#' data.frame "df". Additionally, it creates four columns in 
+#' the schema: predicted_counts, prediction_porp, validation_prop,
+#' validation_counts.  Each is intialized with all 0s. 
 #'
-#' Long
-#'
-#' @param
-#' @return
+#' @param df a data.frame
+#' @param col the column to use for a grouping key
+#' (default is 5)
+#' @return a data.frame to use as a template, with the 
+#' schema described above.
 #' @export
-#'
 build_validation_template <- function(df, col = 5) {
     pft_template <- df[, col] %>%
         unique() %>%
@@ -279,12 +303,13 @@ build_validation_template <- function(df, col = 5) {
     return(pft_template)
 }
 
+#' filters teh aggregated data to remove 0s
 #'
+#' Removes data where there is no data, that is both the 
+#' validation and predictions have frequency 0.
 #'
-#' Long
-#'
-#' @param
-#' @return
+#' @param quadrat_aggregate a data.frame matching the aggregation template
+#' @return the data.frame without rows of all 0
 #' @export
 #'
 filter_aggregate <- function(quadrat_aggregate) {
@@ -300,13 +325,14 @@ filter_aggregate <- function(quadrat_aggregate) {
 
 #' merge the validation templates
 #'
+#' Combines two templates (data.frames matching the schema from
+#' build_validation_template) into one data.frame with the same schema
 #'
-#' Long
-#'
-#' @param
-#' @return
+#' @param df1 a data.frame with the schema described above
+#' @param df2 another data.frame with the schema described above
+#' @return a data.frame with that same schema
 #' @export
-#'
+#' @seealso build_validation_template
 merge_validation_dfs <- function(df1, df2) {
     output_df <- data.frame(df1)
 
@@ -323,6 +349,18 @@ merge_validation_dfs <- function(df1, df2) {
     return(output_df)
 }
 
+#' merges a list of data.frames (templates) into one
+#' 
+#' Takes a list of data.frames with a schema matching that
+#' of build_validation_template and merges them into one
+#' data.frame with the same schema
+#' 
+#' @param df_list a list a data.frames
+#' @param aggregator_df a data.frame, typically the output of 
+#' build_validation_template
+#' @seealso build_validation_template
+#' @return a data.frame with the same schema
+#' @export
 coalesce_results <- function(df_list, aggregator_df) {
     output_df <- aggregator_df
 
@@ -338,12 +376,13 @@ coalesce_results <- function(df_list, aggregator_df) {
     return(output_df)
 }
 
-#' save the validation df to disk
+#' save the validation dfs to disk
 #'
-#' Long
+#' Writes a list of data.frames as separate files.  
 #'
-#' @param
-#' @return
+#' @param template_dfs a list of validation templates (data.frames)
+#' @param base_filename A human-readable filename base.  
+#' @return nothing
 #' @export
 #'
 save_validation <- function(template_dfs, base_filename = "validation") {
@@ -355,14 +394,35 @@ save_validation <- function(template_dfs, base_filename = "validation") {
     }
 }
 
+#' runs the vallidation pipeline on a model
 #'
+#' Runs the entire validation pipeline on a model.  
+#' All of the validation pipeline information is loaded from an
+#' external file "validation_defs.R" which should be populated 
+#' with the data to process, etc.
+#' 
+#' The validation pipeline includes creating quadrat level predictions,
+#' aggregating them, plotting the output, and saving all the results to 
+#' disk.  This does not require any human interaction to allow 
+#' for complete automation.
 #'
-#' Long
-#'
-#' @param
+#' @param ml_model a model supported by apply_model to test
+#' @param save_directory a location (folder) to save teh data to. Must exist
+#' @param outlier_processing (default "none") method to use for handling 
+#' outliers.  Can be any method handled by handle_outliers
+#' @param transform_type the type of pre-processing to apply to the
+#' data before applying the model. Can be any argument supported by 
+#' apply_transform
+#' @param bandwidth the width of bands to use for the model.  (default 5)
+#' @param pft_aggregation the taxonomic resolution to use. Can be 0 
+#' (functional group 0), 1 (functaional group 1), 2 (functional group 2),
+#'  3(genus), or 4 (species).  
+#' @param cluster optional.  The parallel backend cluster to use for 
+#' processing, or NULL.  Typically the output of raster::getCluster()
+#' or NULL. (default NULL)
 #' @return
 #' @export
-#'
+#' @seealso handle_outliers, apply_transform
 validate_model <- function(ml_model,
                            save_directory,
                            outlier_processing = "none",
@@ -451,7 +511,7 @@ validate_model <- function(ml_model,
     }
 }
 
-
+#' aggregate the 
 aggregate_results <- function(directory,
                               template = "assets/pft1_template.json",
                               aggregation_level = 0) {
