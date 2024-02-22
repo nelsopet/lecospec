@@ -1,6 +1,18 @@
 library(plotly)
 # talk to NASA spectral imaging working group r/e gaps
 
+
+#' Creates a plot of the predictions from a given file
+#' 
+#' DEPRECATED.  Uses Leaflet.JS to plot a raster file with
+#' a background from opentopomap.org.  
+#' 
+#' @param filepath The path to the file to be loaded
+#' @param key_file the file describing the relationship between
+#' numeric (UINT8) categories and their human-readable names
+#' @param column the column of the keyfile to use for the legend
+#' @return a Leaflet map
+#' @export
 visualize_prediction <- function(filepath, key_file, column){
     require(leaflet)
     color_map <- create_color_map(key_file, column)
@@ -30,6 +42,15 @@ visualize_prediction <- function(filepath, key_file, column){
     return(map)
 }
 
+
+#' Creates a color ramp for leaflet maps
+#' 
+#' Creates a leaflet colorFactor object from a key file on disk
+#' 
+#' @param filepath the path to the key file
+#' @param column the column in the keyfile CSV to use for the legend
+#' @return a leaflet::ColorFactor
+#' @export
 create_color_map <- function(filepath, column){
     levels <- unlist(read.csv(filepath, header = TRUE)[,2])
     num_levels <- length(unique(levels))
@@ -39,12 +60,32 @@ create_color_map <- function(filepath, column){
     return(palette)
 }
 
+#' Creates a sorted list of labels for a map legend
+#' 
+#' Loads the specified key file and uses the specified 
+#' column to create a list of labels for the map legend
+#' 
+#' @param filepath path to the keyfile on disk
+#' @param column the column in the keyfile CSV to use
+#' @return a character vector of legend entries
+#' @export
 create_labels <- function(filepath, column){
     return( sort(unique(unlist(read.csv(filepath, header = TRUE)[column]))))
 }
 
 
-
+#' plots the bar graph of the frequency (count) of each PFT
+#' 
+#' NOT TESTED.  
+#' 
+#' @param quadrat_aggregate the data.frame (or something that can 
+#' be cast to one)
+#' fo data to plot
+#' @param filter_missing (default TRUE) Determines whether to drop
+#'  rows with missing data.  Data will be dropped if TRUE, retained 
+#' on FALSE
+#' @return a ggplot plot.
+#' @export
 plot_quadrat_counts <- function(quadrat_aggregate, filter_missing = TRUE){
     data <- data.frame(quadrat_aggregate)
     if(filter_missing){
@@ -58,6 +99,25 @@ plot_quadrat_counts <- function(quadrat_aggregate, filter_missing = TRUE){
     return ( plot )
 }
 
+#' plots a bar graph of the relative frequency of each plant functional type.
+#' 
+#' Creates a plot (using ggplot) of the proportion of data in each
+#' plant functional type.  Can be used for plotting other data by passing an 
+#' updated plot_options from create_plot_options(...).
+#' 
+#' @param quadrat_aggregate
+#' @param filter_missing (default TRUE) determines whether rows with missing
+#'  data should be dropped.  Data is dropped if TRUE, retained for FALSE
+#' @param plot_options a list, most easily created from create_plot_options.
+#' default value: list(
+#'    title = "Prediction and Validation",
+#'    xLabel = "Plant Functional Type",
+#'    yLabel = "Proportion",
+#'    legend = c("Prediction", "Validation"),
+#'    legendTitle = ""
+#')
+#' @return a ggplot plot
+#' @export
 plot_quadrat_proportions <- function(quadrat_aggregate, filter_missing = TRUE, plot_options = list(
     title = "Prediction and Validation",
     xLabel = "Plant Functional Type",
@@ -150,7 +210,7 @@ define_plot_options <- function(
 #TreeConifer: #2ac4db
 #Unknown: #000000
 
-
+#' a color palette for Functional Group 1
 fg1_palette <- c(
         "#000000",
         "#db2a53",
@@ -164,6 +224,7 @@ fg1_palette <- c(
         "#ffffff"
 )
 
+#' a color palette for Functional Group 0
 fg0_palette <- c(
      "#000000",
         "#db2a53",
@@ -175,6 +236,7 @@ fg0_palette <- c(
         "#ffffff"
 )
 
+#' names of functional group 0 for plot legends
 fg0_names <- c(
     "Abiotic",
     "Forb",
@@ -186,6 +248,7 @@ fg0_names <- c(
     "Unknown"
 )
 
+#' names of functional group 1 for plot legends
 fg1_names <- c(
     "Abiotic",
     "Forb",
@@ -199,10 +262,12 @@ fg1_names <- c(
     "Unknown"
 )
 
+#' hard coded list of breakpoints for FG1 plots
 fg1_breaks <- c(
     '0','1','2','3','4','5','6','7','8','9'
 )
 
+#' hard coded list of breakpoints for FG0 plots
 fg0_breaks <- c(
     '0','1','2','3','4','5','6','7'
 )
@@ -279,9 +344,9 @@ plot_categorical_raster <- function(ras,  plot_options, use_fg0 = FALSE, colors 
 
 
 
-#' Lone line explanation
+#' Plots all the data as a scatterplot
 #'
-#' Long Description here
+#' DEPRECATED
 #'
 #' @return 
 #' @param df: a dataframe of aggregated data
@@ -293,15 +358,15 @@ plot_categorical_raster <- function(ras,  plot_options, use_fg0 = FALSE, colors 
 plot_agg_results <- function(df, save_file = "Output/results.jpeg") {
     my_plot <- ggplot2::ggplot(data = df) +
         geom_point(aes(df$x, df$y, color=df$z))
-    print(my_plot)
     return(my_plot)
 }
 
 
-#' Lone line explanation
+#' Creates a plot of the model performance for a PFT using plotly
 #'
-#' Long Description here
-#'
+#' Creates a plot_ly plot of the model performance for the given PFT.  This
+#' is then returned 
+#' 
 #' @param df: a dataframe of aggregated data.  
 #' Should follow the template structure from the lecospec validation.
 #' @param pft (integer): The Plant Functional Type to use for the system 
@@ -311,8 +376,6 @@ plot_agg_results <- function(df, save_file = "Output/results.jpeg") {
 #' Defaults to False.
 #' @return a plot_ly plot object
 #' @export 
-#' @examples Not Yet Implmented
-#'
 create_plot <- function(df, pft, legend = FALSE){
     filtered_df <- df[df$key == pft,]
     return(
@@ -351,6 +414,20 @@ create_plot <- function(df, pft, legend = FALSE){
     )
 }
 
+#' Creates a plot of the model performance for across PFTs using plotly
+#'
+#' Creates a plot_ly plot of the model performance for the all PFTs.  This
+#' is then returned to the user.
+#' 
+#' @param df: a dataframe of aggregated data.  
+#' Should follow the template structure from the lecospec validation.
+#' @param pft (integer): The Plant Functional Type to use for the system 
+#' Should be one of 0,1,2,3,4.
+#' @param legend (boolean): Determines whether to show a legend for the plot
+#' If true, a legend will be shown.  If FALSE, it will not be displayed.
+#' Defaults to False.
+#' @return a plot_ly plot object
+#' @export 
 plot_by_pft <- function(
     df, 
     save_path = NULL, 
@@ -417,6 +494,14 @@ plot_by_pft <- function(
     return(fig)
 }
 
+#' calculates the R-squared value between two columns in a data.frame
+#' 
+#' @param df A data.frame of data
+#' @param independent_var the name of the independent variable in the 
+#' relationship
+#' @param dependent_var the dependent variable in the relationship
+#' @return the r-squared value, as a floating point number
+#' @export
 calculate_r_squared <- function(
     df, 
     independent_var, 
@@ -430,7 +515,17 @@ calculate_r_squared <- function(
 }
 
 
-
+#' Saves validation data to disk as an HTML table
+#' 
+#' @param df a data.frame
+#' @param save_path the location on disk to save the data 
+#' (Optional, default NULL)
+#' @param  target_variable the variable to split columns 
+#' (column in input data frame)
+#' @param grouping_variable the variable to split the rows 
+#' (should be a column in df)
+#' @return nothing
+#' @export
 write_validation_table <- function(
     df, 
     save_path = NULL, 
