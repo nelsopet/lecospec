@@ -72,7 +72,7 @@ lapply(1:3,
        })
 ##Chatanika
 
-Tarp_img_path = "M:/Alaska_DATA/Alaska_Summer2018/Workspaces/Alaska/DatabyDate/72918/ImagingSpectrometer/DataFolders/100130_ChatanikaFlight3_attempt2_2018_07_29_20_32_59/raw_0_rd_rf_56pctWhiteRef_or"
+Tarp_img_path = "M:/Alaska_DATA/Alaska_Summer2018/Workspaces/Alaska/DatabyDate/72918/ImagingSpectrometer/DataFolders/100130_ChatanikaFlight3_attempt2_2018_07_29_20_32_59/raw_0_rd_or"
 Tarp_img = terra::rast(Tarp_img_path)
 tst_crs<-crs(Tarp_img)
 Tarp_pft_path = "Data/Vectors/WhiteRefs/ChatanikaTarp.shp"

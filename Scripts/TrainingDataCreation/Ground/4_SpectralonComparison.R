@@ -4,7 +4,7 @@ source("Functions/lecospectR.R")
 Bison_path<-"M:/Alaska_DATA/Alaska_Summer2019/Data_by_site/Bison_Gulch/Imagery_60m/100248_Bison_Gulch_white_2019_08_12_00_33_04"
 #Bonanza_path="M:/Alaska_DATA/Alaska_Summer2018/Workspaces/Alaska/DatabyDate/72518/ImagingSpectrometer/DataFiles/"
 EightMile_path = "M:/Alaska_DATA/Alaska_Summer2018/Workspaces/Alaska/DatabyDate/72818/ImagingSpectrometer/DataFolders/100122_WhitetandardFlight2_2018_07_28_22_55_08"
-Chatanika_path = "M:/Alaska_DATA/Alaska_Summer2018/Workspaces/Alaska/DatabyDate/72918/ImagingSpectrometer/DataFolders/100127_white_ref_2018_07_29_20_23_01/"
+Chatanika_path = "M:/Alaska_DATA/Alaska_Summer2018/Workspaces/Alaska/DatabyDate/72918/ImagingSpectrometer/DataFolders/100133_white_ref_2018_07_29_23_52_48"
 TwelveMile_path = "M:/Alaska_DATA/Alaska_Summer2019/Data_by_site/12mile/Imagery/100240_12mile_line3_white_2019_08_09_21_27_10/"
 Murphy_path = "M:/Alaska_DATA/Alaska_Summer2018/Workspaces/Alaska/DatabyDate/73118/ImagingSpectrometer/DataFolders/100155_WhiteStandard_2018_07_31_19_39_41"
 
