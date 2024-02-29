@@ -56,6 +56,16 @@ all_white_refs<-rbind(spectralon,tarp_all, single_pixel_tarp)
 all_white_refs<-as.data.frame(all_white_refs)
 
 str(all_white_refs)
+
+SpectralonCorrection<-all_white_refs %>% tidyr::spread(key = "Level", value = "Radiance") %>% #head
+  mutate(diff = `Single_Pixel_55pct`/`99`)%>%# plot(diff)
+  group_by(Wavelength) %>% summarize(diff_median = median(diff, na.rm=T))# %>% plot(diff)
+
+write.csv(SpectralonCorrection,"Output/SpectralonCorrection.csv")
+head(tst)
+ggplot(SpectralonCorrection,aes(Wavelength,diff_median)) + geom_line()
+dev.off()
+
 windows()
 jpeg("figures/all_white_refs_radiance.jpeg")
 ggplot(all_white_refs,aes(Wavelength, Radiance, group = Site))+geom_point(aes(color=Level)) +
