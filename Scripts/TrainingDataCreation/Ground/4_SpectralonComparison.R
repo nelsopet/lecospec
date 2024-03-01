@@ -7,6 +7,7 @@ EightMile_path = "M:/Alaska_DATA/Alaska_Summer2018/Workspaces/Alaska/DatabyDate/
 Chatanika_path = "M:/Alaska_DATA/Alaska_Summer2018/Workspaces/Alaska/DatabyDate/72918/ImagingSpectrometer/DataFolders/100133_white_ref_2018_07_29_23_52_48"
 TwelveMile_path = "M:/Alaska_DATA/Alaska_Summer2019/Data_by_site/12mile/Imagery/100240_12mile_line3_white_2019_08_09_21_27_10/"
 Murphy_path = "M:/Alaska_DATA/Alaska_Summer2018/Workspaces/Alaska/DatabyDate/73118/ImagingSpectrometer/DataFolders/100155_WhiteStandard_2018_07_31_19_39_41"
+Vault_path = "M:/Alaska_DATA/Alaska_Summer2018/Workspaces/Alaska/DatabyDate/72918/ImagingSpectrometer/DataFolders/100133_white_ref_2018_07_29_23_52_48"
 
 Bison_whiteref<-list.files(Bison_path)[grepl("*sceneWhiteReference$",list.files(Bison_path))]
 #Bonanza_whiteref<-list.files(Bonanza_path)[grepl("*sceneWhiteReference$",list.files(Bonanza_path))]
@@ -14,7 +15,7 @@ Eightmile_whiteref<-list.files(EightMile_path)[grepl("*sceneWhiteReference$",lis
 Chatanika_whiteref<-list.files(Chatanika_path)[grepl("*sceneWhiteReference$",list.files(Chatanika_path))]
 TwelveMile_whiteref<-list.files(TwelveMile_path)[grepl("*sceneWhiteReference$",list.files(TwelveMile_path))]
 Murphy_whiteref<-list.files(Murphy_path)[grepl("*sceneWhiteReference$",list.files(Murphy_path))]
-
+Vault_whiteref<-list.files(Vault_path)[grepl("*sceneWhiteReference$",list.files(Vault_path))]
 
 Bison_spectralon<-terra::rast(paste(Bison_path,Bison_whiteref, sep="/"))
 #Bonanza_spectralon<-terra::rast(paste(Bonanza_path,"whiteReference_2018_07_25_14_51_06", sep="/"))
@@ -22,6 +23,7 @@ Eightmile_spectralon<-terra::rast(paste(EightMile_path,Eightmile_whiteref, sep="
 Chatanika_spectralon<-terra::rast(paste(Chatanika_path,Chatanika_whiteref, sep="/"))
 TwelveMile_spectralon<-terra::rast(paste(TwelveMile_path,TwelveMile_whiteref, sep="/"))
 Murphy_spectralon<-terra::rast(paste(Murphy_path,Murphy_whiteref, sep="/"))
+Vault_spectralon<-terra::rast(paste(Vault_path,Vault_whiteref, sep="/"))
 
 #Read in the band names
 band_names <- read.csv("./assets/bands.csv")$x[1:326] %>% as.vector()
@@ -29,9 +31,9 @@ t(as.data.frame(Bison_spectralon))
 
 #For each white reference, read in the image, cast it to dataframe, add site and band info
 # and rename columns
-All_spectralon<-cbind(Bison_spectralon,Eightmile_spectralon, Chatanika_spectralon, TwelveMile_spectralon, Murphy_spectralon)
+All_spectralon<-cbind(Bison_spectralon,Eightmile_spectralon, Chatanika_spectralon, TwelveMile_spectralon, Murphy_spectralon, Vault_spectralon)
 head(t(All_spectralon))
-All_spectralon_names<-c("Bison","Eightmile","Chatanika", "TwelveMile", "Murphy")
+All_spectralon_names<-c("Bison","Eightmile","Chatanika", "TwelveMile", "Murphy", "Vault")
 Spectralon_df<-lapply(1:length(All_spectralon_names), function(x){ 
 #band_path<-brick(paste(path,imgs_names[x], sep=""))
 #band_count<-names(band_path) %>% length()
