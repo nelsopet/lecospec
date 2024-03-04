@@ -1,11 +1,18 @@
+#' adds noise to the data.frame
 #'
+#' Adds noise to the specified columns of a data.frame (or, 
+#' if no columns are specified, all columns).  The amount of noise
+#' added is controlled by the noise_power parameter.  The noise is 
+#' always normally distributed with mean 0.
 #'
-#' Long
-#'
-#' @param
-#' @return
+#' @param df the dataframe to add noise to
+#' @param noise_power the variance of the normal distribution
+#' used to add noise
+#' @param used_cols (optional, default NULL).  An optional character 
+#' vector of column names to add noise to, or (default) NULL.  If NULL, 
+#' then noise will be added to all columns.
+#' @return a data.frame
 #' @export
-#'
 add_noise <- function(df, noise_power, used_cols = NULL) {
     output_df <- df
     total_observations <- nrow(df)
@@ -18,7 +25,7 @@ add_noise <- function(df, noise_power, used_cols = NULL) {
 }
 
 
-#'
+#' calculates the distribution
 #'
 #' Long
 #'
@@ -48,6 +55,15 @@ check_output_distribution <- function(df, model, targets) {
     )
 }
 
+#' checks of a data.frame for infs, NAs, and calculates stats
+#' 
+#' First checks the data.frame for NAs and Inf values, then calculates
+#' the global min, max, mean, and variance.  It also checks the 
+#' minimum and maximum (columnwise) variance.  
+#' 
+#' @param input_df a data.frame 
+#' @param ignore_cols (optional, default NULL) a list of columns that 
+#' should be ignored.  If NULL, then all columns will be used.
 automated_check <- function(input_df, ignore_cols = NULL) {
     used_cols <- colnames(input_df)
     if (!is.null(ignore_cols)) {
@@ -83,14 +99,15 @@ automated_check <- function(input_df, ignore_cols = NULL) {
     ))
 }
 
+#' converts a factor vector into weights
 #'
+#' Calculates the class weights from a raw vector
+#' of factor levels, such that each factor has 
+#' equal probability of being included in a sample.
 #'
-#' Long
-#'
-#' @param
-#' @return
+#' @param target_factors the vector of factor levels
+#' @return a numeric vector of weights for each observation
 #' @export
-#'
 targets_to_weights <- function(target_factors) {
     weights_by_pft <- target_factors %>%
         table() %>%
@@ -109,14 +126,15 @@ targets_to_weights <- function(target_factors) {
         as.numeric())
 }
 
+#' Compares shared columns (by name) across data.frames
 #'
+#' 
 #'
-#' Long
-#'
-#' @param
-#' @return
+#' @param df1 a data.frame
+#' @param df2 another data.frame with shared column names
+#' @param ignore_cols (default NULL)
+#' @return a list of KS test results
 #' @export
-#'
 test_transferrability <- function(df1, df2, ignore_cols = NULL) {
     used_cols <- intersect(colnames(df1), colnames(df2))
     if (!is.null(ignore_cols)) {
@@ -138,13 +156,8 @@ test_transferrability <- function(df1, df2, ignore_cols = NULL) {
     return(results)
 }
 
-
-create_grid_search_registrator <- function(
-    base_path) {
-
-}
-
-calculate_posterior_weights <- function(validation_path = "figures/merged_validation_s.csv") {
+calculate_posterior_weights <- function(
+    validation_path = "figures/merged_validation_s.csv") {
     validation_df <- read.csv(validation_path, header = TRUE)
     # print(head(validation_df))
 
@@ -170,7 +183,9 @@ calculate_posterior_weights <- function(validation_path = "figures/merged_valida
     return(fg1_weight_list)
 }
 
-get_posterior_weights_from_targets <- function(target_factor, posterior_weight = calculate_posterior_weights()) {
+get_posterior_weights_from_targets <- function(
+    target_factor, 
+    posterior_weight = calculate_posterior_weights()) {
     unbiased_weights <- targets_to_weights(target_factor)
 
     target_name_char <- target_factor %>% as.character()
@@ -190,7 +205,12 @@ get_posterior_weights_from_targets <- function(target_factor, posterior_weight =
 }
 
 
-log_model_results <- function(model_id, confusion_matrix, distribition, custom = NULL, logpath = "./gs.log") {
+log_model_results <- function(
+    model_id, 
+    confusion_matrix, 
+    distribition, 
+    custom = NULL, 
+    logpath = "./gs.log") {
     # append performance data to the logs for later comparison
     sink(file = logpath, append = TRUE)
     print("-------------------------------------------------------")
@@ -313,11 +333,6 @@ filter_target_subset <- function(df) {
 }
 
 
-read_pls_lda_model <- function(pls_lda_obj) {
-    x_train
-}
-
-
 train_model <- function(
     train_df,
     train_labels,
@@ -416,7 +431,8 @@ train_model <- function(
 }
 
 
-calculate_posterior_weights <- function(validation_path = "figures/merged_validation_s.csv") {
+calculate_posterior_weights <- function(
+    validation_path = "figures/merged_validation_s.csv") {
     validation_df <- read.csv(validation_path, header = TRUE)
     # print(head(validation_df))
 
@@ -442,7 +458,9 @@ calculate_posterior_weights <- function(validation_path = "figures/merged_valida
     return(fg1_weight_list)
 }
 
-get_posterior_weights_from_targets <- function(target_factor, posterior_weight = calculate_posterior_weights()) {
+get_posterior_weights_from_targets <- function(
+    target_factor, 
+    posterior_weight = calculate_posterior_weights()) {
     unbiased_weights <- targets_to_weights(target_factor)
 
     target_name_char <- target_factor %>% as.character()
@@ -685,7 +703,8 @@ create_patch_balanced_sample <- function(
         }
 
         num_train <- min(train_count, nrow(df) - test_count)
-        train_indices <- permutation[(n_samp + 1):(num_train + test_count)] %>% as.numeric()
+        train_indices <- permutation[(n_samp + 1):(num_train + test_count)] %>% 
+            as.numeric()
         if (is.null(train_samples)) {
             train_samples <- df[train_indices, ]
         } else {

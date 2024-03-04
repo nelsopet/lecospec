@@ -532,7 +532,13 @@ aggregate_results <- function(directory,
 }
 
 
-
+#' parses a CSV filename to extract teh site information
+#' 
+#' Extracts the alaska-based site names from the CSV filename
+#' 
+#' @param path the filepath to parse
+#' @return the name of the site associated with the file
+#' @export
 parse_path <- function(path) {
     split_path <- strsplit(path, split = "/", fixed = TRUE)
     if (stringr::str_detect(path, "site_1")[1]) {
@@ -558,8 +564,15 @@ parse_path <- function(path) {
     }
 }
 
-# print(parse_path("figures/twelveMile2/tm2_validation_4.csv"))
 
+
+#' loads and labels the data from the results CSV files
+#' 
+#' Loads a data.frame from disk (CSV) and adds the metadata from 
+#' the filename to the data.frame as a column (site).
+#' 
+#' @param path the path to teh CSV file that needs to be parsed
+#' @return  a data.frame 
 load_and_label_data <- function(path) {
     label <- parse_path(path)
     df <- read.csv(path, header = TRUE) %>% as.data.frame()
@@ -568,6 +581,15 @@ load_and_label_data <- function(path) {
     return(df %>% as.data.frame())
 }
 
+#' Extracts the p-value from a chi-squared test
+#' 
+#' Performs a chi-squared test between the observed and predicted 
+#' data in the aggregated results.  This function extracts the p-value
+#' and returns that to enable a single-metric comparison.
+#' 
+#' @param aggregated_results The aggregated data
+#' @return the p-value of the chi-squared test 
+#' @export 
 calculate_chi_squared_probability <- function(aggregated_results) {
     # remove forbs
     row_filter <- aggregated_results$key != "Forb"
@@ -581,6 +603,15 @@ calculate_chi_squared_probability <- function(aggregated_results) {
     return(test_results$p.value)
 }
 
+
+#' Calculates the r^2
+#' 
+#' Calculates the sample r^2 value from the aggregated results
+#' 
+#' @param aggregated_results the aggregated_results (from aggregate_results)
+#' @return r-squared showing explained variance between the observed
+#' and predicted values
+#' @export
 calculate_validation_r2 <- function(aggregated_results) {
     forb_filter <- (aggregated_results$key != "Forb") & (aggregated_results$key != "Unknown")
     print(forb_filter)
@@ -592,7 +623,14 @@ calculate_validation_r2 <- function(aggregated_results) {
     return(summary(lm_fit)$r.squared)
 }
 
-
+#' Calculates Relative Precent Difference
+#' 
+#' Calculates the Relative Percent Difference (from Orndahl et al)
+#' from the aggregated results dataframe.
+#' 
+#' @param aggregated_results the data.frame of aggregated results
+#' @return mean RPD 
+#' @export 
 calculate_rpd <- function(aggregated_results) {
     # forb_filter <- aggregated_results$key != "Forb"
     df <- aggregated_results # [forb_filter]
