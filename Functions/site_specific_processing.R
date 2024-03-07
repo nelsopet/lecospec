@@ -1,3 +1,10 @@
+#' Creates a list of medians and IQRs for scaling the data
+#' 
+#' Creates data to be used for a robust-transform of the 
+#' data.  
+#' 
+#' @param raster a raster image
+#' @return a list of centers and scales
 create_robust_transform <- function(raster) {
     df <- raster::rasterToPoints(raster)
 
@@ -34,7 +41,9 @@ create_robust_transform <- function(raster) {
     ))
 }
 
-
+#' creates the list of means and standard deviations
+#' 
+#' 
 create_standard_transform <- function(raster) {
     df <- raster::rasterToPoints(raster)
 

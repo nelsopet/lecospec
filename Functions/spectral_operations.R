@@ -1,5 +1,6 @@
 #### DEPRECATED
 source(("Functions/utilities.R"))
+require(tidyverse)
 
 
 #' Resamples the given dataframe to every 'wavelength' nanometers
@@ -46,9 +47,9 @@ resample_spectral_dataframe <- function(
 
 
 
+#' Resamples a data.frame of spectral data
 #' 
-#' 
-#' Long
+#' converts a data.frame 
 #' 
 #' @param
 #' @return
@@ -114,19 +115,22 @@ adjoin_veg_index <- function(df, index_names) {
 }
 
 
-## THIS IS A SPECTRAL OPERATION THAT EXPECTS A DATA.FRAME AS INPUT
 
-#' Calculates AVIRIS Vegetation Indices
+#' Calculates  Vegetation Indices
 #'
-#' Long Description here
-#'
-#' @return vegetation indices for supplied 
-#' @param cluster (optional): A parallel computing framework  
-#' @param base_index (optional): vegetation indices for computations.  
-#' @seealso None
-#' @export 
-#' @examples Not Yet Implmented
+#' Calculates the vegetation indices based on the 
+#' expected inputs from a model (e.g. ranger, LSModel, etc)
 #' 
+#' Optionally parallelizes the computations using a cluster.
+#' 
+#' @param df a data.frame of spectral information
+#' @param ml_model: a model object.  This function extracts the
+#' expected vegetation indices from the model metadata.  The model
+#' should support the get_required_veg_indices function S4 method.
+#' @param cluster (optional): A parallel computing cluster handle
+#' @seealso get_required_veg_indices
+#' @return vegetation indices for supplied 
+#' @export 
 get_vegetation_indices <- function(
     df,
     ml_model,
@@ -205,7 +209,14 @@ convert_wavelength_strings <- function(wavelengths) {
     return(corrected_values)
 }
 
-
+#' calcaulates vegetation indices
+#' 
+#' Calculates vegetation indices from the provided spectral library
+#' 
+#' @param spec_library
+#' @param subset
+#' @param use_nearest (optional, default = TRUE)
+#' @return 
 calc_veg_index <- function(spec_library, subset = NA, use_nearest = TRUE) {
       av <- sort(
                 c(
@@ -245,14 +256,12 @@ calc_veg_index <- function(spec_library, subset = NA, use_nearest = TRUE) {
             }
 }
 
+#' Calculates a specific subset of vegetation indices
 #' 
+#' Calculates a specific list of vegetation indices
 #' 
-#' Long
-#' 
-#' @param
-#' @return
-#' @export
-#' 
+#' @param spec_library a spectral library (from hsdar)
+#' @return a list of vegetation indices 
 calc_headwall_veg_index <- function(spec_library) {
     headwall_bands <- -c(
                 3, 26, 27, 31, 32, 33,
@@ -267,6 +276,10 @@ calc_headwall_veg_index <- function(spec_library) {
     return(indices)
 }
 
+#' calculates a vegetation index for AVIRIS
+#' 
+#' @param spec_library an hsdar spectral library
+#' @return a list of indices
 calculate_aviris_veg_index <- function(spec_library) {
     indices <- calc_veg_index(
         spec_library, 
@@ -278,14 +291,15 @@ calculate_aviris_veg_index <- function(spec_library) {
 
 
 
+#' calculates vegetation indices based on some opaque defaults
 #' 
+#' Attempts to determine whether the data.frame comes from a
+#' headwall specrometer or the AVIRIS instrument, and calculates
+#' some well-suited vegetation indices based on that.
 #' 
-#' Long
-#' 
-#' @param
-#' @return
+#' @param df a data.frame of spectra data
+#' @return a data.frame of specra and indices
 #' @export
-#' 
 quick_veg_index <- function(df) {
     spec_lib <- df_to_speclib(df)
 
@@ -300,14 +314,17 @@ quick_veg_index <- function(df) {
     combined_df <- cbind(df, veg_index_df)
     return(combined_df)
 }
+#' Attaches a vegetation index to a data-frame
 #' 
+#' Provided a data.frame of spectral data, adds a column 
+#' of vegeation index values
 #' 
-#' Long
-#' 
-#' @param
-#' @return
+#' @param df the data.frame of spectral data
+#' @param index_names the name(s) of the index(es) (as used in hsdar)
+#' to calculate
+#' @return a dataframe similar to df, but with an additional 
+#' column added
 #' @export
-#' 
 adjoin_veg_index <- function(df, index_names) {
     spec_lib <- dataframe_to_speclib(df)
     indices_lib <- hsdar::vegindex(
