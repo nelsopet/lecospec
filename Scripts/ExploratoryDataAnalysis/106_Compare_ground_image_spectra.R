@@ -261,7 +261,7 @@ scales = "fixed"
   #geom_ribbon(aes(Wavelength, ymin = Lower_Reflectance, ymax = Upper_Reflectance, alpha = 0.25))+
   #geom_ribbon(aes(Wavelength, ymin = Pct_12_5_Reflectance, ymax = Pct_87_5_Reflectance, alpha = 0.3)) +
       geom_line(aes(Wavelength, Median_Reflectance,color = Functional_group0), linewidth = 2)+
-
+ geom_vline(xintercept = c(553, 680, 720, 740, 800), color = "Black", linetype = "longdash") +
   labs(title = c("Median reflectance by plant functional group"), y = "Reflectance") +
   theme(
     panel.background = element_rect(fill = "white", colour = "grey50"),
@@ -275,7 +275,7 @@ scales = "fixed"
   ) +#+ #geom_line(aes(Wavelength, Median_Reflectance), size = 2) + 
  scale_color_manual(values=unique(fncgrp0_color_list$Color), 
  labels = levels(PFT_IMG_SPEC_clean_tall$Functional_group0),
- name="Plant Functional\nType") #+
+ name="Plant Functional\nType") 
  #guides(shape = guide_legend(override.aes = list(size = 8)))
  # facet_wrap(vars(Functional_group0_wN), scales = "fixed", ncol = 2) #+ 
  # facet_wrap(~reorder(Functional_group1_wN, Source))
