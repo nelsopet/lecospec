@@ -25,12 +25,17 @@ add_noise <- function(df, noise_power, used_cols = NULL) {
 }
 
 
-#' calculates the distribution
+#' calculates the proportion of model predictions
 #'
-#' Long
+#' Counts the number of correct/incorrect classifications by
+#' class.  Returns a list of the overall accuracy (at $accuracy)
+#' and the count by each class (at $counts, itseld a list keyed by 
+#' class names)
 #'
-#' @param
-#' @return
+#' @param df a data.frame of input data for making predictions
+#' @param model a model to make predictions (must support apply_model)
+#' @param targets the correct labels for each row of df
+#' @return a list with two entries: acccuracy and counts.  
 #' @export
 #'
 check_output_distribution <- function(df, model, targets) {
@@ -128,7 +133,10 @@ targets_to_weights <- function(target_factors) {
 
 #' Compares shared columns (by name) across data.frames
 #'
-#' 
+#' Matches columns by name across data.frames and performs a 
+#' Kolmogorov–Smirnov test (KS test) to each pair of matched columns.
+#' Columns that are not shared are ignored, as are any columns named
+#' in the `ignore_cols` argument.  
 #'
 #' @param df1 a data.frame
 #' @param df2 another data.frame with shared column names
@@ -156,6 +164,17 @@ test_transferrability <- function(df1, df2, ignore_cols = NULL) {
     return(results)
 }
 
+
+#' Calculates the class weights to match a posterior distribution
+#' 
+#' Loads the validation data for a model and then creates 
+#' weights for each output class to make the training data 
+#' weights match the frequency in the posterior (target) distribution.
+#' 
+#' @param validation_path the file of validation data to load
+#' @return a list of weights by class
+#' @seealso get_posterior_weights_from_targets
+#' @export
 calculate_posterior_weights <- function(
     validation_path = "figures/merged_validation_s.csv") {
     validation_df <- read.csv(validation_path, header = TRUE)
@@ -183,6 +202,23 @@ calculate_posterior_weights <- function(
     return(fg1_weight_list)
 }
 
+
+#' Calculates class weights from for training data
+#' 
+#' Calculates the weights for each training sample such that it
+#' matches the posterior (target) distribution.
+#' 
+#' @param target_factor a factor vector of target labels for a 
+#' classifier
+#' @param posterior the frequency (or relative frequency) of each class
+#' from the posterior distribution.  By default, it is calculated
+#' from `calculate_posterior_weights`
+#' @param unbiased_weights the weights (for each class) that would 
+#' make each class eaqually likely.  By default this is calculated
+#' for you by targets_to_weights(target_factor)
+#' @return a numeric vector of class weights for each observation
+#' @export 
+#' @seealso calcualte_posterior_weights, targets_to_weights
 get_posterior_weights_from_targets <- function(
     target_factor, 
     posterior_weight = calculate_posterior_weights()) {
@@ -204,7 +240,19 @@ get_posterior_weights_from_targets <- function(
     return(output_weights)
 }
 
-
+#' writes model output to a log file
+#' 
+#' Calculates model metrics and writes them to a log file.
+#' @param model_id a unique identifier for the model, e.g. an
+#' loop index or UUID
+#' @param confusion_matrix Intended tp be a caret confision matrix, 
+#' but can be anything you can print
+#' @param distribition intended to be a measure of the output distribution, 
+#' but could be anything that supports print
+#' @param custom (Default NULL) an optional additional (small) item to log
+#' @param logpath the location to write the log: deaults to ./gs.log
+#' @return  Nothing
+#' @export
 log_model_results <- function(
     model_id, 
     confusion_matrix, 
@@ -227,6 +275,28 @@ log_model_results <- function(
     sink(NULL)
 }
 
+#' Adds a model to the grid search manifest
+#' 
+#' This function is used for tracking modeling experiments
+#' by creating a manifest.  This includes a number of metrics that
+#' are tracked in a CSV file.  See below for a complete list of metrics
+#' 
+#' @param model_id (required), the unique identifier of the model
+#' @param model_type (optional, default "") The type of model (any string)
+#' @param max_count (optional, default "") The number of training samples used
+#' @param bandwidth (optional, default "") The model bandwidth
+#' @param max_correlation (optional, default "") The maximum inter-correlation
+#' allowed between vairables
+#' @param preprocessing (optional, default "") The preprocessing scheme used
+#' @param weight (optional, default "") The class weights used 
+#' @param hyperparam1 (optional, default "") a hyperparameter value
+#' @param hyperparam2 (optional, default "") another hyperparameter value
+#' @param accuracy (optional, default "") the model accuracy
+#' @param r2 (optional, default "") the model r-squared
+#' @param rpd (optional, defalut "") the Relative Percent Difference 
+#' @param seed (optional, default "") The random seed used
+#' @param logpath (optional, default ./gs_manifest.csv) the location to 
+#' save the results
 add_model_to_manifest <- function(
     model_id,
     model_type = "",
@@ -266,7 +336,17 @@ add_model_to_manifest <- function(
     write(line, file = logpath, append = TRUE)
 }
 
-
+#' filters a data.frame to have only vegetation indices
+#' 
+#' Extracts columns from a data.frame whose names correspond to
+#' the vegetation indices supported by the hsdar R package.
+#' This assumes that '/' and other characters that are not 
+#' valid dataframe column names are simply removed (rather than,
+#' for example, replacing them with '_').
+#' 
+#' @param df a data.frame
+#' @return a data.frame with fewer columns
+#' @export
 filter_features <- function(df) {
     df_cols <- colnames(df) %>% as.character()
     target_cols <- c(
@@ -308,7 +388,16 @@ filter_features <- function(df) {
     return(df[, used_cols])
 }
 
-
+#' filters a data.frame to have a very specific list of columns
+#' 
+#' Filters a data.frame to have onlye the 10 most important
+#' features for vegetation classification.  Specifically, this is
+#' the features named "Vogelmann", "TVI", "CRI4", "Datt5",
+#' "DWSI4", "GDVI", "MCARI", "MTVI", "NPCI", "PARS", "X417.593_5nm",
+#' "X787.593_5nm", "X892.593_5nm"
+#' 
+#' @param df a data.frame
+#' @return a data.frame with 
 filter_target_subset <- function(df) {
     df_cols <- colnames(df) %>% as.character()
     target_cols <- c(
@@ -332,7 +421,34 @@ filter_target_subset <- function(df) {
     return(df[, used_cols])
 }
 
-
+#' trains a Random Forest (ranger) model
+#' 
+#' Trains a ranger classifier based on the supplied configuration
+#' 
+#' @param train_df the model training data (no labels)
+#' @param train_labels the target labels for the training data
+#' @param test_df The independent test data
+#' @param test_labels the class labels for the test data
+#' @param ntree (default 50) the number of trees for the classitier
+#' @param max_depth (default NULL) the maximum tree depth for the model
+#' @param mtry (default NULL) the model mtry, or number of predictors per tree
+#' @param outlier_fn (default NULL) Outlier handling to used. None is used by
+#' default, but a function can be supplied.  The function must take a single
+#' argument (the training/test data)
+#' and return a data frame
+#' @param preprocessing_fn (default NULL) the pre-processing to be applied
+#' to the data.  None is used by default, but a function can be
+#' supplied.  The function must take a single argument (the training/test data)
+#' and return a data frame
+#' @param weight_fn (default targets_to_weights) the class weights to use, 
+#' defaults to each class having equal representation
+#' @param model_id (default uuid::UUIDgenerate()) a unique identifier for 
+#' the model.  Generates a UUID version 4 by default
+#' @param ignore_cols columns that should not be affected by outlier_fn or 
+#' preproess_fn
+#' @param seed (default NULL) a random seed to set.  If NULL, no seed is set.
+#' @param log_string (default "") addionitional information for the logs (
+#' e.g a batch id)
 train_model <- function(
     train_df,
     train_labels,
@@ -431,6 +547,16 @@ train_model <- function(
 }
 
 
+#' Calculates the class weights to match a posterior distribution
+#' 
+#' Loads the validation data for a model and then creates 
+#' weights for each output class to make the training data 
+#' weights match the frequency in the posterior (target) distribution.
+#' 
+#' @param validation_path the file of validation data to load
+#' @return a list of weights by class
+#' @seealso get_posterior_weights_from_targets
+#' @export
 calculate_posterior_weights <- function(
     validation_path = "figures/merged_validation_s.csv") {
     validation_df <- read.csv(validation_path, header = TRUE)
@@ -458,6 +584,23 @@ calculate_posterior_weights <- function(
     return(fg1_weight_list)
 }
 
+
+#' Calculates class weights from for training data
+#' 
+#' Calculates the weights for each training sample such that it
+#' matches the posterior (target) distribution.
+#' 
+#' @param target_factor a factor vector of target labels for a 
+#' classifier
+#' @param posterior the frequency (or relative frequency) of each class
+#' from the posterior distribution.  By default, it is calculated
+#' from `calculate_posterior_weights`
+#' @param unbiased_weights the weights (for each class) that would 
+#' make each class eaqually likely.  By default this is calculated
+#' for you by targets_to_weights(target_factor)
+#' @return a numeric vector of class weights for each observation
+#' @export 
+#' @seealso calcualte_posterior_weights, targets_to_weights
 get_posterior_weights_from_targets <- function(
     target_factor, 
     posterior_weight = calculate_posterior_weights()) {
@@ -479,7 +622,16 @@ get_posterior_weights_from_targets <- function(
     return(output_weights)
 }
 
-
+#' Converts a factor to functional group 0
+#' 
+#' Converts a factor from another taxonomic level to 
+#' functional group 0 (the coarsest)
+#' 
+#' Specific to the arctic use-case
+#' 
+#' @param target_factor a factor to convert
+#' @return a factor of the entries converted to the
+#' coarest taxonomic resolution
 to_fg0 <- function(target_factor) {
     return(
         change_aggregation(
@@ -491,6 +643,12 @@ to_fg0 <- function(target_factor) {
     )
 }
 
+#' Adds 'forb' to a factor.
+#' 
+#' Extends the levels of a factor to include "Forb"
+#' 
+#' @param factor_vec a factor
+#' @return the factor with an additional level
 add_forb <- function(factor_vec) {
     f_vec <- factor_vec %>% as.factor()
 
@@ -502,7 +660,32 @@ add_forb <- function(factor_vec) {
 }
 
 
-
+#' trains a PLS-DA model
+#' 
+#' Trains a pls classifier based on the supplied configuration
+#' 
+#' @param train_df the model training data (no labels)
+#' @param train_labels the target labels for the training data
+#' @param test_df The independent test data
+#' @param test_labels the class labels for the test data
+#' @param n (default 32) the number of trees for the classitier
+#' @param outlier_fn (default NULL) Outlier handling to used. None is used by
+#' default, but a function can be supplied.  The function must take a single
+#' argument (the training/test data)
+#' and return a data frame
+#' @param preprocessing_fn (default NULL) the pre-processing to be applied
+#' to the data.  None is used by default, but a function can be
+#' supplied.  The function must take a single argument (the training/test data)
+#' and return a data frame
+#' @param weight_fn (default targets_to_weights) the class weights to use, 
+#' defaults to each class having equal representation
+#' @param model_id (default uuid::UUIDgenerate()) a unique identifier for 
+#' the model.  Generates a UUID version 4 by default
+#' @param ignore_cols columns that should not be affected by outlier_fn or 
+#' preproess_fn
+#' @param seed (default NULL) a random seed to set.  If NULL, no seed is set.
+#' @param log_string (default "") addionitional information for the logs (
+#' e.g a batch id)
 train_pls_lda <- function(
     train_df,
     train_labels,
@@ -592,17 +775,44 @@ train_pls_lda <- function(
     )
 }
 
-
-extract_features <- function(data) {
-    return(
-        subset(
-            data,
-            select = c()
-        )
-    )
-}
-
-
+#' create a train-test split that stratifies twice
+#' 
+#' Selects `test_count` observations from the data.frame provided, 
+#' where an equal representation of 'class_col' classes while 
+#' selecting observations evenly from across levels of `patch_col`.
+#' 
+#' Observations are selected from each 'patch' until the target number
+#' of observations from each 'class' are selected.  This is intended for 
+#' creating class-balanced samples that equally represent observational units 
+#' (digitized patches in geospatial research, institutions in a clinical trial,
+#' etc).  
+#' 
+#' The balancing of the class variable is exact provided there is sufficient 
+#' data.  If there is not sufficient data, then all of the observations for 
+#' that class are returned.  Patch-balancing is done on a best-effort round-
+#' robin basis where the patches are as evenly sampled as possible.
+#' 
+#' @param data a data.frame of observations to be sampled
+#' @param patch_col The name of the column in data that should
+#' be used for assignment of observations
+#' @param class_col the labels that should be balanced.
+#' @param test_count the number of observations for each class \
+#' @param train_count the maximum number of samples to keep in the 
+#' data not selected for the test set.  That is, the remaining data will
+#' have no more than train_count samples.
+#' @param seed (optional, default NULL) a random seed for the sampling.  
+#' You can also manually call set.seed, but this is provided for convenience
+#' and reproducalbility
+#' @param verbose (optional, default false) determines whether to print
+#' information to stdout.  If false, stdout will be kept clean.  If true, it
+#' prints the internal state of the sampler.
+#' @return a list with four entries; 
+#' - selection (the balanced sample)
+#' - remainder the remaining data, up to train_count samples per class
+#' - samples_per_patch the number of samples from each patch
+#' for verification purposes
+#' - samples_per_class the number of samples per class, again for verification
+#' @export 
 create_patch_balanced_sample <- function(
     data,
     patch_col = "UID",
@@ -733,7 +943,26 @@ create_patch_balanced_sample <- function(
 
 
 
-
+#' removes inter-correlated vaiables from a data frame
+#' 
+#' Sequentially removes inter-correlated variables from 
+#' a data.frame.  The order of selection of columns
+#' can be tuned by the user, as can the threshold for elmimination 
+#' and the method of calculating the correlations
+#' 
+#' @param data the data.frame of observations
+#' @param col_order the ordering of columns for selection.  
+#' The entries in this character vector should be the 
+#' names of columns in data.  The order of the entries in 
+#' this vector will be the order of preference for the 
+#' coulumns used.
+#' @param threshold (default 0.95) the maximum cutoff for the
+#' correlation between variables.  
+#' @param method ("pearson" or "spearman") determines the way
+#' the correlation coefficients are correlated
+#' @return a data.frame with inter-correlated 
+#' columns removed
+#' @export 
 remove_intercorrelated_variables <- function(
     data,
     col_order,
