@@ -8,7 +8,7 @@ require(stringr)
 require(stringi)
 require(rjson)
 require(snow)
-require(doSNOW)
+require(doFuture)
 require(stats)
 require(rasterVis)
 
@@ -66,7 +66,8 @@ estimate_land_cover <- function(
     output_filepath =  paste(
         "output-",
         format(Sys.time(), "%a-%b-%d-%H-%M-%S-%Y"), ".envi", sep=""),
-    use_external_bands = TRUE
+    use_external_bands = TRUE,
+    is_classifier = NULL
 ) {
 
     path <- getwd()
@@ -75,7 +76,19 @@ estimate_land_cover <- function(
     # Read in the configuration file
     config <- rjson::fromJSON(file = config_path)
 
-    
+
+    # set the raster datatype from the arguments (if provided),
+    # or if none is provided, load it from the config file
+    raster_datatype <- NULL
+    if(!is.null(is_classifier)){
+        if(is_classifier) {
+            raster_datatype <- "INT2U"
+        } else {
+            raster_datatype <- "FLT4S"
+        }
+    } else {
+        raster_datatype <- config$is_classifier
+    }
 
 
     # Load the model
@@ -96,8 +109,8 @@ estimate_land_cover <- function(
     bandnames <- names(input_raster)
     if(use_external_bands){
         band_count <- raster::nlayers(input_raster)
-        bandnames <- read.csv(config$external_bands)$x[1:band_count]
-            %>% as.vector()
+        bandnames <- read.csv(config$external_bands)$x[1:band_count] %>%
+            as.vector()
         names(input_raster) <- bandnames
     }
 
@@ -173,7 +186,7 @@ estimate_land_cover <- function(
 
     if(config$parallelize_by_tiles){
         #doSNOW::registerDoSNOW(cl)
-        doParallel::registerDoParallel(cl)
+        doFuture::registerDoFuture(cl)
         tile_results <- foreach::foreach(
             i = seq_along(tile_filenames),
             .export = as.vector(ls(.GlobalEnv))
@@ -192,7 +205,8 @@ estimate_land_cover <- function(
                 transform_type = transform_type_cfg,
                 return_filename = TRUE,
                 save_path = prediction_filenames[[i]],
-                suppress_output = TRUE)
+                suppress_output = TRUE,
+                raster_datatype = raster_datatype)
             sink(NULL)
             return(tile_result)
         }
@@ -214,7 +228,8 @@ estimate_land_cover <- function(
                 transform_type = transform_type_cfg,
                 return_filename = TRUE,
                 save_path = prediction_filenames[[i]],
-                suppress_output = TRUE)
+                suppress_output = TRUE,
+                raster_datatype = raster_datatype)
         sink(NULL)
         return(tile_result)
         }
@@ -223,9 +238,9 @@ estimate_land_cover <- function(
 
     
 
-    print("Tile based processing complete")
+    #print("Tile based processing complete")
     raster::endCluster()
-    print(tile_results)
+    #print(tile_results)
 
     # return the background thread configuration to its initial state
     if(config$parallelize_by_tiles){
@@ -234,7 +249,10 @@ estimate_land_cover <- function(
     }
 
     # merge and save the results.
-    results <- merge_tiles(prediction_filenames, output_path = output_filepath)
+    results <- merge_tiles(
+        prediction_filenames, 
+        output_path = output_filepath, 
+        raster_datatype = raster_datatype)
     # load the results from disk to correct data type issues from float/INT2U (C++ uint16_t) conversion
     results <- raster::raster(output_filepath)
 
@@ -284,7 +302,8 @@ process_tile <- function(
     transform_type = "none",
     return_filename = FALSE,
     save_path = NULL,
-    suppress_output = FALSE
+    suppress_output = FALSE,
+    raster_datatype = "INT2U"
     ) {
     set.seed(61718)
     raster_obj <- raster::brick(tile_filename)
@@ -295,11 +314,13 @@ process_tile <- function(
         ml_model,
         band_names = band_names)
 
+
     if(nrow(base_df) < 2) {
         handle_empty_tile(
             raster_obj,
             save_path = save_path,
-            target_crs = input_crs)
+            target_crs = input_crs,
+            raster_datatype = raster_datatype)
 
         if(!suppress_output){
             if(return_raster){
@@ -319,13 +340,13 @@ process_tile <- function(
 
         rm(raster_obj)
         gc()
-        print(colnames(base_df))
+        #print(colnames(base_df))
         cleaned_df <- drop_zero_rows(base_df)
         rm(base_df)
         gc()
 
         cleaned_df_no_empty_cols <- drop_empty_columns(cleaned_df) 
-        print(summary(cleaned_df_no_empty_cols))
+        #print(summary(cleaned_df_no_empty_cols))
         veg_indices <- get_vegetation_indices(
             cleaned_df_no_empty_cols,
             NULL,
@@ -349,16 +370,20 @@ process_tile <- function(
         
 
 
-        df_full <- cbind(
-            subset(cleaned_df_no_empty_cols, select = c("x", "y")),
-            resampled_df,
-            veg_indices)
+        df_full <- as.data.frame(
+            cbind(
+                subset(cleaned_df_no_empty_cols, select = c("x", "y")),
+                resampled_df,
+                veg_indices
+            )
+        )
+        
+        print(class(df_full))
 
         imputed_df <- impute_spectra(
             df_full,
-            method = "median",
-            cluster = cluster) %>%
-            as.data.frame()
+            method = "missForest",
+            cluster = cluster)
  
         # above line should not be needed, testing then deleting
         rm(veg_indices)
@@ -411,16 +436,20 @@ process_tile <- function(
             imputed_df_2,
             ml_model)
         
+
         prediction <- postprocess_prediction(prediction, df_preprocessed)
         rm(df_preprocessed)
         gc()
+
+
 
         prediction <- convert_and_save_output(
             prediction,
             aggregation,
             save_path = save_path,
             return_raster = return_raster,
-            target_crs = input_crs)
+            target_crs = input_crs,
+            raster_datatype = raster_datatype)
 
         
         raster::crs(prediction) <- input_crs

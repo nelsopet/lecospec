@@ -1,10 +1,8 @@
 lecospec_depenencies <- c(
-    "rgdal",
     "gdalUtils",
     "rgeos",
     "sf",
     "sp",
-    "hsdar",
     "mapview",
     "maptools",
     "doParallel",
@@ -47,7 +45,7 @@ lecospec_depenencies <- c(
 
 install.packages(lecospec_depenencies, repos = "http://cran.rstudio.com/")
 
-devtools::install_github("nelsopet/hsdar")
+devtools::install_github("cran/hsdar")
 
 update.packages(ask = FALSE)
 
@@ -56,3 +54,4 @@ update.packages(ask = FALSE)
 # r2u to aid in the installation of the above packages.
 #
 # Time-out issues are also possible when installing terra (it's big!)
+# r2u will resolve them on linux; mac/windows users can find faster internet?

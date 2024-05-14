@@ -211,8 +211,8 @@ impute_spectra <- function(
 
     return(
         cbind(
-            output_data,
-            x[, ignored_cols]
+            as.data.frame(output_data),
+            as.data.frame(x[, ignored_cols])
         )
     )
 }#end impute_spectra
@@ -355,12 +355,14 @@ convert_and_save_output <- function(
     aggregation_level,
     save_path = NULL,
     return_raster = TRUE,
-    target_crs = NULL
+    target_crs = NULL,
+    raster_datatype = "INT2U"
 ){
     prediction <- convert_pft_codes(
         df,
         aggregation_level = aggregation_level,
-        to = "int")
+        to = "int"
+        )
 
     #print(head(prediction))
 
@@ -375,7 +377,7 @@ convert_and_save_output <- function(
         #print("Converted to Raster")
 
         # set to int datatype (unsigned int // 2 bytes)
-        raster::dataType(prediction) <- "INT2U" 
+        raster::dataType(prediction) <- raster_datatype
         levels(prediction) <- get_attribute_table(aggregation_level)
         if(!is.null(target_crs)){
             raster::crs(prediction) <- target_crs
@@ -384,7 +386,7 @@ convert_and_save_output <- function(
                 raster::writeRaster(
                     prediction,
                     filename = save_path,
-                    datatype='INT2U',
+                    datatype=raster_datatype,
                     overwrite = TRUE)
             } 
         return(prediction)
@@ -1312,4 +1314,30 @@ bin_df <- function(df, num_bins = 10){
 
     return(binned_df)
 
+}
+
+
+#' Extracts the GDAL datatype from the predictions
+#' 
+#' This function automatically detects whether a model output
+#' is a factor/character vector, or a numeric vector.  In the 
+#' case of numeric data (regression models) the GDAL datatype is
+#' set to 'FLT4S', and for classifiers (character, factor) the 
+#' data is seet to 'INT2U'
+#' 
+#' @param predictions the vector of predictions
+#' @return a character vector, either 'INT2U' or "FLT4S"
+#' @export 
+get_datatype_from_predictions <- function(predictions) {
+
+    if(is.character(predictions) | is.factor(predictions)) {
+        return("INT2U")
+    }
+
+    if(is.numeric(predictions)) {
+        return("FLT4S")
+    }
+
+    warning("Unrecognized datatype in predictions!  Defaulting to FLT4S (float).")
+    return("FLT4S")
 }

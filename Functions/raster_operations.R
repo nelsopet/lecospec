@@ -114,7 +114,8 @@ handle_empty_tile <- function(
     tile_raster, 
     save_path = NULL, 
     target_crs = NULL, 
-    no_data = -Inf){
+    no_data = -Inf,
+    raster_datatype = "INT2U"){
     # convert to a raster
     print("Processing empty tile")
     output_raster <- tile_raster[[1]]# %>% raster::as.raster()
@@ -125,13 +126,13 @@ handle_empty_tile <- function(
     }
 
     names(output_raster) <- c("predictions")
-    raster::dataType(output_raster) <- "INT2U"
+    raster::dataType(output_raster) <- raster_datatype
     raster::NAvalue(output_raster) <- no_data
     raster::values(output_raster) <- NA
 
     print(raster::NAvalue(output_raster))
     if(!is.null(save_path)){
-        raster::writeRaster(output_raster, save_path, datatype = "INT2U")
+        raster::writeRaster(output_raster, save_path, datatype = raster_datatype)
     }
 
     print("Empty Input Raster")
@@ -394,7 +395,7 @@ calc_num_tiles <- function(file_path, max_size = 1024){
 #' @return
 #' @export
 #' 
-safe_merge <- function(raster_one, raster_two, target_crs = NULL){
+safe_merge <- function(raster_one, raster_two, target_crs = NULL, raster_datatype = "INT2U"){
     template <- raster::projectRaster(from = raster_two, to= raster_one, alignOnly=TRUE)
     #template is an empty raster that has the projected extent of r2 but is aligned with r1 (i.e. same resolution, origin, and crs of r1)
     r2_aligned <- raster::projectRaster(from = raster_two, to= template)
@@ -402,8 +403,9 @@ safe_merge <- function(raster_one, raster_two, target_crs = NULL){
         raster::merge(
             raster_one, 
             r2_aligned,
-            datatype='INT2U',
-            tolerance = 1.0        ) 
+            datatype=raster_datatype,
+            tolerance = 1.0
+            ) 
     )
 }
 
@@ -472,13 +474,13 @@ assemble_tiles_from_disk <- function(tiles, output_path){
 #' @return
 #' @export
 #' 
-merge_tiles <- function(input_files, output_path = NULL, target_layer = 1) {
+merge_tiles <- function(input_files, output_path = NULL, target_layer = 1, raster_datatype = "INT2U") {
 
     master_raster <- raster::raster(input_files[[1]])
-    raster::dataType(master_raster) <- "INT2U"
+    raster::dataType(master_raster) <- raster_datatype
     for (input_file in tail(input_files, -1)) {
         new_raster <- raster::raster(input_file)
-        raster::dataType(new_raster) <- "INT2U"
+        raster::dataType(new_raster) <- raster_datatype
         # above is robust against multi-layer images
         master_raster <- safe_merge(
             master_raster,
@@ -486,10 +488,10 @@ merge_tiles <- function(input_files, output_path = NULL, target_layer = 1) {
         )
     }
     if(!is.null(output_path)) {
-        raster::writeRaster(master_raster, output_path, datatype='INT2U', overwrite = TRUE)
+        raster::writeRaster(master_raster, output_path, datatype=raster_datatype, overwrite = TRUE)
     }
 
-    raster::dataType(master_raster) <- "INT2U"
+    raster::dataType(master_raster) <- raster_datatype
     return(master_raster)
 }
 
