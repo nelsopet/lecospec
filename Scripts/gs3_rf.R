@@ -101,8 +101,6 @@ variable_importance <- read.csv("./assets/variable_importance.csv")
 ##  Run Grid Search
 ########################################
 
-
-
 for (bandwidth_index in seq_along(bandwidths)) {
     bandwidth <- bandwidths[[bandwidth_index]]
     for (count in max_per_pft) {
@@ -141,13 +139,13 @@ for (bandwidth_index in seq_along(bandwidths)) {
                 Site
             )
         )
-        labels <- train_data_full$FncGrp1 %>% as.factor()
+        labels <- train_data_full$FncGrp1 %>% as.factor() %>% as.numeric()
+    
 
         variable_importance_model <- ranger::ranger(
-            num.trees = 1000,
-            importance = "impurity_corrected",
+            num.trees = 100,
             replace = TRUE,
-            classification = TRUE,
+            classification = FALSE,
             x = train_data,
             y = labels
         )

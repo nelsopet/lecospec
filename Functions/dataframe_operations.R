@@ -146,12 +146,16 @@ impute_spectra <- function(
 
     zero_variance_cols <- c()
 
-    for(col in colnames(x)) {
-        x_var <- var(x[, col])
-        if((x_var == 0) || is.na(x_var) || is.nan(x_var) || is.null(x_var)) {
-            append(zero_variance_cols, col)
-        }
-    }
+    #for(col in colnames(x)) {
+    #    current_col <- x[,col]
+    #    if(is.numeric(current_col)){
+    #        print("This is where I think the problem is")
+    #        x_var <- var(current_col, na.rm = TRUE)
+    #        if((x_var == 0) || is.na(x_var) || is.nan(x_var) || is.null(x_var)) {
+    #            append(zero_variance_cols, col)
+    #        }
+    #    }
+    #}
 
     if(!is.null(ignore_cols)) {
         
@@ -186,7 +190,7 @@ impute_spectra <- function(
     if (method == "missForest") {
         output_data <- missForest::missForest(df, maxiter = 1,)$ximp
     } else if(method == "median"){
-        output_data <- useful::simple.impute(df)
+        output_data <- useful::simple.impute(df, fun = function(x){median(x, na.rm = TRUE)})
     } else if( method == "mean"){
         output_data <- useful::simple.impute(df, fun = mean)
     }

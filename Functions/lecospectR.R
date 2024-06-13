@@ -382,7 +382,7 @@ process_tile <- function(
 
         imputed_df <- impute_spectra(
             df_full,
-            method = "missForest",
+            method = "median",
             cluster = cluster)
  
         # above line should not be needed, testing then deleting
