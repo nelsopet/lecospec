@@ -52,7 +52,6 @@ bandsRemove <- function(x) {
 #--------------------------- Functions For Derivative Calculations ------------------------
 # Function responsible for resampling
 Func_Resamp <- function(Resamp) {
-
     # Removes metadata before function can be applied
     df <- metaRemove(Resamp)
 
@@ -143,7 +142,6 @@ Func_VI <- function(VI) {
 
 # Function Combines both Derivitive that are calculated
 Deriv_combine <- function(x) {
-
     # Resampling Dataset
     Resampled_data <- Func_Resamp(x)
 

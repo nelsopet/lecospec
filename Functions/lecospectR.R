@@ -8,7 +8,7 @@ require(stringr)
 require(stringi)
 require(rjson)
 require(snow)
-require(doSNOW)
+require(doFuture)
 require(stats)
 require(rasterVis)
 
@@ -31,27 +31,43 @@ source("Functions/training_utilities.R")
 
 
 
-#' equivalent to the old LandCoverEstimator()
+#' Applies the provided model to the data based on the given configuration
 #'
 #' Long Description here
 #'
-#' @return 
-#' @param x
+#' @param input_filepath
+#' @param model (optional, see model_support.R for supported types): 
+#' the model to apply to the data cube.  If none is supplied, it will 
+#' attempt to load it from the config file
+#' @param config_path (character) a path to the config file for the run. 
+#' Allows for the configuration of the backend processes as well
+#' Defaults to ./config.json
+#' @param outlier_processing one of "", "", "", "", NULL, or a function
+#' @param transform_type one of "", "", "", "", NULL, or a function
+#' @param cache_filepath a folder the system can use as a cache 
+#' (defaults to the current working directory.  In a future version
+#' it will default to system temporary files)
+#' @param output_filepath the file where the results should be saved
+#' @param use_external_bands (boolean):  determine wether to use a file of 
+#' external band names.  This si primarily used for file that don't include 
+#' band names (.e.g. tif).  Since band information is required for the system, 
+#' it must be provided externally for the files that cannot include it.
 #' @seealso None
+#' @return a filepath or the raster of predictions
 #' @export 
 #' @examples Not Yet Implmented
-#'
 estimate_land_cover <- function(
     input_filepath,
     model = NULL, 
+    config_path = "./config.json",
     outlier_processing = NULL,
     transform_type = NULL,
-    config_path = "./config.json",
     cache_filepath = "./",
     output_filepath =  paste(
         "output-",
         format(Sys.time(), "%a-%b-%d-%H-%M-%S-%Y"), ".envi", sep=""),
-    use_external_bands = TRUE
+    use_external_bands = TRUE,
+    is_classifier = NULL
 ) {
 
     path <- getwd()
@@ -60,7 +76,19 @@ estimate_land_cover <- function(
     # Read in the configuration file
     config <- rjson::fromJSON(file = config_path)
 
-    
+
+    # set the raster datatype from the arguments (if provided),
+    # or if none is provided, load it from the config file
+    raster_datatype <- NULL
+    if(!is.null(is_classifier)){
+        if(is_classifier) {
+            raster_datatype <- "INT2U"
+        } else {
+            raster_datatype <- "FLT4S"
+        }
+    } else {
+        raster_datatype <- config$is_classifier
+    }
 
 
     # Load the model
@@ -77,11 +105,12 @@ estimate_land_cover <- function(
         warning("The input raster does not have a CRS specified.")
     }
 
-    # save the band names since they will be lost now that we are using .envi tiles 
+    # save the band names since they will be lost using .envi tiles
     bandnames <- names(input_raster)
     if(use_external_bands){
         band_count <- raster::nlayers(input_raster)
-        bandnames <- read.csv(config$external_bands)$x[1:band_count] %>% as.vector()
+        bandnames <- read.csv(config$external_bands)$x[1:band_count] %>%
+            as.vector()
         names(input_raster) <- bandnames
     }
 
@@ -157,7 +186,7 @@ estimate_land_cover <- function(
 
     if(config$parallelize_by_tiles){
         #doSNOW::registerDoSNOW(cl)
-        doParallel::registerDoParallel(cl)
+        doFuture::registerDoFuture(cl)
         tile_results <- foreach::foreach(
             i = seq_along(tile_filenames),
             .export = as.vector(ls(.GlobalEnv))
@@ -176,7 +205,8 @@ estimate_land_cover <- function(
                 transform_type = transform_type_cfg,
                 return_filename = TRUE,
                 save_path = prediction_filenames[[i]],
-                suppress_output = TRUE)
+                suppress_output = TRUE,
+                raster_datatype = raster_datatype)
             sink(NULL)
             return(tile_result)
         }
@@ -198,7 +228,8 @@ estimate_land_cover <- function(
                 transform_type = transform_type_cfg,
                 return_filename = TRUE,
                 save_path = prediction_filenames[[i]],
-                suppress_output = TRUE)
+                suppress_output = TRUE,
+                raster_datatype = raster_datatype)
         sink(NULL)
         return(tile_result)
         }
@@ -207,9 +238,9 @@ estimate_land_cover <- function(
 
     
 
-    print("Tile based processing complete")
+    #print("Tile based processing complete")
     raster::endCluster()
-    print(tile_results)
+    #print(tile_results)
 
     # return the background thread configuration to its initial state
     if(config$parallelize_by_tiles){
@@ -218,7 +249,10 @@ estimate_land_cover <- function(
     }
 
     # merge and save the results.
-    results <- merge_tiles(prediction_filenames, output_path = output_filepath)
+    results <- merge_tiles(
+        prediction_filenames, 
+        output_path = output_filepath, 
+        raster_datatype = raster_datatype)
     # load the results from disk to correct data type issues from float/INT2U (C++ uint16_t) conversion
     results <- raster::raster(output_filepath)
 
@@ -233,19 +267,25 @@ estimate_land_cover <- function(
 
 #' processes a small raster imarge
 #'
-#' processes the given image in-memory.  This assumes that the image is small enough that tiling is not required.  
-#' Functions include data munging, imputation, automated vegetation index calculation, model inference, and data type conversion. 
+#' processes the given image in-memory.  This assumes that the image is 
+#' small enough that tiling is not required.  
+#' 
+#' Functions include data munging, imputation, automated vegetation index calculation, 
+#' model inference, and data type conversion. 
 #' The outputs are optionally saved to disk as well.  
 #' Parallization is used if a connection to a parallel (or raster) package cluster is provided
 #'
 #' @return 
 #' @param tile_filename: A string specifying the location of the target raster on the disk
 #' @param ml_model: the machine learning model for prediction.  
-#' @param cluster: a cluster, from the raster::beginCluster(); raster::getCluster() or parallel::makeCluster().  Default is NULL (no parallelism).
+#' @param cluster: a cluster, from the raster::beginCluster(); raster::getCluster() or parallel::makeCluster().  
+#' Default is NULL (no parallelism).
 #' @param return_raster: (default: TRUE) returns a rasterLayer object if true, or a data.frame if FALSE.
-#' @param save_path: the path to save the output.  If NULL (default) no file is saved.  Otherwise it attempts to save the file to the location specified.
+#' @param save_path: the path to save the output.  If NULL (default) no file is saved.  
+#' Otherwise it attempts to save the file to the location specified.
 #' @param suppress_output: if TRUE, returns the save location of the output, rather than the output itself.  
-#' If FALSE (default), the function returns a raster::rasterLayer or base::data.frame as determined by return_raster parameter.
+#' If FALSE (default), the function returns a raster::rasterLayer or base::data.frame 
+#' as determined by return_raster parameter.
 #' @seealso None
 #' @export 
 #' @examples Not Yet Implmented
@@ -262,7 +302,8 @@ process_tile <- function(
     transform_type = "none",
     return_filename = FALSE,
     save_path = NULL,
-    suppress_output = FALSE
+    suppress_output = FALSE,
+    raster_datatype = "INT2U"
     ) {
     set.seed(61718)
     raster_obj <- raster::brick(tile_filename)
@@ -273,11 +314,13 @@ process_tile <- function(
         ml_model,
         band_names = band_names)
 
+
     if(nrow(base_df) < 2) {
         handle_empty_tile(
             raster_obj,
             save_path = save_path,
-            target_crs = input_crs)
+            target_crs = input_crs,
+            raster_datatype = raster_datatype)
 
         if(!suppress_output){
             if(return_raster){
@@ -297,13 +340,13 @@ process_tile <- function(
 
         rm(raster_obj)
         gc()
-        print(colnames(base_df))
+        #print(colnames(base_df))
         cleaned_df <- drop_zero_rows(base_df)
         rm(base_df)
         gc()
 
         cleaned_df_no_empty_cols <- drop_empty_columns(cleaned_df) 
-        print(summary(cleaned_df_no_empty_cols))
+        #print(summary(cleaned_df_no_empty_cols))
         veg_indices <- get_vegetation_indices(
             cleaned_df_no_empty_cols,
             NULL,
@@ -327,16 +370,20 @@ process_tile <- function(
         
 
 
-        df_full <- cbind(
-            subset(cleaned_df_no_empty_cols, select = c("x", "y")),
-            resampled_df,
-            veg_indices)
+        df_full <- as.data.frame(
+            cbind(
+                subset(cleaned_df_no_empty_cols, select = c("x", "y")),
+                resampled_df,
+                veg_indices
+            )
+        )
+        
+        print(class(df_full))
 
         imputed_df <- impute_spectra(
             df_full,
             method = "median",
-            cluster = cluster) %>%
-            as.data.frame()
+            cluster = cluster)
  
         # above line should not be needed, testing then deleting
         rm(veg_indices)
@@ -389,16 +436,20 @@ process_tile <- function(
             imputed_df_2,
             ml_model)
         
+
         prediction <- postprocess_prediction(prediction, df_preprocessed)
         rm(df_preprocessed)
         gc()
+
+
 
         prediction <- convert_and_save_output(
             prediction,
             aggregation,
             save_path = save_path,
             return_raster = return_raster,
-            target_crs = input_crs)
+            target_crs = input_crs,
+            raster_datatype = raster_datatype)
 
         
         raster::crs(prediction) <- input_crs
