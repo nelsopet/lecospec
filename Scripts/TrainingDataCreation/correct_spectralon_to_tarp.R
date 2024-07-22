@@ -32,6 +32,7 @@ spln %>% group_by(Site, Level) %>% tally
 
 sts_spln<-rbind(sts,spln)
 str(sts_spln)
+head(sts_spln)
 sts_spln %>% group_by(Site, Level) %>% tally
 
 sts_spln_flat<-sts_spln %>% 
@@ -46,9 +47,23 @@ sts_spln_flat_median<-sts_spln_flat %>%
 head(sts_spln_flat_median)
 windows()
 hist(sts_spln_flat$CorFact)
-ggplot(sts_spln_flat,aes(`99`,Single_Pixel_55pct))+geom_line(aes(color=Site))
-
-#Write correction factor to asssets
+ggplot(sts_spln_flat_median,aes(Wavelength,Radiance)) + geom_line()
+#Write correction factor to assets as both a .csv and .ENVI
 write.csv(sts_spln_flat_median, "assets/radiance_55pct_over_Spectralon.csv")
+writeSLI(sts_spln_flat_median,"assets/radiance_55pct_over_Spectralon")
+
+#Apply correction factor to one site, Bison Gulch, and using SpectralView,
+#test whether the radiometric calibration gets the same values for the tarp
 
 
+Bison_RadCor<-
+Spectralon_df %>% dplyr::filter(Site == "Bison") %>% #dim
+    dplyr::select(-Level, -Site) %>% mutate(CorFact = sts_spln_flat_median$Radiance) %>%
+    mutate(Radiance_corrected = Radiance*CorFact) %>% #head
+    dplyr::select(Wavelength,Radiance_corrected) %>% #head
+    dplyr::arrange(.,Wavelength) #%>% head
+unlist(Bison_RadCor[,-1]) %>% typeof
+plot(Bison_RadCor$Wavelength, Bison_RadCor$Radiance_corrected)
+    #mutate(Radiance = Radiance_corrected) %>%
+    #dplyr::select(-Radiance_corrected) %>% head
+    writeSLI(Bison_RadCor,"assets/Bison_radiance_corrected", wavl.units="Nanometers")
