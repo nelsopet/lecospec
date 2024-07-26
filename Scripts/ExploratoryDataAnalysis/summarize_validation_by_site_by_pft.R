@@ -17,11 +17,12 @@ Metrics::rmse()
 data_stats<-data %>% 
 group_by(sites,key) %>% 
 summarise(R2 = cor(validation_counts,predicted_counts)^2,
-            rss = sum((validation_counts-predicted_counts) ^ 2),  ## residual sum of squares
-            tss = sum((validation_counts - mean(validation_counts)) ^ 2),  ## total sum of squares
-            rsq = 1 - rss/tss,
+            rsq = 1 - sum((validation_counts-predicted_counts) ^ 2)/sum((validation_counts - mean(validation_counts)) ^ 2),
             MSE = mse(validation_counts,predicted_counts),
             MAE = mae(validation_counts,predicted_counts),
-            RMSE = rmse(validation_counts,predicted_counts)
+            RMSE = rmse(validation_counts,predicted_counts),
+            slope = cov(validation_counts,predicted_counts) / var(validation_counts),
+            intercept = mean(predicted_counts) - slope * mean(validation_counts)
             ) 
-plot(data_stats$R2,data_stats$rsq)
+
+write.csv(data_stats,"./figures/best_model_prediction_stats.csv")
