@@ -19,9 +19,15 @@ test_data_pred<-predict(mod,test_data %>% subset(FncGrp1 != "Forb"))
 test_data_pred_fncGrp0<-change_aggregation(test_data_pred, 0, aggregation_key)
 
 accuracy(test_data_fncGrp0, test_data_pred_fncGrp0)
+help(accuracy)
 conf_mat<-caret::confusionMatrix(data = as.factor(test_data_pred_fncGrp0), as.factor(test_data_fncGrp0))
 
 
 #Kappa stat is here
 conf_mat$overall
-conf_mat$table
+#      Accuracy          Kappa  AccuracyLower  AccuracyUpper   AccuracyNull
+#  8.437500e-01   8.073218e-01   7.780438e-01   8.962582e-01   2.500000e-01
+#AccuracyPValue  McnemarPValue
+#  4.772982e-56            NaN
+
+write.csv(conf_mat$table, "figures/best_model_confusion_matrix.csv")
