@@ -13,7 +13,7 @@
 - [ ] Add something about different seeds/random effects 
     - [ ] Effect of seed related to differences in class size (samples per class)
     - [ ] 5 runs of random forest with different seeds, and see the differences
-    - [ ] Figure showing effect of seed: accuracy line with 
+    - [ ] Figure showing effect of seed: accuracy line with measure of spread
         - possible response: should oversample instead of undersampling
     - [ ] seed was thought to be important; decided only important with class imbalance.  
     - [ ] May have something from before
@@ -38,6 +38,11 @@
 
 
 Note to self: We could look into this - can we simulate this based on variable importance?
+
+
+### Meeting August 13 
+- [ ] 
+
 
 Random Seeds
 6265

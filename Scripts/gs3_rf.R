@@ -203,6 +203,8 @@ for (bandwidth_index in seq_along(bandwidths)) {
                             y = labels
                         )
                     }
+
+                    
                     if (("Forb" %in% levels(labels)) && !("Forb" %in% levels(test_labels))) {
                         levels(test_labels) <- c(levels(test_labels), "Forb")
                     }
