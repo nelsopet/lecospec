@@ -11,27 +11,33 @@ colnames(adb_mod_stats)
 
 ada_df<-adb_mod_stats %>% 
         mutate(Bandwith_nm = as.factor(bandwidth), Max_Pixels_per_PFT = as.factor(maxCount))
-
+#Remove model id since some models are repeated but have different ids
+ada_df<-unique(dplyr::select(ada_df, -model_id))# %>% dim
+unique(ada_df$Max_Pixels_per_PFT)
+log10(unique(ada_df$hyperparam1))
 #Adaboost mod number of trees vs r2
 adb_mod_plot<-ggplot(ada_df, aes((hyperparam1),r2))+#aes(log10((hyperparam1)),r2))+
 #geom_point(aes(lwd=1.2, color=Bandwith_nm, size = Max_Pixels_per_PFT)) + 
-geom_jitter(aes(color=Bandwith_nm, size = maxCount), shape=21)+ # size = maxCount
-#geom_jitter(aes(color=Bandwith_nm, size = Max_Pixels_per_PFT)) + 
+geom_jitter(aes(color=Bandwith_nm, size = maxCount))+#, shape=21))+ # size = maxCount
+#geom_boxplot(aes(group=maxCount)) +
+#geom_jitter(aes(color=Bandwith_nm))+#, size = Max_Pixels_per_PFT)) + 
 #size = as.factor(maxCount, ordered=TRUE, levels=c(sort(unique(adb_mod_stats$maxCount))))
 #geom_line(aes(linetype=as.factor(bandwidth), lwd=1.2)) + 
-labs(x = "Number of trees", x = "r2") +
+labs(x = "Number of trees", y = "R2") +
 theme(panel.background = element_rect(fill = "white", colour = "grey50"), 
         #legend.key.size = unit(0.5, "cm"),legend.text = element_text(size=25),
         #legend.position = "none",
-        title = element_text(size=55),
-        strip.text = element_text(size = 45),
+        title = element_text(size=35),
+        strip.text = element_text(size = 25),
         axis.text = element_text(size = 45),
         legend.key.size = unit(1, "cm"),
-        legend.text =element_text(size=45),
+        legend.text =element_text(size=30),
         legend.position="bottom") +
-        ggtitle("Adaboost r2 vs number of components")+
-        guides(color = guide_legend(override.aes = list(size = 15)))+      
-        scale_size() + scale_x_log10()+ geom_hline(yintercept=0.5)        
+        #ggtitle("Adaboost r2 vs number of components")+
+        guides(color = guide_legend(override.aes = list(size = 20)))+      
+        scale_size() + 
+        scale_x_log10(breaks=unique(ada_df$hyperparam1))+geom_hline(yintercept=0.5)        
+
 #labels = label_log())
 #geom_point(aes(lwd=1.2, color=Bandwith_nm, size = Max_Pixels_per_PFT)) + 
 
@@ -39,7 +45,7 @@ theme(panel.background = element_rect(fill = "white", colour = "grey50"),
 #scale_color_manual(values = log10(hyperparam1), name = "Tree Count") #+
 #X11()
 #windows();
-jpeg("figures/Adaboost_ModelComplexity_vs_R2.jpg", width = 2000, height = 1200)
+jpeg("figures/Adaboost_ModelComplexity_vs_R2.jpg", width = 1400, height = 800)
 adb_mod_plot#+geom_smooth()
 dev.off()
 
@@ -64,7 +70,7 @@ theme(panel.background = element_rect(fill = "white", colour = "grey50"),
         geom_hline(yintercept=0.5)+        
         geom_vline(xintercept=0.8)
 
-jpeg("figures/Adaboost_NumTrees_vs_Accuracy.jpg", width = 2000, height = 1200)
+jpeg("figures/Adaboost_NumTrees_vs_Accuracy.jpg", width = 1000, height = 600)
 adb_mod_plot#+geom_smooth()
 dev.off()
 
