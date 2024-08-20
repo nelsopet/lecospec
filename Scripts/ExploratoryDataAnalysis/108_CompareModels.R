@@ -44,6 +44,31 @@ adb_mod_plot#+geom_smooth()
 dev.off()
 
 ############# Adaboost mod accuracy vs r2
+adb_mod_plot<-ggplot(ada_df, aes(hyperparam1, accuracy))+
+#geom_point(aes(lwd=1.2, color=as.factor(bandwidth), size = as.factor(maxCount))) + 
+#geom_jitter(aes(lwd=1.2, color=as.factor(bandwidth), size = as.factor(maxCount))) + 
+geom_jitter(aes(color=Bandwith_nm, size = maxCount), shape=21)+
+#geom_line(aes(linetype=as.factor(bandwidth), lwd=1.2)) + 
+labs(y = "accuracy", x = "Number of trees") +
+theme(panel.background = element_rect(fill = "white", colour = "grey50"), 
+        #legend.key.size = unit(0.5, "cm"),legend.text = element_text(size=25),
+        #legend.position = "none",
+        title = element_text(size=55),
+        strip.text = element_text(size = 45),
+        axis.text = element_text(size = 45),
+        legend.key.size = unit(1, "cm"),
+        legend.text =element_text(size=45),
+        legend.position="bottom") +
+        ggtitle("Adaboost model complexity vs accuracy")+ 
+        guides(color = guide_legend(override.aes = list(size = 15)))+             
+        geom_hline(yintercept=0.5)+        
+        geom_vline(xintercept=0.8)
+
+jpeg("figures/Adaboost_NumTrees_vs_Accuracy.jpg", width = 2000, height = 1200)
+adb_mod_plot#+geom_smooth()
+dev.off()
+
+############# Adaboost mod accuracy vs model complexity
 adb_mod_plot<-ggplot(ada_df, aes(accuracy, r2))+
 #geom_point(aes(lwd=1.2, color=as.factor(bandwidth), size = as.factor(maxCount))) + 
 #geom_jitter(aes(lwd=1.2, color=as.factor(bandwidth), size = as.factor(maxCount))) + 
@@ -67,8 +92,6 @@ theme(panel.background = element_rect(fill = "white", colour = "grey50"),
 jpeg("figures/Adaboost_R2_vs_Accuracy.jpg", width = 2000, height = 1200)
 adb_mod_plot#+geom_smooth()
 dev.off()
-
-
 #Adaboost mod accuracy vs rpd
 adb_mod_plot<-ggplot(adb_mod_stats, aes(accuracy, rpd))+
 #geom_point(aes(lwd=1.2, color=as.factor(bandwidth), size = as.factor(maxCount))) + 
