@@ -45,7 +45,7 @@ theme(panel.background = element_rect(fill = "white", colour = "grey50"),
 #scale_color_manual(values = log10(hyperparam1), name = "Tree Count") #+
 #X11()
 #windows();
-jpeg("figures/Adaboost_ModelComplexity_vs_R2.jpg", width = 1400, height = 800)
+jpeg("figures/Adaboost_ModelComplexity_vs_R2.jpg", width = 1200, height = 800)
 adb_mod_plot#+geom_smooth()
 dev.off()
 
@@ -78,24 +78,24 @@ dev.off()
 adb_mod_plot<-ggplot(ada_df, aes(accuracy, r2))+
 #geom_point(aes(lwd=1.2, color=as.factor(bandwidth), size = as.factor(maxCount))) + 
 #geom_jitter(aes(lwd=1.2, color=as.factor(bandwidth), size = as.factor(maxCount))) + 
-geom_jitter(aes(color=Bandwith_nm, size = maxCount), shape=21)+
+geom_jitter(aes(color=Bandwith_nm, size = maxCount))+#, shape=21)+
 #geom_line(aes(linetype=as.factor(bandwidth), lwd=1.2)) + 
 labs(y = "R2", x = "accuracy") +
 theme(panel.background = element_rect(fill = "white", colour = "grey50"), 
         #legend.key.size = unit(0.5, "cm"),legend.text = element_text(size=25),
         #legend.position = "none",
-        title = element_text(size=55),
+        title = element_text(size=35),
         strip.text = element_text(size = 45),
-        axis.text = element_text(size = 45),
+        axis.text = element_text(size = 35),
         legend.key.size = unit(1, "cm"),
-        legend.text =element_text(size=45),
+        legend.text =element_text(size=35),
         legend.position="bottom") +
-        ggtitle("Adaboost R2 vs accuracy")+ 
+        #ggtitle("Adaboost R2 vs accuracy")+ 
         guides(color = guide_legend(override.aes = list(size = 15)))+             
         geom_hline(yintercept=0.5)+        
         geom_vline(xintercept=0.8)
 
-jpeg("figures/Adaboost_R2_vs_Accuracy.jpg", width = 2000, height = 1200)
+jpeg("figures/Adaboost_R2_vs_Accuracy.jpg", width = 1300, height = 800)
 adb_mod_plot#+geom_smooth()
 dev.off()
 #Adaboost mod accuracy vs rpd
