@@ -266,7 +266,8 @@ scales = "fixed"
   #geom_ribbon(aes(Wavelength, ymin = Pct_12_5_Reflectance, ymax = Pct_87_5_Reflectance, alpha = 0.3)) +
       geom_line(aes(Wavelength, Median_Reflectance,color = Functional_group0), linewidth = 2)+
  geom_vline(xintercept = c(553, 680, 720, 740, 800), color = "Black", linetype = "longdash") +
-  labs(title = c("Median reflectance by plant functional group"), y = "Reflectance") +
+  labs(#title = c("Median reflectance by plant functional group"), 
+  y = "Reflectance") +
   theme(
     panel.background = element_rect(fill = "white", colour = "grey50"),
     legend.key.size = unit(0.5, "cm"),
@@ -274,7 +275,7 @@ scales = "fixed"
     legend.position = "top",
     title = element_text(size = 24),
     strip.text = element_text(size = 16),
-    axis.text = element_text(size = 16),
+    axis.text = element_text(size = 24),
     axis.text.x = element_text(angle = 90)
   ) +#+ #geom_line(aes(Wavelength, Median_Reflectance), size = 2) + 
  scale_color_manual(values=unique(fncgrp0_color_list$Color), 
