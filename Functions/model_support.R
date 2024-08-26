@@ -416,3 +416,50 @@ apply_model.lgb.Booster <- function(
     return(predictions)
 
 }
+
+add_channel_dim <- function(img) {
+   x <- img$unsqueeze(1)
+   return(torch_transpose(x, 1,2))
+}
+
+lecospec_dataset <- torch::dataset(
+    name = "lecospec_image",
+    initialize = function(df, transform = add_channel_dim) {
+        self$x <- as.matrix(
+            #cbind(
+               as.data.frame(df)
+               # get_vegetation_indices(df = df, ml_model = NULL) %>%
+                #    clip_outliers()
+            #)
+        )
+     
+        self$transform <- transform
+    },
+
+    .getitem = function(i) {
+        list(
+            x = self$transform(torch_flatten(self$x[i,]))
+        )
+    },
+
+    .length = function() {
+        return(length(self$x))
+    }
+)
+
+
+apply_model.luz_module_fitted <- function(df, model, ...){
+    # convert to torch dataset
+    print(colnames(df))
+
+    data <- lecospec_dataset(df)
+
+    predictions <- predict(
+        model, 
+        newdata = data) 
+    colnames(predictions) <- c("z")
+
+    return(predictions)
+
+
+}
