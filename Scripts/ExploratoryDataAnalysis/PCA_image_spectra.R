@@ -48,15 +48,17 @@ dplyr::mutate(
 
 ##PCA plot Axes 1 vs 2
 #windows()
-jpeg("figures/PCA_125pixPerPFT_5nm.jpg")
-#par(bg="#d2d2d2")
-plot(scores(img_pca)[,1:2], col=train_5nm$fg0_palette, pch=train_5nm_reclass$FncGrp0_num)
+jpeg("figures/PCA_125pixPerPFT_5nm.jpg", height = 2000, width = 2000, res=350)
+par(font.lab = 2)
+plot(scores(img_pca)[,1:2], 
+    col=train_5nm$fg0_palette, pch=train_5nm_reclass$FncGrp0_num,
+    xlab = "PCA axis 1", ylab = "PCA axis 2")
 
 #plot(scores(img_pca)[,1:2], col=fncgrp1_color_list$Color)#, pch=c(1:length(unique(PFT_IMG_SPEC_clean_merge$Area))))
 
 #biplot(tst_pca)
 
-title(main="PCA of PFT Reflectance")
+#title(main="PCA of PFT Reflectance")
 legend(x = -3, y =1.5, legend=unique(train_5nm$FncGrp0), lty=1, pch = unique(train_5nm_reclass$FncGrp0_num), col=unique(train_5nm$fg0_palette), cex=1)
 
 #legend(x = -200, y =-700, legend=unique(Speclib_merged$Source), pch=c(1:2), cex=0.5)

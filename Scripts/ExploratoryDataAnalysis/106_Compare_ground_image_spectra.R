@@ -122,7 +122,8 @@ inner_join(PFT_IMG_SPEC_clean, by=c("Functional_group0"="FncGrp0")) %>%
                    Pct_87_5_Reflectance = quantile(Reflectance, probs = 0.875),
                    Pct_12_5_Reflectance = quantile(Reflectance, probs = 0.125),
                    Upper_Reflectance = quantile(Reflectance, probs = 0.95),
-                   Lower_Reflectance = quantile(Reflectance, probs = 0.05))%>%
+                   Lower_Reflectance = quantile(Reflectance, probs = 0.05),
+                   SD = sd(Reflectance))%>%
   mutate(Wavelength = as.numeric(Wavelength),
          Source = "Image") %>%
   as.data.frame() 
@@ -134,7 +135,7 @@ write.csv(PFT_IMG_SPEC_clean_tall, "./Data/Ground_Validation/PFT_Image_spectra/P
 color <- grDevices::hcl.colors(6, palette = "Spectral", rev = TRUE)
 color[1]<-"e4f6f8"
 
-jpeg("figures/Fnc_grp0_spectral_profiles_PFT_IMG_SPECTRA_ALL.jpg", height = 10000, width = 10000, res = 350)
+jpeg("figures/Fnc_grp0_spectral_profiles_PFT_IMG_SPECTRA_ALL.jpg", height = 5000, width = 4000, res = 350)
 ggplot((PFT_IMG_SPEC_clean_tall %>%
   dplyr::filter(Functional_group0 != "Forb") %>%
   dplyr::filter(Wavelength<1000) %>%
@@ -167,11 +168,13 @@ scales = "fixed"
   ## Band12<-2202.4 175
   #annotate("rect", xmin = 2202.4 - (175 / 2), xmax = 2202.4 + (175), ymin = 0, ymax = 100, alpha = .2) +
   #scale_color_grey() +
-  geom_ribbon(aes(Wavelength, ymin = Lower_Reflectance, ymax = Upper_Reflectance, alpha = 0.25))+
+  #geom_ribbon(aes(Wavelength, ymin = Lower_Reflectance, ymax = Upper_Reflectance, alpha = 0.25))+
   geom_ribbon(aes(Wavelength, ymin = Pct_12_5_Reflectance, ymax = Pct_87_5_Reflectance, alpha = 0.3)) +
-      geom_line(aes(Wavelength, Median_Reflectance,color = "red"),size = 2)+
+  geom_line(aes(Wavelength, Median_Reflectance,color = "blue"),size = 2)+
+  geom_line(aes(Wavelength, SD,color = "red"),size = 2)+
 
-  labs(title = c("Reflectance by plant functional group and sample size with median (red), 75% (dark) and 90% (grey) quantiles based on 17201 pixels in 193 patches"), y = "Reflectance") +
+  #labs(title = c("Reflectance by plant functional group and sample size with median (red), 75% (dark) and 90% (grey) quantiles based on 17201 pixels in 193 patches"), y = "Reflectance") +
+  ylab("Reflectance")+
   theme(
     panel.background = element_rect(fill = "white", colour = "grey50"),
     # legend.key.size = unit(0.5, "cm"),legend.text = element_text(size=25),
@@ -181,8 +184,9 @@ scales = "fixed"
     axis.text = element_text(size = 20),
     axis.text.x = element_text(angle = 90)
   ) + #geom_line(aes(Wavelength, Median_Reflectance), size = 2) + 
+  facet_wrap(vars(Functional_group0), scales = "fixed", ncol = 2) #+ 
 
-  facet_wrap(vars(Functional_group0_wN), scales = "fixed", ncol = 2) #+ 
+ # facet_wrap(vars(Functional_group0_wN), scales = "fixed", ncol = 2) #+ 
  # facet_wrap(~reorder(Functional_group1_wN, Source))
 
 dev.off()
@@ -262,7 +266,8 @@ scales = "fixed"
   #geom_ribbon(aes(Wavelength, ymin = Pct_12_5_Reflectance, ymax = Pct_87_5_Reflectance, alpha = 0.3)) +
       geom_line(aes(Wavelength, Median_Reflectance,color = Functional_group0), linewidth = 2)+
  geom_vline(xintercept = c(553, 680, 720, 740, 800), color = "Black", linetype = "longdash") +
-  labs(title = c("Median reflectance by plant functional group"), y = "Reflectance") +
+  labs(#title = c("Median reflectance by plant functional group"), 
+  y = "Reflectance") +
   theme(
     panel.background = element_rect(fill = "white", colour = "grey50"),
     legend.key.size = unit(0.5, "cm"),
@@ -270,7 +275,7 @@ scales = "fixed"
     legend.position = "top",
     title = element_text(size = 24),
     strip.text = element_text(size = 16),
-    axis.text = element_text(size = 16),
+    axis.text = element_text(size = 24),
     axis.text.x = element_text(angle = 90)
   ) +#+ #geom_line(aes(Wavelength, Median_Reflectance), size = 2) + 
  scale_color_manual(values=unique(fncgrp0_color_list$Color), 
