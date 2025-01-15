@@ -3,19 +3,19 @@ Lecospec
 
 ## Laboratory of Ecological Spectroscopy (lecospec)
 
-The purpose lecospec code is to take ground or image based reflectance
-spectra, build a classifier or regression, apply that model to an
-imaging spectrometer data cube (aka hyperspectral image).
+The purpose of lecospec code, called lecospectR, is to take ground or
+image based reflectance spectra, build a classifier or regression, apply
+that model to an imaging spectrometer data cube (aka hyperspectral
+image).
 
-Requirements: R v4.2.3 is now the only stables environemnt for lecospec.
-Rtools 4.2 is also needed to be able to use devtools, which is required
-to install hsdar package (a stable, read-only copy) from CRAN on Github.
-Other package dependencies may need to be installed separately along
-with way, such as the shiny package.
+Requirements: R v4.2.3 is now the only stable environment ro run
+lecospectR. Rtools 4.2 is also needed to be able to use devtools.
 
 1)  First, install dependencies
 
-    source(“./Scripts/Utilites/install_dependencies.R”)
+    source(“./Scripts/Utilites/install_dependencies.R”) NOTE: This may
+    take awhile and one package, hsdar, must be installed from a stable,
+    read-only copy on CRAN Github.
 
 2)  Then load the package of lecospectR
 
