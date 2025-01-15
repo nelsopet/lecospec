@@ -604,17 +604,17 @@ padding-top: 0px;
 <h1 id="lecospec">Lecospec</h1>
 <h2 id="laboratory-of-ecological-spectroscopy-lecospec">Laboratory of
 Ecological Spectroscopy (lecospec)</h2>
-<p>The purpose lecospec code is to take ground or image based
-reflectance spectra, build a classifier or regression, apply that model
-to an imaging spectrometer data cube (aka hyperspectral image).</p>
-<p>Requirements: R v4.2.3 is now the only stables environemnt for
-lecospec. Rtools 4.2 is also needed to be able to use devtools, which is
-required to install hsdar package (a stable, read-only copy) from CRAN
-on Github. Other package dependencies may need to be installed
-separately along with way, such as the shiny package.</p>
+<p>The purpose of lecospec code, called lecospectR, is to take ground or
+image based reflectance spectra, build a classifier or regression, apply
+that model to an imaging spectrometer data cube (aka hyperspectral
+image).</p>
+<p>Requirements: R v4.2.3 is now the only stable environment ro run
+lecospectR. Rtools 4.2 is also needed to be able to use devtools.</p>
 <ol style="list-style-type: decimal">
 <li><p>First, install dependencies</p>
-<p>source(“./Scripts/Utilites/install_dependencies.R”)</p></li>
+<p>source(“./Scripts/Utilites/install_dependencies.R”) NOTE: This may
+take awhile and one package, hsdar, must be installed from a stable,
+read-only copy on CRAN Github.</p></li>
 <li><p>Then load the package of lecospectR</p>
 <p>source(“./Functions/lecospectR.R”)</p></li>
 </ol>
