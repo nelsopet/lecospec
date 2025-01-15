@@ -8,7 +8,7 @@ source("Functions/lecospectR.R")
 Output_files<-list.files("Output/dev_FullCube") # %>% 
 Output_PFT_names<-read.csv("assets/fg1RAT.csv") 
 Output_file_names<-
-str_match(Output_files, ".*patch.tif") %>%
+str_match(Output_files, ".*88de013.tif") %>%
   as.data.frame() %>% dplyr::filter(is.na(V1)==FALSE) %>% unique()
   #dplyr::select(V2) #%>% 
   #as.data.frame()
@@ -23,12 +23,13 @@ str_match(Output_files, ".*patch.tif") %>%
 #unique(values(pft_rst))
 
 #UNIT TEST: PASS
-pft_rst_proj<-terra::project(pft_rst, "epsg:6393")
-pft_rst_proj_int<- setValues(pft_rst_proj, as.integer(values(pft_rst_proj)))
-terra::writeRaster(pft_rst_proj_int,paste("Output/Projected/",Output_file_names[1,], sep=""))
+#pft_rst_proj<-terra::project(pft_rst, "epsg:6393")
+#pft_rst_proj_int<- setValues(pft_rst_proj, as.integer(values(pft_rst_proj)))
+#terra::writeRaster(pft_rst_proj_int,paste("Output/Projected/",Output_file_names[1,], sep=""))
 
 #
 lapply(1:nrow(Output_file_names),function(x) {
+#  x=1
 pft_rst<-terra::rast(paste("Output/dev_FullCube/",Output_file_names[x,], sep=""))
 pft_rst_proj<-terra::project(pft_rst, "epsg:6393")
 pft_rst_proj_int<- setValues(pft_rst_proj, as.integer(values(pft_rst_proj)))
@@ -61,10 +62,10 @@ pft_area_frac_all<-lapply(1:length(Output_file_names), function(x){
 
 pft_area_frac_all<-Reduce(rbind, pft_area_frac_all)
 
-write.csv(pft_area_frac_all, "Output/pft_area_frac_all.csv")
+write.csv(pft_area_frac_all, "Output/dev_FullCube/patches/pft_area_frac_all.csv")
 
 #Use when you don't want to rerun the code above which takes awhile
-pft_area_frac_all<-read.csv( "Output/pft_area_frac_all.csv")
+pft_area_frac_all<-read.csv( "Output/dev_FullCube/patches/pft_area_frac_all.csv")
 
 
 #This would take a very long time to run. One image takes >30 min and there are 77 images ... a few days worth of CPU time
@@ -101,7 +102,8 @@ summarize(TotalMetric = sum(value))
 dim(pft_area_frac_total)
 
 jpeg("figures/PatchFrac_all.jpg", width = 1000, height = 700)
-ggplot(pft_area_frac_all_wNames %>% group_by(CAT) %>% filter(metric == "frac"), aes(x=CAT, y=sqrt(value_pos)))#+ 
+#ggplot(pft_area_frac_all_wNames %>% group_by(CAT) %>% filter(metric == "frac"), aes(x=CAT, y=sqrt(value_pos)))#+ 
+ggplot(pft_area_frac_all_wNames %>% group_by(CAT) %>% filter(metric == "frac"), aes(x=CAT, y=value))+ 
 geom_violin(aes(fill=CAT))
 dev.off()
 #min_patch_size = min(log10(pft_area_frac_all$value*100000)) 
