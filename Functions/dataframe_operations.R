@@ -146,12 +146,16 @@ impute_spectra <- function(
 
     zero_variance_cols <- c()
 
-    for(col in colnames(x)) {
-        x_var <- var(x[, col])
-        if((x_var == 0) || is.na(x_var) || is.nan(x_var) || is.null(x_var)) {
-            append(zero_variance_cols, col)
-        }
-    }
+    #for(col in colnames(x)) {
+    #    current_col <- x[,col]
+    #    if(is.numeric(current_col)){
+    #        print("This is where I think the problem is")
+    #        x_var <- var(current_col, na.rm = TRUE)
+    #        if((x_var == 0) || is.na(x_var) || is.nan(x_var) || is.null(x_var)) {
+    #            append(zero_variance_cols, col)
+    #        }
+    #    }
+    #}
 
     if(!is.null(ignore_cols)) {
         
@@ -186,7 +190,7 @@ impute_spectra <- function(
     if (method == "missForest") {
         output_data <- missForest::missForest(df, maxiter = 1,)$ximp
     } else if(method == "median"){
-        output_data <- useful::simple.impute(df)
+        output_data <- useful::simple.impute(df, fun = function(x){median(x, na.rm = TRUE)})
     } else if( method == "mean"){
         output_data <- useful::simple.impute(df, fun = mean)
     }
@@ -211,8 +215,8 @@ impute_spectra <- function(
 
     return(
         cbind(
-            output_data,
-            x[, ignored_cols]
+            as.data.frame(output_data),
+            as.data.frame(x[, ignored_cols])
         )
     )
 }#end impute_spectra
@@ -355,12 +359,14 @@ convert_and_save_output <- function(
     aggregation_level,
     save_path = NULL,
     return_raster = TRUE,
-    target_crs = NULL
+    target_crs = NULL,
+    raster_datatype = "INT2U"
 ){
     prediction <- convert_pft_codes(
         df,
         aggregation_level = aggregation_level,
-        to = "int")
+        to = "int"
+        )
 
     #print(head(prediction))
 
@@ -375,7 +381,7 @@ convert_and_save_output <- function(
         #print("Converted to Raster")
 
         # set to int datatype (unsigned int // 2 bytes)
-        raster::dataType(prediction) <- "INT2U" 
+        raster::dataType(prediction) <- raster_datatype
         levels(prediction) <- get_attribute_table(aggregation_level)
         if(!is.null(target_crs)){
             raster::crs(prediction) <- target_crs
@@ -384,7 +390,7 @@ convert_and_save_output <- function(
                 raster::writeRaster(
                     prediction,
                     filename = save_path,
-                    datatype='INT2U',
+                    datatype=raster_datatype,
                     overwrite = TRUE)
             } 
         return(prediction)
@@ -877,13 +883,16 @@ standardize_df <- function(df, ignore_cols = NULL){
     }
 }
 
-#' scales each column to center using the column median and the scales using the inter-quartile range.
+#' centers columns using the column median and the scales using the IQR
 #'
-#' 
+#' This is analogous to Python's scikit-learn's RobustScaler.  It centers
+#' the data at the median and divides by the inter-quartile range.
 #'
 #' @param df: a data.frame of the data that should be centered and scaled
-#' @param ignore_cols: data columns that should be ignored in the calculation (defaults to NULL) 
-#' @return a data.frame with the same column names, but the data (not in ignore_cols) centered and scaled
+#' @param ignore_cols: data columns that should be ignored in the calculation
+#' (defaults to NULL)
+#' @return a data.frame with the same column names, but the data
+#' (not in ignore_cols) centered and scaled
 #'  
 #'  
 #' @seealso None
@@ -911,6 +920,10 @@ columnwise_robust_scale <- function(df, ignore_cols = NULL){
 
 #' matches two dataframes based on the levels of a categorical variable
 #'
+#' A fuzzy-matching of two data.frames based on a categorical variable.  The 
+#' method does not assume that there are observations of the same specimen
+#' in each data.frame (different from a SQL JOIN that assumes a match in the 
+#' other table) and instead simply shuffles and matches data at random.
 #' 
 #'
 #' @param left_df: a data.frame
@@ -918,7 +931,7 @@ columnwise_robust_scale <- function(df, ignore_cols = NULL){
 #' @param cols: a character vector of length two specifying the column in each 
 #' dataframe that should be matched  
 #' @return a list with two fields (left and right) that are the left and right
-#'  dataframes (respectively) matched such that the ith row in each has the same 
+#' dataframes (respectively) matched such that the ith row in each has the same
 #' value of the categorical variable in cols
 #'  
 #'  
@@ -977,12 +990,12 @@ create_matched_data <- function(left_df, right_df, cols = c("targets", "targets"
 #' Imputes the NAs and outliers in the provided data.frame
 #' 
 #' This function imputes the NAs and the outliers in the dataset in two passes,
-#' one for the NAs, then replaces the outliers with NA, then imputes again.  
+#' one for the NAs, then replaces the outliers with NA, then imputes again.
 #' Missforest is used for each imputation
 #' 
 #' @param df: the data.frame to transform
 #' @param ignore_cols: data columns that should be ignored in the calculation (defaults to NULL) 
-#' @return 
+#' @return a data.frame with both missing data and outliers replaced
 #' @export
 #' 
 #'
@@ -1012,7 +1025,7 @@ impute_outliers_and_na <- function(df, ignore_cols=NULL){
 #' 
 #' This function alters the data.frame to have have all outliers replaced 
 #' with the upper or lower fence, meaning low outliers are replaces with 
-#' $Q_1 - 1.5IQR $ and the high outliers are replaced with $Q_3 + 1.5IQR $
+#' $ Q_1 - 1.5IQR $ and the high outliers are replaced with $ Q_3 + 1.5IQR $
 #' 
 #' @param df, the data frame to clip
 #' @param ignore_cols: data columns that should be ignored in the calculation (defaults to NULL) 
@@ -1057,6 +1070,18 @@ clip_outliers <- function(df, ignore_cols=NULL){
     return(new_df)
 }
 
+
+#' Applies a transform to a data.frame
+#' 
+#' Applies a common scaling method to the data.frame.  This is
+#' a convenience method for applying common data scaling methods to
+#' data when quickly experimenting with models
+#' 
+#' @param df the input data, a data.frame
+#' @param transform_type One of "none", "minmax", "standard", or "robust"
+#' @param ignore_cols A vector of column names that should not be transformed
+#' @return the dataframe, with the columns returned
+#' @export
 apply_transform <- function(df, transform_type, ignore_cols = NULL){
     if(is.function(transform_type)){
         return(transform_type(df, ignore_cols = ignore_cols))
@@ -1083,6 +1108,26 @@ apply_transform <- function(df, transform_type, ignore_cols = NULL){
     }
 }
 
+
+#' Handles outliers in the data using the specified method
+#' 
+#' Handles outliers using a custom function or an in-built method.  
+#' Possible methods are:
+#' - "clip" which clips the outliers to the upper and lower fence,
+#' - "drop" which drops all the rows with outliers, 
+#' - "impute" with replaces them with NAs and imputes them with missForest
+#' - "none" which leaves them as-is
+#' - NULL, same as "none"
+#' - A function, with call signature function(df, ignore_cols)
+#' 
+#' 
+#' @param df The data.frame of data to operate on
+#' @param transform_type the type of transform to apply.  See the
+#' description
+#' @param ignore_cols A vector of column names that should not be 
+#' affected by the transformation
+#' @return A data.frame with outliers changed 
+#' @export 
 handle_outliers <- function(df, transform_type, ignore_cols = NULL){
 
     if(is.function(transform_type)){
@@ -1113,6 +1158,21 @@ handle_outliers <- function(df, transform_type, ignore_cols = NULL){
 }
 
 
+#' A function factory that creates a function to clip outliers
+#' 
+#' Creates a function to transform the data based on the 
+#' provided data that will clip the numeric columns to the 
+#' outlier fence $ [ Q_1 - 1.5 IQR, Q_3 + 1.5 IQR ] $
+#' 
+#' This is currently implemented by caching the data to disk, however
+#' this will change in a future release.  
+#' 
+#' @param df The data.frame to transform
+#' @param ignore_cols A character vector of columns that should
+#' not be transformed (e.g. non-numeric values)
+#' @return a data.frame with outliers replaced
+#' @export
+#' 
 create_clip_transform <- function(df, ignore_cols = NULL ){
     new_df <- df %>% as.data.frame()
     cache_path <- "./assets/clip_data.json"
@@ -1185,12 +1245,33 @@ create_clip_transform <- function(df, ignore_cols = NULL ){
 }
 
 # extend the is.nan prototype function for data frames
+#' Extends is.nan for data.frames
+#' 
+#' Base R does not implement is.nan(...) for data.frames.
+#' This function creates a basic implmentation of is.nan for
+#' data.frames, returning a data.frame of the same shape
+#' where all values are boolean: TRUE is there was a NaN in
+#' the corresponding row and column of the input data, and 
+#' FALSE otherwise.
+#' 
+#' @param x the data.frame to check for NaNs
+#' @return a data.frame of boolean values indicating whether the
+#' corresponding entry of x was a NaN
+#' @export
 is.nan.data.frame <- function(x){
 
     do.call(cbind, lapply(x, is.nan))
 }
 
 
+#' Filters the columns of the data.frame to bands in the bandpass
+#' 
+#' Uses hard-codded band names as a filter for the columns in the 
+#' data.frame.  The bandpass is assumed to be stored in assets/band_cols.csv
+#' 
+#' @param df the data.frame to filer
+#' @return a data.frame with fewer columns
+#' @export
 filter_df_bands <- function(df){
     bands_col_names <- read.csv("assets/band_cols.csv")$names %>% as.character()
     df_cols <- colnames(df) %>% as.character()
@@ -1198,6 +1279,14 @@ filter_df_bands <- function(df){
     return(df[,target_cols])
 }
 
+#' Filters a data.frame to extract only 5nm bands
+#' 
+#' Why does this function exist?  Why was it exported as part of
+#' the package?  I don't know.  I hope nothing is using this 
+#' because it's terrible.  
+#' 
+#' @param df a data.frame
+#' @return a data.frame with only columns matching "*_5nm*" retained
 filter_df_indices <- function(df){
     #index_col_names <- read.csv("assets/vegIndicesUsed.csv")$x %>% as.character()
     df_cols <- colnames(df) %>% as.character()
@@ -1206,16 +1295,53 @@ filter_df_indices <- function(df){
     return(df[,target_cols])
 }
 
-
+#' implements binning of a dataframe
+#' 
+#' First imputes the data.frame, casts the columns as numeric, 
+#' and then divides them into percentiles.  The output has numbers 1 
+#' to num_bins as numeric variables.  
+#' 
+#' @param df the data.frame to operate on
+#' @param num_bins the number of bins to use (default 10).  
+#' Must be able to cast to an integer
+#' @return a data.frame where all columns are convered to 
+#' numeric 1-num_bins
+#' @export
 bin_df <- function(df, num_bins = 10){
-    binned_df <- impute_spectra(as.data.frame(df))
+    binned_df <- impute_spectra(as.data.frame(df))# should be removed
 
     for(col in colnames(df)){
         binned_df[,col] <- as.numeric(ntile(df[,col], n = num_bins))
     }
 
-    print(summary(binned_df))
+    #print(summary(binned_df))
 
     return(binned_df)
 
+}
+
+
+#' Extracts the GDAL datatype from the predictions
+#' 
+#' This function automatically detects whether a model output
+#' is a factor/character vector, or a numeric vector.  In the 
+#' case of numeric data (regression models) the GDAL datatype is
+#' set to 'FLT4S', and for classifiers (character, factor) the 
+#' data is seet to 'INT2U'
+#' 
+#' @param predictions the vector of predictions
+#' @return a character vector, either 'INT2U' or "FLT4S"
+#' @export 
+get_datatype_from_predictions <- function(predictions) {
+
+    if(is.character(predictions) | is.factor(predictions)) {
+        return("INT2U")
+    }
+
+    if(is.numeric(predictions)) {
+        return("FLT4S")
+    }
+
+    warning("Unrecognized datatype in predictions!  Defaulting to FLT4S (float).")
+    return("FLT4S")
 }
