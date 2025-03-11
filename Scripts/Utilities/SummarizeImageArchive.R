@@ -25,20 +25,23 @@ colnames(Imgs_df)<-Img_df_names
 
 
 
-
+##Make sure each of these gets processed to the same standard of orthorectification using the ArcticDEM and 
+##conversion to reflectance with the same white reference
 #> unique(Imgs_df$Site) %>% as.matrix()
 #      [,1]
 # [1,] "BigTrailLake"
-# [2,] "BirchLake"
+# [2,] "BirchLake" #7/30/2018
 # [3,] "BisonGulch"
-# [4,] "Chatnika"
+# Bonanza ... 7/25/2018. Not included in the original submission because there were issues with the camera settings file, which changed 
+    #through the process of correcting the data
+# [4,] "Chatnika" #7/29/2018
 # [5,] "ClaytonLake"
 # [6,] "EagleSummit"
 # [7,] "EightMile"
-# [8,] "LittleLake"
-# [9,] "MurphyDome"
-#[10,] "TwelveMile"
-#[11,] "VaultDrive"
+# [8,] "LittleLake" #7/30/2018
+# [9,] "MurphyDome" #7/31/2018
+#[10,] "TwelveMile" 
+#[11,] "VaultDrive" #7/29/2018
 #[12,] "WickershamDome"
 #[13,] "Yukon"
 
@@ -50,13 +53,15 @@ AK2019_dir<-"M:/Alaska_DATA/Alaska_Summer2019/Data_by_site/"
 #List directories for each year's flights
 AK2018_dir_dates<-list.dirs(AK2018_dir, recursive = F)
 # [1] "M:/Alaska_DATA/Alaska_Summer2018/Workspaces/Alaska/DatabyDate/72418"
-"M:/Alaska_DATA/Alaska_Summer2018/Workspaces/Alaska/DatabyDate/72518"
+"M:/Alaska_DATA/Alaska_Summer2018/Workspaces/Alaska/DatabyDate/72518" #Bonanza, Flight 100066, Tarp Calibrated, ArcticDEM ortho
 # [3] "M:/Alaska_DATA/Alaska_Summer2018/Workspaces/Alaska/DatabyDate/72618"
 # [4] "M:/Alaska_DATA/Alaska_Summer2018/Workspaces/Alaska/DatabyDate/72718"
-"M:/Alaska_DATA/Alaska_Summer2018/Workspaces/Alaska/DatabyDate/72818"
-"M:/Alaska_DATA/Alaska_Summer2018/Workspaces/Alaska/DatabyDate/72918"
-# [7] "M:/Alaska_DATA/Alaska_Summer2018/Workspaces/Alaska/DatabyDate/73018"
-# [8] "M:/Alaska_DATA/Alaska_Summer2018/Workspaces/Alaska/DatabyDate/73118"
+"M:/Alaska_DATA/Alaska_Summer2018/Workspaces/Alaska/DatabyDate/72818" #Eight Mile, Flight 100124, Tarp Calibrated, ArcticDEM ortho
+"M:/Alaska_DATA/Alaska_Summer2018/Workspaces/Alaska/DatabyDate/72918" #Chatanika, Flight 100130, Tarp Calibrated, ArcticDEM ortho
+"M:/Alaska_DATA/Alaska_Summer2018/Workspaces/Alaska/DatabyDate/72918" #Vault drive, Flight 100137, Panel Calibrated, ArcticDEM ortho
+"M:/Alaska_DATA/Alaska_Summer2018/Workspaces/Alaska/DatabyDate/73018" #Birch Lake, Flight 100148, Panel Calibrated, ArcticDEM ortho
+"M:/Alaska_DATA/Alaska_Summer2018/Workspaces/Alaska/DatabyDate/73018" #Little Lake, Flight 100152, Panel Calibrated, ArticDEM ortho
+"M:/Alaska_DATA/Alaska_Summer2018/Workspaces/Alaska/DatabyDate/73118" #Murphy Dome, Flight 100158
 # [9] "M:/Alaska_DATA/Alaska_Summer2018/Workspaces/Alaska/DatabyDate/81018"
 #[10] "M:/Alaska_DATA/Alaska_Summer2018/Workspaces/Alaska/DatabyDate/8118"
 #[11] "M:/Alaska_DATA/Alaska_Summer2018/Workspaces/Alaska/DatabyDate/8218"
@@ -73,10 +78,10 @@ AK2018_dir_dates<-list.dirs(AK2018_dir, recursive = F)
 AK2019_dir_sites<-list.dirs(AK2019_dir, recursive = F)
 #[1] "M:/Alaska_DATA/Alaska_Summer2019/Data_by_site/12mile"
 #[2] "M:/Alaska_DATA/Alaska_Summer2019/Data_by_site/Big_Trail_Lake"
-#[3] "M:/Alaska_DATA/Alaska_Summer2019/Data_by_site/Bison_Gulch"
-#[4] "M:/Alaska_DATA/Alaska_Summer2019/Data_by_site/Bonanza_Creek"
-#[5] "M:/Alaska_DATA/Alaska_Summer2019/Data_by_site/Eagle_Summit"
-#[6] "M:/Alaska_DATA/Alaska_Summer2019/Data_by_site/Healy"
+"M:/Alaska_DATA/Alaska_Summer2019/Data_by_site/Bison_Gulch" #Flight 100251, Tarp Calibrated, ArcticDEM ortho
+#[4] "M:/Alaska_DATA/Alaska_Summer2019/Data_by_site/Bonanza_Creek" #Not used
+"M:/Alaska_DATA/Alaska_Summer2019/Data_by_site/Eagle_Summit" #Flight 100168, Tarp Calibrated (?), ArcticDEM ortho
+#[6] "M:/Alaska_DATA/Alaska_Summer2019/Data_by_site/Healy" #Not used
 #[7] "M:/Alaska_DATA/Alaska_Summer2019/Data_by_site/Murphy_dome"
 #[8] "M:/Alaska_DATA/Alaska_Summer2019/Data_by_site/Wickersham_dome"
 
