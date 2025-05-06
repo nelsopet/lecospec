@@ -10,13 +10,14 @@ print(date())
 quad_results <- estimate_land_cover(
   test_path, 
   output_filepath = "./test/test_pred_adaboost.grd",
-  use_external_bands = TRUE)
+  use_external_bands = TRUE,
+  overwrite = TRUE)
 closeAllConnections()
 print(date())
 
 as_tiff<-function(path) {raster::raster(paste0("./",path,".grd")) %>% raster::writeRaster(paste0("./test/",path,".tif"), overwrite=TRUE)}
 
-test_tif<-as_tiff("test_pred_2tree_tile_34M0bC2ZrwSZkgXo_patch_seed1234")
+test_tif<-as_tiff("test/test_pred_adaboost")
 
 #Flight lines for use in manuscript
 Bison_dir="M:/Alaska_DATA/Alaska_Summer2019/Data_by_site/Bison_Gulch/Imagery_60m/100251_Bison_Gulch_line2_2019_08_12_01_07_28/"
