@@ -112,6 +112,9 @@ dirs_keep= c(dirs_72518[grep("100066",dirs_72518)][1]
 ,dirs_80418[grep("100187",dirs_80418)]
 , dirs_80618[grepl("100199",dirs_80618)])
 
+#Write list of directories with useable images from 2018 Alaska flights
+write.csv(dirs_keep,"Output/dirs/2018_AK_directories_keep.csv")
+
 lapply(1:length(dirs_keep), function(x) {
 #x = 9
 path_parts<-str_split(dirs_keep[x], pattern = "/")
@@ -188,6 +191,10 @@ dirs_keep_2019<-c(
     ,dirs_Wickersham[grepl("100230",dirs_Wickersham)][1]
     ,dirs_Wickersham[grepl("100231",dirs_Wickersham)][1]
 )
+
+
+#Write list of directories with useable images from 2019 Alaska flights
+write.csv(dirs_keep_2019,"Output/dirs/2019_AK_directories_keep.csv")
 
 lapply(1:length(dirs_keep_2019), function(x) {
 #x = 9
