@@ -213,12 +213,12 @@ files_keep = c(imgs,hdrs)
     dev.off()
     })
         #Copy each file to the submission directory
-        #lapply(1:length(files_keep), function(z) {
-        ##z=4
-        #Sys.time()
-        #file.copy(from=paste(dirs_keep_2019[x],"/",files_keep[z], sep=""),to=paste("M:/Alaska_DATA/ORNL_DAAC_SUBMISSION_V2/",flight_name,"_",files_keep[z],sep=""), overwrite = TRUE)
-        #Sys.time()
-        #})
+        lapply(1:length(files_keep), function(z) {
+        #z=4
+        Sys.time()
+        file.copy(from=paste(dirs_keep_2019[x],"/",files_keep[z], sep=""),to=paste("M:/Alaska_DATA/ORNL_DAAC_SUBMISSION_V2/",flight_name,"_",files_keep[z],sep=""), overwrite = TRUE)
+        Sys.time()
+        })
 })
 
 
