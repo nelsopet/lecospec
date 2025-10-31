@@ -403,7 +403,7 @@ safe_merge <- function(raster_one, raster_two, target_crs = NULL, raster_datatyp
         raster::merge(
             raster_one, 
             r2_aligned,
-            datatype=raster_datatype,
+            datatype="INT2U",#raster_datatype,
             tolerance = 1.0
             ) 
     )
@@ -480,7 +480,7 @@ merge_tiles <- function(input_files, output_path = NULL, target_layer = 1, raste
     raster::dataType(master_raster) <- raster_datatype
     for (input_file in tail(input_files, -1)) {
         new_raster <- raster::raster(input_file)
-        raster::dataType(new_raster) <- raster_datatype
+        raster::dataType(new_raster) <- "INT2U"#raster_datatype
         # above is robust against multi-layer images
         master_raster <- safe_merge(
             master_raster,
