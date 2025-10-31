@@ -1,37 +1,23 @@
-source("./Functions/lecospectR.R")
+source("./Functions/lecospectR_debug.R")
 
-#Read in directories of images to predict PFT cover
-dirs_2018<-read.csv("./Output/Dirs/2018_AK_directories_keep.csv") %>% dplyr::select(x)
-dirs_2019<-read.csv("./Output/Dirs/2019_AK_directories_keep.csv")%>% dplyr::select(x)
-
-dirs_2018_l<-dirs_2018$x
-dirs_2019_l<-dirs_2019$x
-
-#Make lists of images per directory
-
-dir_files_keep = data.frame()
-x=1
-dir <- dirs_2018_l[x]
-dir_files<-list.files(dirs_2018_l[x])
 
 #Test estimate land cover on a single quadrat image
 #set.seed(1234)
 test_path <- "./Data/Ground_Validation/Imagery/BisonGulchQuads.envi"
 
-raster::raster(test_path) %>% plot()
+#raster::raster(test_path) %>% plot()
 
+#Test fails 16102025
 print(date())
 quad_results <- estimate_land_cover(
   test_path, 
-  output_filepath = "./test/test_pred_adaboost.grd",
-  use_external_bands = TRUE,
-  overwrite = TRUE)
+  output_filepath = "./test/test_pred_adaboost2_14102025.grd",
+  use_external_bands = TRUE)
 closeAllConnections()
 print(date())
+as_tiff<-function(path) {raster::raster(paste0("./test/",path,".grd")) %>% raster::writeRaster(paste0("./test/",path,".tif"), overwrite=TRUE)}
 
-as_tiff<-function(path) {raster::raster(paste0("./",path,".grd")) %>% raster::writeRaster(paste0("./test/",path,".tif"), overwrite=TRUE)}
-
-test_tif<-as_tiff("test/test_pred_adaboost")
+test_tif<-as_tiff("test/test_pred_adaboost2_14102025")
 
 #Flight lines for use in manuscript
 Bison_dir="M:/Alaska_DATA/Alaska_Summer2019/Data_by_site/Bison_Gulch/Imagery_60m/100251_Bison_Gulch_line2_2019_08_12_01_07_28/"
@@ -159,5 +145,4 @@ bg_pred10<-raster("./Output/dev_FullCube/bg_1511_Adaboost_e5f4742be5ce.grd")
    windows();bg_map
    ggsave("./figures/bg_1511_Adaboost_e5f4742be5ce.png", dpi = 350, width = 12, height = 8, units = "in")
    dev.off()
-
 
