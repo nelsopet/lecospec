@@ -5,20 +5,21 @@ source("./Functions/lecospectR_debug.R")
 #set.seed(1234)
 test_path <- "./Data/Ground_Validation/Imagery/BisonGulchQuads.envi"
 
-#raster::raster(test_path) %>% plot()
+raster::raster(test_path) %>% plot()
 
 #Test fails 16102025
 print(date())
 quad_results <- estimate_land_cover(
   test_path, 
-  output_filepath = "./test/test_pred_adaboost2_14102025.grd",
+  #output_filepath = "./test/test_pred_adaboost2_14102025.grd", #Use with tiles_fulldatacube when working
+  output_filepath = "./test/test_pred_adaboost2_28102025_bisongulchquads.grd", #Use with tiles_fulldatacube when working
   use_external_bands = TRUE)
 closeAllConnections()
 print(date())
 as_tiff<-function(path) {raster::raster(paste0("./test/",path,".grd")) %>% raster::writeRaster(paste0("./test/",path,".tif"), overwrite=TRUE)}
 
-test_tif<-as_tiff("test/test_pred_adaboost2_14102025")
-
+test_tif<-as_tiff("test_pred_adaboost2_14102025")
+plot(test_tif)
 #Flight lines for use in manuscript
 Bison_dir="M:/Alaska_DATA/Alaska_Summer2019/Data_by_site/Bison_Gulch/Imagery_60m/100251_Bison_Gulch_line2_2019_08_12_01_07_28/"
 Bonanza_dir="M:/Alaska_DATA/Alaska_Summer2018/Workspaces/Alaska/DatabyDate/72518/ImagingSpectrometer/DataFiles/100066_2018_07_25_21_18_45/"
