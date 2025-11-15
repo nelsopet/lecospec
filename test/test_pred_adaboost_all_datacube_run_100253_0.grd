@@ -1,0 +1,27 @@
+[general]
+creator=R package 'raster'
+created=2025-11-10 22:52:56
+[data]
+datatype=INT2U
+byteorder=little
+nbands=1
+bandorder=BIL
+categorical=FALSE
+minvalue=0
+maxvalue=8
+nodatavalue=65535
+[legend]
+legendtype=
+values=
+color=
+[description]
+layername=layer
+[georeference]
+nrows=1435
+ncols=1734
+xmin=-148.952632609651
+ymin=63.8063895903805
+xmax=-148.949817052886
+ymax=63.807419424192
+projection=+proj=longlat +datum=WGS84 +no_defs
+wkt=GEOGCRS["unknown",    DATUM["World Geodetic System 1984",        ELLIPSOID["WGS 84",6378137,298.257223563,            LENGTHUNIT["metre",1]],        ID["EPSG",6326]],    PRIMEM["Greenwich",0,        ANGLEUNIT["degree",0.0174532925199433],        ID["EPSG",8901]],    CS[ellipsoidal,2],        AXIS["longitude",east,            ORDER[1],            ANGLEUNIT["degree",0.0174532925199433,                ID["EPSG",9122]]],        AXIS["latitude",north,            ORDER[2],            ANGLEUNIT["degree",0.0174532925199433,                ID["EPSG",9122]]]]
