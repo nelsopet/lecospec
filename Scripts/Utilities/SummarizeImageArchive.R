@@ -237,3 +237,7 @@ EightMile_dir_raw = "M:/Alaska_DATA/Alaska_Summer2018/Workspaces/Alaska/DatabyDa
 Chatanika_dir_raw = "M:/Alaska_DATA/Alaska_Summer2018/Workspaces/Alaska/DatabyDate/72918/ImagingSpectrometer/DataFolders/100130_ChatanikaFlight3_attempt2_2018_07_29_20_32_59/"
 #TwelveMile_path = "M:/Alaska_DATA/Alaska_Summer2019/Data_by_site/12mile/Imagery/100241_12mile_line3_2019_08_09_21_28_52/"
 #TwelveMile_path2 ="M:/Alaska_DATA/Alaska_Summer2019/Data_by_site/12mile/Imagery/100241_12mile_line3_2019_08_09_21_28_52/"
+
+#List images in repo
+all_repo_imgs<-list.files("M:/Alaska_DATA/ORNL_DAAC_SUBMISSION_V2/")
+write.csv(all_repo_imgs[grep(".jpg",all_repo_imgs)],"Output/Dirs/quicklooks.csv")

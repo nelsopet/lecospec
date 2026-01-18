@@ -33,30 +33,41 @@ dir_out_2019_all_df<-Reduce(rbind,dir_out_2019_all)
 dir_out_all<-rbind(dir_out_2018_all_df,dir_out_2019_all_df)
 #write.csv(dir_out_all,"Output/Dirs/datacubes_keep_all.csv")
 
-img_num = 29
+
+#To re-run, add loop here to iterate over each image, calculate the size, divide by 250 Mb (optimum tile)
+#size and pass that to the .config
+img_num = 1 # Pick up at 85 later and stop at 95
 test_path = paste(dir_out_all[img_num,1],dir_out_all[img_num,2],sep="/")
 test_path
 #Get file size
 file_size<-file.info(test_path)$size
 file_size/1E9
-tile_size = function(x) {solve(file_size/x <= 25000000)}
-#Divide file into tiles <250 Mb
-tile_size(file_size)
+round(file_size/1E9/0.250,0)
 
-windows()
+##Test a single image from a path not currently included in the archive
+#test_single_img = "M:/Alaska_DATA/Alaska_Summer2018/Workspaces/Alaska/DatabyDate/72518/ImagingSpectrometer/DataFiles/100068_2018_07_25_22_58_40"
+#test_files<-list.files(test_single_img)
+#test_path<-paste(test_single_img,test_files[18],sep="/")
+##Get file size
+#file_size<-file.info(test_path)$size
+#file_size/1E9
+#round(file_size/1E9/0.250,0)
+
+
+#windows()
 raster::raster(test_path) %>% plot()
 
 print(date())
 quad_results <- estimate_land_cover(
   test_path, 
-  output_filepath = "./test/test_pred_adaboost_all_datacube_run_100152_9315.grd",
+  output_filepath = "./test/test_pred_adaboost_all_datacube_run_100066_0.grd",
   use_external_bands = TRUE)
 closeAllConnections()
 print(date())
 
 as_tiff<-function(path) {raster::raster(paste0("./test/",path,".grd")) %>% raster::writeRaster(paste0("./test/",path,".tif"), overwrite=TRUE)}
 
-test_tif<-as_tiff("test_pred_adaboost_all_datacube_run_100152_9315")
+test_tif<-as_tiff("test_pred_adaboost_all_datacube_run_100066_0")
 plot(test_tif)
 
 #Remove and  recreate tiles directory for next run
