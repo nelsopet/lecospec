@@ -5,10 +5,10 @@ source("Functions/lecospectR.R")
 
 #List all images that are predictions
 
-Output_files<-list.files("Output/dev_FullCube") # %>% 
+Output_files<-list.files("Output/PFT_predictions_final") # %>% 
 Output_PFT_names<-read.csv("assets/fg1RAT.csv") 
 Output_file_names<-
-str_match(Output_files, ".*88de013.tif") %>%
+str_match(Output_files, ".*.tif") %>%
   as.data.frame() %>% dplyr::filter(is.na(V1)==FALSE) %>% unique()
   #dplyr::select(V2) #%>% 
   #as.data.frame()
@@ -18,22 +18,22 @@ str_match(Output_files, ".*88de013.tif") %>%
 
 #UNIT TEST: PASS 
 #Read in images and project to NAD83 Alaska Albers so the units are meters
-#pft_rst<-terra::rast(paste("Output/dev_FullCube/",Output_file_names[1,], sep=""))
+pft_rst<-terra::rast(paste("Output/PFT_predictions_final/",Output_file_names[1,], sep=""))
 
 #unique(values(pft_rst))
 
 #UNIT TEST: PASS
-#pft_rst_proj<-terra::project(pft_rst, "epsg:6393")
-#pft_rst_proj_int<- setValues(pft_rst_proj, as.integer(values(pft_rst_proj)))
-#terra::writeRaster(pft_rst_proj_int,paste("Output/Projected/",Output_file_names[1,], sep=""))
+pft_rst_proj<-terra::project(pft_rst, "epsg:6393")
+pft_rst_proj_int<- setValues(pft_rst_proj, as.integer(values(pft_rst_proj)))
+terra::writeRaster(pft_rst_proj_int,paste("Output/PFT_predictions_final/Projected/",Output_file_names[1,], sep=""))
 
 #
 lapply(1:nrow(Output_file_names),function(x) {
 #  x=1
-pft_rst<-terra::rast(paste("Output/dev_FullCube/",Output_file_names[x,], sep=""))
+pft_rst<-terra::rast(paste("Output/PFT_predictions_final/",Output_file_names[x,], sep=""))
 pft_rst_proj<-terra::project(pft_rst, "epsg:6393")
 pft_rst_proj_int<- setValues(pft_rst_proj, as.integer(values(pft_rst_proj)))
-terra::writeRaster(pft_rst_proj_int,paste("Output/Projected/",Output_file_names[x,], sep=""), overwrite = TRUE)
+terra::writeRaster(pft_rst_proj_int,paste("Output/PFT_predictions_final/Projected/",Output_file_names[x,], sep=""), overwrite = TRUE)
 
 rm(pft_rst)
 rm(pft_rst_proj)
@@ -42,14 +42,17 @@ rm(pft_rst_proj_int)
 })
 
 #UNIT TEST: PASS
-#pft_rst<-terra::rast(paste("Output/Projected/",Output_file_names[1], sep=""))
-#img_rst_tst_area<-landscapemetrics::lsm_p_area(pft_rst)
-#img_tst_lsm<-calculate_lsm(pft_rst)
-#rm(pft_rst)
-#rm(img_rst_tst_area)
+#NOTE: This single image takes a long time to run
+pft_rst<-terra::rast(paste("Output/PFT_predictions_final/Projected/",Output_file_names[1,], sep=""))
+img_rst_tst_area<-landscapemetrics::lsm_p_area(pft_rst)
+img_tst_lsm<-calculate_lsm(pft_rst)
+colnames(img_tst_lsm)
+unique(img_tst_lsm$value)
+rm(pft_rst)
+rm(img_rst_tst_area)
 
 pft_area_frac_all<-lapply(1:length(Output_file_names), function(x){
-  pft_rst<-terra::rast(paste("Output/Projected/",Output_file_names[x,], sep=""))
+  pft_rst<-terra::rast(paste("Output/PFT_predictions_final/Projected/",Output_file_names[x,], sep=""))
   img_rst_tst_area<-landscapemetrics::lsm_p_area(pft_rst)
   img_rst_tst_area$image<-Output_file_names[x,]
   #img_rst_tst_area$PFT<-Output_PFT_names$CAT[x]
