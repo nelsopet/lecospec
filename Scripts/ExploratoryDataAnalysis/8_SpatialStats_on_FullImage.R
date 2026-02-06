@@ -26,7 +26,7 @@ pft_rst<-terra::rast(paste("Output/PFT_predictions_final/",Output_file_names[1,]
 pft_rst_proj<-terra::project(pft_rst, "epsg:6393")
 pft_rst_proj_int<- setValues(pft_rst_proj, as.integer(values(pft_rst_proj)))
 terra::writeRaster(pft_rst_proj_int,paste("Output/PFT_predictions_final/Projected/",Output_file_names[1,], sep=""))
-
+plot(terra::rast(paste0("./Output/PFT_predictions_final/Projected/",Output_file_names[1,], sep="")))
 #
 lapply(1:nrow(Output_file_names),function(x) {
 #  x=1
@@ -51,7 +51,7 @@ unique(img_tst_lsm$value)
 rm(pft_rst)
 rm(img_rst_tst_area)
 
-pft_area_frac_all<-lapply(1:length(Output_file_names), function(x){
+pft_area_frac_all<-lapply(1:nrow(Output_file_names), function(x){
   pft_rst<-terra::rast(paste("Output/PFT_predictions_final/Projected/",Output_file_names[x,], sep=""))
   img_rst_tst_area<-landscapemetrics::lsm_p_area(pft_rst)
   img_rst_tst_area$image<-Output_file_names[x,]
@@ -60,29 +60,34 @@ pft_area_frac_all<-lapply(1:length(Output_file_names), function(x){
   img_rst_tst_frac$image<-Output_file_names[x,]
   #img_rst_tst_frac$PFT<-Output_PFT_names$CAT[x]
   img_rst_tst_area_frac<-rbind(img_rst_tst_area,img_rst_tst_frac)
-  return(img_rst_tst_area_frac)  
+  write.csv(img_rst_tst_area_frac,paste("Output/PFT_predictions_final/Projected/Spatial_Stats/",Output_file_names[x,],".csv", sep="")) 
+  return(img_rst_tst_area_frac)
+  rm(img_rst_tst_area_frac)
   })
 
 pft_area_frac_all<-Reduce(rbind, pft_area_frac_all)
 
-write.csv(pft_area_frac_all, "Output/dev_FullCube/patches/pft_area_frac_all.csv")
+write.csv(pft_area_frac_all, "Output/PFT_predictions_final/Projected/Spatial_Stats/pft_area_frac_all.csv")
 
 #Use when you don't want to rerun the code above which takes awhile
-pft_area_frac_all<-read.csv( "Output/dev_FullCube/patches/pft_area_frac_all.csv")
+pft_area_frac_all<-read.csv( "Output/PFT_predictions_final/Projected/Spatial_Stats/pft_area_frac_all.csv")
 
-
+unique(pft_area_frac_all)
 #This would take a very long time to run. One image takes >30 min and there are 77 images ... a few days worth of CPU time
 #pft_lsm_all<-lapply(1:nrow(Output_file_names), function(x){
-#  pft_rst<-terra::rast(paste("Output/Projected/",Output_file_names[x,], sep=""))
-#  img_lsm<-calculat_lsm(pft_rst)
-#  rm(pft_rst)  
-#  return(img_lsm)  
+#  pft_rst<-terra::rast(paste("Output/PFT_predictions_final/Projected/",Output_file_names[x,], sep=""))
+#  img_lsm<-landscapemetrics::calculate_lsm(pft_rst)
+#  rm(pft_rst)
+#  write.csv(img_lsm,paste("Output/PFT_predictions_final/Projected/Spatial_Stats/",Output_file_names[x,],"_lsm.csv", sep=""))   
+#  return(img_lsm)
+#  rm(img_lsm)  
 #  })
 
 head(pft_area_frac_all)
 dim(pft_area_frac_all)
 tst<-as.data.frame(pft_area_frac_all)
 unique(tst$class)
+
 pft_area_frac_all_wNames<-as.data.frame(pft_area_frac_all) %>% 
   inner_join(Output_PFT_names, by=c("class"="ID"), keep=FALSE)
 
@@ -92,29 +97,30 @@ min_patch_size = min(pft_area_frac_all_wNames %>%
 
 unique(pft_area_frac_all_wNames$metric)
 
-minFrac<-pft_area_frac_all_wNames %>% filter(metric == "frac") %>% summarize(min(value))
+minFrac<-pft_area_frac_all_wNames %>% 
+  filter(metric == "frac") %>% 
+  summarize(min(value))
 
 #pft_area_frac_all_wNames$value_pos<-pft_area_frac_all_wNames$value+48208
 pft_area_frac_total<-
 pft_area_frac_all_wNames %>% 
-dplyr::filter(metric == "area") %>%
+#dplyr::filter(metric == "area") %>%
 #group_by(CAT, metric, value) %>%
 group_by(CAT, value) %>%
 summarize(TotalMetric = sum(value))
 
-dim(pft_area_frac_total)
-
 jpeg("figures/PatchFrac_all.jpg", width = 1000, height = 700)
 #ggplot(pft_area_frac_all_wNames %>% group_by(CAT) %>% filter(metric == "frac"), aes(x=CAT, y=sqrt(value_pos)))#+ 
-ggplot(pft_area_frac_all_wNames %>% group_by(CAT) %>% filter(metric == "frac"), aes(x=CAT, y=value))+ 
+ggplot(pft_area_frac_all_wNames %>% group_by(CAT) %>% filter(metric == "frac"), aes(x=CAT, y=log(value,base=1000)))+ 
 geom_violin(aes(fill=CAT))
 dev.off()
 #min_patch_size = min(log10(pft_area_frac_all$value*100000)) 
 pfts<-unique(pft_area_all$class)
 #pft_area_frac_all_wNames_filt<- pft_area_frac_all_wNames %>% dplyr::filter(value>min_patch_size)  %>% dim
 
-jpeg("figures/PatchSize_all3.jpg", width = 2000, height = 1500)#, overwrite=TRUE)
-ggplot(pft_area_frac_all_wNames %>% dplyr::filter(metric == "area") %>% dplyr::filter(value>min_patch_size), aes(x = log10(value*100000), group=CAT)) + 
+jpeg("figures/PatchSize_all.jpg", width = 2000, height = 1500)
+ggplot(pft_area_frac_all_wNames %>% dplyr::filter(metric == "area") %>% 
+  dplyr::filter(value>min_patch_size), aes(x = log10(value*100000), group=CAT)) + 
 #geom_violin(aes(fill=CAT)) +#
 geom_histogram() + 
 
