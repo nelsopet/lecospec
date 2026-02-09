@@ -36,7 +36,7 @@ dir_out_all<-rbind(dir_out_2018_all_df,dir_out_2019_all_df)
 
 #To re-run, add loop here to iterate over each image, calculate the size, divide by 250 Mb (optimum tile)
 #size and pass that to the .config
-img_num = 1 # Pick up at 85 later and stop at 95
+img_num = 3 # Pick up at 85 later and stop at 95
 test_path = paste(dir_out_all[img_num,1],dir_out_all[img_num,2],sep="/")
 test_path
 #Get file size
@@ -60,14 +60,14 @@ raster::raster(test_path) %>% plot()
 print(date())
 quad_results <- estimate_land_cover(
   test_path, 
-  output_filepath = "./test/test_pred_adaboost_all_datacube_run_100066_0.grd",
+  output_filepath = "./test/test_pred_adaboost_all_datacube_run_100124_0.grd",
   use_external_bands = TRUE)
 closeAllConnections()
 print(date())
 
 as_tiff<-function(path) {raster::raster(paste0("./test/",path,".grd")) %>% raster::writeRaster(paste0("./test/",path,".tif"), overwrite=TRUE)}
 
-test_tif<-as_tiff("test_pred_adaboost_all_datacube_run_100066_0")
+test_tif<-as_tiff("test_pred_adaboost_all_datacube_run_100124_0")
 plot(test_tif)
 
 #Remove and  recreate tiles directory for next run
