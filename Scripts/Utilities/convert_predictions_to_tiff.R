@@ -17,7 +17,3 @@ as_tiff<-function(x) {terra::rast(paste0(dir,"/",files[x],".grd")) %>% terra::wr
 
 #Write all PFT maps to disk as .tif with new naming convention
 lapply(1:length(files), function(x) {terra::rast(paste0(dir,"/",files[x],".grd")) %>% terra::writeRaster(paste0("./Output/PFT_predictions_final/","UAS_PFT_map_flight_",df[x,7],"_image_",df[x,8],".tif"), overwrite=TRUE)})
-
-#Remove and  recreate tiles directory for next run
-unlink("./tiles", recursive = TRUE)
-dir.create("./tiles")
