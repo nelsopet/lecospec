@@ -59,7 +59,7 @@ AK2018_dir_dates<-list.dirs(AK2018_dir, recursive = F)
     path_72518 = "M:/Alaska_DATA/Alaska_Summer2018/Workspaces/Alaska/DatabyDate/72518"
     dirs_72518 = list.dirs(path_72518)
     dirs_72518[grep("100066",dirs_72518)][1]
-
+    dirs_72518[grep("100068",dirs_72518)][1]
 # [3] "M:/Alaska_DATA/Alaska_Summer2018/Workspaces/Alaska/DatabyDate/72618"
 # [4] "M:/Alaska_DATA/Alaska_Summer2018/Workspaces/Alaska/DatabyDate/72718"
 dirs_72818 =list.dirs("M:/Alaska_DATA/Alaska_Summer2018/Workspaces/Alaska/DatabyDate/72818")
@@ -99,6 +99,7 @@ dirs_80618=list.dirs("M:/Alaska_DATA/Alaska_Summer2018/Workspaces/Alaska/DatabyD
 
     #Select usable dates from 2018
 dirs_keep= c(dirs_72518[grep("100066",dirs_72518)][1]
+,dirs_72518[grep("100068",dirs_72518)][1]
 ,dirs_72818[grep("100124",dirs_72818)][1]
 ,dirs_72918[grep("100130",dirs_72918)][1]
 ,dirs_73018[grepl("100148",dirs_73018)]
@@ -116,7 +117,7 @@ dirs_keep= c(dirs_72518[grep("100066",dirs_72518)][1]
 write.csv(dirs_keep,"Output/dirs/2018_AK_directories_keep.csv")
 
 lapply(1:length(dirs_keep), function(x) {
-#x = 9
+#x = 2
 path_parts<-str_split(dirs_keep[x], pattern = "/")
 path_parts<-str_split(dirs_keep[x], pattern = "/")
 flight_name = path_parts[[1]][length(path_parts[[1]])]
